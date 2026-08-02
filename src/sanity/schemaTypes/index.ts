@@ -98,6 +98,7 @@ const service = defineType({
     defineField({ name: "slug", title: "Slug", type: "slug", group: "content", options: { source: "title", maxLength: 96 }, ...required() }),
     defineField({ name: "summary", title: "Summary", type: "text", rows: 4, group: "content", description: "Leave blank while the service wording is under review." }),
     defineField({ name: "capabilities", title: "Capabilities", type: "array", group: "content", of: [defineArrayMember({ type: "string" })], validation: (rule) => rule.max(6) }),
+    defineField({ name: "detailApproved", title: "Detail approved for publishing", type: "boolean", group: "content", initialValue: false, description: "Keep false for draft or unverified service descriptions and capabilities." }),
     defineField({ name: "cta", title: "CTA", type: "cta", group: "content" }),
     defineField({ name: "body", title: "Detailed body", type: "portableText", group: "content" }),
     defineField({ name: "featured", title: "Featured", type: "boolean", group: "content", initialValue: false }),

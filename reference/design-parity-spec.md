@@ -30,7 +30,7 @@ This document records the rendered Axis & Sage production design from `https://a
 - Navigation is a five-item horizontal row: About, Services, Our work, FAQs, Contact. It uses Mona Sans at approximately 14 px, white, with generous spacing and no visible underline or pill treatment.
 - The desktop hero/navigation surface is dark `rgb(16, 16, 20)` with a rounded image panel on the right.
 - At 390 px, the header sits in a dark rounded container inset about 20 px from the viewport edges, with the logo on the left and a three-line hamburger control on the right. Desktop navigation is replaced by the menu control.
-- The mobile menu is a full navigation overlay with the same warm light body background and the production navigation labels. It must remain keyboard accessible and close on Escape.
+- The mobile menu is a blurred dark navigation overlay using only About, Services, Our work, FAQs and Contact. It has no authored “Axis & Sage / Navigation” label or descriptive note and closes on Escape or link selection.
 
 ## Hero
 
@@ -52,7 +52,7 @@ This document records the rendered Axis & Sage production design from `https://a
 - Heading: “Where strategy meets storytelling”.
 - Body: production Axis & Sage copy beginning “At Axis and Sage, we believe every great business starts with a compelling story.”
 - Below the intro is a horizontal image carousel/strip of real editorial images with narrow white gutters. The visible source images show work at a desk, wireframe sketches, financial charts, and a hand using a device. Preserve the image-led strip and its overflow behavior.
-- The lower About content contains the production approach statement, supporting copy, and four stat blocks. The live source labels are “Combined years of experience”, “Projects completed”, “Skilled Partners”, and “Client satisfaction”; visible values currently render as animated counters and resolve to 0/0/0/0% in the captured browser state. Preserve the layout and counter treatment rather than inventing values.
+- The lower About content contains the production approach statement and supporting copy. The source includes four statistic labels, but the captured values resolve to contradictory `0` / `0%` states alongside claims about 25 projects, 3 experts and complete satisfaction. The public rebuild hides these blocks until verified values are approved; the Sanity schema retains the fields.
 - Mobile transforms the intro and image strip to a single column; the source image strip remains horizontally overflowed/carousel-like rather than becoming abstract panels.
 
 ## Services
@@ -97,13 +97,13 @@ This document records the rendered Axis & Sage production design from `https://a
 ## Footer
 
 - Footer is dark and rounded/inset like the contact panel. The actual white Axis & Sage Consulting logo is used on the left, with a “Quick links” Instrument Serif heading and two-column link list on the right.
-- Preserve the current five navigation destinations and Axis & Sage copyright. Remove confirmed Refit/JJ Gerrish/template credits and do not add replacement brand statements that are not in the source.
+- Preserve the current five navigation destinations. Confirmed Refit/JJ Gerrish/template credits and unsupported footer copyright are withheld pending approved legal text.
 - Mobile stacks logo and links; preserve the large dark surface and generous spacing.
 
 ## Global visual system
 
 - Primary surfaces: dark `rgb(16, 16, 20)`, white/warm near-white `#ffffff`/`#fafafa`, pale lavender-gray card surfaces approximately `#eeeef4`, and gray text approximately `rgb(61, 61, 71)` / `rgb(208, 209, 219)`.
-- Fonts: Instrument Serif for display headings, labels and card titles; Mona Sans for body, navigation, controls and form labels. The legacy export includes the corresponding font assets and Google/Framer font declarations.
+- Fonts: Instrument Serif normal and italic at weight 400 for display headings, labels and card titles; Mona Sans for body, navigation, controls and form labels. The implementation uses `next/font/google`, which bundles the Google font files into the production build; browser computed-style verification is required before typography is marked matched.
 - Type is high-contrast editorial but restrained: serif display headings, sans-serif body, no speculative all-caps system, no dark-grid overlay, no gradient artwork, no abstract initials.
 - Layout uses a centered max-width content region around 1290–1300 px on desktop with approximately 72 px side gutters; 20 px side gutters on mobile. Section gaps are large and deliberate, with light 1 px borders where the source uses them.
 - Rounded corners are used for hero media, CTA pills, project/testimonial cards, accordion rows, contact/form surfaces and footer surfaces. Avoid adding heavy shadows.

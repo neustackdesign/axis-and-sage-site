@@ -23,6 +23,7 @@ export type Service = {
   summary?: string;
   capabilities?: string[];
   featured?: boolean;
+  detailApproved?: boolean;
 };
 
 export type Testimonial = {
@@ -51,6 +52,7 @@ export type Project = {
   testimonial?: Testimonial;
   featured?: boolean;
   tone: "sage" | "amber" | "ink";
+  seo?: { title?: string; description?: string; canonicalUrl?: string; image?: ImageValue };
 };
 
 export type Faq = {
@@ -72,7 +74,8 @@ export type SiteSettings = {
   officeLocations?: string[];
   socialLinks?: LinkValue[];
   copyright?: string;
-  seo: { title: string; description: string; image?: ImageValue };
+  favicon?: ImageValue;
+  seo: { title: string; description: string; titleTemplate?: string; canonicalUrl?: string; image?: ImageValue };
 };
 
 export type HomePage = {

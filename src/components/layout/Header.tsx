@@ -32,19 +32,17 @@ export function Header({ navigation }: HeaderProps) {
         type="button"
         aria-expanded={open}
         aria-controls="mobile-navigation"
+        aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((current) => !current)}
       >
-        <span>{open ? "Close" : "Menu"}</span>
-        <span className="menu-lines" aria-hidden="true"><i /><i /></span>
+        <span className="menu-lines" aria-hidden="true"><i /><i /><i /></span>
       </button>
       <div className={`mobile-navigation${open ? " is-open" : ""}`} id="mobile-navigation" aria-hidden={!open}>
-        <p className="eyebrow">Axis &amp; Sage / Navigation</p>
         <nav aria-label="Mobile navigation">
           {navigation.map((item) => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>{item.label}</Link>
           ))}
         </nav>
-        <p className="mobile-navigation-note">Strategy, design, growth and the stories that make ventures matter.</p>
       </div>
     </header>
   );

@@ -36,8 +36,15 @@ export const HOME_QUERY = defineQuery(`
 export const SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0] {
     ...,
+    "title": siteTitle,
+    "brandDescription": shortBrandDescription,
+    "favicon": favicon,
     "navigation": primaryNavigation,
-    "footerNavigation": footerNavigation
+    "footerNavigation": footerNavigation,
+    "contactEmail": contactEmail,
+    "officeLocations": officeLocations[].address,
+    "copyright": footerCopyright,
+    "seo": defaultSeo
   }
 `);
 

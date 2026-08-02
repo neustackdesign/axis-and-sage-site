@@ -16,7 +16,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
       <div className="footer-bottom container">
-        <span>{settings.copyright}</span>
+        {settings.copyright ? <span>{settings.copyright}</span> : null}
       </div>
     </footer>
   );

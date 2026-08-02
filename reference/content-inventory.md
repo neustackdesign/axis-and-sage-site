@@ -30,16 +30,26 @@ Status values:
 | Contact fields | Name, Email, Phone Number, Message |
 | Geography | UAE positioning, with Dubai and Abu Dhabi named in the source. |
 
-## Likely valid — needs confirmation
+## Source-present — public but approval still required
 
 | Area | Content/risk |
 | --- | --- |
-| About statistics | “Over 25 successful projects delivered with quality and care”, “Our team of 3 experts ensures top-quality results”, and the years-of-experience / satisfaction claims are present but the displayed values are `0` / `0%` in the source render. Do not publish numeric values until confirmed. |
-| Service descriptions | The same Strategy description and capability list are repeated across all five cards. The categories are legitimate; each individual description needs editorial confirmation. |
+| About statistics | The source contains contradictory animated `0` / `0%` values alongside claims about 25 projects, 3 experts and complete satisfaction. All public statistic blocks are withheld until approved values and definitions are supplied; the Sanity statistic schema remains available. |
 | Testimonials | Axis & Sage-branded quotes from Onyeka Akumah, Bunmi Akinyemiju, Dinma Obidiebube, LASRIC, Chuks Okeibunor and Temi Olateru appear in the source, but approval/proof URLs are absent. Hold as drafts until approved. |
 | Office locations | “Abu Dhabi, Dubai, UAE” is plausible and branded, but the source also contains a questionable London address. Publish only verified UAE locations. |
 | Email | `info@axisandsage.com` is used by the parity implementation as the Axis & Sage contact address; confirm ownership before production launch. |
 | CTA destinations | “Work with us” / “Get in touch” clearly map to `#contact`; exact external destinations are not present. |
+
+## Proposed replacements — withheld from public detail
+
+The following fallback summaries and capability lists were authored during the rebuild and are not source-faithful migration. They remain only as clearly flagged draft data for later editorial review:
+
+- Design — proposed summary and capabilities; public detail hidden.
+- Growth — proposed summary and capabilities; public detail hidden.
+- Venture Building — proposed summary and capabilities; public detail hidden.
+- Storytelling — proposed summary and capabilities; public detail hidden.
+
+Strategy is the only fallback service detail marked approved for the public parity preview because its summary and four capabilities are present in the source audit. Sanity service documents include an explicit `detailApproved` publishing gate.
 
 ## Obvious template residue
 
@@ -58,15 +68,17 @@ Status values:
 ## Migrated visual content
 
 - The live Axis & Sage logo, chess hero, about image strip, project imagery, service icon set and six testimonial portraits are downloaded into `public/images/axis-sage/` for the rebuild; they are no longer runtime dependencies on Framer.
+- The current-production light and dark favicon assets are recovered under `public/icons/`; the legacy Refit favicon reference is not used.
+- The social preview image under `public/og/axis-sage.png` is derived from the approved local hero image and logo and awaits explicit brand approval.
 - Testimonial portraits are mapped in live DOM order to Onyeka Akumah, Bunmi Akinyemiju, Dinma Obidiebube, LASRIC, Chuks Okeibunor and Temi Olateru. Editorial approval remains a publishing gate.
 
 ## Missing replacement content
 
-- Confirmed service summaries and capability lists for Design, Growth, Venture Building and Storytelling.
+- Approved service summaries and capability lists for Design, Growth, Venture Building and Storytelling; authored fallback drafts are explicitly withheld from public detail.
 - Approved general testimonials, roles, organisations, portrait usage rights and proof URLs.
-- Approved statistics and definitions.
+- Approved statistics and definitions; public statistic blocks are currently hidden.
 - Verified contact email, phone number (if one should be public), office addresses and social links.
-- Favicon and final social image that are owned/approved for production use.
+- Final approval of the recovered current-production favicon assets and the derived social image for production use.
 - Legal links and final footer copyright text.
 - Full case-study detail for any project beyond a homepage card.
 - Resend sender and recipient values for contact delivery.

@@ -11,7 +11,9 @@
   },
   "assets": [
     {"url":"https://framerusercontent.com/images/CXNyqFWxn3IGo9h0klgtTByhQo.png","kind":"brand asset","usage":"Axis & Sage logo","status":"migrated locally; approval pending","localPath":"public/images/axis-sage/logo.png"},
-    {"url":"https://framerusercontent.com/images/gmXoT6wqO781SOBsSgp0WMijTII.png","kind":"unknown","usage":"legacy favicon","status":"withheld","localPath":null},
+    {"url":"https://framerusercontent.com/images/gmXoT6wqO781SOBsSgp0WMijTII.png","kind":"legacy favicon reference","usage":"superseded legacy favicon","status":"not used; current production asset takes precedence","localPath":null},
+    {"url":"https://framerusercontent.com/images/nOTDqoxkx2Tb6ox06bdKaTvHqXY.png","kind":"Axis & Sage browser brand asset","usage":"current-production light favicon","status":"migrated locally; approval pending","localPath":"public/icons/axis-sage-light.png"},
+    {"url":"https://framerusercontent.com/images/BTGvtq2pXzYPVivMmovur220c.png","kind":"Axis & Sage browser brand asset","usage":"current-production dark favicon and Apple touch icon","status":"migrated locally; approval pending","localPath":"public/icons/axis-sage-dark.png"},
     {"url":"https://framerusercontent.com/images/Oz4gnNO46liNnbABMXpHDdjDFEY.png","kind":"template residue","usage":"Refit social preview","status":"excluded","localPath":null},
     {"url":"https://framerusercontent.com/images/0k0Ki7uoBJFcfwr7amSblvNnKU.jpg","kind":"Axis & Sage hero image","usage":"hero chess composition","status":"migrated locally","localPath":"public/images/axis-sage/hero-chess.jpg"},
     {"url":"https://framerusercontent.com/images/huT1COM16weiAaIPhLwFIVRdrA.jpg","kind":"Axis & Sage service image","usage":"services chess composition","status":"migrated locally","localPath":"public/images/axis-sage/services-chess.jpg"},

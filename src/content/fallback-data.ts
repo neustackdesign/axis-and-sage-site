@@ -21,10 +21,10 @@ export const fallbackSettings: SiteSettings = {
   contactEmail: "info@axisandsage.com",
   officeLocations: ["Abu Dhabi, Dubai, UAE"],
   socialLinks: [],
-  copyright: "© 2026 Axis & Sage. All rights reserved.",
+  copyright: "",
   seo: {
-    title: "Axis & Sage — Strategy, Design, Growth and Venture Building",
-    description: "A boutique consultancy blending strategic thinking with creative execution, helping ambitious brands turn ideas into practical realities.",
+    title: "Axis and Sage Advisory",
+    description: "Axis & Sage Advisory is a boutique strategy, product, and growth partner fusing deep African market insight with GCC execution muscle to help innovators, investors, and public-sector leaders design, build, and scale high-impact ventures.",
   },
 };
 
@@ -47,23 +47,17 @@ export const fallbackHome: HomePage = {
       "From product design to market strategy, from storytelling to growth hacking—we're the partners who see your vision and make it reality.",
     ],
     images: ["about-1.jpg", "about-2.jpg", "about-3.jpg", "about-4.jpg", "about-5.jpg", "about-6.jpg"].map((name) => ({ src: `/images/axis-sage/${name}`, alt: "Axis & Sage editorial image" })),
-    statistics: [
-      { value: "0", label: "Combined years of experience", detail: "Improving businesses with expert strategy, design and market know-how for years" },
-      { value: "0", label: "Projects completed", detail: "Over 25 successful projects delivered with quality and care" },
-      { value: "0", label: "Skilled Partners", detail: "Our team of 3 experts ensures top-quality results" },
-      { value: "0%", label: "Client satisfaction", detail: "All of our clients are satisfied with our work and service" },
-    ],
   },
   services: {
     label: "Services",
     heading: "What we do",
     introduction: "Think of us as your strategic Swiss Army knife - versatile, reliable, and always sharp.",
     items: [
-      { title: "Strategy", slug: "strategy", summary: "From market research to business model design, we help you navigate complexity and find your true north.", capabilities: ["Market Analysis", "Business Model Design", "Competitive Intelligence", "Growth Planning"], featured: true },
-      { title: "Design", slug: "design", summary: "We turn complex ideas into clear, compelling brands and products that people want to use.", capabilities: ["Brand Strategy", "Visual Identity", "Product Design", "UX/UI"], featured: true },
-      { title: "Growth", slug: "growth", summary: "We help ambitious teams find the right audience, sharpen their offer and build momentum that lasts.", capabilities: ["Go-to-Market Strategy", "Growth Systems", "Audience Development", "Partnerships"], featured: true },
-      { title: "Venture Building", slug: "venture-building", summary: "We work alongside founders and institutions to move promising ideas from opportunity to execution.", capabilities: ["Venture Strategy", "Product Development", "Operating Models", "Investment Readiness"], featured: true },
-      { title: "Storytelling", slug: "storytelling", summary: "We find the stories that make ventures matter and give them the clarity to travel across audiences.", capabilities: ["Narrative Strategy", "Campaigns", "Content Systems", "Events"], featured: true },
+      { title: "Strategy", slug: "strategy", summary: "From market research to business model design, we help you navigate complexity and find your true north.", capabilities: ["Market Analysis", "Business Model Design", "Competitive Intelligence", "Growth Planning"], featured: true, detailApproved: true },
+      { title: "Design", slug: "design", summary: "We turn complex ideas into clear, compelling brands and products that people want to use.", capabilities: ["Brand Strategy", "Visual Identity", "Product Design", "UX/UI"], featured: true, detailApproved: false },
+      { title: "Growth", slug: "growth", summary: "We help ambitious teams find the right audience, sharpen their offer and build momentum that lasts.", capabilities: ["Go-to-Market Strategy", "Growth Systems", "Audience Development", "Partnerships"], featured: true, detailApproved: false },
+      { title: "Venture Building", slug: "venture-building", summary: "We work alongside founders and institutions to move promising ideas from opportunity to execution.", capabilities: ["Venture Strategy", "Product Development", "Operating Models", "Investment Readiness"], featured: true, detailApproved: false },
+      { title: "Storytelling", slug: "storytelling", summary: "We find the stories that make ventures matter and give them the clarity to travel across audiences.", capabilities: ["Narrative Strategy", "Campaigns", "Content Systems", "Events"], featured: true, detailApproved: false },
     ],
   },
   projects: {

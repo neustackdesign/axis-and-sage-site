@@ -1,50 +1,41 @@
 # Axis & Sage visual parity report
 
-Status: correction pass captured 2026-08-02. The live page and rebuilt page were captured at 1440 × 1000, 1024 × 900 and 390 × 844. The browser surface produced 1425 × 990 / equivalent captures; comparison copies in `reference/screenshots/comparison/` are normalized to the exact requested dimensions, with LIVE / LEGACY on the left and REBUILT on the right.
+Status: `CODEX SELF-ASSESSMENT — USER REVIEW PENDING`
 
-Statuses are limited to the review vocabulary required for this rebuild:
+This report is a Codex self-assessment only. User visual approval remains the authority. The rebuild has not passed visual parity and production remains untouched.
 
-- MATCHED
-- MINOR TECHNICAL VARIANCE
-- BLOCKED BY MISSING SOURCE ASSET
-- NOT MATCHED
+## Evidence set
 
-## Comparison set
+Static comparison images are under `reference/screenshots/comparison/` at exactly 1440 × 1000, 1024 × 900 and 390 × 844. Motion evidence is under `reference/motion-comparison/`. Each finding below is independently assessed across static visual, typography, motion and interaction behavior.
 
-Each viewport has a full header/hero frame and section-level comparison for About, Services, Our work, Testimonials, FAQs, Contact and Footer. The complete set is under `reference/screenshots/comparison/`, for example:
-
-- `header-hero-1440x1000-side-by-side.png`
-- `header-hero-1024x900-side-by-side.png`
-- `header-hero-390x844-side-by-side.png`
-- `services-1440x1000-side-by-side.png`
-- `testimonials-1440x1000-side-by-side.png`
-- `faqs-390x844-side-by-side.png`
+The corrected mobile header/hero evidence is `reference/screenshots/comparison/header-hero-390x844-corrected-side-by-side.png`; the remaining exact-viewport section comparisons are retained from the prior source capture set pending the next full visual review.
 
 ## Section results
 
-| Section | 1440 × 1000 | 1024 × 900 | 390 × 844 | Review note |
-| --- | --- | --- | --- | --- |
-| Header | MATCHED | MATCHED | MATCHED | Logo, navigation rhythm, mobile inset bar and menu control follow the source. |
-| Hero | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source font metrics and Framer image-reveal timing vary slightly; media, composition, copy, pills and CTA are retained. |
-| About | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Local strip uses the migrated source images and accessible document flow; carousel timing is not runtime-identical. |
-| Services | MATCHED | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source chess media, five-item accordion, icons, first-open state and responsive stacking are present. |
-| Our work | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source project assets and card structure are present; local cards use normal flow instead of Framer scroll pinning. |
-| Testimonials | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source 400px card rail, alternating surfaces, portraits and client order are preserved; carousel offset is runtime-dependent. |
-| FAQs | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Nine source questions, first-open state, two-column desktop layout and mobile accordion are preserved. |
-| Contact | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Dark rounded panel, source copy/details and field order are preserved; local form validation/API wiring is semantic. |
-| Footer | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Logo, Quick links, current navigation and non-Refit copyright are preserved; source template credit is excluded. |
+| Section | Static visual parity | Typography parity | Motion parity | Interaction parity | Review note |
+| --- | --- | --- | --- | --- | --- |
+| Header | NOT MATCHED | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | This remains NOT MATCHED until the source mobile control, blur treatment and source-only navigation content are reviewed in the rebuilt preview. |
+| Hero | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Refit hero quote removed; source chess media and measured hero entrance timings are retained. |
+| About | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Public statistics are hidden without verified values; the source image rail is restored as a ticker. |
+| Services | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Only Strategy detail is public in fallback data; four draft detail sets are withheld while the accordion layout remains. |
+| Our work | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source project imagery and card structure retained; desktop sticky progression is restored as progressive enhancement. |
+| Testimonials | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source-present testimonial content remains subject to editorial approval; rail movement is restored without Framer. |
+| FAQs | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source questions, one-open behavior and smooth plus/close transition are retained. |
+| Contact | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source composition and form wiring retained; contact claims still need business approval. |
+| Footer | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Refit credit and unsupported copyright are withheld; logo and source links remain. |
 
-No major section is marked `NOT MATCHED`. The remaining variances are implementation/runtime differences recorded for visual approval, not new design decisions.
+## Typography gate
 
-## Asset disposition
+The required gate is actual browser rendering, not a CSS declaration. The production build uses `next/font/google` for Instrument Serif normal/italic 400 and Mona Sans. Browser evidence now confirms bundled `.woff2` resources and computed Instrument Serif/Mona Sans values; user visual review is still required before this field can be upgraded to MATCHED.
 
-Legitimate live assets are migrated under `public/images/axis-sage/`: the logo, hero chess image, service chess image, About strip, project images, service icons and six testimonial portraits. The rejected abstract graphics and confirmed Refit construction/template assets are not used. The mapping is documented in `reference/asset-inventory.json`.
+## Motion and interaction gate
 
-## Interaction checks
+Static screenshots do not validate entrance timing, rails, sticky progression, accordions, mobile navigation, hover behavior or reduced motion. See `reference/motion-parity-spec.md` and the paired/equivalent evidence under `reference/motion-comparison/`. These fields remain self-assessments pending user review.
 
-- Mobile navigation opens/closes and closes on Escape.
-- Services accordion opens one item at a time and preserves Strategy open by default.
-- FAQ accordion opens one item at a time and preserves the first item open by default.
-- Contact fields retain labels, required markers, validation and the existing contact API path.
+## Asset and metadata gate
 
-Visual approval remains required before production cutover. Production domain, DNS, AWS resources and the existing draft PR remain untouched.
+Current-production Axis & Sage favicon assets are migrated locally. The Refit legacy social metadata is excluded. The rebuilt social image is a restrained 1200 × 630 composition made from the approved local hero image and logo. See `reference/metadata-parity-report.md` for paths, dimensions and environment behavior.
+
+## Review authority
+
+No lint, typecheck, test, build, screenshot or browser check can substitute for user visual approval. Do not merge the draft PR, attach the production domain, change DNS, or touch AWS resources until approval is explicit.

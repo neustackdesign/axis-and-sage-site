@@ -53,3 +53,16 @@ test("reference audit and responsive capture records exist", async () => {
     assert.ok(file.length > 1000, `${capture} should not be empty`);
   }
 });
+
+test("controlled parity gates are documented and public fallbacks are conservative", async () => {
+  const sections = await read("src/components/sections/HomeSections.tsx");
+  const report = await read("reference/visual-parity-report.md");
+  const motion = await read("reference/motion-parity-spec.md");
+  const metadata = await read("reference/metadata-parity-report.md");
+  assert.doesNotMatch(sections, /game-changers|unparalleled|Axis &amp; Sage \/ Navigation|mobile-navigation-note/);
+  assert.match(sections, /service\.detailApproved === true/);
+  assert.match(report, /CODEX SELF-ASSESSMENT — USER REVIEW PENDING/);
+  assert.match(report, /Header \| NOT MATCHED/);
+  assert.match(motion, /prefers-reduced-motion/);
+  assert.match(metadata, /Instrument Serif/);
+});
