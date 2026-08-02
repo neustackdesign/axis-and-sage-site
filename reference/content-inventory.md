@@ -38,7 +38,7 @@ Status values:
 | Service descriptions | The same Strategy description and capability list are repeated across all five cards. The categories are legitimate; each individual description needs editorial confirmation. |
 | Testimonials | Axis & Sage-branded quotes from Onyeka Akumah, Bunmi Akinyemiju, Dinma Obidiebube, LASRIC, Chuks Okeibunor and Temi Olateru appear in the source, but approval/proof URLs are absent. Hold as drafts until approved. |
 | Office locations | “Abu Dhabi, Dubai, UAE” is plausible and branded, but the source also contains a questionable London address. Publish only verified UAE locations. |
-| Email | The live page exposes an obscured placeholder-like email. Do not publish until a real address is supplied. |
+| Email | `info@axisandsage.com` is used by the parity implementation as the Axis & Sage contact address; confirm ownership before production launch. |
 | CTA destinations | “Work with us” / “Get in touch” clearly map to `#contact`; exact external destinations are not present. |
 
 ## Obvious template residue
@@ -55,6 +55,11 @@ Status values:
 - `Website design by JJ Gerrish` credit.
 - Framer analytics, runtime, search index and generated layout scripts.
 
+## Migrated visual content
+
+- The live Axis & Sage logo, chess hero, about image strip, project imagery, service icon set and six testimonial portraits are downloaded into `public/images/axis-sage/` for the rebuild; they are no longer runtime dependencies on Framer.
+- Testimonial portraits are mapped in live DOM order to Onyeka Akumah, Bunmi Akinyemiju, Dinma Obidiebube, LASRIC, Chuks Okeibunor and Temi Olateru. Editorial approval remains a publishing gate.
+
 ## Missing replacement content
 
 - Confirmed service summaries and capability lists for Design, Growth, Venture Building and Storytelling.
@@ -69,4 +74,4 @@ Status values:
 
 ## Publishing policy
 
-The application should seed verified content only. Unconfirmed testimonials, numeric statistics, office details, contact details and service copy remain omitted or drafted. Empty testimonials and statistics should disappear cleanly rather than being filled with invented content.
+The application keeps source content and migrated visual assets in the parity layer, while Sanity editorial approval remains required for uncertain claims, portraits, contact details and statistics before production publication. Refit residue remains excluded.

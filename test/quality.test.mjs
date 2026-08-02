@@ -19,13 +19,14 @@ test("fallback content contains the verified project set", async () => {
   assert.doesNotMatch(source, /Refit|JJ Gerrish|Great Portland Street/i);
 });
 
-test("unapproved proof and uncertain business details stay withheld", async () => {
+test("source-aligned content keeps residue out and preserves current Axis & Sage details", async () => {
   const source = await read("src/content/fallback-data.ts");
   assert.match(source, /approved: false/);
-  assert.match(source, /officeLocations: \[\]/);
-  assert.match(source, /offices: \[\]/);
-  assert.match(source, /summary: ""/);
-  assert.match(await read("src/components/sections/HomeSections.tsx"), /Description pending editorial confirmation/);
+  assert.match(source, /officeLocations: \["Abu Dhabi, Dubai, UAE"\]/);
+  assert.match(source, /offices: \["Abu Dhabi, Dubai, UAE"\]/);
+  assert.match(source, /info@axisandsage\.com/);
+  assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
+  assert.doesNotMatch(await read("src/components/sections/HomeSections.tsx"), /Description pending editorial confirmation/);
 });
 
 test("contact handling has honest validation and configuration states", async () => {
