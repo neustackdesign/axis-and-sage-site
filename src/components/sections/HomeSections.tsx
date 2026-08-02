@@ -1,78 +1,112 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import type { Faq, HomePage, Project, Testimonial } from "@/types/content";
+import { useState } from "react";
+import type { Faq, HomePage, ImageValue, Project, Service, Testimonial } from "@/types/content";
 import { ContactForm } from "@/components/ui/ContactForm";
 
-function SectionIntro({ label, heading, children, dark = false }: { label: string; heading: string; children?: React.ReactNode; dark?: boolean }) {
-  return <div className={`section-intro${dark ? " section-intro-dark" : ""}`}><p className="eyebrow">{label}</p><h2>{heading}</h2>{children ? <div className="section-intro-copy">{children}</div> : null}</div>;
+const assetRoot = "/images/axis-sage";
+const projectAssets: Record<string, string> = {
+  "nature-roots": `${assetRoot}/nature-roots-live.jpg`,
+  earlybean: `${assetRoot}/earlybean-live.jpeg`,
+  "uganda-investor-summit": `${assetRoot}/summit-live.jpg`,
+};
+
+function imageSource(image?: ImageValue, fallback?: string) {
+  return image?.src || fallback;
 }
 
-function ArrowLink({ href, children, dark = false }: { href: string; children: React.ReactNode; dark?: boolean }) {
-  return <Link className={`text-link${dark ? " text-link-light" : ""}`} href={href}>{children}<span aria-hidden="true">↗</span></Link>;
+function SourceImage({ image, fallback, alt, className }: { image?: ImageValue; fallback?: string; alt: string; className?: string }) {
+  const src = imageSource(image, fallback);
+  return src ? <img className={className} src={src} alt={image?.alt || alt} /> : <div className={`${className || "source-image"} source-image-empty`} role="img" aria-label={alt} />;
+}
+
+function SectionIntro({ label, heading, children, centered = false }: { label: string; heading: string; children?: React.ReactNode; centered?: boolean }) {
+  return <div className={`section-intro${centered ? " section-intro-centered" : ""}`}><span className="section-label">{label}</span><h2>{heading}</h2>{children ? <div className="section-intro-copy">{children}</div> : null}</div>;
+}
+
+function ArrowButton({ href, children, light = false }: { href: string; children: React.ReactNode; light?: boolean }) {
+  return <Link className={`arrow-button${light ? " arrow-button-light" : ""}`} href={href}><span>{children}</span><b aria-hidden="true">↗</b></Link>;
 }
 
 function Hero({ data }: { data: HomePage["hero"] }) {
-  const [activeWord, setActiveWord] = useState(0);
-  useEffect(() => { const id = window.setInterval(() => setActiveWord((word) => (word + 1) % data.eyebrow.length), 2600); return () => window.clearInterval(id); }, [data.eyebrow.length]);
   return <section className="hero" id="top">
-    <div className="hero-orbit hero-orbit-one" aria-hidden="true" /><div className="hero-orbit hero-orbit-two" aria-hidden="true" />
-    <div className="hero-content container">
-      <div className="hero-meta"><span className="eyebrow">Axis &amp; Sage</span><span className="hero-location">Africa / GCC / Everywhere in between</span></div>
-      <div className="hero-framing" aria-live="polite"><span className="hero-word-index">0{activeWord + 1}</span><span className="hero-word">{data.eyebrow[activeWord]}</span><span className="hero-word-line" /></div>
-      <h1>{data.heading}</h1>
-      <div className="hero-bottom"><p>{data.body}</p><div className="hero-actions"><ArrowLink href={data.primaryCta.href} dark>{data.primaryCta.label}</ArrowLink>{data.secondaryCta ? <ArrowLink href={data.secondaryCta.href} dark>{data.secondaryCta.label}</ArrowLink> : null}</div></div>
+    <div className="hero-frame">
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <div className="hero-pills">{data.eyebrow.map((item) => <span key={item}><i />{item}</span>)}</div>
+          <h1>{data.heading}</h1>
+          <p>{data.body}</p>
+          <ArrowButton href={data.primaryCta.href} light>{data.primaryCta.label}</ArrowButton>
+        </div>
+        <div className="hero-media">
+          <SourceImage image={data.media} fallback={`${assetRoot}/hero-chess.jpg`} alt="Chess pieces on a board" />
+          <div className="hero-quote"><strong>★★★★★</strong><p>“Axis &amp; Sage have been game-changers for us. Their ability to blend functionality with exquisite design is unparalleled.”</p></div>
+        </div>
+      </div>
     </div>
-    <a className="scroll-cue" href="#about"><span>Scroll to explore</span><span aria-hidden="true">↓</span></a>
   </section>;
 }
 
 function About({ data }: { data: HomePage["about"] }) {
-  return <section className="section about-section" id="about"><div className="container about-grid"><SectionIntro label={data.label} heading={data.heading}><p>{data.body}</p></SectionIntro><div className="about-visual" aria-label="Abstract Axis & Sage visual composition"><div className="visual-panel visual-panel-sage" /><div className="visual-panel visual-panel-sand" /><div className="visual-panel visual-panel-ink"><span>A / S</span></div><div className="visual-caption">Strategy<br />meets story.</div></div></div><div className="container about-bottom"><div className="approach-block"><p className="eyebrow">Our approach</p><p className="approach-copy">{data.approach}</p></div><div className="about-support">{data.support.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div>{data.statistics?.length ? <div className="container stats-grid">{data.statistics.map((stat) => <div key={stat.label} className="stat-card"><strong>{stat.value}</strong><p>{stat.label}</p><small>{stat.detail}</small></div>)}</div> : null}</section>;
+  const aboutImages = data.images?.length ? data.images : ["about-1.jpg", "about-2.jpg", "about-3.jpg", "about-4.jpg", "about-5.jpg", "about-6.jpg"].map((name) => ({ src: `${assetRoot}/${name}`, alt: "Axis & Sage editorial image" }));
+  const stats = data.statistics?.length ? data.statistics : [
+    { value: "0", label: "Combined years of experience", detail: "Improving businesses with expert strategy, design and market know-how for years" },
+    { value: "0", label: "Projects completed", detail: "Over 25 successful projects delivered with quality and care" },
+    { value: "0", label: "Skilled Partners", detail: "Our team of 3 experts ensures top-quality results" },
+    { value: "0%", label: "Client satisfaction", detail: "All of our clients are satisfied with our work and service" },
+  ];
+  return <section className="section about-section" id="about">
+    <div className="container"><div className="about-intro"><SectionIntro label={data.label} heading={data.heading}><p>{data.body}</p></SectionIntro></div></div>
+    <div className="about-strip" aria-label="Axis & Sage editorial images">{aboutImages.map((image, index) => <SourceImage key={`${image.src}-${index}`} image={image} alt="Axis & Sage editorial image" />)}</div>
+    <div className="container about-lower"><div><span className="section-label">Our approach</span><p className="approach-copy">{data.approach}</p></div><div className="support-copy">{data.support.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div>
+    <div className="container stats-grid">{stats.map((stat) => <article className="stat-card" key={stat.label}><strong>{stat.value}</strong><h3>{stat.label}</h3><p>{stat.detail}</p></article>)}</div>
+  </section>;
+}
+
+function ServiceRow({ service, index, open, onClick }: { service: Service; index: number; open: boolean; onClick: () => void }) {
+  const icon = `${assetRoot}/service-${(index % 5) + 1}.svg`;
+  return <article className={`service-row${open ? " is-open" : ""}`}>
+    <button type="button" aria-expanded={open} onClick={onClick}><span className="service-icon"><img src={icon} alt="" /></span><span className="service-title">{service.title}</span><span className="service-control" aria-hidden="true">{open ? "×" : "+"}</span></button>
+    <div className="service-detail" hidden={!open}><p>{service.summary}</p><ul>{service.capabilities?.map((capability) => <li key={capability}>{capability}</li>)}</ul><ArrowButton href="#contact">Work with us</ArrowButton></div>
+  </article>;
 }
 
 function Services({ data }: { data: HomePage["services"] }) {
-  const [active, setActive] = useState(data.items[0]?.slug ?? "");
-  return <section className="section services-section" id="services"><div className="container"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="services-list">{data.items.map((service, index) => <article className={`service-card${active === service.slug ? " is-active" : ""}`} key={service.slug}><button className="service-toggle" type="button" aria-expanded={active === service.slug} onClick={() => setActive(active === service.slug ? "" : service.slug)}><span className="service-index">0{index + 1}</span><span className="service-title">{service.title}</span><span className="service-plus" aria-hidden="true">{active === service.slug ? "−" : "+"}</span></button><div className="service-detail"><div><p className={service.summary ? "" : "pending-copy"}>{service.summary || "Description pending editorial confirmation."}</p>{service.capabilities?.length ? <ul className="capability-list">{service.capabilities.map((item) => <li key={item}>{item}</li>)}</ul> : null}</div><ArrowLink href="#contact">Work with us</ArrowLink></div></article>)}</div></div></section>;
+  const [open, setOpen] = useState(0);
+  return <section className="section services-section" id="services"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction}</p></SectionIntro><div className="services-grid"><div className="services-media"><SourceImage fallback={`${assetRoot}/services-chess.jpg`} alt="Chess pieces on a board" className="service-photo" /></div><div className="services-list">{data.items.map((service, index) => <ServiceRow key={service.slug} service={service} index={index} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></div></section>;
 }
 
-function ProjectVisual({ project }: { project: Project }) {
-  return <div className={`project-visual project-visual-${project.tone}`} aria-label={`${project.title} visual placeholder pending approved project imagery`}><span className="project-visual-mark">{project.title.split(" ").map((word) => word[0]).join("")}</span><span className="project-visual-note">Approved imagery<br />pending review</span></div>;
+function ProjectCard({ project }: { project: Project }) {
+  return <article className="project-card"><div className="project-media"><SourceImage image={project.cover} fallback={projectAssets[project.slug]} alt={`${project.title} project image`} /></div><div className="project-content"><h3>{project.title}</h3><p>{project.summary}</p><div className="project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>{project.testimonial ? <blockquote>“{project.testimonial.quote}”<cite>{project.testimonial.personName}</cite></blockquote> : null}</div></article>;
 }
 
 function Projects({ data }: { data: HomePage["projects"] }) {
-  const [active, setActive] = useState(0);
-  const project = data.items[active];
-  if (!project) return null;
-  const next = () => setActive((index) => (index + 1) % data.items.length);
-  const previous = () => setActive((index) => (index - 1 + data.items.length) % data.items.length);
-  return <section className="section projects-section" id="our-work"><div className="container"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="project-stage"><ProjectVisual project={project} /><div className="project-copy"><div className="project-meta"><span>0{active + 1} / 0{data.items.length}</span><span>{project.tags.join(" · ")}</span></div><h3>{project.title}</h3><p>{project.summary}</p><div className="project-footer"><ArrowLink href={`/work/${project.slug}`}>View project</ArrowLink><div className="carousel-controls"><button type="button" onClick={previous} aria-label="Previous project">←</button><button type="button" onClick={next} aria-label="Next project">→</button></div></div></div></div><div className="project-dots" aria-label="Project slides">{data.items.map((item, index) => <button key={item.slug} type="button" aria-label={`Show ${item.title}`} aria-current={index === active} onClick={() => setActive(index)} />)}</div></div></section>;
+  return <section className="section projects-section" id="our-work"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction}</p></SectionIntro><div className="project-list">{data.items.map((project) => <ProjectCard key={project.slug} project={project} />)}</div></div></section>;
 }
 
 function Testimonials({ data }: { data?: HomePage["testimonials"] }) {
-  const approved = data?.items.filter((testimonial) => testimonial.approved) ?? [];
-  if (!approved.length) return null;
-  return <section className="section testimonials-section" id="testimonials"><div className="container"><SectionIntro label={data?.label ?? "Testimonials"} heading={data?.heading ?? "Hear from our clients"}><p>{data?.introduction}</p></SectionIntro><div className="testimonial-grid">{approved.map((testimonial) => <TestimonialCard key={testimonial._id ?? testimonial.personName} testimonial={testimonial} />)}</div></div></section>;
+  if (!data?.items?.length) return null;
+  return <section className="section testimonials-section" id="testimonials"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction?.replace(/Refit/g, "Axis & Sage")}</p></SectionIntro></div><div className="testimonial-track">{data.items.map((testimonial, index) => <TestimonialCard key={testimonial._id ?? `${testimonial.personName}-${index}`} testimonial={testimonial} index={index} />)}</div></section>;
 }
 
-function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
-  return <figure className="testimonial-card"><blockquote>“{testimonial.quote}”</blockquote><figcaption><strong>{testimonial.personName}</strong><span>{[testimonial.role, testimonial.organisation].filter(Boolean).join(" · ")}</span></figcaption></figure>;
-}
-
-function Faqs({ data }: { data: HomePage["faqs"] }) {
-  const [open, setOpen] = useState(0);
-  const items = data.items.filter((faq) => faq.display !== false);
-  return <section className="section faq-section" id="faqs"><div className="container faq-grid"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p><ArrowLink href={data.cta.href}>{data.cta.label}</ArrowLink></SectionIntro><div className="faq-list">{items.map((faq, index) => <FaqItem key={faq._id ?? faq.question} faq={faq} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></section>;
+function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
+  return <figure className={`testimonial-card testimonial-card-${index % 2 ? "tint" : "plain"}`}><strong className="stars">★★★★★</strong><blockquote>{testimonial.quote}</blockquote><figcaption><SourceImage image={testimonial.portrait} alt={`${testimonial.personName} portrait`} className="testimonial-portrait" /><span>{testimonial.personName}</span></figcaption></figure>;
 }
 
 function FaqItem({ faq, open, onClick }: { faq: Faq; open: boolean; onClick: () => void }) {
   const id = `faq-answer-${faq.question.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-  return <div className={`faq-item${open ? " is-open" : ""}`}><button type="button" aria-expanded={open} aria-controls={id} onClick={onClick}><span>{faq.question}</span><span aria-hidden="true">{open ? "−" : "+"}</span></button><div className="faq-answer" id={id} hidden={!open}><p>{faq.answer}</p></div></div>;
+  return <article className={`faq-item${open ? " is-open" : ""}`}><button type="button" aria-expanded={open} aria-controls={id} onClick={onClick}><span>{faq.question}</span><b aria-hidden="true">{open ? "×" : "+"}</b></button><div id={id} className="faq-answer" hidden={!open}><p>{faq.answer}</p></div></article>;
+}
+
+function Faqs({ data }: { data: HomePage["faqs"] }) {
+  const items = data.items.filter((faq) => faq.display !== false);
+  const [open, setOpen] = useState(0);
+  return <section className="section faq-section" id="faqs"><div className="container faq-grid"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p><ArrowButton href={data.cta.href}>{data.cta.label}</ArrowButton></SectionIntro><div className="faq-list">{items.map((faq, index) => <FaqItem key={faq._id ?? faq.question} faq={faq} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></section>;
 }
 
 function Contact({ data }: { data: HomePage["contact"] }) {
-  return <section className="section contact-section" id="contact"><div className="container contact-grid"><div className="contact-copy"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro>{data.offices?.length ? <div className="contact-details"><p className="eyebrow">Office</p>{data.offices.map((office) => <p key={office}>{office}</p>)}</div> : <p className="pending-panel">Verified office and email details will appear here once confirmed.</p>}{data.email ? <div className="contact-details"><p className="eyebrow">Email</p><a href={`mailto:${data.email}`}>{data.email}</a></div> : null}</div><div className="contact-form-wrap"><p className="eyebrow">Start a conversation</p><ContactForm /></div></div></section>;
+  return <section className="section contact-section" id="contact"><div className="contact-panel"><div className="contact-grid container"><div className="contact-copy"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="contact-details"><strong>Office</strong><span>{data.offices?.[0] || "Abu Dhabi, Dubai, UAE"}</span><strong>Email</strong><a href={`mailto:${data.email || "info@axisandsage.com"}`}>{data.email || "info@axisandsage.com"}</a></div></div><div className="contact-form-wrap"><ContactForm /></div></div></div></section>;
 }
 
 export function HomeSections({ home }: { home: HomePage }) {

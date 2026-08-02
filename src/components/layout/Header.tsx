@@ -23,10 +23,7 @@ export function Header({ navigation }: HeaderProps) {
 
   return (
     <header className="site-header">
-      <Link className="wordmark" href="/" aria-label="Axis & Sage home">
-        <span className="wordmark-mark" aria-hidden="true">A<span>+</span>S</span>
-        <span className="wordmark-name">Axis &amp; Sage</span>
-      </Link>
+      <Link className="site-logo" href="/" aria-label="Axis & Sage home"><img src="/images/axis-sage/logo.png" alt="Axis & Sage Consulting" /></Link>
       <nav className="desktop-nav" aria-label="Primary navigation">
         {navigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
       </nav>
