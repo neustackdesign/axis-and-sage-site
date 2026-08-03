@@ -26,7 +26,7 @@ test("source-aligned content keeps residue out and preserves current Axis & Sage
   assert.match(source, /offices: \["Abu Dhabi, Dubai, UAE"\]/);
   assert.match(source, /info@axisandsage\.com/);
   assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
-  assert.doesNotMatch(await read("src/components/sections/HomeSections.tsx"), /Description pending editorial confirmation/);
+  assert.doesNotMatch(await read("src/components/home/ServiceIndex.tsx"), /Description pending editorial confirmation/);
 });
 
 test("contact handling has honest validation and configuration states", async () => {
@@ -55,14 +55,26 @@ test("reference audit and responsive capture records exist", async () => {
 });
 
 test("controlled parity gates are documented and public fallbacks are conservative", async () => {
-  const sections = await read("src/components/sections/HomeSections.tsx");
-  const report = await read("reference/visual-parity-report.md");
-  const motion = await read("reference/motion-parity-spec.md");
-  const metadata = await read("reference/metadata-parity-report.md");
-  assert.doesNotMatch(sections, /game-changers|unparalleled|Axis &amp; Sage \/ Navigation|mobile-navigation-note/);
-  assert.match(sections, /service\.detailApproved === true/);
-  assert.match(report, /CODEX SELF-ASSESSMENT — USER REVIEW PENDING/);
-  assert.match(report, /Header \| NOT MATCHED/);
+  const publicSource = [
+    "src/app/globals.css",
+    "src/app/layout.tsx",
+    "src/components/home/AboutOverview.tsx",
+    "src/components/home/EditorialHero.tsx",
+    "src/components/home/ServiceIndex.tsx",
+    "src/components/home/SelectedWork.tsx",
+    "src/components/home/ClientPerspectives.tsx",
+    "src/components/home/Questions.tsx",
+    "src/components/home/ContactSection.tsx",
+  ].join("\n");
+  const sections = await Promise.all(publicSource.split("\n").map((path) => read(path)));
+  const designSpec = await read("reference/design-system/axis-sage-application-spec.md");
+  const structuralDelta = await read("reference/design-system/structural-delta.md");
+  const motion = await read("reference/motion-family-revision.md");
+  const audit = await read("scripts/audit-design-system.mjs");
+  assert.doesNotMatch(sections.join("\n"), /Instrument Serif|Mona Sans|linear-gradient|testimonial-ticker|contact-panel/);
+  assert.match(await read("src/components/home/ServiceIndex.tsx"), /detailApproved === true/);
+  assert.match(designSpec, /960px/);
+  assert.match(structuralDelta, /Deleted `HomeSections\.tsx`/);
   assert.match(motion, /prefers-reduced-motion/);
-  assert.match(metadata, /Instrument Serif/);
+  assert.match(audit, /prohibited/);
 });

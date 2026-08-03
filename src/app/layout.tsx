@@ -1,28 +1,20 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Mona_Sans } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { SanityLive } from "@/sanity/lib/live";
 import { hasSanityConfig } from "@/sanity/lib/client";
 import { DisableDraftMode } from "@/components/DisableDraftMode";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getSiteSettings } from "@/sanity/lib/queries";
 import { sanityImageUrl } from "@/sanity/lib/image";
 import "./globals.css";
 
-const instrumentSerif = Instrument_Serif({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
-
-const monaSans = Mona_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-mona-sans",
+  weight: ["400", "500"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -76,5 +68,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [settings, preview] = await Promise.all([getSiteSettings(), draftMode()]);
-  return <html lang="en"><body className={`${instrumentSerif.variable} ${monaSans.variable}`}><Header navigation={settings.navigation} /><main>{children}</main><Footer settings={settings} />{hasSanityConfig ? <SanityLive /> : null}{preview.isEnabled ? <><VisualEditing /><DisableDraftMode /></> : null}</body></html>;
+  return <html lang="en"><body className={geistMono.variable}><SiteHeader navigation={settings.navigation} /><main>{children}</main><SiteFooter settings={settings} />{hasSanityConfig ? <SanityLive /> : null}{preview.isEnabled ? <><VisualEditing /><DisableDraftMode /></> : null}</body></html>;
 }

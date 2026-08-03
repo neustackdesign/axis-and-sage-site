@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HomeSections } from "@/components/sections/HomeSections";
+import { HomePage as HomeLanding } from "@/components/home/HomePage";
 import { getHomePage, getSiteSettings } from "@/sanity/lib/queries";
 import { sanityImageUrl } from "@/sanity/lib/image";
 
@@ -29,5 +29,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const home = await getHomePage();
-  return <HomeSections home={home} />;
+  return <HomeLanding data={home} />;
 }
