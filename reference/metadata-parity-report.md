@@ -39,10 +39,10 @@ The production bundle built successfully with `next/font/google`. Browser verifi
 
 - Hero computed font: `"Instrument Serif", "Instrument Serif Fallback", Georgia, serif`, weight 400; `document.fonts.check("400 28px Instrument Serif")` returned `true`.
 - Section heading computed font: `"Instrument Serif", "Instrument Serif Fallback", Georgia, serif`, weight 400.
-- Body computed font: `"Mona Sans", "Mona Sans Fallback", Arial, sans-serif`.
-- Bundled font resources observed: `/_next/static/media/671921b99e4f15ea-s.p.3tkq1nzpnzlvb.woff2` (Mona Sans normal), `/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2` (Instrument Serif italic), and `/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2` (Instrument Serif normal). The production CSS also contains the unicode-range variants for both fonts.
+- Body computed font: `"Helvetica Neue", Helvetica, Arial, sans-serif`.
+- Bundled font resources observed in the production build: `/_next/static/media/797e433ab948586e-s.p.0r6juujl39pe6.woff2` (Geist Mono), `/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2` (Instrument Serif italic), and `/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2` (Instrument Serif normal). Browser `document.fonts.check()` returned true for Instrument Serif and Geist Mono.
 - Local rendered metadata includes the canonical URL, OG/Twitter title and description, 1200 × 630 PNG image, image alt text, and light/dark favicon plus Apple touch icon links.
 - Direct local HTTP checks returned 200 with the expected content types for both PNG browser icons, `/favicon.ico`, `/og/axis-sage.png`, `/work/nature-roots`, and `/studio`.
 - Preview metadata must remain `noindex, nofollow` and use its deployment origin; unauthenticated content verification is currently blocked by Vercel deployment protection.
 
-Corrected preview deployment: `https://axis-and-sage-site-g0kaaddo9-neustackdesign-gmailcoms-projects.vercel.app` (`READY`). Browser review is currently gated by Vercel deployment protection and redirects unauthenticated access to Vercel login.
+Corrected preview deployment: `https://axis-and-sage-site-j61l8svw2-neustackdesign-gmailcoms-projects.vercel.app`. The deployment responds with Vercel deployment protection and `x-robots-tag: noindex`; browser review requires the authorized Vercel session. Production remains untouched.
