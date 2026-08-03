@@ -11,15 +11,17 @@ export function EditorialHero({ data }: { data: HomePage["hero"] }) {
         <Apparatus className="hero-kicker">{kicker}</Apparatus>
         <h1>{data.heading}</h1>
         <p className="hero-lede">{data.body}</p>
-        <TextLink href={data.primaryCta.href}>{data.primaryCta.label}</TextLink>
+        <div className="hero-actions">
+          <TextLink href={data.primaryCta.href}>{data.primaryCta.label}</TextLink>
+          {data.secondaryCta ? <TextLink href={data.secondaryCta.href}>{data.secondaryCta.label}</TextLink> : null}
+        </div>
       </div>
       <Reveal name="hero-figure" className="hero-figure-wrap">
         <figure className="hero-figure">
           <EditorialImage image={data.media} fallback={`${assetRoot}/hero-chess.jpg`} alt="Chess pieces on a board" />
-          <figcaption><Apparatus>Axis &amp; Sage / strategy, design, growth</Apparatus></figcaption>
+          <figcaption><Apparatus>STRATEGY / BRAND / PRODUCT / GROWTH / VENTURE BUILDING / STORYTELLING</Apparatus></figcaption>
         </figure>
       </Reveal>
     </div>
   </section>;
 }
-

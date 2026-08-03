@@ -19,11 +19,13 @@ test("fallback content contains the verified project set", async () => {
   assert.doesNotMatch(source, /Refit|JJ Gerrish|Great Portland Street/i);
 });
 
-test("source-aligned content keeps residue out and preserves current Axis & Sage details", async () => {
+test("refined preview content keeps residue out and preserves approval gates", async () => {
   const source = await read("src/content/fallback-data.ts");
   assert.match(source, /approved: false/);
-  assert.match(source, /officeLocations: \["Abu Dhabi, Dubai, UAE"\]/);
-  assert.match(source, /offices: \["Abu Dhabi, Dubai, UAE"\]/);
+  assert.match(source, /officeLocations: \["Dubai, UAE"\]/);
+  assert.match(source, /offices: \["Dubai, UAE"\]/);
+  assert.match(source, /previewOnly: true/);
+  assert.match(source, /homepagePlacement: "featured"/);
   assert.match(source, /info@axisandsage\.com/);
   assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
   assert.doesNotMatch(await read("src/components/home/ServiceIndex.tsx"), /Description pending editorial confirmation/);

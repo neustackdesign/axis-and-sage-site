@@ -6,7 +6,7 @@ const assetRoot = "/images/axis-sage";
 
 export const projectAssets: Record<string, string> = {
   "nature-roots": `${assetRoot}/nature-roots-live.jpg`,
-  earlybean: `${assetRoot}/earlybean-live.jpeg`,
+  earlybean: `${assetRoot}/earlybean.jpg`,
   "uganda-investor-summit": `${assetRoot}/summit-live.jpg`,
 };
 
@@ -36,4 +36,3 @@ export function TextLink({ href, children, external = false }: { href: string; c
 export function Reveal({ children, name = "content", delay = 0, className = "" }: { children: ReactNode; name?: string; delay?: number; className?: string }) {
   return <div className={`reveal reveal-${name} ${className}`.trim()} data-reveal={name} style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}>{children}</div>;
 }
-

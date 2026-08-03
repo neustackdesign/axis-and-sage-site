@@ -22,8 +22,10 @@ export type Service = {
   slug: string;
   summary?: string;
   capabilities?: string[];
+  image?: ImageValue;
   featured?: boolean;
   detailApproved?: boolean;
+  previewOnly?: boolean;
 };
 
 export type Testimonial = {
@@ -34,6 +36,9 @@ export type Testimonial = {
   organisation?: string;
   portrait?: ImageValue;
   approved?: boolean;
+  showOnHomepage?: boolean;
+  homepageOrder?: number;
+  featuredOnHomepage?: boolean;
 };
 
 export type Project = {
@@ -51,6 +56,8 @@ export type Project = {
   outcome?: string;
   testimonial?: Testimonial;
   featured?: boolean;
+  homepagePlacement?: "featured" | "supporting" | "hidden";
+  homepageOrder?: number;
   tone: "sage" | "amber" | "ink";
   seo?: { title?: string; description?: string; canonicalUrl?: string; image?: ImageValue };
 };
@@ -61,6 +68,8 @@ export type Faq = {
   answer: string;
   category?: string;
   display?: boolean;
+  showOnHomepage?: boolean;
+  homepageOrder?: number;
 };
 
 export type SiteSettings = {
@@ -72,6 +81,7 @@ export type SiteSettings = {
   contactEmail?: string;
   phone?: string;
   officeLocations?: string[];
+  workingAcross?: string;
   socialLinks?: LinkValue[];
   copyright?: string;
   favicon?: ImageValue;
@@ -95,6 +105,7 @@ export type HomePage = {
     heading: string;
     body: string;
     approach: string;
+    principles?: { number: string; title: string; body: string }[];
     support: string[];
     images?: ImageValue[];
     statistics?: Statistic[];
@@ -129,6 +140,8 @@ export type HomePage = {
     heading: string;
     introduction: string;
     offices?: string[];
+    base?: string;
+    workingAcross?: string;
     email?: string;
   };
 };

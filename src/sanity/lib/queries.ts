@@ -8,22 +8,24 @@ export const HOME_QUERY = defineQuery(`
   *[_type == "homePage"][0] {
     title,
     seo,
-    "hero": sections[_type == "heroSection" && enabled != false][0],
-    "about": sections[_type == "aboutSection" && enabled != false][0],
+    "hero": sections[_type == "heroSection" && enabled != false][0] { ..., media { ..., "src": asset->url } },
+    "about": sections[_type == "aboutSection" && enabled != false][0] { ..., images[] { ..., "src": asset->url } },
     "services": sections[_type == "servicesSection" && enabled != false][0] {
       ...,
-      services[]->
+      services[]-> { ..., "slug": slug.current, image { ..., "src": asset->url } }
     },
     "projects": sections[_type == "projectsSection" && enabled != false][0] {
       ...,
       projects[]-> {
         ...,
+        "slug": slug.current,
+        "cover": cover { ..., "src": asset->url },
         "testimonial": testimonial->
       }
     },
     "testimonials": sections[_type == "testimonialsSection" && enabled != false][0] {
       ...,
-      testimonials[]->
+      testimonials[]-> { ..., portrait { ..., "src": asset->url } }
     },
     "faqs": sections[_type == "faqSection" && enabled != false][0] {
       ...,

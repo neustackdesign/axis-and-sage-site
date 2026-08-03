@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { draftMode } from "next/headers";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { SanityLive } from "@/sanity/lib/live";
@@ -11,9 +11,11 @@ import { getSiteSettings } from "@/sanity/lib/queries";
 import { sanityImageUrl } from "@/sanity/lib/image";
 import "./globals.css";
 
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+const geistMono = localFont({
+  src: [
+    { path: "../../public/fonts/geist-mono-400.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/geist-mono-500.ttf", weight: "500", style: "normal" },
+  ],
   variable: "--font-geist-mono",
   display: "swap",
 });
