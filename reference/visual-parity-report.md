@@ -16,21 +16,21 @@ The corrected mobile header/hero evidence is `reference/screenshots/comparison/h
 | --- | --- | --- | --- | --- | --- |
 | Header | NOT MATCHED | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | This remains NOT MATCHED until the source mobile control, blur treatment and source-only navigation content are reviewed in the rebuilt preview. |
 | Hero | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Refit hero quote removed; source chess media and measured hero entrance timings are retained. |
-| About | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Public statistics are hidden without verified values; the source image rail is restored as a ticker. |
+| About | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Public statistics are hidden without verified values; the image rail is now manually controlled with CSS scroll snap. |
 | Services | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Only Strategy detail is public in fallback data; four draft detail sets are withheld while the accordion layout remains. |
 | Our work | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source project imagery and card structure retained; desktop sticky progression is restored as progressive enhancement. |
-| Testimonials | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source-present testimonial content remains subject to editorial approval; rail movement is restored without Framer. |
+| Testimonials | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source-present testimonial content remains subject to editorial approval; perpetual rail movement is withheld in favour of a controlled editorial grid. |
 | FAQs | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source questions, one-open behavior and smooth plus/close transition are retained. |
 | Contact | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Source composition and form wiring retained; contact claims still need business approval. |
 | Footer | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | MINOR TECHNICAL VARIANCE | Refit credit and unsupported copyright are withheld; logo and source links remain. |
 
 ## Typography gate
 
-The required gate is actual browser rendering, not a CSS declaration. The production build uses `next/font/google` for Instrument Serif normal/italic 400 and Mona Sans. Browser evidence now confirms bundled `.woff2` resources and computed Instrument Serif/Mona Sans values; user visual review is still required before this field can be upgraded to MATCHED.
+The required gate is actual browser rendering, not a CSS declaration. The production build uses `next/font/google` for Instrument Serif normal/italic 400 and Geist Mono; sans roles use the verified Helvetica Neue system stack. Browser evidence confirms computed Instrument Serif and Helvetica Neue values; user visual review is still required before this field can be upgraded to MATCHED.
 
 ## Motion and interaction gate
 
-Static screenshots do not validate entrance timing, rails, sticky progression, accordions, mobile navigation, hover behavior or reduced motion. See `reference/motion-parity-spec.md` and the paired/equivalent evidence under `reference/motion-comparison/`. These fields remain self-assessments pending user review.
+Static screenshots do not validate entrance timing, rails, sticky progression, accordions, mobile navigation, hover behavior or reduced motion. See `reference/motion-family-revision.md` and the paired/equivalent evidence under `reference/motion-comparison/`. These fields remain self-assessments pending user review.
 
 ## Asset and metadata gate
 

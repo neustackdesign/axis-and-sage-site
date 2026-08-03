@@ -21,8 +21,8 @@ function SourceImage({ image, fallback, alt, className }: { image?: ImageValue; 
   return src ? <img className={className} src={src} alt={image?.alt || alt} /> : <div className={`${className || "source-image"} source-image-empty`} role="img" aria-label={alt} />;
 }
 
-function SectionIntro({ label, heading, children, centered = false }: { label: string; heading: string; children?: React.ReactNode; centered?: boolean }) {
-  return <div className={`section-intro${centered ? " section-intro-centered" : ""}`} data-reveal="section-intro"><span className="section-label">{label}</span><h2>{heading}</h2>{children ? <div className="section-intro-copy">{children}</div> : null}</div>;
+function SectionIntro({ index, label, heading, children, centered = false, dark = false }: { index: string; label: string; heading: string; children?: React.ReactNode; centered?: boolean; dark?: boolean }) {
+  return <div className={`section-intro${centered ? " section-intro-centered" : ""}${dark ? " section-intro-dark" : ""}`} data-reveal="section-intro"><div className="section-scaffold"><span className="section-index">{index}</span><span className="section-label">{label}</span><span className="section-rule" /></div><h2>{heading}</h2>{children ? <div className="section-intro-copy">{children}</div> : null}</div>;
 }
 
 function ArrowButton({ href, children, light = false }: { href: string; children: React.ReactNode; light?: boolean }) {
@@ -34,8 +34,8 @@ function Hero({ data }: { data: HomePage["hero"] }) {
     <div className="hero-frame">
       <div className="hero-grid">
         <div className="hero-copy">
-          <div className="hero-pills">{data.eyebrow.map((item, index) => <span key={item} data-reveal="hero-pill" style={{ "--reveal-delay": `${index * 140}ms` } as React.CSSProperties}><i />{item}</span>)}</div>
-          <h1>{data.heading}</h1>
+          <div className="hero-descriptor" aria-label="Axis & Sage capabilities">{data.eyebrow.map((item, index) => <span key={item} data-reveal="hero-pill" style={{ "--reveal-delay": `${index * 80}ms` } as React.CSSProperties}>{item}{index < data.eyebrow.length - 1 ? " /" : ""}</span>)}</div>
+          <h1>{data.heading.split(" ").map((word, index) => <span key={`${word}-${index}`} className="hero-word" data-reveal="hero-word" style={{ "--reveal-delay": `${index * 55}ms` } as React.CSSProperties}>{word}</span>)}</h1>
           <p data-reveal="hero-copy">{data.body}</p>
           <div data-reveal="hero-cta"><ArrowButton href={data.primaryCta.href} light>{data.primaryCta.label}</ArrowButton></div>
         </div>
@@ -51,9 +51,9 @@ function About({ data }: { data: HomePage["about"] }) {
   const aboutImages = data.images?.length ? data.images : ["about-1.jpg", "about-2.jpg", "about-3.jpg", "about-4.jpg", "about-5.jpg", "about-6.jpg"].map((name) => ({ src: `${assetRoot}/${name}`, alt: "Axis & Sage editorial image" }));
   const stats = data.statistics?.filter((stat) => stat.value && stat.label) ?? [];
   return <section className="section about-section" id="about">
-    <div className="container"><div className="about-intro"><SectionIntro label={data.label} heading={data.heading}><p>{data.body}</p></SectionIntro></div></div>
-    <div className="about-strip" aria-label="Axis & Sage editorial images">{[...aboutImages, ...aboutImages].map((image, index) => <SourceImage key={`${image.src}-${index}`} image={image} alt="Axis & Sage editorial image" />)}</div>
-    <div className="container about-lower"><div><span className="section-label">Our approach</span><p className="approach-copy">{data.approach}</p></div><div className="support-copy">{data.support.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div>
+    <div className="container"><div className="about-intro"><SectionIntro index="01" label={data.label} heading={data.heading}><p>{data.body}</p></SectionIntro></div></div>
+    <div className="about-strip" role="region" tabIndex={0} aria-label="Axis & Sage editorial images. Scroll horizontally to explore.">{aboutImages.map((image, index) => <div className="about-strip-item" key={`${image.src}-${index}`}><SourceImage image={image} alt="Axis & Sage editorial image" /></div>)}</div>
+    <div className="container about-lower"><div><span className="eyebrow">Our approach</span><p className="approach-copy">{data.approach}</p></div><div className="support-copy">{data.support.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div>
     {stats.length ? <div className="container stats-grid">{stats.map((stat) => <article className="stat-card" key={stat.label}><strong>{stat.value}</strong><h3>{stat.label}</h3><p>{stat.detail}</p></article>)}</div> : null}
   </section>;
 }
@@ -62,32 +62,33 @@ function ServiceRow({ service, index, open, onClick }: { service: Service; index
   const icon = `${assetRoot}/service-${(index % 5) + 1}.svg`;
   const detailAvailable = service.detailApproved === true;
   return <article className={`service-row${open ? " is-open" : ""}`}>
-    <button type="button" aria-expanded={detailAvailable && open} onClick={detailAvailable ? onClick : undefined}><span className="service-icon"><img src={icon} alt="" /></span><span className="service-title">{service.title}</span><span className="service-control" aria-hidden="true">{detailAvailable && open ? "×" : "+"}</span></button>
+    <button type="button" disabled={!detailAvailable} aria-expanded={detailAvailable && open} onClick={detailAvailable ? onClick : undefined}><span className="service-icon"><img src={icon} alt="" /></span><span className="service-title">{service.title}</span><span className="service-control" aria-hidden="true">{detailAvailable && open ? "×" : "+"}</span></button>
     {detailAvailable ? <div className={`service-detail${open ? " is-open" : ""}`} aria-hidden={!open}><div className="service-detail-inner"><p>{service.summary}</p><ul>{service.capabilities?.map((capability) => <li key={capability}>{capability}</li>)}</ul><ArrowButton href="#contact">Work with us</ArrowButton></div></div> : null}
   </article>;
 }
 
 function Services({ data }: { data: HomePage["services"] }) {
   const [open, setOpen] = useState(0);
-  return <section className="section services-section" id="services"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction}</p></SectionIntro><div className="services-grid"><div className="services-media"><SourceImage fallback={`${assetRoot}/services-chess.jpg`} alt="Chess pieces on a board" className="service-photo" /></div><div className="services-list">{data.items.map((service, index) => <ServiceRow key={service.slug} service={service} index={index} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></div></section>;
+  const serviceImages = [`${assetRoot}/service-chess.jpg`, `${assetRoot}/services-chess.jpg`, `${assetRoot}/about-4.jpg`, `${assetRoot}/about-6.jpg`, `${assetRoot}/about-3.jpg`];
+  return <section className="section services-section" id="services"><div className="container"><SectionIntro index="02" label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="services-grid"><div className="services-media"><SourceImage fallback={serviceImages[Math.max(open, 0)] || serviceImages[0]} alt="Axis & Sage service image" className="service-photo" /></div><div className="services-list">{data.items.map((service, index) => <ServiceRow key={service.slug} service={service} index={index} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></div></section>;
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  return <article className="project-card"><div className="project-media"><SourceImage image={project.cover} fallback={projectAssets[project.slug]} alt={`${project.title} project image`} /></div><div className="project-content"><h3>{project.title}</h3><p>{project.summary}</p><div className="project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>{project.testimonial ? <blockquote>“{project.testimonial.quote}”<cite>{project.testimonial.personName}</cite></blockquote> : null}</div></article>;
+  return <article className="project-card"><div className="project-media"><SourceImage image={project.cover} fallback={projectAssets[project.slug]} alt={`${project.title} project image`} /></div><div className="project-content"><div className="project-apparatus"><span>{project.year || "Selected work"}</span><span>{project.location || "Axis & Sage"}</span></div><h3>{project.title}</h3><p>{project.summary}</p><div className="project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>{project.testimonial?.approved ? <blockquote>“{project.testimonial.quote}”<cite>{project.testimonial.personName}</cite></blockquote> : null}<Link className="project-link" href={`/work/${project.slug}`}>View case study <span aria-hidden="true">↗</span></Link></div></article>;
 }
 
 function Projects({ data }: { data: HomePage["projects"] }) {
-  return <section className="section projects-section" id="our-work"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction}</p></SectionIntro><div className="project-list">{data.items.map((project) => <div key={project.slug} data-reveal="project-card"><ProjectCard project={project} /></div>)}</div></div></section>;
+  return <section className="section projects-section" id="our-work"><div className="container"><SectionIntro index="03" label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="project-list">{data.items.map((project) => <div key={project.slug} data-reveal="project-card"><ProjectCard project={project} /></div>)}</div></div></section>;
 }
 
 function Testimonials({ data }: { data?: HomePage["testimonials"] }) {
   if (!data?.items?.length) return null;
-  const items = [...data.items, ...data.items];
-  return <section className="section testimonials-section" id="testimonials"><div className="container"><SectionIntro label={data.label} heading={data.heading} centered><p>{data.introduction}</p></SectionIntro></div><div className="testimonial-track" aria-label="Client testimonials">{items.map((testimonial, index) => <TestimonialCard key={`${testimonial._id ?? testimonial.personName}-${index}`} testimonial={testimonial} index={index} />)}</div></section>;
+  const items = data.items.filter((testimonial) => testimonial.approved !== false);
+  return <section className="section testimonials-section" id="testimonials"><div className="container"><SectionIntro index="04" label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="testimonial-grid" aria-label="Client testimonials">{items.map((testimonial, index) => <TestimonialCard key={`${testimonial._id ?? testimonial.personName}-${index}`} testimonial={testimonial} index={index} />)}</div></div></section>;
 }
 
 function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
-  return <figure className={`testimonial-card testimonial-card-${index % 2 ? "tint" : "plain"}`}><strong className="stars">★★★★★</strong><blockquote>{testimonial.quote}</blockquote><figcaption><SourceImage image={testimonial.portrait} alt={`${testimonial.personName} portrait`} className="testimonial-portrait" /><span>{testimonial.personName}</span></figcaption></figure>;
+  return <figure className={`testimonial-card testimonial-card-${index === 0 ? "featured" : "supporting"}`}><strong className="testimonial-index">0{index + 1}</strong><blockquote>{testimonial.quote}</blockquote><figcaption><SourceImage image={testimonial.portrait} alt={`${testimonial.personName} portrait`} className="testimonial-portrait" /><span>{testimonial.personName}</span></figcaption></figure>;
 }
 
 function FaqItem({ faq, open, onClick }: { faq: Faq; open: boolean; onClick: () => void }) {
@@ -98,11 +99,11 @@ function FaqItem({ faq, open, onClick }: { faq: Faq; open: boolean; onClick: () 
 function Faqs({ data }: { data: HomePage["faqs"] }) {
   const items = data.items.filter((faq) => faq.display !== false);
   const [open, setOpen] = useState(0);
-  return <section className="section faq-section" id="faqs"><div className="container faq-grid"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p><ArrowButton href={data.cta.href}>{data.cta.label}</ArrowButton></SectionIntro><div className="faq-list">{items.map((faq, index) => <FaqItem key={faq._id ?? faq.question} faq={faq} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></section>;
+  return <section className="section faq-section" id="faqs"><div className="container faq-grid"><SectionIntro index="05" label={data.label} heading={data.heading}><p>{data.introduction}</p><ArrowButton href={data.cta.href}>{data.cta.label}</ArrowButton></SectionIntro><div className="faq-list">{items.map((faq, index) => <FaqItem key={faq._id ?? faq.question} faq={faq} open={open === index} onClick={() => setOpen(open === index ? -1 : index)} />)}</div></div></section>;
 }
 
 function Contact({ data }: { data: HomePage["contact"] }) {
-  return <section className="section contact-section" id="contact"><div className="contact-panel"><div className="contact-grid container"><div className="contact-copy"><SectionIntro label={data.label} heading={data.heading}><p>{data.introduction}</p></SectionIntro><div className="contact-details"><strong>Office</strong><span>{data.offices?.[0] || "Abu Dhabi, Dubai, UAE"}</span><strong>Email</strong><a href={`mailto:${data.email || "info@axisandsage.com"}`}>{data.email || "info@axisandsage.com"}</a></div></div><div className="contact-form-wrap"><ContactForm /></div></div></div></section>;
+  return <section className="section contact-section" id="contact"><div className="contact-panel"><div className="contact-grid container"><div className="contact-copy"><SectionIntro index="06" label={data.label} heading={data.heading} dark><p>{data.introduction}</p></SectionIntro><div className="contact-details"><strong>Office</strong><span>{data.offices?.[0] || "Abu Dhabi, Dubai, UAE"}</span><strong>Email</strong><a href={`mailto:${data.email || "info@axisandsage.com"}`}>{data.email || "info@axisandsage.com"}</a></div></div><div className="contact-form-wrap"><ContactForm /></div></div></div></section>;
 }
 
 export function HomeSections({ home }: { home: HomePage }) {

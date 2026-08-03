@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Mona_Sans } from "next/font/google";
+import { Geist_Mono, Instrument_Serif } from "next/font/google";
 import { draftMode } from "next/headers";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { SanityLive } from "@/sanity/lib/live";
@@ -19,10 +19,10 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const monaSans = Mona_Sans({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-mona-sans",
+  weight: ["400", "500"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -76,5 +76,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const [settings, preview] = await Promise.all([getSiteSettings(), draftMode()]);
-  return <html lang="en"><body className={`${instrumentSerif.variable} ${monaSans.variable}`}><Header navigation={settings.navigation} /><main>{children}</main><Footer settings={settings} />{hasSanityConfig ? <SanityLive /> : null}{preview.isEnabled ? <><VisualEditing /><DisableDraftMode /></> : null}</body></html>;
+  return <html lang="en"><body className={`${instrumentSerif.variable} ${geistMono.variable}`}><Header navigation={settings.navigation} /><main>{children}</main><Footer settings={settings} />{hasSanityConfig ? <SanityLive /> : null}{preview.isEnabled ? <><VisualEditing /><DisableDraftMode /></> : null}</body></html>;
 }
