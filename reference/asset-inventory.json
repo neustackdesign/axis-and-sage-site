@@ -1,0 +1,49 @@
+{
+  "source": "reference/legacy/axisandsage-page.html",
+  "auditedAt": "2026-08-02",
+  "referenceCount": 162,
+  "uniqueFramerUrlCount": 42,
+  "classificationNotes": {
+    "brand": "The live Axis & Sage logo is migrated locally for the parity rebuild; final ownership and production approval remain editorial gates.",
+    "editorial": "The live project, portrait and section images used by the current Axis & Sage page are migrated locally under public/images/axis-sage/; upload to Sanity when the editorial workflow is enabled.",
+    "template": "Refit social preview, inherited construction imagery and unused duplicates are excluded.",
+    "runtime": "Framer scripts, search indexes, analytics and layout modules are not production dependencies."
+  },
+  "assets": [
+    {"url":"https://framerusercontent.com/images/CXNyqFWxn3IGo9h0klgtTByhQo.png","kind":"brand asset","usage":"Axis & Sage logo","status":"migrated locally; approval pending","localPath":"public/images/axis-sage/logo.png"},
+    {"url":"https://framerusercontent.com/images/gmXoT6wqO781SOBsSgp0WMijTII.png","kind":"legacy favicon reference","usage":"superseded legacy favicon","status":"not used; current production asset takes precedence","localPath":null},
+    {"url":"https://framerusercontent.com/images/nOTDqoxkx2Tb6ox06bdKaTvHqXY.png","kind":"Axis & Sage browser brand asset","usage":"current-production light favicon","status":"migrated locally; approval pending","localPath":"public/icons/axis-sage-light.png"},
+    {"url":"https://framerusercontent.com/images/BTGvtq2pXzYPVivMmovur220c.png","kind":"Axis & Sage browser brand asset","usage":"current-production dark favicon and Apple touch icon","status":"migrated locally; approval pending","localPath":"public/icons/axis-sage-dark.png"},
+    {"url":"https://framerusercontent.com/images/Oz4gnNO46liNnbABMXpHDdjDFEY.png","kind":"template residue","usage":"Refit social preview","status":"excluded","localPath":null},
+    {"url":"https://framerusercontent.com/images/0k0Ki7uoBJFcfwr7amSblvNnKU.jpg","kind":"Axis & Sage hero image","usage":"hero chess composition","status":"migrated locally","localPath":"public/images/axis-sage/hero-chess.jpg"},
+    {"url":"https://framerusercontent.com/images/huT1COM16weiAaIPhLwFIVRdrA.jpg","kind":"Axis & Sage service image","usage":"services chess composition","status":"migrated locally","localPath":"public/images/axis-sage/services-chess.jpg"},
+    {"url":"https://framerusercontent.com/images/NANSGVXUK18NCYQ3fePYCh7bOU.jpg","kind":"Axis & Sage editorial image","usage":"about image strip","status":"migrated locally","localPath":"public/images/axis-sage/about-1.jpg"},
+    {"url":"https://framerusercontent.com/images/OM7ThVf4wcUZMalLEDyZmgJIg.jpg","kind":"Axis & Sage editorial image","usage":"about image strip","status":"migrated locally","localPath":"public/images/axis-sage/about-3.jpg"},
+    {"url":"https://framerusercontent.com/images/ajubAf8qeloloONA1gKozCMPus.jpg","kind":"Axis & Sage editorial image","usage":"about image strip","status":"migrated locally","localPath":"public/images/axis-sage/about-5.jpg"},
+    {"url":"https://framerusercontent.com/images/Nl2DG7sgaAcI0xtDXBTzVTojXo.jpg","kind":"Axis & Sage editorial image","usage":"about image strip/project media","status":"migrated locally","localPath":"public/images/axis-sage/about-6.jpg"},
+    {"url":"https://framerusercontent.com/images/T7BGAIpV6lUY7WfZWSCiAdzQM.jpg","kind":"Axis & Sage project image","usage":"Nature Roots project card","status":"migrated locally","localPath":"public/images/axis-sage/nature-roots-live.jpg"},
+    {"url":"https://framerusercontent.com/images/ggJ5BE7K23uDqa4xZPRSYiEZo.jpeg","kind":"Axis & Sage project image","usage":"Earlybean project card","status":"migrated locally","localPath":"public/images/axis-sage/earlybean-live.jpeg"},
+    {"url":"https://framerusercontent.com/images/tkFpRmY5QQvYvF1hwAyhz3XA.jpg","kind":"Axis & Sage project image","usage":"Uganda Investor Summit project card","status":"migrated locally","localPath":"public/images/axis-sage/summit-live.jpg"},
+    {"url":"https://framerusercontent.com/images/YlwVrKpv4sOUAWEEaPhTITcoRAA.png","kind":"Axis & Sage testimonial portrait","usage":"Onyeka Akumah portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-2.png"},
+    {"url":"https://framerusercontent.com/images/IeXHXyST93cGp3yeGhwiQ6hRo.jpg","kind":"Axis & Sage testimonial portrait","usage":"Bunmi Akinyemiju portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-1.jpg"},
+    {"url":"https://framerusercontent.com/images/FTd1b0o5oED2dbZUDdPNhs5D3k.jpeg","kind":"Axis & Sage testimonial portrait","usage":"Dinma Obidiebube portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-3.jpeg"},
+    {"url":"https://framerusercontent.com/images/cZ9VBNOcSpg8RiRzIkAXdz6ScF4.png","kind":"Axis & Sage testimonial portrait","usage":"LASRIC portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-4.png"},
+    {"url":"https://framerusercontent.com/images/dUpDYaTalo5NxMCTOKLaTXrPyYc.jpeg","kind":"Axis & Sage testimonial portrait","usage":"Chuks Okeibunor portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-5.jpeg"},
+    {"url":"https://framerusercontent.com/images/aeAPlW4hgCMDLgRa8PdZD6cBvGQ.jpg","kind":"Axis & Sage testimonial portrait","usage":"Temi Olateru portrait","status":"migrated locally; editorial approval pending","localPath":"public/images/axis-sage/portraits/portrait-6.jpg"},
+    {"url":"https://framerusercontent.com/images/6tTbkXggWgQCAJ4DO2QEdXXmgM.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/images/11KSGbIZoRSg4pjdnUoif6MKHI.svg","kind":"decorative asset","usage":"carousel arrow","status":"recreated as accessible CSS/icon control","localPath":null},
+    {"url":"https://framerusercontent.com/images/pSK1OjUK4HIG4LY9fgeCVRhyA.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/images/YBVVq7RQxwHdkivYW6l9U7y73zk.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/images/YAbBptpsEP7y3PfQPuBiNNb39o.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/images/GfiwIG9eg9g5NV6VwQupSVY0Q.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/images/ONl2mleaQvlkk2w3jIqtDoYRVnc.svg","kind":"decorative asset","usage":"legacy interface icon","status":"needs ownership confirmation","localPath":null},
+    {"url":"https://framerusercontent.com/sites/Uy51RvrdxkJmntS9TDYmc/searchIndex-8NQ1Z6jYBwZW.json","kind":"runtime dependency","usage":"Framer search index","status":"excluded","localPath":null},
+    {"url":"https://framerusercontent.com/sites/Uy51RvrdxkJmntS9TDYmc/searchIndex-JvF2cfF2mbB6.json","kind":"runtime dependency","usage":"Framer search index fallback","status":"excluded","localPath":null},
+    {"url":"https://events.framer.com/script?v=2","kind":"runtime dependency","usage":"Framer analytics","status":"excluded","localPath":null}
+  ],
+  "fonts": [
+    {"family":"Instrument Serif","source":"Google Fonts","status":"use lawful package/next-font source"},
+    {"family":"Mona Sans","source":"Google Fonts","status":"use lawful package/next-font source"},
+    {"family":"Inter / Plus Jakarta Sans / other inherited declarations","source":"Framer export","status":"unused/inherited; exclude from rebuild"}
+  ]
+}
