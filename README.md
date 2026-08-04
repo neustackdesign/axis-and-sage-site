@@ -49,13 +49,13 @@ Never expose Sanity write tokens or the Resend key with a `NEXT_PUBLIC_` prefix.
 1. Create or select the Axis & Sage project and `production` dataset.
 2. Add the project ID and dataset to `.env.local`.
 3. Add `http://localhost:3000` and the eventual Vercel preview origin to Sanity CORS settings.
-4. Preview the planned operations without writing: `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity:dry-run`.
+4. Preview the planned operations without writing: `SANITY_API_READ_TOKEN=... pnpm seed:sanity:dry-run` (a write token is also accepted when no read token is available).
 5. Run `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity` locally. The script validates the project, dataset and write access before writing draft documents.
 6. Open `/studio` and review the singleton Homepage and Site settings documents.
 
 The seed uses the same canonical content module as the fallback renderer, deterministic `drafts.*` IDs, and transaction-level `createIfNotExists` by default. Existing documents are reported as skipped and Studio edits are preserved. Set `SANITY_SEED_FORCE=true` only for a deliberate transaction-level replacement of draft documents; the script prints a warning before replacing anything. Initial service, testimonial and project content remains draft/editorial-review material and is never written to Vercel environment variables.
 
-The dry run prints the project ID, dataset, document ID, document type and intended operation without committing mutations. `SANITY_API_WRITE_TOKEN` is local bootstrap tooling only and must never be configured in Vercel.
+The dry run prints the project ID, dataset, document ID, document type and intended operation without committing mutations. It validates dataset reachability with a harmless Content Lake `count(*)` query and never calls dataset-management or mutation endpoints. Real seeding requires `SANITY_API_WRITE_TOKEN`; dry runs accept `SANITY_API_READ_TOKEN` or `SANITY_API_WRITE_TOKEN`, preferring the read token. Sanity write tokens are local bootstrap tooling only and must never be configured in Vercel.
 
 ## Editorial model
 
