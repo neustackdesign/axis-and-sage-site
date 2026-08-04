@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test",
+    "test": "node --import tsx --test",
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
     "audit:design-system": "node scripts/audit-design-system.mjs",
     "seed:sanity": "node scripts/seed-sanity.mjs",
@@ -38,6 +38,7 @@
     "@types/react-dom": "19.2.4",
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.12",
+    "tsx": "4.23.1",
     "typescript": "5.9.3"
   }
 }

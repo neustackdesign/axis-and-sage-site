@@ -6,7 +6,8 @@ function Perspective({ testimonial, index, featured }: { testimonial: Testimonia
 }
 
 export function ClientPerspectives({ data }: { data?: HomePage["testimonials"] }) {
-  const items = data?.items.filter((testimonial) => testimonial.approved !== false && testimonial.showOnHomepage !== false).sort((a, b) => (a.homepageOrder || 99) - (b.homepageOrder || 99)).slice(0, 3) || [];
+  const sourceItems = Array.isArray(data?.items) ? data.items : [];
+  const items = sourceItems.filter((testimonial) => testimonial.approved !== false && testimonial.showOnHomepage !== false).sort((a, b) => (a.homepageOrder || 99) - (b.homepageOrder || 99)).slice(0, 3);
   if (!data || !items.length) return null;
   return <section className="landing-section client-perspectives" id="testimonials">
     <SectionOpening index="04" label={data.label} />

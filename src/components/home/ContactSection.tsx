@@ -3,7 +3,7 @@ import { ContactForm } from "@/components/ui/ContactForm";
 import { isContactFormConfigured } from "@/lib/contact-availability";
 import { Apparatus, SectionOpening, TextLink } from "./EditorialPrimitives";
 
-export function ContactSection({ data }: { data: HomePage["contact"] }) {
+export function ContactSection({ data }: { data: NonNullable<HomePage["contact"]> }) {
   const email = data.email || "info@axisandsage.com";
   const formEnabled = isContactFormConfigured();
   return <section className="landing-section contact-section" id="contact">
