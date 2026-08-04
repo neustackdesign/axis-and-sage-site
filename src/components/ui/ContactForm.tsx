@@ -40,12 +40,17 @@ export function ContactForm() {
         <input id="name" name="name" type="text" autoComplete="name" required placeholder="Your name" />
       </div>
       <div className="form-row">
-        <label htmlFor="email">Email <span>*</span></label>
+        <label htmlFor="email">Work email <span>*</span></label>
         <input id="email" name="email" type="email" autoComplete="email" required placeholder="you@company.com" />
       </div>
       <div className="form-row">
-        <label htmlFor="phone">Phone number</label>
-        <input id="phone" name="phone" type="tel" autoComplete="tel" placeholder="Optional" />
+        <label htmlFor="organisation">Organisation</label>
+        <input id="organisation" name="organisation" type="text" autoComplete="organization" placeholder="Optional" />
+      </div>
+      <fieldset className="form-row form-services"><legend>What do you need? <span>*</span></legend><div className="form-checks">{["Strategy", "Design", "Growth", "Venture Building", "Storytelling"].map((service) => <label key={service}><input type="checkbox" name="needs" value={service} /> <span>{service}</span></label>)}</div></fieldset>
+      <div className="form-row">
+        <label htmlFor="timeline">Timeline</label>
+        <select id="timeline" name="timeline" defaultValue=""><option value="" disabled>Select if useful</option><option>As soon as possible</option><option>Within 1–3 months</option><option>Within 3–6 months</option><option>Exploring</option></select>
       </div>
       <div className="form-row">
         <label htmlFor="message">Message <span>*</span></label>
@@ -53,7 +58,7 @@ export function ContactForm() {
       </div>
       <div className="honeypot" aria-hidden="true"><label htmlFor="company">Company</label><input id="company" name="company" tabIndex={-1} autoComplete="off" /></div>
       <div className="form-actions">
-        <button className="button button-dark" type="submit" disabled={state === "loading"}>{state === "loading" ? "Sending…" : "Send message"}<span aria-hidden="true">↗</span></button>
+        <button className="button button-dark" type="submit" disabled={state === "loading"}>{state === "loading" ? "Sending…" : "Send enquiry"}<span aria-hidden="true">↗</span></button>
         <p className={`form-status form-status-${state}`} role={state === "error" ? "alert" : "status"}>{message}</p>
       </div>
       <p className="form-note">We&apos;ll only use your details to respond to this enquiry.</p>

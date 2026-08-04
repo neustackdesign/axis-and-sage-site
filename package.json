@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test",
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
+    "audit:design-system": "node scripts/audit-design-system.mjs",
     "seed:sanity": "node scripts/seed-sanity.mjs"
   },
   "dependencies": {

@@ -5,6 +5,12 @@ import { getProject, getProjectSlugs } from "@/sanity/lib/queries";
 import { getSiteSettings } from "@/sanity/lib/queries";
 import { sanityImageUrl } from "@/sanity/lib/image";
 
+const fallbackAssets: Record<string, { src: string; alt: string }> = {
+  "nature-roots": { src: "/images/axis-sage/nature-roots-live.jpg", alt: "Nature Roots product packaging" },
+  earlybean: { src: "/images/axis-sage/earlybean.jpg", alt: "Earlybean product experience sketches" },
+  "uganda-investor-summit": { src: "/images/axis-sage/summit-live.jpg", alt: "Uganda Investor Summit stage" },
+};
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
@@ -28,5 +34,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const project = await getProject((await params).slug);
   if (!project) notFound();
-  return <article className="project-page"><div className={`project-page-visual project-visual-${project.tone ?? "ink"}`}><span>{project.title.split(" ").map((word) => word[0]).join("")}</span><small>Approved imagery pending review</small></div><div className="container project-page-content"><Link className="back-link" href="/#our-work">← Back to our work</Link><p className="eyebrow">{project.tags.join(" · ")}</p><h1>{project.title}</h1><p className="project-page-summary">{project.summary}</p><div className="project-page-meta">{project.client ? <div><span className="eyebrow">Client</span><p>{project.client}</p></div> : null}{project.location ? <div><span className="eyebrow">Location</span><p>{project.location}</p></div> : null}{project.year ? <div><span className="eyebrow">Year</span><p>{project.year}</p></div> : null}</div>{project.testimonial?.approved ? <blockquote className="project-quote">“{project.testimonial.quote}”<cite>{project.testimonial.personName}</cite></blockquote> : null}<Link className="button button-dark" href="/#contact">Start a conversation <span aria-hidden="true">↗</span></Link></div></article>;
+  const asset = project.cover?.src ? { src: project.cover.src, alt: project.cover.alt || "" } : fallbackAssets[project.slug];
+  return <article className="project-page"><div className="project-page-shell breakout"><Link className="back-link" href="/#our-work">← Back to selected work</Link><div className="project-page-heading"><div><p className="eyebrow">{project.tags.join(" / ")}</p><h1>{project.title}</h1></div><p className="project-page-summary">{project.summary}</p></div><figure className="project-page-figure">{asset ? <img src={asset.src} alt={asset.alt} /> : null}</figure><div className="project-page-details"><div><span className="eyebrow">Contribution</span><p>{project.contribution || project.summary}</p></div><div><span className="eyebrow">Project context</span><p>{project.location || "Africa and the GCC"}</p></div><div className="project-page-cta"><Link className="text-link" href="/#contact"><span>Start a project</span><span aria-hidden="true">↗</span></Link></div></div>{project.testimonial?.approved ? <blockquote className="project-quote">“{project.testimonial.quote}”<cite>{project.testimonial.personName}</cite></blockquote> : null}</div></article>;
 }
