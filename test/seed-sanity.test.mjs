@@ -14,6 +14,7 @@ function mockSanity(existingIds = []) {
     operations,
     get committed() { return committed; },
     async getDocument(id) { return existing.has(id) ? { _id: id } : null; },
+    async fetch() { return 0; },
     transaction() {
       return {
         createIfNotExists(document) { operations.push(["createIfNotExists", document._id]); return this; },
@@ -85,7 +86,6 @@ test("force mode explicitly replaces existing draft documents", async () => {
 test("dry run prints target, document identity and intended operation without committing", async () => {
   const logs = [];
   const client = mockSanity();
-  client.request = async () => {};
   await runSeed({
     environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_API_WRITE_TOKEN: "local-token", SANITY_SEED_DRY_RUN: "true" },
     clientFactory: () => client,
@@ -96,14 +96,66 @@ test("dry run prints target, document identity and intended operation without co
   assert.equal(client.committed, false);
 });
 
-test("bootstrap validates project, dataset and write access before writes", async () => {
-  const requests = [];
-  const client = { request: async (request) => requests.push(request) };
-  await validateBootstrap({ client, projectId: "abc123", dataset: "production", token: "local-write-token", logger: quietLogger });
-  assert.deepEqual(requests, [
-    { method: "GET", uri: "/datasets/production" },
-    { method: "POST", uri: "/data/mutate/production", body: { mutations: [] } },
-  ]);
+test("bootstrap validates an accessible empty dataset with a Content Lake query", async () => {
+  const calls = [];
+  const client = { fetch: async (...args) => { calls.push(args); return 0; } };
+  const count = await validateBootstrap({ client, projectId: "abc123", dataset: "production", token: "local-read-token", logger: quietLogger });
+  assert.equal(count, 0);
+  assert.deepEqual(calls, [["count(*)", {}, { perspective: "raw", useCdn: false }]]);
+});
+
+test("bootstrap accepts a populated dataset and never calls dataset management endpoints", async () => {
+  const calls = [];
+  const client = { fetch: async (...args) => { calls.push(args); return 12; } };
+  const count = await validateBootstrap({ client, projectId: "abc123", dataset: "production", token: "local-read-token", logger: quietLogger });
+  assert.equal(count, 12);
+  assert.ok(calls.every(([query]) => query === "count(*)"));
+  assert.ok(calls.every(([, , options]) => options.perspective === "raw" && options.useCdn === false));
+});
+
+test("bootstrap reports missing datasets and invalid project IDs from Content Lake access", async () => {
+  const client = { fetch: async () => { throw new Error("404 Not Found"); } };
+  await assert.rejects(() => validateBootstrap({ client, projectId: "dltrl1ld", dataset: "missing", token: "token", logger: quietLogger }), /Could not reach Sanity project.*missing/);
+  await assert.rejects(() => validateBootstrap({ client, projectId: "invalid", dataset: "production", token: "token", logger: quietLogger }), /Could not reach Sanity project invalid/);
+});
+
+test("dry run accepts a read token and prefers it over a write token", async () => {
+  const calls = [];
+  const client = mockSanity();
+  await runSeed({
+    environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_API_READ_TOKEN: "read-token", SANITY_API_WRITE_TOKEN: "write-token", SANITY_SEED_DRY_RUN: "true" },
+    clientFactory: (config) => { calls.push(config); return client; },
+    logger: quietLogger,
+  });
+  assert.equal(calls[0].token, "read-token");
+});
+
+test("dry run accepts a write token when no read token is available", async () => {
+  const calls = [];
+  await runSeed({
+    environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_API_WRITE_TOKEN: "write-token", SANITY_SEED_DRY_RUN: "true" },
+    clientFactory: (config) => { calls.push(config); return mockSanity(); },
+    logger: quietLogger,
+  });
+  assert.equal(calls[0].token, "write-token");
+});
+
+test("dry run without either token is rejected", async () => {
+  await assert.rejects(() => runSeed({ environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_SEED_DRY_RUN: "true" }, clientFactory: () => { throw new Error("client should not be created"); }, logger: quietLogger }), /READ_TOKEN or SANITY_API_WRITE_TOKEN/);
+});
+
+test("real seed requires a write token even when a read token exists", async () => {
+  await assert.rejects(() => runSeed({ environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_API_READ_TOKEN: "read-token" }, clientFactory: () => { throw new Error("client should not be created"); }, logger: quietLogger }), /SANITY_API_WRITE_TOKEN/);
+});
+
+test("real transaction permission errors explain the required token scope", async () => {
+  const client = mockSanity();
+  client.transaction = () => ({ createIfNotExists() { return this; }, async commit() { throw new Error("403 Forbidden"); } });
+  await assert.rejects(() => seedDocuments({ client, documents: [{ _id: "drafts/example", _type: "example" }], logger: quietLogger }), /Editor\/write permission/);
+});
+
+test("bootstrap rejects invalid configuration before querying", async () => {
+  const client = { fetch: async () => 0 };
   await assert.rejects(() => validateBootstrap({ client, projectId: "", dataset: "production", token: "token", logger: quietLogger }), /project.*id/i);
   await assert.rejects(() => validateBootstrap({ client, projectId: "abc123", dataset: "", token: "token", logger: quietLogger }), /dataset/i);
   await assert.rejects(() => validateBootstrap({ client, projectId: "abc123", dataset: "production", token: "", logger: quietLogger }), /SANITY_API_WRITE_TOKEN/);

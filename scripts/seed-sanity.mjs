@@ -194,19 +194,34 @@ export async function seedDocuments({ client, documents, force = false, existing
       (tx, document) => force ? tx.createOrReplace(document) : tx.createIfNotExists(document),
       client.transaction(),
     );
-    await transaction.commit();
+    try {
+      await transaction.commit();
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`[sanity-seed] Sanity mutation failed. The local token needs Editor/write permission for ${documentIds(writable)}. ${detail}`);
+    }
   }
   for (const result of results) logger.log(`[sanity-seed] ${result.status}: ${result.id}`);
   return results;
 }
 
-export async function validateBootstrap({ client, projectId, dataset, token, checkWriteAccess = true, logger = console }) {
+function documentIds(documents) {
+  return documents.map((document) => document._id).join(", ");
+}
+
+export async function validateBootstrap({ client, projectId, dataset, token, dryRun = false, logger = console }) {
   if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
   if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
-  if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
+  if (!token) throw new Error(dryRun ? "SANITY_API_READ_TOKEN or SANITY_API_WRITE_TOKEN is required for a dry run." : "SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
   logger.log(`[sanity-seed] Target dataset: ${projectId}/${dataset}`);
-  await client.request({ method: "GET", uri: `/datasets/${dataset}` });
-  if (checkWriteAccess) await client.request({ method: "POST", uri: `/data/mutate/${dataset}`, body: { mutations: [] } });
+  try {
+    const count = await client.fetch("count(*)", {}, { perspective: "raw", useCdn: false });
+    logger.log(`[sanity-seed] Dataset reachable: count(*) = ${count}`);
+    return count;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`[sanity-seed] Could not reach Sanity project ${projectId} dataset ${dataset}. Check the project ID, dataset name and token access. ${detail}`);
+  }
 }
 
 async function prepareAssetRefs({ client, content, existingDocuments, force, logger }) {
@@ -232,14 +247,14 @@ async function prepareAssetRefs({ client, content, existingDocuments, force, log
 export async function runSeed({ environment = process.env, clientFactory = createClient, logger = console } = {}) {
   const projectId = environment.NEXT_PUBLIC_SANITY_PROJECT_ID;
   const dataset = environment.NEXT_PUBLIC_SANITY_DATASET || "production";
-  const token = environment.SANITY_API_WRITE_TOKEN;
   const force = environment.SANITY_SEED_FORCE === "true";
   const dryRun = environment.SANITY_SEED_DRY_RUN === "true" || process.argv.includes("--dry-run");
+  const token = dryRun ? environment.SANITY_API_READ_TOKEN || environment.SANITY_API_WRITE_TOKEN : environment.SANITY_API_WRITE_TOKEN;
   if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
   if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
-  if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
+  if (!token) throw new Error(dryRun ? "SANITY_API_READ_TOKEN or SANITY_API_WRITE_TOKEN is required for a dry run." : "SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
   const client = clientFactory({ projectId, dataset, apiVersion, token, useCdn: false });
-  await validateBootstrap({ client, projectId, dataset, token, checkWriteAccess: !dryRun, logger });
+  await validateBootstrap({ client, projectId, dataset, token, dryRun, logger });
   logger.log(`[sanity-seed] Mode: ${dryRun ? "dry run (no writes)" : force ? "force replacement of draft documents" : "safe initial bootstrap"}`);
   const baseDocuments = buildSeedDocuments(canonicalContent);
   const existingDocuments = await getExistingDocuments(client, baseDocuments);
