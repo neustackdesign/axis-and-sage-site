@@ -145,12 +145,32 @@ export function buildSeedDocuments(content = canonicalContent, assetRefs = {}) {
   return [settingsDocument, ...serviceDocuments, ...projectDocuments, ...testimonialDocuments, ...faqDocuments, homeDocument];
 }
 
+export function validateSeedDocuments(documents) {
+  if (!Array.isArray(documents) || documents.length === 0) throw new Error("At least one seed document is required.");
+  const seededIds = new Set(documents.map((document) => document?._id).filter(Boolean));
+  for (const document of documents) {
+    if (!document?._id) throw new Error("Every seed document must have an _id.");
+    if (!document?._type) throw new Error(`Seed document ${document._id} is missing _type.`);
+  }
+  const visit = (value, parentKey, documentId) => {
+    if (!value || typeof value !== "object") return;
+    if (value._type === "reference" && parentKey !== "asset") {
+      if (!value._ref || !seededIds.has(value._ref)) throw new Error(`Seed document ${documentId} references unseeded document ${value._ref || "(missing _ref)"}.`);
+      return;
+    }
+    for (const [key, child] of Object.entries(value)) visit(child, key, documentId);
+  };
+  for (const document of documents) visit(document, undefined, document._id);
+  return documents;
+}
+
 async function getExistingDocuments(client, documents) {
   const entries = await Promise.all(documents.map(async (document) => [document._id, await client.getDocument(document._id)]));
   return new Map(entries);
 }
 
 export async function seedDocuments({ client, documents, force = false, existingDocuments, logger = console }) {
+  validateSeedDocuments(documents);
   const existing = existingDocuments || await getExistingDocuments(client, documents);
   const writable = [];
   const results = [];
@@ -166,25 +186,27 @@ export async function seedDocuments({ client, documents, force = false, existing
       results.push({ id: document._id, status: "created" });
     }
   }
+  if (force && writable.some((document) => existing.get(document._id))) {
+    logger.warn("[sanity-seed] WARNING: SANITY_SEED_FORCE=true will replace existing draft documents and may discard Studio edits.");
+  }
   if (writable.length) {
-    const transaction = client.transaction();
-    for (const document of writable) {
-      if (force) transaction.createOrReplace(document);
-      else transaction.createIfNotExists(document);
-    }
+    const transaction = writable.reduce(
+      (tx, document) => force ? tx.createOrReplace(document) : tx.createIfNotExists(document),
+      client.transaction(),
+    );
     await transaction.commit();
   }
   for (const result of results) logger.log(`[sanity-seed] ${result.status}: ${result.id}`);
   return results;
 }
 
-export async function validateBootstrap({ client, projectId, dataset, token, logger = console }) {
+export async function validateBootstrap({ client, projectId, dataset, token, checkWriteAccess = true, logger = console }) {
   if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
   if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
   if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
   logger.log(`[sanity-seed] Target dataset: ${projectId}/${dataset}`);
   await client.request({ method: "GET", uri: `/datasets/${dataset}` });
-  await client.request({ method: "POST", uri: `/data/mutate/${dataset}`, body: { mutations: [] } });
+  if (checkWriteAccess) await client.request({ method: "POST", uri: `/data/mutate/${dataset}`, body: { mutations: [] } });
 }
 
 async function prepareAssetRefs({ client, content, existingDocuments, force, logger }) {
@@ -212,16 +234,26 @@ export async function runSeed({ environment = process.env, clientFactory = creat
   const dataset = environment.NEXT_PUBLIC_SANITY_DATASET || "production";
   const token = environment.SANITY_API_WRITE_TOKEN;
   const force = environment.SANITY_SEED_FORCE === "true";
+  const dryRun = environment.SANITY_SEED_DRY_RUN === "true" || process.argv.includes("--dry-run");
   if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
   if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
   if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
   const client = clientFactory({ projectId, dataset, apiVersion, token, useCdn: false });
-  await validateBootstrap({ client, projectId, dataset, token, logger });
-  logger.log(`[sanity-seed] Mode: ${force ? "force replacement of draft documents" : "safe initial bootstrap"}`);
+  await validateBootstrap({ client, projectId, dataset, token, checkWriteAccess: !dryRun, logger });
+  logger.log(`[sanity-seed] Mode: ${dryRun ? "dry run (no writes)" : force ? "force replacement of draft documents" : "safe initial bootstrap"}`);
   const baseDocuments = buildSeedDocuments(canonicalContent);
   const existingDocuments = await getExistingDocuments(client, baseDocuments);
-  const assetRefs = await prepareAssetRefs({ client, content: canonicalContent, existingDocuments, force, logger });
+  const assetRefs = dryRun ? {} : await prepareAssetRefs({ client, content: canonicalContent, existingDocuments, force, logger });
   const documents = buildSeedDocuments(canonicalContent, assetRefs);
+  if (dryRun) {
+    validateSeedDocuments(documents);
+    for (const document of documents) {
+      const exists = Boolean(existingDocuments.get(document._id));
+      const operation = force ? (exists ? "createOrReplace" : "createOrReplace (new)") : (exists ? "skip (existing)" : "createIfNotExists");
+      logger.log(`[sanity-seed] ${projectId} / ${dataset} | ${document._id} | ${document._type} | ${operation}`);
+    }
+    return [];
+  }
   return seedDocuments({ client, documents, force, existingDocuments, logger });
 }
 

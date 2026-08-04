@@ -15,7 +15,8 @@
     "test": "node --test",
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
     "audit:design-system": "node scripts/audit-design-system.mjs",
-    "seed:sanity": "node scripts/seed-sanity.mjs"
+    "seed:sanity": "node scripts/seed-sanity.mjs",
+    "seed:sanity:dry-run": "node scripts/seed-sanity.mjs --dry-run"
   },
   "dependencies": {
     "@portabletext/react": "7.0.1",

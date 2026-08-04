@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { buildSeedDocuments, seedDocuments, validateBootstrap } from "../scripts/seed-sanity.mjs";
+import { buildSeedDocuments, runSeed, seedDocuments, validateBootstrap, validateSeedDocuments } from "../scripts/seed-sanity.mjs";
 
 const canonical = JSON.parse(readFileSync(new URL("../src/content/canonical-content.json", import.meta.url), "utf8"));
-const quietLogger = { log() {} };
+const quietLogger = { log() {}, warn() {} };
 
 function mockSanity(existingIds = []) {
   const existing = new Set(existingIds);
@@ -52,6 +52,19 @@ test("empty dataset bootstraps with createIfNotExists", async () => {
   assert.ok(client.operations.every(([operation]) => operation === "createIfNotExists"));
 });
 
+test("transaction construction uses transaction-level mutations", async () => {
+  const client = mockSanity();
+  const documents = [{ _id: "drafts/example", _type: "example" }];
+  client.createOrReplace = () => { throw new Error("client.createOrReplace must not be called during transaction construction"); };
+  await seedDocuments({ client, documents, logger: quietLogger });
+  assert.deepEqual(client.operations, [["createIfNotExists", "drafts/example"]]);
+});
+
+test("seed validation rejects missing types and unseeded references", () => {
+  assert.throws(() => validateSeedDocuments([{ _id: "drafts/missing-type" }]), /_type/);
+  assert.throws(() => validateSeedDocuments([{ _id: "drafts/example", _type: "example", related: { _type: "reference", _ref: "drafts/unknown" } }]), /unseeded document/);
+});
+
 test("default bootstrap refuses to overwrite existing documents", async () => {
   const documents = buildSeedDocuments(canonical).slice(0, 2);
   const client = mockSanity(documents.map((document) => document._id));
@@ -67,6 +80,20 @@ test("force mode explicitly replaces existing draft documents", async () => {
   const results = await seedDocuments({ client, documents, force: true, logger: quietLogger });
   assert.deepEqual(results.map((result) => result.status), ["replaced", "created"]);
   assert.deepEqual(client.operations, [["createOrReplace", documents[0]._id], ["createOrReplace", documents[1]._id]]);
+});
+
+test("dry run prints target, document identity and intended operation without committing", async () => {
+  const logs = [];
+  const client = mockSanity();
+  client.request = async () => {};
+  await runSeed({
+    environment: { NEXT_PUBLIC_SANITY_PROJECT_ID: "abc123", NEXT_PUBLIC_SANITY_DATASET: "production", SANITY_API_WRITE_TOKEN: "local-token", SANITY_SEED_DRY_RUN: "true" },
+    clientFactory: () => client,
+    logger: { log(message) { logs.push(message); }, warn() {} },
+  });
+  assert.ok(logs.some((message) => message.includes("abc123 / production")));
+  assert.ok(logs.some((message) => message.includes("drafts.homePage") && message.includes("homePage") && message.includes("createIfNotExists")));
+  assert.equal(client.committed, false);
 });
 
 test("bootstrap validates project, dataset and write access before writes", async () => {
