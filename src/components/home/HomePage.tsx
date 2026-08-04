@@ -9,5 +9,5 @@ import { ServiceIndex } from "./ServiceIndex";
 import { MotionScope } from "@/components/motion/MotionScope";
 
 export function HomePage({ data }: { data: HomeData }) {
-  return <MotionScope><div className="landing-page"><EditorialHero data={data.hero} /><AboutOverview data={data.about} /><ServiceIndex data={data.services} /><SelectedWork data={data.projects} /><ClientPerspectives data={data.testimonials} /><Questions data={data.faqs} /><ContactSection data={data.contact} /></div></MotionScope>;
+  return <MotionScope><div className="landing-page">{data.hero ? <EditorialHero data={data.hero} /> : null}{data.about ? <AboutOverview data={data.about} /> : null}{data.services ? <ServiceIndex data={data.services} /> : null}{data.projects ? <SelectedWork data={data.projects} /> : null}<ClientPerspectives data={data.testimonials} />{data.faqs ? <Questions data={data.faqs} /> : null}{data.contact ? <ContactSection data={data.contact} /> : null}</div></MotionScope>;
 }

@@ -2,36 +2,37 @@ import { defineQuery } from "next-sanity";
 import { fallbackHome, fallbackSettings } from "@/content/fallback-data";
 import { hasSanityConfig } from "./client";
 import { sanityFetch } from "./live";
+import { normalizeHomePage } from "./normalize-home";
 import type { HomePage, Project, SiteSettings } from "@/types/content";
 
 export const HOME_QUERY = defineQuery(`
   *[_type == "homePage"][0] {
     title,
     seo,
-    "hero": sections[_type == "heroSection" && enabled != false][0] { ..., media { ..., "src": asset->url } },
-    "about": sections[_type == "aboutSection" && enabled != false][0] { ..., images[] { ..., "src": asset->url } },
-    "services": sections[_type == "servicesSection" && enabled != false][0] {
+    "hero": sections[_type == "heroSection"][0] { ..., media { ..., "src": asset->url } },
+    "about": sections[_type == "aboutSection"][0] { ..., images[] { ..., "src": asset->url } },
+    "services": sections[_type == "servicesSection"][0] {
       ...,
-      services[]-> { ..., "slug": slug.current, image { ..., "src": asset->url } }
+      "items": services[]-> { ..., "slug": slug.current, image { ..., "src": asset->url } }
     },
-    "projects": sections[_type == "projectsSection" && enabled != false][0] {
+    "projects": sections[_type == "projectsSection"][0] {
       ...,
-      projects[]-> {
+      "items": projects[]-> {
         ...,
         "slug": slug.current,
         "cover": cover { ..., "src": asset->url },
         "testimonial": testimonial->
       }
     },
-    "testimonials": sections[_type == "testimonialsSection" && enabled != false][0] {
+    "testimonials": sections[_type == "testimonialsSection"][0] {
       ...,
-      testimonials[]-> { ..., portrait { ..., "src": asset->url } }
+      "items": testimonials[]-> { ..., portrait { ..., "src": asset->url } }
     },
-    "faqs": sections[_type == "faqSection" && enabled != false][0] {
+    "faqs": sections[_type == "faqSection"][0] {
       ...,
-      faqs[]->
+      "items": faqs[]->
     },
-    "contact": sections[_type == "contactSection" && enabled != false][0]
+    "contact": sections[_type == "contactSection"][0]
   }
 `);
 
@@ -61,7 +62,7 @@ export const PROJECT_QUERY = defineQuery(`
 export async function getHomePage(): Promise<HomePage> {
   if (!hasSanityConfig) return fallbackHome;
   const { data } = await sanityFetch({ query: HOME_QUERY, stega: false });
-  return (data as HomePage | null) ?? fallbackHome;
+  return normalizeHomePage(data);
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -72,14 +73,14 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 export async function getProject(slug: string): Promise<Project | null> {
   if (!hasSanityConfig) {
-    return fallbackHome.projects.items.find((project) => project.slug === slug) ?? null;
+    return fallbackHome.projects?.items.find((project) => project.slug === slug) ?? null;
   }
   const { data } = await sanityFetch({ query: PROJECT_QUERY, params: { slug }, stega: false });
   return (data as Project | null) ?? null;
 }
 
 export async function getProjectSlugs(): Promise<string[]> {
-  if (!hasSanityConfig) return fallbackHome.projects.items.map((project) => project.slug);
+  if (!hasSanityConfig) return fallbackHome.projects?.items.map((project) => project.slug) ?? [];
   const { data } = await sanityFetch({
     query: defineQuery(`*[_type == "project" && defined(slug.current)].slug.current`),
     perspective: "published",

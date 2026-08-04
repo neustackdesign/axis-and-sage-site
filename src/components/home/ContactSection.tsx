@@ -2,7 +2,7 @@ import type { HomePage } from "@/types/content";
 import { ContactForm } from "@/components/ui/ContactForm";
 import { Apparatus, SectionOpening, TextLink } from "./EditorialPrimitives";
 
-export function ContactSection({ data }: { data: HomePage["contact"] }) {
+export function ContactSection({ data }: { data: NonNullable<HomePage["contact"]> }) {
   const email = data.email || "info@axisandsage.com";
   return <section className="landing-section contact-section" id="contact">
     <SectionOpening index="06" label={data.label} />

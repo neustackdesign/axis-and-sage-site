@@ -29,8 +29,9 @@ function SupportingProject({ project, index }: { project: Project; index: number
   return <article className="work-supporting" data-reveal="work-supporting"><figure><EditorialImage image={project.cover} fallback={projectAssets[project.slug]} alt={project.cover?.alt || projectAlt[project.slug] || ""} /></figure><div className="work-supporting-copy prose"><Apparatus>0{index} / SUPPORTING</Apparatus><h3>{project.title}</h3><p>{project.summary}</p><Apparatus>{projectContexts[project.slug] || project.tags.join(" / ")}</Apparatus><ProjectLink project={project} /></div></article>;
 }
 
-export function SelectedWork({ data }: { data: HomePage["projects"] }) {
-  const visible = data.items.filter((project) => project.homepagePlacement !== "hidden").sort((a, b) => (a.homepageOrder || 99) - (b.homepageOrder || 99));
+export function SelectedWork({ data }: { data: NonNullable<HomePage["projects"]> }) {
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const visible = items.filter((project) => project.homepagePlacement !== "hidden").sort((a, b) => (a.homepageOrder || 99) - (b.homepageOrder || 99));
   const featured = visible.find((project) => project.homepagePlacement === "featured") || visible[0];
   const supporting = visible.filter((project) => project.slug !== featured?.slug).slice(0, 2);
   if (!featured) return null;

@@ -3,7 +3,7 @@ import { Apparatus, EditorialImage, Reveal, TextLink } from "./EditorialPrimitiv
 
 const assetRoot = "/images/axis-sage";
 
-export function EditorialHero({ data }: { data: HomePage["hero"] }) {
+export function EditorialHero({ data }: { data: NonNullable<HomePage["hero"]> }) {
   const kicker = data.eyebrow.length ? data.eyebrow.join(" · ") : "Strategy · Design · Growth";
   return <section className="landing-hero" id="top">
     <div className="breakout">

@@ -91,7 +91,7 @@ export type SiteSettings = {
 export type HomePage = {
   title: string;
   seo?: { title?: string; description?: string; image?: ImageValue };
-  hero: {
+  hero?: {
     eyebrow: string[];
     heading: string;
     body: string;
@@ -100,7 +100,7 @@ export type HomePage = {
     quote?: string;
     media?: ImageValue;
   };
-  about: {
+  about?: {
     label: string;
     heading: string;
     body: string;
@@ -110,13 +110,13 @@ export type HomePage = {
     images?: ImageValue[];
     statistics?: Statistic[];
   };
-  services: {
+  services?: {
     label: string;
     heading: string;
     introduction: string;
     items: Service[];
   };
-  projects: {
+  projects?: {
     label: string;
     heading: string;
     introduction: string;
@@ -128,14 +128,14 @@ export type HomePage = {
     introduction: string;
     items: Testimonial[];
   };
-  faqs: {
+  faqs?: {
     label: string;
     heading: string;
     introduction: string;
     cta: LinkValue;
     items: Faq[];
   };
-  contact: {
+  contact?: {
     label: string;
     heading: string;
     introduction: string;

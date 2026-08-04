@@ -3,7 +3,7 @@ import { Apparatus, EditorialImage, Reveal } from "./EditorialPrimitives";
 
 const assetRoot = "/images/axis-sage";
 
-export function AboutOverview({ data }: { data: HomePage["about"] }) {
+export function AboutOverview({ data }: { data: NonNullable<HomePage["about"]> }) {
   const images = data.images?.length ? data.images : [
     { src: `${assetRoot}/nature-roots-live.jpg`, alt: "Nature Roots product packaging" },
     { src: `${assetRoot}/earlybean.jpg`, alt: "Earlybean product experience sketches" },
@@ -29,7 +29,7 @@ export function AboutOverview({ data }: { data: HomePage["about"] }) {
       <figure className="about-figure"><EditorialImage image={images[2] || images[0]} alt={images[2]?.alt || ""} /></figure>
     </Reveal>
     <div className="about-support prose" data-reveal="about-support">
-      {data.support.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+      {(Array.isArray(data?.support) ? data.support : []).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
     </div>
   </section>;
 }

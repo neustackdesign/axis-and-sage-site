@@ -25,15 +25,16 @@ function ServiceRow({ service, index, open, onToggle }: { service: Service; inde
   </article>;
 }
 
-export function ServiceIndex({ data }: { data: HomePage["services"] }) {
-  const firstExpandable = data.items.find((item) => item.detailApproved)?.slug || null;
+export function ServiceIndex({ data }: { data: NonNullable<HomePage["services"]> }) {
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const firstExpandable = items.find((item) => item.detailApproved)?.slug || null;
   const [openSlug, setOpenSlug] = useState<string | null>(firstExpandable);
-  const activeService = data.items.find((item) => item.slug === openSlug) || data.items[0];
+  const activeService = items.find((item) => item.slug === openSlug) || items[0];
   const mappedImage = serviceImages[activeService?.slug] || serviceImages.strategy;
   const activeImage = { src: activeService?.image?.src || mappedImage.src, alt: activeService?.image?.alt || mappedImage.alt };
   return <section className="landing-section service-index" id="services">
     <SectionOpening index="02" label={data.label} />
     <div className="section-copy prose" data-reveal="service-intro"><h2>{data.heading}</h2><p>{data.introduction}</p></div>
-    <div className="service-layout breakout"><div className="service-list" data-reveal="service-list">{data.items.map((service, index) => <ServiceRow key={service.slug} service={service} index={index} open={openSlug === service.slug} onToggle={() => setOpenSlug(openSlug === service.slug ? null : service.slug)} />)}</div><figure className="service-index-figure" data-reveal="service-figure"><EditorialImage key={activeService?.slug} fallback={activeImage.src} alt={activeImage.alt} /><figcaption><Apparatus>{activeService?.title || "Selected service"} / selected view</Apparatus></figcaption></figure></div>
+    <div className="service-layout breakout"><div className="service-list" data-reveal="service-list">{items.map((service, index) => <ServiceRow key={service.slug} service={service} index={index} open={openSlug === service.slug} onToggle={() => setOpenSlug(openSlug === service.slug ? null : service.slug)} />)}</div><figure className="service-index-figure" data-reveal="service-figure"><EditorialImage key={activeService?.slug} fallback={activeImage.src} alt={activeImage.alt} /><figcaption><Apparatus>{activeService?.title || "Selected service"} / selected view</Apparatus></figcaption></figure></div>
   </section>;
 }
