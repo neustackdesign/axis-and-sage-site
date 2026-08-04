@@ -280,6 +280,8 @@ const contactSection = defineType({
     defineField({ name: "heading", title: "Heading", type: "string", ...required() }),
     defineField({ name: "introduction", title: "Introduction", type: "text", rows: 4 }),
     defineField({ name: "offices", title: "Verified offices", type: "array", of: [defineArrayMember({ type: "officeLocation" })], validation: (rule) => rule.max(4) }),
+    defineField({ name: "base", title: "Base", type: "string", description: "Use only a verified base location." }),
+    defineField({ name: "workingAcross", title: "Working across", type: "string" }),
     defineField({ name: "email", title: "Verified contact email", type: "email" }),
     defineField({ name: "formTitle", title: "Form title", type: "string", initialValue: "Start a conversation" }),
   ],

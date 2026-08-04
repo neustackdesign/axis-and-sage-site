@@ -1,50 +1,234 @@
+import { createReadStream, existsSync, readFileSync } from "node:fs";
+import { basename } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { createClient } from "@sanity/client";
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-const token = process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN;
+const scriptDirectory = dirname(fileURLToPath(import.meta.url));
+const repositoryRoot = resolve(scriptDirectory, "..");
+const canonicalContent = JSON.parse(readFileSync(resolve(repositoryRoot, "src/content/canonical-content.json"), "utf8"));
+const apiVersion = "2026-02-01";
+const draft = (id) => `drafts.${id}`;
 
-if (!projectId || !token) {
-  console.error("Missing required environment variables: NEXT_PUBLIC_SANITY_PROJECT_ID and SANITY_API_WRITE_TOKEN (or SANITY_API_READ_TOKEN for an appropriately scoped token).");
-  process.exitCode = 1;
-} else {
-  const client = createClient({ projectId, dataset, apiVersion: "2026-02-01", token, useCdn: false });
-  const block = (text) => [{ _type: "block", _key: `block-${text.slice(0, 10).replace(/\W/g, "").toLowerCase()}`, style: "normal", markDefs: [], children: [{ _type: "span", _key: "span-1", marks: [], text }] }];
-  const documents = [
-    {
-      _id: "siteSettings", _type: "siteSettings", siteTitle: "Axis & Sage", shortBrandDescription: "Strategy, design, growth, venture building and storytelling.",
-      primaryNavigation: [{ _key: "nav-about", label: "About", href: "#about" }, { _key: "nav-services", label: "Services", href: "#services" }, { _key: "nav-work", label: "Our work", href: "#our-work" }, { _key: "nav-faqs", label: "FAQs", href: "#faqs" }, { _key: "nav-contact", label: "Contact", href: "#contact" }],
-      footerNavigation: [{ _key: "footer-about", label: "About us", href: "#about" }, { _key: "footer-work", label: "Our work", href: "#our-work" }, { _key: "footer-services", label: "Services", href: "#services" }, { _key: "footer-faqs", label: "FAQs", href: "#faqs" }, { _key: "footer-contact", label: "Contact", href: "#contact" }],
-      defaultCta: { _type: "cta", label: "Work with us", href: "#contact" },
-      officeLocations: [], socialLinks: [], footerCopyright: "© 2026 Axis & Sage. All rights reserved.",
-      defaultSeo: { _type: "seo", title: "Axis & Sage — Strategy, Design, Growth and Venture Building", description: "A boutique consultancy blending strategic thinking with creative execution, helping ambitious brands turn ideas into practical realities." },
-    },
-    { _id: "service-strategy", _type: "service", title: "Strategy", slug: { _type: "slug", current: "strategy" }, summary: "From market research to business model design, we help you navigate complexity and find your true north.", capabilities: ["Market Analysis", "Business Model Design", "Competitive Intelligence", "Growth Planning"], featured: true, cta: { _type: "cta", label: "Work with us", href: "#contact" } },
-    { _id: "service-design", _type: "service", title: "Design", slug: { _type: "slug", current: "design" }, summary: "", capabilities: [], featured: true, cta: { _type: "cta", label: "Work with us", href: "#contact" } },
-    { _id: "service-growth", _type: "service", title: "Growth", slug: { _type: "slug", current: "growth" }, summary: "", capabilities: [], featured: true, cta: { _type: "cta", label: "Work with us", href: "#contact" } },
-    { _id: "service-venture-building", _type: "service", title: "Venture Building", slug: { _type: "slug", current: "venture-building" }, summary: "", capabilities: [], featured: true, cta: { _type: "cta", label: "Work with us", href: "#contact" } },
-    { _id: "service-storytelling", _type: "service", title: "Storytelling", slug: { _type: "slug", current: "storytelling" }, summary: "", capabilities: [], featured: true, cta: { _type: "cta", label: "Work with us", href: "#contact" } },
-    { _id: "project-nature-roots", _type: "project", title: "Nature Roots", slug: { _type: "slug", current: "nature-roots" }, summary: "We crafted a brand strategy and digital identity that positioned Nature Roots as more than an organic commodities brand — but a trusted link between African farmers and sustainable global markets. From packaging systems to digital presence, our work emphasized transparency, credibility, and scalability, enabling Nature Roots to enter retail channels with confidence.", tags: ["Strategy", "Branding"], featured: true },
-    { _id: "project-earlybean", _type: "project", title: "Earlybean", slug: { _type: "slug", current: "earlybean" }, summary: "Axis & Sage partnered with Earlybean to translate a revolutionary savings model into an intuitive digital product for young Africans. From user research with first-time savers to end-to-end UX design, we built a platform that demystifies finance and encourages long-term wealth creation. The outcome: a 10K+ user community within months and strong investor confidence in the model.", tags: ["Product Design", "UX/UI"], featured: true },
-    { _id: "project-uganda-investor-summit", _type: "project", title: "Uganda Investor Summit", slug: { _type: "slug", current: "uganda-investor-summit" }, summary: "We delivered end-to-end event strategy, branding, and investor relations for Uganda’s premier investment conference. From stakeholder mapping to compelling event storytelling and visual identity, our team ensured the Summit positioned Uganda as a forward-thinking hub for regional capital flows.", tags: ["Event Strategy", "Storytelling"], featured: true },
-    { _id: "faq-what-we-do", _type: "faq", question: "What exactly does Axis & Sage do?", answer: "We partner with ambitious organizations and founders to design clarity, scale impact, and build trusted brands. Our work sits at the intersection of strategy, brand, product, and storytelling — helping businesses move from idea to execution, and from execution to sustainable growth.", display: true },
-    { _id: "faq-who-we-work-with", _type: "faq", question: "Who do you typically work with?", answer: "We work with a diverse range of clients, from early-stage startups validating product-market fit, to growth-stage companies needing sharper strategy and design systems, to public institutions and development partners looking to communicate innovation with credibility.", display: true },
-    { _id: "faq-engagements", _type: "faq", question: "How do you structure engagements?", answer: "Every engagement starts with discovery and alignment — understanding your context, goals, and constraints. From there, we co-design the right format: focused sprints, broader projects, or ongoing partnerships.", display: true },
-    { _id: "faq-different", _type: "faq", question: "What makes Axis & Sage different?", answer: "We’re not just an agency chasing pretty outputs, and we’re not consultants delivering slides no one uses. We live at the crossroads of strategy and craft. Our work is pragmatic, fast, and designed to create measurable business impact.", display: true },
-    { _id: "faq-africa", _type: "faq", question: "Do you only work in Africa?", answer: "Africa is our heartland — it’s where we’ve honed our craft and built deep understanding. But we also partner with clients in the GCC, Europe, and North America, especially where there’s an Africa connection.", display: true },
-    { _id: "faq-start", _type: "faq", question: "How can we get started?", answer: "Simple: book a conversation with us. In 30 minutes we’ll unpack your goals, challenges, and opportunities — and if we’re the right fit, we’ll map out an engagement that works.", display: true },
-    {
-      _id: "homePage", _type: "homePage", internalTitle: "Axis & Sage homepage", sections: [
-        { _key: "section-hero", _type: "heroSection", enabled: true, eyebrow: ["Strategy", "Design", "Growth"], heading: "We build businesses, brands, and products that matter", body: "A boutique consultancy fusing deep African insight with GCC know-how to help innovators, investors, & public-sector leaders design, build, & scale high-impact ventures.", primaryCta: { _type: "cta", label: "Work with us", href: "#contact" }, secondaryCta: { _type: "cta", label: "Explore our work", href: "#our-work" } },
-        { _key: "section-about", _type: "aboutSection", enabled: true, anchorId: "about", label: "About us", heading: "Where strategy meets storytelling", body: block("At Axis and Sage, we believe every great business starts with a compelling story. We're the strategic architects and creative storytellers who help ambitious leaders build ventures that don't just succeed—they inspire."), approach: "Our approach is simple: think strategically, act creatively, grow sustainably.", support: ["We've helped launch groundbreaking ventures, transform established brands, and connect investors with game-changing opportunities across Africa and beyond.", "From product design to market strategy, from storytelling to growth hacking—we're the partners who see your vision and make it reality."], statistics: [] },
-        { _key: "section-services", _type: "servicesSection", enabled: true, anchorId: "services", label: "Services", heading: "What we do", introduction: "Think of us as your strategic Swiss Army knife - versatile, reliable, and always sharp.", services: [{ _type: "reference", _ref: "service-strategy" }, { _type: "reference", _ref: "service-design" }, { _type: "reference", _ref: "service-growth" }, { _type: "reference", _ref: "service-venture-building" }, { _type: "reference", _ref: "service-storytelling" }] },
-        { _key: "section-projects", _type: "projectsSection", enabled: true, anchorId: "our-work", label: "Our work", heading: "Get inspired by our work", introduction: "From disruptive startups to established organizations, we've helped ambitious leaders across Africa and beyond achieve remarkable results.", projects: [{ _type: "reference", _ref: "project-nature-roots" }, { _type: "reference", _ref: "project-earlybean" }, { _type: "reference", _ref: "project-uganda-investor-summit" }] },
-        { _key: "section-faqs", _type: "faqSection", enabled: true, anchorId: "faqs", label: "FAQs", heading: "Answering your questions", introduction: "Got more questions? Send us your enquiry below", cta: { _type: "cta", label: "Get in touch", href: "#contact" }, faqs: [{ _type: "reference", _ref: "faq-what-we-do" }, { _type: "reference", _ref: "faq-who-we-work-with" }, { _type: "reference", _ref: "faq-engagements" }, { _type: "reference", _ref: "faq-different" }, { _type: "reference", _ref: "faq-africa" }, { _type: "reference", _ref: "faq-start" }] },
-        { _key: "section-contact", _type: "contactSection", enabled: true, anchorId: "contact", label: "Contact", heading: "Get in touch", introduction: "Got a big idea? A complex challenge? Or just want to explore how we can help? We'd love to hear from you!", offices: [], formTitle: "Start a conversation" },
-      ],
-    },
-  ];
-  const result = await client.transaction(documents.map((document) => client.createOrReplace(document))).commit();
-  console.log(`Created/replaced ${result.results?.length ?? documents.length} deterministic documents in ${projectId}/${dataset}.`);
-  console.log("Skipped questionable content: inherited Refit testimonials, unverified statistics, unverified office/email details, and template imagery.");
+export function portableText(text) {
+  return [{
+    _type: "block",
+    _key: `block-${text.slice(0, 20).replace(/\W/g, "").toLowerCase()}`,
+    style: "normal",
+    markDefs: [],
+    children: [{ _type: "span", _key: "span-1", marks: [], text }],
+  }];
+}
+
+function reference(id) {
+  return { _type: "reference", _ref: draft(id) };
+}
+
+function cta(value) {
+  return { _type: "cta", label: value.label, href: value.href, ...(value.external ? { external: true } : {}) };
+}
+
+function imageField(image, assetRefs, key) {
+  const asset = assetRefs?.[key];
+  return asset ? { ...asset, alt: image.alt } : undefined;
+}
+
+export function buildSeedDocuments(content = canonicalContent, assetRefs = {}) {
+  const { settings, home } = content;
+  const serviceDocuments = home.services.items.map((service) => ({
+    _id: draft(`service-${service.slug}`),
+    _type: "service",
+    title: service.title,
+    slug: { _type: "slug", current: service.slug },
+    summary: service.summary,
+    capabilities: service.capabilities,
+    featured: Boolean(service.featured),
+    detailApproved: false,
+    previewOnly: true,
+    cta: cta(settings.defaultCta),
+  }));
+  const projectDocuments = home.projects.items.map((project) => ({
+    _id: draft(`project-${project.slug}`),
+    _type: "project",
+    title: project.title,
+    slug: { _type: "slug", current: project.slug },
+    summary: project.summary,
+    cover: imageField(project.cover, assetRefs.projects, project.slug),
+    tags: project.tags,
+    featured: Boolean(project.featured),
+    homepagePlacement: project.homepagePlacement,
+    homepageOrder: project.homepageOrder,
+  })).map((project) => Object.fromEntries(Object.entries(project).filter(([, value]) => value !== undefined)));
+  const testimonialDocuments = home.testimonials.items.map((testimonial, index) => ({
+    _id: draft(`testimonial-${index + 1}`),
+    _type: "testimonial",
+    quote: testimonial.quote,
+    personName: testimonial.personName,
+    ...(testimonial.role ? { role: testimonial.role } : {}),
+    ...(testimonial.organisation ? { organisation: testimonial.organisation } : {}),
+    portrait: imageField(testimonial.portrait, assetRefs.testimonials, testimonial.personName),
+    approved: false,
+    showOnHomepage: Boolean(testimonial.showOnHomepage),
+    featuredOnHomepage: Boolean(testimonial.featuredOnHomepage),
+    ...(testimonial.homepageOrder ? { homepageOrder: testimonial.homepageOrder } : {}),
+  })).map((testimonial) => Object.fromEntries(Object.entries(testimonial).filter(([, value]) => value !== undefined)));
+  const faqDocuments = home.faqs.items.map((faq, index) => ({
+    _id: draft(`faq-${index + 1}`),
+    _type: "faq",
+    question: faq.question,
+    answer: faq.answer,
+    display: faq.display !== false,
+    showOnHomepage: true,
+    homepageOrder: index + 1,
+  }));
+  const settingsDocument = {
+    _id: draft("siteSettings"),
+    _type: "siteSettings",
+    siteTitle: settings.title,
+    shortBrandDescription: settings.brandDescription,
+    primaryNavigation: settings.navigation.map((item, index) => ({ _key: `nav-${index + 1}`, ...item })),
+    footerNavigation: settings.footerNavigation.map((item, index) => ({ _key: `footer-${index + 1}`, ...item })),
+    defaultCta: cta(settings.defaultCta),
+    contactEmail: settings.contactEmail,
+    officeLocations: settings.officeLocations.map((address, index) => ({ _key: `office-${index + 1}`, _type: "officeLocation", label: "Base", address })),
+    socialLinks: settings.socialLinks,
+    footerCopyright: settings.copyright || "© 2026 Axis & Sage",
+    defaultSeo: { _type: "seo", title: settings.seo.title, description: settings.seo.description },
+  };
+  const homeDocument = {
+    _id: draft("homePage"),
+    _type: "homePage",
+    internalTitle: "Axis & Sage homepage",
+    sections: [
+      {
+        _key: "section-hero", _type: "heroSection", enabled: true,
+        eyebrow: home.hero.eyebrow, heading: home.hero.heading, body: home.hero.body,
+        primaryCta: cta(home.hero.primaryCta), secondaryCta: cta(home.hero.secondaryCta),
+        ...(imageField(home.hero.media, assetRefs, "hero") ? { media: imageField(home.hero.media, assetRefs, "hero") } : {}),
+      },
+      {
+        _key: "section-about", _type: "aboutSection", enabled: true, anchorId: "about",
+        label: home.about.label, heading: home.about.heading, body: portableText(home.about.body),
+        approach: home.about.approach, principles: home.about.principles, support: home.about.support,
+        ...(assetRefs.aboutImages ? { images: home.about.images.map((image, index) => ({ ...assetRefs.aboutImages[index], alt: image.alt })) } : {}),
+        statistics: [],
+      },
+      {
+        _key: "section-services", _type: "servicesSection", enabled: true, anchorId: "services",
+        label: home.services.label, heading: home.services.heading, introduction: home.services.introduction,
+        services: serviceDocuments.map((service) => reference(service._id.replace("drafts.", ""))),
+      },
+      {
+        _key: "section-projects", _type: "projectsSection", enabled: true, anchorId: "our-work",
+        label: home.projects.label, heading: home.projects.heading, introduction: home.projects.introduction,
+        projects: projectDocuments.map((project) => reference(project._id.replace("drafts.", ""))),
+      },
+      {
+        _key: "section-testimonials", _type: "testimonialsSection", enabled: true, anchorId: "testimonials",
+        label: home.testimonials.label, heading: home.testimonials.heading, introduction: home.testimonials.introduction,
+        testimonials: testimonialDocuments.filter((testimonial) => testimonial.showOnHomepage).map((testimonial) => reference(testimonial._id.replace("drafts.", ""))),
+      },
+      {
+        _key: "section-faqs", _type: "faqSection", enabled: true, anchorId: "faqs",
+        label: home.faqs.label, heading: home.faqs.heading, introduction: home.faqs.introduction, cta: cta(home.faqs.cta),
+        faqs: faqDocuments.map((faq) => reference(faq._id.replace("drafts.", ""))),
+      },
+      {
+        _key: "section-contact", _type: "contactSection", enabled: true, anchorId: "contact",
+        label: home.contact.label, heading: home.contact.heading, introduction: home.contact.introduction,
+        offices: home.contact.offices.map((address, index) => ({ _key: `contact-office-${index + 1}`, _type: "officeLocation", label: "Base", address })),
+        base: home.contact.base, workingAcross: home.contact.workingAcross, email: home.contact.email,
+        formTitle: "Start a conversation",
+      },
+    ],
+  };
+  return [settingsDocument, ...serviceDocuments, ...projectDocuments, ...testimonialDocuments, ...faqDocuments, homeDocument];
+}
+
+async function getExistingDocuments(client, documents) {
+  const entries = await Promise.all(documents.map(async (document) => [document._id, await client.getDocument(document._id)]));
+  return new Map(entries);
+}
+
+export async function seedDocuments({ client, documents, force = false, existingDocuments, logger = console }) {
+  const existing = existingDocuments || await getExistingDocuments(client, documents);
+  const writable = [];
+  const results = [];
+  for (const document of documents) {
+    const alreadyExists = Boolean(existing.get(document._id));
+    if (force) {
+      writable.push(document);
+      results.push({ id: document._id, status: alreadyExists ? "replaced" : "created" });
+    } else if (alreadyExists) {
+      results.push({ id: document._id, status: "skipped" });
+    } else {
+      writable.push(document);
+      results.push({ id: document._id, status: "created" });
+    }
+  }
+  if (writable.length) {
+    const transaction = client.transaction();
+    for (const document of writable) {
+      if (force) transaction.createOrReplace(document);
+      else transaction.createIfNotExists(document);
+    }
+    await transaction.commit();
+  }
+  for (const result of results) logger.log(`[sanity-seed] ${result.status}: ${result.id}`);
+  return results;
+}
+
+export async function validateBootstrap({ client, projectId, dataset, token, logger = console }) {
+  if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
+  if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
+  if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
+  logger.log(`[sanity-seed] Target dataset: ${projectId}/${dataset}`);
+  await client.request({ method: "GET", uri: `/datasets/${dataset}` });
+  await client.request({ method: "POST", uri: `/data/mutate/${dataset}`, body: { mutations: [] } });
+}
+
+async function prepareAssetRefs({ client, content, existingDocuments, force, logger }) {
+  if (!client.assets?.upload) return {};
+  const refs = { projects: {}, testimonials: {}, aboutImages: [] };
+  const hasExistingDocument = [...existingDocuments.values()].some(Boolean);
+  const upload = async (image, key) => {
+    if (!image?.src || (!force && hasExistingDocument)) return undefined;
+    const localPath = resolve(repositoryRoot, "public", image.src.replace(/^\//, ""));
+    if (!existsSync(localPath)) return undefined;
+    const asset = await client.assets.upload("image", createReadStream(localPath), { filename: basename(localPath) });
+    logger.log(`[sanity-seed] uploaded asset: ${key}`);
+    return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
+  };
+  const home = content.home;
+  refs.hero = await upload(home.hero.media, "hero");
+  for (const [index, image] of home.about.images.entries()) refs.aboutImages[index] = await upload(image, `about-${index + 1}`);
+  for (const project of home.projects.items) refs.projects[project.slug] = await upload(project.cover, `project-${project.slug}`);
+  for (const testimonial of home.testimonials.items) refs.testimonials[testimonial.personName] = await upload(testimonial.portrait, `testimonial-${testimonial.personName}`);
+  return refs;
+}
+
+export async function runSeed({ environment = process.env, clientFactory = createClient, logger = console } = {}) {
+  const projectId = environment.NEXT_PUBLIC_SANITY_PROJECT_ID;
+  const dataset = environment.NEXT_PUBLIC_SANITY_DATASET || "production";
+  const token = environment.SANITY_API_WRITE_TOKEN;
+  const force = environment.SANITY_SEED_FORCE === "true";
+  if (!projectId) throw new Error("NEXT_PUBLIC_SANITY_PROJECT_ID is required for local Sanity bootstrap.");
+  if (!dataset) throw new Error("NEXT_PUBLIC_SANITY_DATASET is required for local Sanity bootstrap.");
+  if (!token) throw new Error("SANITY_API_WRITE_TOKEN is required locally. Never add this token to Vercel.");
+  const client = clientFactory({ projectId, dataset, apiVersion, token, useCdn: false });
+  await validateBootstrap({ client, projectId, dataset, token, logger });
+  logger.log(`[sanity-seed] Mode: ${force ? "force replacement of draft documents" : "safe initial bootstrap"}`);
+  const baseDocuments = buildSeedDocuments(canonicalContent);
+  const existingDocuments = await getExistingDocuments(client, baseDocuments);
+  const assetRefs = await prepareAssetRefs({ client, content: canonicalContent, existingDocuments, force, logger });
+  const documents = buildSeedDocuments(canonicalContent, assetRefs);
+  return seedDocuments({ client, documents, force, existingDocuments, logger });
+}
+
+const invokedFile = process.argv[1] ? resolve(process.argv[1]) : "";
+if (invokedFile === fileURLToPath(import.meta.url)) {
+  runSeed().catch((error) => {
+    console.error(`[sanity-seed] ${error instanceof Error ? error.message : String(error)}`);
+    process.exitCode = 1;
+  });
 }
