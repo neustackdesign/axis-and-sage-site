@@ -35,7 +35,7 @@ With no Sanity project ID, the site renders deterministic, source-verified fallb
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | yes for Sanity | Sanity project ID |
 | `NEXT_PUBLIC_SANITY_DATASET` | yes for Sanity | Usually `production` |
 | `SANITY_API_READ_TOKEN` | preview/live editing | Server-side draft reads |
-| `SANITY_API_WRITE_TOKEN` | seed only | Token used by the idempotent seed script |
+| `SANITY_API_WRITE_TOKEN` | local seed only | Write token used only by the local bootstrap script; never configure it in Vercel |
 | `NEXT_PUBLIC_SANITY_STUDIO_URL` | preview | Studio/Presentation URL |
 | `SANITY_STUDIO_PREVIEW_ORIGIN` | preview | Presentation origin |
 | `RESEND_API_KEY` | contact delivery | Resend API key |
@@ -49,10 +49,13 @@ Never expose Sanity write tokens or the Resend key with a `NEXT_PUBLIC_` prefix.
 1. Create or select the Axis & Sage project and `production` dataset.
 2. Add the project ID and dataset to `.env.local`.
 3. Add `http://localhost:3000` and the eventual Vercel preview origin to Sanity CORS settings.
-4. Run `pnpm seed:sanity` with `SANITY_API_WRITE_TOKEN`.
-5. Open `/studio` and review the singleton Homepage and Site settings documents.
+4. Preview the planned operations without writing: `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity:dry-run`.
+5. Run `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity` locally. The script validates the project, dataset and write access before writing draft documents.
+6. Open `/studio` and review the singleton Homepage and Site settings documents.
 
-The seed uses deterministic IDs and `createOrReplace`, so rerunning it is safe. It deliberately skips uncertain testimonials, statistics, office details, contact email and unapproved imagery. The schema uses controlled homepage section types so editors cannot invent arbitrary page structure.
+The seed uses the same canonical content module as the fallback renderer, deterministic `drafts.*` IDs, and transaction-level `createIfNotExists` by default. Existing documents are reported as skipped and Studio edits are preserved. Set `SANITY_SEED_FORCE=true` only for a deliberate transaction-level replacement of draft documents; the script prints a warning before replacing anything. Initial service, testimonial and project content remains draft/editorial-review material and is never written to Vercel environment variables.
+
+The dry run prints the project ID, dataset, document ID, document type and intended operation without committing mutations. `SANITY_API_WRITE_TOKEN` is local bootstrap tooling only and must never be configured in Vercel.
 
 ## Editorial model
 

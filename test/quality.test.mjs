@@ -12,7 +12,7 @@ test("the project pins pnpm and includes a lockfile", async () => {
 });
 
 test("fallback content contains the verified project set", async () => {
-  const source = await read("src/content/fallback-data.ts");
+  const source = await read("src/content/canonical-content.json");
   for (const title of ["Nature Roots", "Earlybean", "Uganda Investor Summit"]) {
     assert.match(source, new RegExp(title));
   }
@@ -20,12 +20,13 @@ test("fallback content contains the verified project set", async () => {
 });
 
 test("refined preview content keeps residue out and preserves approval gates", async () => {
-  const source = await read("src/content/fallback-data.ts");
-  assert.match(source, /approved: false/);
-  assert.match(source, /officeLocations: \["Dubai, UAE"\]/);
-  assert.match(source, /offices: \["Dubai, UAE"\]/);
-  assert.match(source, /previewOnly: true/);
-  assert.match(source, /homepagePlacement: "featured"/);
+  const source = await read("src/content/canonical-content.json");
+  const seed = await read("scripts/seed-sanity.mjs");
+  assert.match(seed, /approved: false/);
+  assert.match(source, /"officeLocations": \["Dubai, UAE"\]/);
+  assert.match(source, /"offices": \["Dubai, UAE"\]/);
+  assert.match(source, /"previewOnly": true/);
+  assert.match(source, /"homepagePlacement": "featured"/);
   assert.match(source, /info@axisandsage\.com/);
   assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
   assert.doesNotMatch(await read("src/components/home/ServiceIndex.tsx"), /Description pending editorial confirmation/);
