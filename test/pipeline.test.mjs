@@ -4,13 +4,15 @@ import test from "node:test";
 
 import { createHmac } from "node:crypto";
 
-const [{ stripUrls, escapeHtml }, attribution, leads, core, sign, mailerlite] = await Promise.all([
+const [{ stripUrls, escapeHtml }, attribution, leads, core, sign, mailerlite, resend, emails] = await Promise.all([
   import("../src/lib/text.ts"),
   import("../src/lib/attribution.ts"),
   import("../src/lib/leads.ts"),
   import("../src/lib/pipeline/core.ts"),
   import("../src/lib/pipeline/sign.ts"),
   import("../src/lib/pipeline/mailerlite.ts"),
+  import("../src/lib/pipeline/resend.ts"),
+  import("../src/lib/pipeline/emails.ts"),
 ]);
 const read = (p) => readFile(new URL(`../${p}`, import.meta.url), "utf8");
 
@@ -75,7 +77,7 @@ test("3-second rule: under 3 seconds, or no timing at all, counts as too fast", 
 test("Blob first: the lead is stored before it is forwarded, under pending/leads/<ISO time>-<id>.json", async () => {
   const store = memoryStore();
   const order = [];
-  const forward = async () => { order.push(["forward", store.files.size]); return false; };
+  const forward = async () => { order.push(["forward", store.files.size]); return { ok: false, limited: false }; };
   const r = await core.deliver(payload(), { store, forward, now });
   assert.equal(r.stored, true); assert.equal(r.delivered, false);
   assert.equal(r.pathname, "pending/leads/2026-09-30T10-00-00-000Z-abc123.json");
@@ -85,8 +87,9 @@ test("Blob first: the lead is stored before it is forwarded, under pending/leads
 
 test("Forward then delete: the Blob file goes once Apps Script confirms", async () => {
   const store = memoryStore();
-  const r = await core.deliver(payload(), { store, forward: async () => true, now });
+  const r = await core.deliver(payload(), { store, forward: async () => ({ ok: true, limited: false }), now });
   assert.equal(r.delivered, true);
+  assert.equal(r.limited, false);
   assert.equal(store.files.size, 0);
   assert.deepEqual(store.calls.map((c) => c[0]), ["put", "remove"]);
 });
@@ -100,7 +103,7 @@ test("A forward that throws or times out still counts as stored, so the visitor 
 test("If the Blob write fails, nothing is forwarded and the route hands over to mailto", async () => {
   const store = memoryStore({ failPut: true });
   let forwarded = false;
-  const r = await core.deliver(payload(), { store, forward: async () => (forwarded = true), now });
+  const r = await core.deliver(payload(), { store, forward: async () => { forwarded = true; return { ok: true, limited: false }; }, now });
   assert.deepEqual([r.stored, r.delivered, forwarded], [false, false, false]);
   const route = await read("src/app/api/contact/route.ts");
   assert.match(route, /if \(!result\.stored\)[^\n]*fallback: true[^\n]*status: 503/);
@@ -125,7 +128,7 @@ test("forwardToSheet posts plain text, follows Apps Script's 302 and needs { ok:
   const seen = [];
   const reply = (status, body) => async (url, init) => { seen.push({ url, init }); return new Response(JSON.stringify(body), { status }); };
   const opts = { url: "https://script.google.com/macros/s/x/exec", secret: "s3cret", now: () => 1759226400000 };
-  assert.equal(await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(200, { ok: true }) }), true);
+  assert.deepEqual(await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(200, { ok: true, limited: false }) }), { ok: true, limited: false });
   const { init } = seen[0];
   assert.equal(init.method, "POST");
   assert.equal(init.redirect, "follow");
@@ -133,9 +136,10 @@ test("forwardToSheet posts plain text, follows Apps Script's 302 and needs { ok:
   assert.ok(init.signal instanceof AbortSignal);
   const sent = JSON.parse(init.body);
   assert.equal(sent.sig, sign.signBody(payload(), "s3cret", 1759226400000).sig);
-  assert.equal(await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(200, { ok: false }) }), false);
-  assert.equal(await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(500, { ok: true }) }), false);
-  assert.equal(await core.forwardToSheet(payload(), { ...opts, url: "", fetchImpl: reply(200, { ok: true }) }), false, "unconfigured");
+  assert.deepEqual(await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(200, { ok: true, limited: true }) }), { ok: true, limited: true });
+  assert.equal((await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(200, { ok: false }) })).ok, false);
+  assert.equal((await core.forwardToSheet(payload(), { ...opts, fetchImpl: reply(500, { ok: true }) })).ok, false);
+  assert.equal((await core.forwardToSheet(payload(), { ...opts, url: "", fetchImpl: reply(200, { ok: true }) })).ok, false, "unconfigured");
   assert.equal(core.FORWARD_TIMEOUT_MS, 8000);
 });
 
@@ -145,15 +149,18 @@ test("Cron retry re-forwards pending leads, re-sends pending subscribers and cou
   store.files.set("pending/leads/b.json", JSON.stringify(payload("stuck")));
   store.files.set("pending/leads/c.json", "{not json");
   store.files.set("pending/subscribers/d.json", JSON.stringify({ email: "sub@example.com" }));
+  store.files.set("pending/emails/e.json", JSON.stringify({ to: ["info@axisandsage.com"], subject: "New lead", text: "x" }));
+  store.files.set("pending/emails/f.json", JSON.stringify({ to: ["bounce@example.com"], subject: "Your result", text: "x" }));
   const logged = [];
   const counts = await core.retryPending({
     store,
-    forward: async (p) => p.id === "good",
+    forward: async (p) => ({ ok: p.id === "good", limited: false }),
     subscribe: async (email) => email === "sub@example.com",
+    send: async (mail) => mail.to[0] === "info@axisandsage.com",
     log: (e, c) => logged.push([e, c]),
   });
-  assert.deepEqual(counts, { leadsDelivered: 1, leadsPending: 1, subscribersSent: 1, subscribersPending: 0, unreadable: 1 });
-  assert.deepEqual([...store.files.keys()].sort(), ["pending/leads/b.json", "pending/leads/c.json"]);
+  assert.deepEqual(counts, { leadsDelivered: 1, leadsPending: 1, subscribersSent: 1, subscribersPending: 0, emailsSent: 1, emailsPending: 1, unreadable: 1 });
+  assert.deepEqual([...store.files.keys()].sort(), ["pending/emails/f.json", "pending/leads/b.json", "pending/leads/c.json"]);
   assert.equal(logged[0][0], "cron_retry");
   const cron = await read("src/app/api/cron/retry/route.ts");
   assert.match(cron, /Bearer \$\{config\.cronSecret\}|CRON_SECRET/);
@@ -186,15 +193,74 @@ test("IP addresses are stored only as a salted SHA-256 hash", () => {
   assert.doesNotMatch(h, /203/);
 });
 
-test("The Apps Script verifies the signature, rate-limits softly and sends from info@", async () => {
+test("The IP hash goes to the Sheet with the live forward only; the Blob copy never holds it", async () => {
+  const store = memoryStore();
+  let forwarded;
+  const r = await core.deliver({ ...payload(), ipHash: "stale" }, { store, forward: async (p) => { forwarded = p; return { ok: false, limited: false }; }, now }, { ipHash: "abc" });
+  assert.equal(forwarded.ipHash, "abc");
+  assert.equal("ipHash" in JSON.parse(store.files.get(r.pathname)), false);
+});
+
+test("A lead the Sheet marks limited is stored and delivered, and flagged so no email goes", async () => {
+  const r = await core.deliver(payload(), { store: memoryStore(), forward: async () => ({ ok: true, limited: true }), now });
+  assert.deepEqual([r.stored, r.delivered, r.limited], [true, true, true]);
+  const lp = await read("src/lib/server/leadpath.ts");
+  assert.match(lp, /if \(result\.limited\)[^\n]*return/);
+});
+
+test("Email: sent through Resend, or parked in pending/emails/ for the cron when the send fails", async () => {
+  const store = memoryStore();
+  const mail = { to: ["ada@example.com"], subject: "s", text: "t" };
+  assert.deepEqual(await core.sendOrPark(mail, { store, send: async () => true, now }), { sent: true, parked: false });
+  assert.deepEqual(await core.sendOrPark(mail, { store, send: async () => false, now, id: "m1" }), { sent: false, parked: true });
+  assert.deepEqual(JSON.parse(store.files.get("pending/emails/2026-09-30T10-00-00-000Z-m1.json")), mail);
+  assert.deepEqual(await core.sendOrPark(mail, { store: memoryStore({ failPut: true }), send: async () => { throw new Error("down"); }, now }), { sent: false, parked: false });
+});
+
+test("Resend gets the sender, recipients, Reply-To and both bodies", async () => {
+  let req;
+  const send = resend.resendSend({ apiKey: "re_x", from: "Axis & Sage <info@axisandsage.com>", fetchImpl: async (url, init) => { req = { url, init }; return new Response("{}", { status: 200 }); } });
+  assert.equal(await send({ to: ["info@axisandsage.com"], cc: ["a@axisandsage.com"], replyTo: "ada@example.com", subject: "New lead", text: "t", html: "<p>h</p>" }), true);
+  assert.equal(req.url, "https://api.resend.com/emails");
+  assert.equal(req.init.headers.Authorization, "Bearer re_x");
+  assert.deepEqual(JSON.parse(req.init.body), { from: "Axis & Sage <info@axisandsage.com>", to: ["info@axisandsage.com"], cc: ["a@axisandsage.com"], reply_to: "ada@example.com", subject: "New lead", text: "t", html: "<p>h</p>" });
+  assert.equal(await resend.resendSend({ apiKey: "", from: "x" })({ to: ["a@b.co"], subject: "s", text: "t" }), false);
+});
+
+test("The alert goes to info@, copying the founders, with Reply-To set to the visitor", () => {
+  const m = emails.alertMail({ ...payload(), sentence: "We need investors to commit.", utm: { first: { utm_source: "linkedin" } } }, { to: "info@axisandsage.com", cc: ["ifeanyi@axisandsage.com", "tomiwa@axisandsage.com"] });
+  assert.deepEqual(m.to, ["info@axisandsage.com"]);
+  assert.deepEqual(m.cc, ["ifeanyi@axisandsage.com", "tomiwa@axisandsage.com"]);
+  assert.equal(m.replyTo, "ada@example.com");
+  assert.equal(m.subject, "New lead: We need investors to commit.");
+  assert.match(m.text, /First touch: linkedin/);
+});
+
+test("The auto-reply thanks the visitor, never repeats a link, and points to the Scorecard", () => {
+  const m = emails.autoreplyMail({ ...payload(), name: "Ada Obi", message: "See https://evil.example/x please" }, "https://axisandsage.com");
+  assert.deepEqual(m.to, ["ada@example.com"]);
+  assert.match(m.text, /^Thanks, Ada\./);
+  assert.doesNotMatch(m.text + m.html, /evil\.example/);
+  assert.match(m.text, /https:\/\/axisandsage\.com\/tools\/conversion-scorecard/);
+});
+
+test("The tool email carries the result, a link back to it, a Book a Diagnostic link and the disclaimer", () => {
+  const m = emails.toolResultMail({ ...payload(), type: "tool_email", tool: "Conversion Scorecard", summary: "Terms 25/100 <b>", shareUrl: "https://axisandsage.com/tools/conversion-scorecard#r=abc" }, "https://axisandsage.com");
+  assert.equal(m.subject, "Your Conversion Scorecard result · Axis & Sage");
+  assert.match(m.text, /See it again: https:\/\/axisandsage\.com\/tools\/conversion-scorecard#r=abc/);
+  assert.match(m.text, /Book a Diagnostic: https:\/\/axisandsage\.com\/contact\?engagement=diagnostic#note/);
+  assert.match(m.text, /not financial, legal or tax advice/);
+  assert.match(m.html, /Terms 25\/100 &lt;b&gt;/, "visitor text is escaped in HTML");
+});
+
+test("The Apps Script records only: it verifies the signature, rate-limits softly and sends no email", async () => {
   const gs = await read("integrations/google-apps-script/pipeline.gs");
   assert.match(gs, /Utilities\.computeHmacSha256Signature/);
   assert.match(gs, /5 \* 60 \* 1000/);
   assert.match(gs, /CacheService/);
   assert.match(gs, /limit\("ip:" \+ p\.ipHash, 5, 600\)/);
   assert.match(gs, /limit\("email:" \+ email, 3, 3600\)/);
-  assert.match(gs, /GmailApp\.sendEmail\(/);
-  assert.match(gs, /\{ from: FROM, name: "Axis & Sage", replyTo:/);
+  assert.doesNotMatch(gs, /GmailApp|MailApp/);
   for (const stage of ["New lead", "Qualified", "Call booked", "Diagnostic proposed", "Diagnostic signed", "Programme proposed", "Programme signed", "Embedded", "Lost"]) assert.ok(gs.includes(`"${stage}"`), stage);
   const cal = await read("src/app/api/cal/route.ts");
   assert.match(cal, /verifyHexSignature/);

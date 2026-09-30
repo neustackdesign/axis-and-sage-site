@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { validateLead } from "@/lib/leads";
 import { tooFast } from "@/lib/pipeline/core";
-import { clientIp, deliverLead, parseLead, readJson, sheetPayload } from "@/lib/server/leadpath";
+import { deliverLead, ipHashOf, parseLead, readJson, sheetPayload } from "@/lib/server/leadpath";
 import { hasMx } from "@/lib/server/mx";
 
 const THANKS = "Thanks. One of us will reply within one working day.";
 
-/** Contact form and CTA band: validate, minimum fill time, store in Blob first, forward to the Pipeline Sheet. */
+/** Contact form and CTA band: validate, minimum fill time, store in Blob first, forward to the Pipeline Sheet, email. */
 export async function POST(request: Request) {
   const raw = await readJson(request);
   const lead = parseLead(raw);
@@ -15,8 +15,8 @@ export async function POST(request: Request) {
   if (lead.website || tooFast(raw.renderedAt, raw.submittedAt)) return NextResponse.json({ message: THANKS, redirect });
   const errors = validateLead(lead);
   if (Object.keys(errors).length) return NextResponse.json({ message: "Please check the highlighted fields.", errors }, { status: 400 });
-  const payload = sheetPayload("lead", lead, { ip: clientIp(request), sendAutoreply: await hasMx(lead.email) });
-  const result = await deliverLead(payload);
+  const payload = sheetPayload("lead", lead);
+  const result = await deliverLead(payload, { ipHash: ipHashOf(request), autoreply: await hasMx(lead.email) });
   if (!result.stored) return NextResponse.json({ message: "We couldn't save your message just now. Your email app can send it instead.", fallback: true }, { status: 503 });
   return NextResponse.json({ message: THANKS, redirect });
 }

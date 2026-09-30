@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { validateLead } from "@/lib/leads";
 import { tooFast } from "@/lib/pipeline/core";
-import { clientIp, deliverLead, parseLead, readJson, sheetPayload } from "@/lib/server/leadpath";
+import { deliverLead, ipHashOf, parseLead, readJson, sheetPayload } from "@/lib/server/leadpath";
 import { config } from "@/lib/server/config";
 
 /** Rebuilds a visitor-supplied link on our own origin, keeping only the path, query and hash. */
@@ -10,7 +10,7 @@ const safeUrl = (u: unknown) => {
   try { const url = new URL(u); return url.pathname.startsWith("/tools/") || url.pathname === "/contact" ? `${config.siteUrl}${url.pathname}${url.search}${url.hash}`.slice(0, 4000) : undefined; } catch { return undefined; }
 };
 
-/** A tool result the visitor asked us to email. Same lead path: Blob first, then the Pipeline Sheet sends it. */
+/** A tool result the visitor asked us to email. Same lead path: Blob first, the Pipeline Sheet, then Resend. */
 export async function POST(request: Request) {
   const raw = await readJson(request);
   const lead = parseLead({ ...raw, source: "tool" });
@@ -18,12 +18,12 @@ export async function POST(request: Request) {
   if (lead.website || tooFast(raw.renderedAt, raw.submittedAt)) return NextResponse.json({ stored: true, delivered: true });
   if (validateLead(lead).email) return NextResponse.json({ message: "Enter an email like name@company.com." }, { status: 400 });
   const payload = sheetPayload("tool_email", lead, {
-    ip: clientIp(request),
     result: raw.result ?? null,
     shareUrl: safeUrl(raw.shareUrl),
     diagnosticUrl: safeUrl(raw.diagnosticUrl) || `${config.siteUrl}/contact?source=${encodeURIComponent(lead.tool)}#note`,
   });
-  const result = await deliverLead(payload);
+  const result = await deliverLead(payload, { ipHash: ipHashOf(request) });
   if (!result.stored) return NextResponse.json({ stored: false, message: "We couldn't save that just now." }, { status: 503 });
-  return NextResponse.json({ stored: true, delivered: result.delivered });
+  // `delivered` tells the visitor whether the email has gone; otherwise it's parked for the cron ("we'll email it shortly").
+  return NextResponse.json({ stored: true, delivered: result.visitorMail === "sent" });
 }

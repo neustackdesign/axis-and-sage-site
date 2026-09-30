@@ -1,12 +1,13 @@
-// The lead path, independent of Vercel and Google so it can be tested with mocks.
+// The lead path, independent of Vercel, Google and Resend so it can be tested with mocks.
 // 1 validate · 2 minimum fill time · 3 store in Blob first · 4 forward to Apps Script, delete on confirm
-// 5 respond with success once stored · 6 mailto hand-over only if the Blob write fails.
+// 5 email through Resend unless the Sheet marked it limited · 6 respond with success once stored
+// 7 mailto hand-over only if the Blob write fails.
 import { signBody } from "./sign";
 
 export const MIN_FILL_MS = 3000;
 export const FORWARD_TIMEOUT_MS = 8000;
 
-export type PendingKind = "leads" | "subscribers";
+export type PendingKind = "leads" | "subscribers" | "emails";
 
 export interface PendingStore {
   put(pathname: string, body: string): Promise<void>;
@@ -15,7 +16,10 @@ export interface PendingStore {
   remove(pathname: string): Promise<void>;
 }
 
-export type Forward = (payload: SheetPayload) => Promise<boolean>;
+/** What the Apps Script says: `ok` once the row is written; `limited` when the soft rate limit applied (send no email). */
+export type ForwardResult = { ok: boolean; limited: boolean };
+export type Forward = (payload: SheetPayload) => Promise<ForwardResult>;
+const NOT_FORWARDED: ForwardResult = { ok: false, limited: false };
 
 export type Touch = { utm_source?: string; utm_medium?: string; utm_campaign?: string; utm_term?: string; utm_content?: string; referrer?: string; landing_page?: string; at?: string };
 
@@ -28,7 +32,7 @@ export type SheetPayload = {
   who?: string; what?: string; when?: string; sentence?: string; heard?: string; heardDetail?: string; engagement?: string;
   tool?: string; summary?: string; result?: unknown; shareUrl?: string; diagnosticUrl?: string;
   booking?: unknown;
-  sendAutoreply?: boolean;
+  /** Sent to the Sheet for its rate limit only. Never stored in Blob. */
   ipHash?: string;
   utm?: { first?: Touch; last?: Touch };
   referrer?: string; landingPage?: string; submissionPage?: string;
@@ -43,29 +47,54 @@ export function tooFast(renderedAt: unknown, submittedAt: unknown, minMs = MIN_F
 export const randomId = () => Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 6);
 export const pendingPath = (kind: PendingKind, now: Date, id: string) => `pending/${kind}/${now.toISOString().replace(/[:.]/g, "-")}-${id}.json`;
 
-export type DeliverResult = { stored: boolean; delivered: boolean; pathname?: string };
+export type DeliverResult = { stored: boolean; delivered: boolean; limited: boolean; pathname?: string };
+type Log = (e: string, c?: Record<string, unknown>) => void;
 
-/** Store first, then forward; delete the stored copy once Apps Script confirms. */
-export async function deliver(payload: SheetPayload, deps: { store: PendingStore; forward: Forward; now?: () => Date; log?: (e: string, c?: Record<string, unknown>) => void }): Promise<DeliverResult> {
+/**
+ * Store first, then forward; delete the stored copy once Apps Script confirms. The IP hash goes to the Sheet's rate
+ * limit with the live forward only: the stored copy never holds it, so a lead waiting for the cron keeps no IP data.
+ */
+export async function deliver(payload: SheetPayload, deps: { store: PendingStore; forward: Forward; now?: () => Date; log?: Log }, transient: { ipHash?: string } = {}): Promise<DeliverResult> {
   const now = deps.now?.() ?? new Date();
   const pathname = pendingPath("leads", now, payload.id);
+  const { ipHash: payloadHash, ...stored } = payload;
+  const ipHash = transient.ipHash ?? payloadHash;
   try {
-    await deps.store.put(pathname, JSON.stringify(payload));
+    await deps.store.put(pathname, JSON.stringify(stored));
   } catch (error) {
     deps.log?.("blob_write_failed", { id: payload.id, error: String(error) });
-    return { stored: false, delivered: false };
+    return { stored: false, delivered: false, limited: false };
   }
-  let delivered = false;
-  try { delivered = await deps.forward(payload); } catch (error) { deps.log?.("forward_failed", { id: payload.id, error: String(error) }); }
-  if (delivered) {
+  let result = NOT_FORWARDED;
+  try { result = await deps.forward(ipHash ? { ...stored, ipHash } : stored); } catch (error) { deps.log?.("forward_failed", { id: payload.id, error: String(error) }); }
+  if (result.ok) {
     try { await deps.store.remove(pathname); } catch (error) { deps.log?.("blob_delete_failed", { pathname, error: String(error) }); }
   } else deps.log?.("forward_pending", { id: payload.id, pathname });
-  return { stored: true, delivered, pathname };
+  return { stored: true, delivered: result.ok, limited: result.ok && result.limited, pathname };
+}
+
+/* ---------- Email ---------- */
+
+export type Mail = { to: string[]; cc?: string[]; replyTo?: string; subject: string; text: string; html?: string };
+export type SendMail = (mail: Mail) => Promise<boolean>;
+
+/** Sends now; if the send fails, parks the email in pending/emails/ for the cron. */
+export async function sendOrPark(mail: Mail, deps: { store: PendingStore; send: SendMail; now?: () => Date; id?: string; log?: Log }) {
+  if (await deps.send(mail).catch(() => false)) return { sent: true, parked: false };
+  const now = deps.now?.() ?? new Date();
+  try {
+    await deps.store.put(pendingPath("emails", now, deps.id ?? randomId()), JSON.stringify(mail));
+    deps.log?.("email_pending", { subject: mail.subject });
+    return { sent: false, parked: true };
+  } catch {
+    deps.log?.("email_failed", { subject: mail.subject });
+    return { sent: false, parked: false };
+  }
 }
 
 /** Posts a signed payload to the Apps Script web app and reads its JSON reply after the 302 redirect. */
-export async function forwardToSheet(payload: SheetPayload, opts: { url: string; secret: string; fetchImpl?: typeof fetch; timeoutMs?: number; now?: () => number }): Promise<boolean> {
-  if (!opts.url || !opts.secret) return false;
+export async function forwardToSheet(payload: SheetPayload, opts: { url: string; secret: string; fetchImpl?: typeof fetch; timeoutMs?: number; now?: () => number }): Promise<ForwardResult> {
+  if (!opts.url || !opts.secret) return NOT_FORWARDED;
   const body = signBody(payload, opts.secret, opts.now?.() ?? Date.now());
   const res = await (opts.fetchImpl ?? fetch)(opts.url, {
     method: "POST",
@@ -74,22 +103,22 @@ export async function forwardToSheet(payload: SheetPayload, opts: { url: string;
     redirect: "follow",
     signal: AbortSignal.timeout(opts.timeoutMs ?? FORWARD_TIMEOUT_MS),
   });
-  if (!res.ok) return false;
-  const reply = (await res.json().catch(() => null)) as { ok?: boolean } | null;
-  return reply?.ok === true;
+  if (!res.ok) return NOT_FORWARDED;
+  const reply = (await res.json().catch(() => null)) as { ok?: boolean; limited?: boolean } | null;
+  return { ok: reply?.ok === true, limited: reply?.limited === true };
 }
 
 export type Subscribe = (email: string, attribution?: SheetPayload["utm"]) => Promise<boolean>;
 
-/** Daily retry: re-forward pending leads, re-send pending subscribers, report what's left. */
-export async function retryPending(deps: { store: PendingStore; forward: Forward; subscribe: Subscribe; log?: (e: string, c?: Record<string, unknown>) => void }) {
-  const counts = { leadsDelivered: 0, leadsPending: 0, subscribersSent: 0, subscribersPending: 0, unreadable: 0 };
+/** Daily retry: re-forward pending leads, re-send pending subscribers and emails, report what's left. */
+export async function retryPending(deps: { store: PendingStore; forward: Forward; subscribe: Subscribe; send: SendMail; log?: Log }) {
+  const counts = { leadsDelivered: 0, leadsPending: 0, subscribersSent: 0, subscribersPending: 0, emailsSent: 0, emailsPending: 0, unreadable: 0 };
   for (const pathname of await deps.store.list("pending/leads/")) {
     const raw = await deps.store.read(pathname).catch(() => null);
     let payload: SheetPayload | null = null;
     try { payload = raw ? (JSON.parse(raw) as SheetPayload) : null; } catch { payload = null; }
     if (!payload) { counts.unreadable++; continue; }
-    const ok = await deps.forward(payload).catch(() => false);
+    const ok = (await deps.forward(payload).catch(() => NOT_FORWARDED)).ok;
     if (ok) { await deps.store.remove(pathname).catch(() => undefined); counts.leadsDelivered++; } else counts.leadsPending++;
   }
   for (const pathname of await deps.store.list("pending/subscribers/")) {
@@ -99,6 +128,14 @@ export async function retryPending(deps: { store: PendingStore; forward: Forward
     if (!item?.email) { counts.unreadable++; continue; }
     const ok = await deps.subscribe(item.email, item.utm).catch(() => false);
     if (ok) { await deps.store.remove(pathname).catch(() => undefined); counts.subscribersSent++; } else counts.subscribersPending++;
+  }
+  for (const pathname of await deps.store.list("pending/emails/")) {
+    const raw = await deps.store.read(pathname).catch(() => null);
+    let mail: Mail | null = null;
+    try { mail = raw ? (JSON.parse(raw) as Mail) : null; } catch { mail = null; }
+    if (!mail?.to?.length) { counts.unreadable++; continue; }
+    const ok = await deps.send(mail).catch(() => false);
+    if (ok) { await deps.store.remove(pathname).catch(() => undefined); counts.emailsSent++; } else counts.emailsPending++;
   }
   deps.log?.("cron_retry", counts);
   return counts;

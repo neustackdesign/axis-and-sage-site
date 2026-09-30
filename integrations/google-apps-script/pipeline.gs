@@ -2,19 +2,17 @@
  * Axis & Sage · Pipeline
  *
  * A Google Apps Script web app bound to the Sheet "Axis & Sage · Pipeline". The website posts every lead, booking,
- * tool email and completed tool here. Setup, properties and redeploying: see README.md next to this file.
+ * tool email and completed tool here. This script only records: it writes the rows and decides the soft rate limit.
+ * Every email is sent by the website through Resend. Setup, properties and redeploying: see README.md next to this file.
  *
- * Script Properties
+ * Script Property
  *   SHEET_WEBHOOK_SECRET  the same value as SHEET_WEBHOOK_SECRET in Vercel
- *   FOUNDER_EMAILS        comma-separated founder addresses, copied on every lead alert
- *   FROM_ADDRESS          info@axisandsage.com
  *
  * The website sends { payload, ts, sig } as text/plain. sig is the hex HMAC-SHA256 of ts + "." + JSON.stringify(payload).
- * This script replies { ok: true } once the row is written. Anything else and the website keeps the lead in Blob
- * and retries it from the daily cron.
+ * This script replies { ok: true, limited } once the row is written. With limited: true the website sends no email.
+ * Anything other than ok: true and the website keeps the lead in Blob and retries it from the daily cron.
  */
 
-var SITE_URL = "https://axisandsage.com";
 var MAX_AGE_MS = 5 * 60 * 1000;
 var LEADS_TAB = "Leads";
 var TOOLS_TAB = "Tools";
@@ -24,8 +22,10 @@ var LEADS_COLUMNS = ["Date", "Source", "Name", "Email", "Company", "Role", "Sent
 var TOOLS_COLUMNS = ["Date", "Tool", "Answers", "Result", "UTM source"];
 var STAGES = ["New lead", "Qualified", "Call booked", "Diagnostic proposed", "Diagnostic signed", "Programme proposed", "Programme signed", "Embedded", "Lost"];
 
+var TOOLS_KEEP_DAYS = 365; // privacy notice: tool results without an email, up to 12 months
+var DELIVERED_KEEP_DAYS = 90; // long enough to catch any retry the website sends
+
 var props = PropertiesService.getScriptProperties();
-var FROM = props.getProperty("FROM_ADDRESS") || "info@axisandsage.com";
 
 /* ---------- Entry points ---------- */
 
@@ -38,11 +38,10 @@ function doPost(e) {
   lock.waitLock(20000);
   try {
     var p = body.payload;
-    if (alreadyDelivered(p.id)) return reply({ ok: true, duplicate: true });
-    if (p.type === "tool_complete") recordTool(p);
-    else recordLead(p);
+    if (alreadyDelivered(p.id)) return reply({ ok: true, limited: false, duplicate: true });
+    var limited = p.type === "tool_complete" ? recordTool(p) : recordLead(p);
     markDelivered(p);
-    return reply({ ok: true });
+    return reply({ ok: true, limited: limited });
   } finally {
     lock.releaseLock();
   }
@@ -81,7 +80,7 @@ function limit(key, max, windowSeconds) {
   return state.n <= max;
 }
 
-/** 5 per 10 minutes per IP hash; 3 per hour per email. Over the limit the row is still added, marked Limited, and no email is sent. */
+/** 5 per 10 minutes per IP hash; 3 per hour per email. Over the limit the row is still added and marked Limited, and the website sends no email. */
 function isLimited(p) {
   if (p.source === "booking") return false;
   var email = String(p.email || "").toLowerCase();
@@ -117,129 +116,18 @@ function recordLead(p) {
     notes.join("\n\n"),
   ];
   appendRow(leadsSheet(), row);
-
-  if (limited) return;
-  // The row is written: an email failure is logged, never retried, so a retry can't add the row twice.
-  try { sendAlert(p, sentence); } catch (err) { console.error("alert failed", p.id, err); }
-  try {
-    if (isTool) sendToolEmail(p);
-    else if (isContactOrCta(p.source) && p.sendAutoreply === true) sendAutoreply(p, sentence);
-  } catch (err) { console.error("visitor email failed", p.id, err); }
-}
-
-/** Contact and CTA sources; the contact form may carry where the visitor came from ("contact · scorecard"). */
-function isContactOrCta(source) {
-  source = String(source || "");
-  return source === "cta" || source === "contact" || source.indexOf("contact · ") === 0;
+  return limited;
 }
 
 /* ---------- Tools ---------- */
 
 function recordTool(p) {
   // Anonymous rows: drop floods from one address rather than mark them.
-  if (p.ipHash && !limit("tools:" + p.ipHash, 20, 600)) return;
+  if (p.ipHash && !limit("tools:" + p.ipHash, 20, 600)) return true;
   var r = p.result || {};
   var source = (p.utm && p.utm.first && p.utm.first.utm_source) || "";
   appendRow(toolsSheet(), [new Date(p.createdAt || Date.now()), p.tool, JSON.stringify(r.answers), JSON.stringify(r.result), source]);
-}
-
-/* ---------- Email ---------- */
-
-function founders() {
-  return String(props.getProperty("FOUNDER_EMAILS") || "").split(",").map(function (s) { return s.trim(); }).filter(String).join(",");
-}
-
-function send(to, subject, text, html, extra) {
-  var opts = { from: FROM, name: "Axis & Sage", replyTo: (extra && extra.replyTo) || FROM };
-  if (html) opts.htmlBody = html;
-  if (extra && extra.cc) opts.cc = extra.cc;
-  GmailApp.sendEmail(to, subject, text, opts);
-}
-
-function sendAlert(p, sentence) {
-  var label = p.source === "booking" ? "Call booked" : p.type === "tool_email" ? "Tool result (" + p.tool + ")" : "New lead";
-  var utm = function (t) { return t ? [t.utm_source, t.utm_medium, t.utm_campaign].filter(String).join(" / ") || t.referrer || "direct" : "unknown"; };
-  var lines = [
-    label + ": " + (sentence || p.email),
-    "",
-    "Name: " + (p.name || ""),
-    "Email: " + (p.email || ""),
-    p.company ? "Company: " + p.company : "",
-    p.role ? "Role: " + p.role : "",
-    p.when ? "When: " + p.when : "",
-    p.engagement ? "Interested in: " + p.engagement : "",
-    p.heard ? "Heard via: " + p.heard + (p.heardDetail ? " (" + p.heardDetail + ")" : "") : "",
-    p.message ? "\n" + p.message : "",
-    p.summary ? "\n" + p.summary : "",
-    "",
-    "Source: " + (p.source || p.type),
-    "First touch: " + utm(p.utm && p.utm.first),
-    "Last touch: " + utm(p.utm && p.utm.last),
-    "Referrer: " + (p.referrer || "none"),
-    "Landing page: " + (p.landingPage || "unknown"),
-    "Submitted on: " + (p.submissionPage || "unknown"),
-    "",
-    "Pipeline: " + SpreadsheetApp.getActiveSpreadsheet().getUrl(),
-  ].filter(function (l, i, a) { return l !== "" || a[i - 1] !== ""; });
-  send(FROM, label + ": " + (sentence || p.name || p.email), lines.join("\n"), null, { cc: founders(), replyTo: p.email || FROM });
-}
-
-function sendAutoreply(p, sentence) {
-  var first = String(p.name || "").trim().split(/\s+/)[0];
-  var said = stripUrls(sentence || p.message || "");
-  var scorecard = SITE_URL + "/tools/conversion-scorecard";
-  var text = [
-    first ? "Thanks, " + first + "." : "Thanks.",
-    "",
-    "We have your note. One of us will reply within one working day.",
-  ].concat(said ? ["", "You wrote:", "\"" + said + "\""] : []).concat([
-    "",
-    "While you wait, the Conversion Scorecard takes six minutes: " + scorecard,
-    "",
-    "Axis & Sage Advisory",
-  ]).join("\n");
-  var html = htmlEmail({
-    heading: first ? "Thanks, " + escapeHtml(first) + "." : "Thanks.",
-    paragraphs: ["We have your note. One of us will reply within one working day."].concat(said ? ["You wrote:<br><em>“" + escapeHtml(said) + "”</em>"] : []),
-    action: { label: "Take the Conversion Scorecard", href: scorecard },
-  });
-  send(p.email, "We have your note · Axis & Sage", text, html);
-}
-
-function sendToolEmail(p) {
-  var summary = p.summary || "";
-  var diagnostic = p.diagnosticUrl || SITE_URL + "/contact?engagement=diagnostic#note";
-  var text = [
-    "Your " + p.tool + " result",
-    "",
-    summary,
-    "",
-    p.shareUrl ? "See it again: " + p.shareUrl : "",
-    "Book a Diagnostic: " + diagnostic,
-    "",
-    "An illustrative planning estimate, not financial, legal or tax advice.",
-    "",
-    "Axis & Sage Advisory",
-  ].filter(function (l, i, a) { return l !== "" || a[i - 1] !== ""; }).join("\n");
-  var html = htmlEmail({
-    heading: "Your " + escapeHtml(p.tool) + " result",
-    paragraphs: ['<span style="white-space:pre-wrap;font-family:Menlo,monospace;font-size:13px;line-height:20px">' + escapeHtml(summary) + "</span>"]
-      .concat(p.shareUrl ? ['<a href="' + escapeHtml(p.shareUrl) + '" style="color:#1F1F1F">See your result again</a>'] : [])
-      .concat(['<span style="font-size:13px;color:#5B5A57">An illustrative planning estimate, not financial, legal or tax advice.</span>']),
-    action: { label: "Book a Diagnostic", href: escapeHtml(diagnostic) },
-  });
-  send(p.email, "Your " + p.tool + " result · Axis & Sage", text, html);
-}
-
-/** Paper background, serif heading, mono label, one orange button. */
-function htmlEmail(o) {
-  var paras = o.paragraphs.map(function (t) { return '<p style="margin:0 0 16px;font:16px/25px Helvetica,Arial,sans-serif;color:#1F1F1F">' + t + "</p>"; }).join("");
-  var action = o.action ? '<p style="margin:24px 0"><a href="' + o.action.href + '" style="display:inline-block;background:#E8590C;color:#1F1F1F;padding:14px 22px;font:500 15px Helvetica,Arial,sans-serif;text-decoration:none">' + o.action.label + "</a></p>" : "";
-  return '<!doctype html><html><body style="margin:0;background:#ECEBE9"><div style="max-width:560px;margin:0 auto;padding:40px 24px">'
-    + '<p style="margin:0 0 24px;font:12px/16px Menlo,monospace;letter-spacing:.08em;color:#5B5A57">AXIS &amp; SAGE ADVISORY</p>'
-    + '<h1 style="margin:0 0 20px;font:400 28px/34px Georgia,serif;color:#1F1F1F">' + o.heading + "</h1>" + paras + action
-    + '<p style="margin:32px 0 0;border-top:1px solid #D4D4D2;padding-top:16px;font:12px/18px Helvetica,Arial,sans-serif;color:#5B5A57">Axis &amp; Sage Advisory Limited · Masdar City Free Zone, Abu Dhabi, United Arab Emirates</p>'
-    + "</div></body></html>";
+  return false;
 }
 
 /* ---------- Sheets ---------- */
@@ -293,8 +181,8 @@ function markDelivered(p) {
 }
 
 /**
- * Run once from the editor after pasting the script: creates the Leads and Tools tabs with their headers and puts the
- * Stage dropdown on the whole Stage column.
+ * Run once from the editor after pasting the script: creates the Leads and Tools tabs with their headers, puts the
+ * Stage dropdown on the whole Stage column, and schedules the daily clean-up.
  */
 function setup() {
   var leads = leadsSheet();
@@ -302,6 +190,31 @@ function setup() {
   var col = LEADS_COLUMNS.indexOf("Stage") + 1;
   leads.getRange(2, col, leads.getMaxRows() - 1, 1).setDataValidation(stageRule());
   leads.getRange(1, 1, leads.getMaxRows(), 1).setNumberFormat("yyyy-mm-dd hh:mm");
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === "prune") ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger("prune").timeBased().everyDays(1).atHour(4).create();
+}
+
+/* ---------- Retention ---------- */
+
+/**
+ * Daily: deletes anonymous Tools rows older than 12 months, as the privacy notice says, and old delivery ids.
+ * Leads are never deleted automatically: review them by hand against the 24-month rule.
+ */
+function prune() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  pruneOlderThan(ss.getSheetByName(TOOLS_TAB), 1, TOOLS_KEEP_DAYS, 2);
+  pruneOlderThan(ss.getSheetByName(LOG_TAB), 3, DELIVERED_KEEP_DAYS, 1);
+}
+
+/** Rows are appended in date order, so the old ones are a block at the top: delete that block in one call. */
+function pruneOlderThan(sheet, dateColumn, days, firstDataRow) {
+  if (!sheet || sheet.getLastRow() < firstDataRow) return 0;
+  var cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  var dates = sheet.getRange(firstDataRow, dateColumn, sheet.getLastRow() - firstDataRow + 1, 1).getValues();
+  var n = 0;
+  while (n < dates.length && dates[n][0] instanceof Date && dates[n][0].getTime() < cutoff) n++;
+  if (n) sheet.deleteRows(firstDataRow, n);
+  return n;
 }
 
 /* ---------- Helpers ---------- */
@@ -311,15 +224,3 @@ function reply(obj) {
 }
 
 function firstLine(s) { return String(s || "").split("\n")[0].slice(0, 300); }
-
-/** The auto-reply never echoes a link the visitor typed. */
-function stripUrls(s) {
-  return String(s || "")
-    .replace(/https?:\/\/\S+/gi, "[link removed]")
-    .replace(/\bwww\.\S+/gi, "[link removed]")
-    .replace(/\b[a-z0-9-]+(\.[a-z0-9-]+)*\.(com|net|org|io|co|ru|xyz|info|biz|ng|ae|uk|app|dev|site|online|top|click|link)(\/\S*)?/gi, "[link removed]");
-}
-
-function escapeHtml(s) {
-  return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}

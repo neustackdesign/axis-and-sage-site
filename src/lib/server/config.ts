@@ -13,6 +13,10 @@ export const config = {
   cronSecret: env("CRON_SECRET"),
   ipHashSalt: env("IP_HASH_SALT"),
   calWebhookSecret: env("CAL_WEBHOOK_SECRET"),
+  resendKey: env("RESEND_API_KEY"),
+  mailFrom: env("MAIL_FROM") || "Axis & Sage <info@axisandsage.com>",
+  notifyTo: env("CONTACT_TO_EMAIL") || "info@axisandsage.com",
+  founders: env("FOUNDER_EMAILS").split(",").map((s) => s.trim()).filter(Boolean),
   mailerLiteKey: env("MAILERLITE_API_KEY"),
   mailerLiteGroup: env("MAILERLITE_GROUP_ID"),
 };

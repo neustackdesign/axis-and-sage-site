@@ -46,6 +46,8 @@ export const privacyNotice: LegalDoc = {
       { ul: [
         "Vercel hosts the website. It briefly holds a copy of your message if our tracker can't be reached, and deletes it once the message arrives.",
         "Google Workspace runs our email and the tracker we use to follow up enquiries.",
+        // Added with the move to Resend (not in brief 11 §5): needs Ifeanyi's approval with the rest of the notice.
+        "Resend sends the emails our website sends you, such as our reply to your note and your tool results.",
         "MailerLite sends the newsletter.",
         "Cal.com runs our booking calendar.",
       ] },

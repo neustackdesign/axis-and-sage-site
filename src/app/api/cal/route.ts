@@ -24,9 +24,9 @@ export async function POST(request: Request) {
     source: "booking",
     sentence: p.title,
     booking: { title: p.title, startTime: p.startTime },
-    sendAutoreply: false,
     submissionPage: "/contact#book",
   });
+  // Cal.com sends the attendee its own confirmation, so there's no auto-reply; the founders get the alert.
   const result = await deliverLead(payload);
   // A 5xx makes Cal.com retry; only ask for that when even the Blob copy failed.
   return NextResponse.json({ ok: result.stored }, { status: result.stored ? 200 : 503 });

@@ -1,8 +1,10 @@
 import "server-only";
 import { sanitiseAttribution } from "@/lib/attribution";
 import { leadSources, sentenceOf, type LeadPayload } from "@/lib/leads";
-import { deliver, forwardToSheet, randomId, retryPending, type SheetPayload } from "@/lib/pipeline/core";
+import { deliver, forwardToSheet, randomId, retryPending, sendOrPark, type SheetPayload } from "@/lib/pipeline/core";
+import { alertMail, autoreplyMail, toolResultMail } from "@/lib/pipeline/emails";
 import { mailerLiteSubscribe } from "@/lib/pipeline/mailerlite";
+import { resendSend } from "@/lib/pipeline/resend";
 import { hashIp } from "@/lib/pipeline/sign";
 import { blobStore } from "./blob-store";
 import { config, logEvent } from "./config";
@@ -16,6 +18,9 @@ export async function readJson(request: Request): Promise<Record<string, unknown
 export function clientIp(request: Request) {
   return request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
 }
+
+/** Salted hash of the caller's IP, for the Sheet's rate limit. The IP itself is never stored. */
+export const ipHashOf = (request: Request) => hashIp(clientIp(request), config.ipHashSalt);
 
 export function parseLead(raw: Record<string, unknown>): LeadPayload | null {
   const source = str(raw.source, 20) as LeadPayload["source"];
@@ -34,10 +39,9 @@ export function parseLead(raw: Record<string, unknown>): LeadPayload | null {
   };
 }
 
-/** Builds the record the Pipeline Sheet receives. Never includes the IP itself. */
-export function sheetPayload(type: SheetPayload["type"], lead: LeadPayload, extra: Partial<SheetPayload> & { ip?: string } = {}): SheetPayload {
+/** Builds the record the Pipeline Sheet receives. It holds no IP data: the IP hash travels separately (see deliver). */
+export function sheetPayload(type: SheetPayload["type"], lead: LeadPayload, rest: Partial<SheetPayload> = {}): SheetPayload {
   const a = lead.attribution || {};
-  const { ip, ...rest } = extra;
   return {
     type,
     id: randomId(),
@@ -47,7 +51,6 @@ export function sheetPayload(type: SheetPayload["type"], lead: LeadPayload, extr
     who: lead.who, what: lead.what, when: lead.when, sentence: sentenceOf(lead) || undefined,
     heard: lead.heard, heardDetail: lead.heardDetail, engagement: lead.engagement,
     tool: lead.tool, summary: lead.summary,
-    ipHash: ip ? hashIp(ip, config.ipHashSalt) : undefined,
     utm: { first: a.first, last: a.last },
     referrer: a.referrer, landingPage: a.landing_page, submissionPage: a.page,
     ...rest,
@@ -57,5 +60,27 @@ export function sheetPayload(type: SheetPayload["type"], lead: LeadPayload, extr
 export const forward = (payload: SheetPayload) => forwardToSheet(payload, { url: config.sheetWebhookUrl, secret: config.sheetWebhookSecret });
 export const subscribe = mailerLiteSubscribe({ apiKey: config.mailerLiteKey, groupId: config.mailerLiteGroup });
 
-export const deliverLead = (payload: SheetPayload) => deliver(payload, { store: blobStore, forward, log: logEvent });
-export const runRetry = () => retryPending({ store: blobStore, forward, subscribe, log: logEvent });
+export const sendMail = resendSend({ apiKey: config.resendKey, from: config.mailFrom });
+
+export type VisitorMail = "sent" | "parked" | "none" | "failed";
+
+/**
+ * The whole lead path after validation: Blob first, forward to the Sheet, then email through Resend. The alert goes to
+ * info@ with the founders copied; the visitor gets the tool result, or the auto-reply when `autoreply` is set.
+ * Nothing is emailed when the Sheet marked the lead "limited". If the Sheet can't be reached, the emails still go.
+ */
+export async function deliverLead(payload: SheetPayload, opts: { ipHash?: string; autoreply?: boolean } = {}) {
+  const result = await deliver(payload, { store: blobStore, forward, log: logEvent }, { ipHash: opts.ipHash });
+  if (!result.stored) return { ...result, visitorMail: "none" as VisitorMail };
+  if (result.limited) { logEvent("lead_limited", { id: payload.id }); return { ...result, visitorMail: "none" as VisitorMail }; }
+  const deps = { store: blobStore, send: sendMail, log: logEvent };
+  const visitor = payload.type === "tool_email" ? toolResultMail(payload, config.siteUrl) : opts.autoreply ? autoreplyMail(payload, config.siteUrl) : null;
+  const [, v] = await Promise.all([
+    sendOrPark(alertMail(payload, { to: config.notifyTo, cc: config.founders }), deps),
+    visitor ? sendOrPark(visitor, deps) : Promise.resolve(null),
+  ]);
+  const visitorMail: VisitorMail = !v ? "none" : v.sent ? "sent" : v.parked ? "parked" : "failed";
+  return { ...result, visitorMail };
+}
+
+export const runRetry = () => retryPending({ store: blobStore, forward, subscribe, send: sendMail, log: logEvent });

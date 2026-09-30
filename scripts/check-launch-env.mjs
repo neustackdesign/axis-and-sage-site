@@ -7,6 +7,8 @@ const required = [
   ["SHEET_WEBHOOK_URL", "the Apps Script web app on the Pipeline Sheet"],
   ["SHEET_WEBHOOK_SECRET", "signs every post to the Apps Script (same value as its Script Property)"],
   ["BLOB_READ_WRITE_TOKEN", "private Vercel Blob store: leads are stored here before they are forwarded"],
+  ["RESEND_API_KEY", "sends every website email: the lead alert, the auto-reply and tool results"],
+  ["FOUNDER_EMAILS", "founders copied on every lead alert"],
   ["CRON_SECRET", "protects the daily retry cron"],
   ["IP_HASH_SALT", "salts the IP hash; the IP itself is never stored"],
   ["NEXT_PUBLIC_BOOKING_URL", "the Cal.com booking embed"],

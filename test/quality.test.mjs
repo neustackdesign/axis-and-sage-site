@@ -34,7 +34,7 @@ test("contact handling has honest validation and failure states", async () => {
   assert.match(route, /status: 400/);
   assert.match(route, /status: 503/);
   assert.match(route, /fallback: true/);
-  assert.match(await read("src/lib/server/leadpath.ts"), /hashIp\(ip, config\.ipHashSalt\)/);
+  assert.match(await read("src/lib/server/leadpath.ts"), /hashIp\(clientIp\(request\), config\.ipHashSalt\)/);
 });
 
 test("reference audit and responsive capture records exist", async () => {
