@@ -1,0 +1,42 @@
+/* Axis & Sage · spacing, grid, radius, border. 8px unit. */
+:root {
+  --space-unit: 8px;
+  --space-0-5: 4px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-16: 128px;
+
+  --section-lg: 128px;
+  --section-md: 96px;
+  --section-sm: 64px;
+
+  --grid-columns: 12;
+  --grid-max: 1280px;
+  --grid-gutter: 24px;
+  --grid-margin: 40px;
+  --grid-margin-m: 20px;
+  --rail-span: 3;
+  --content-span: 9;
+
+  --radius-none: 0px;
+  --radius-pill: 999px;
+
+  --border-width: 1px;
+  --border-rule: 1px solid var(--stone-300);
+  --border-rule-dark: 1px solid var(--charcoal-600);
+  --border-strong: 1px solid var(--charcoal-900);
+  --border-dotted: 1px dotted var(--charcoal-900);
+
+  --touch-target: 44px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+
+  --shadow-none: none; /* no drop shadows, ever */
+}

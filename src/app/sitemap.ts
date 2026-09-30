@@ -1,8 +1,19 @@
 import type { MetadataRoute } from "next";
-import { getProjectSlugs } from "@/sanity/lib/queries";
+import { guides, tools } from "@/content/library";
+import { people } from "@/content/people";
+import { practices } from "@/content/practices";
+import { casePages } from "@/content/work";
+import { siteOrigin } from "@/lib/metadata";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_ENV === "production" ? "https://axisandsage.com" : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  const projects = await getProjectSlugs();
-  return [{ url: base, lastModified: new Date() }, ...projects.map((slug) => ({ url: `${base}/work/${slug}`, lastModified: new Date() }))];
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = siteOrigin();
+  const paths = [
+    "/", "/conversion-design", "/engagements", "/work", "/people", "/library", "/newsletter", "/contact", "/privacy", "/terms",
+    ...practices.map((p) => `/what-we-do/${p.slug}`),
+    ...casePages.map((c) => `/work/${c.slug}`),
+    ...people.map((p) => `/people/${p.slug}`),
+    ...tools.map((t) => `/tools/${t.slug}`),
+    ...guides.filter((g) => g.published).map((g) => `/guides/${g.slug}`),
+  ];
+  return paths.map((path) => ({ url: `${base}${path}`, lastModified: new Date() }));
 }
