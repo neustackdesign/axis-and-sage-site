@@ -1,10 +1,12 @@
 # Axis & Sage site
 
-Rebuild of the Axis & Sage consultancy website as a strict TypeScript Next.js App Router application with a controlled Sanity content model, embedded Studio and Vercel-ready deployment configuration.
+Rebuild of the Axis & Sage Advisory website as a strict TypeScript Next.js App Router application, built on the Axis & Sage design system (Conversion Design positioning), with an embedded Sanity Studio and Vercel-ready deployment configuration.
 
 ## Status
 
-The local application, Sanity schema, fallback content, contact endpoint, audit records and responsive QA captures are implemented. Sanity publishing and Vercel deployment require project/account credentials. DNS, AWS infrastructure and the production domain are intentionally untouched.
+The full sitemap from the Conversion Design brief is implemented: home, `/conversion-design`, four practice pages, `/engagements`, `/work` with filters, six case pages, `/people` and profiles, `/library`, six tool screens, the guide template, `/newsletter`, `/contact`, `/thank-you`, `/privacy`, `/terms` and the 404. Page copy lives in typed modules under `src/content/`; placeholders stay visible in [square brackets]. See `reference/design-system/website-component-map.md` for the component usage map, placeholders, drafted copy and assets still needed.
+
+Pages no longer read from Sanity. The Studio, schema and seed script remain for a later CMS migration of the new content model. DNS, AWS infrastructure and the production domain are intentionally untouched.
 
 ## Requirements
 
@@ -25,7 +27,7 @@ pnpm dev
 
 The site is available at `http://localhost:3000`; the embedded Studio is at `/studio`.
 
-With no Sanity project ID, the site renders deterministic, source-verified fallback content. This keeps visual review possible while editorial infrastructure is being provisioned.
+The site needs no Sanity credentials to run; all public copy is in `src/content/`.
 
 ## Environment variables
 
@@ -41,6 +43,10 @@ With no Sanity project ID, the site renders deterministic, source-verified fallb
 | `RESEND_API_KEY` | contact delivery | Resend API key |
 | `CONTACT_TO_EMAIL` | contact delivery | Verified inbox receiving enquiries |
 | `CONTACT_FROM_EMAIL` | contact delivery | Verified sender address |
+| `NEXT_PUBLIC_BOOKING_URL` | optional | Calendar embed on `/contact#book` |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | optional | WhatsApp links (shows `[number]` until set) |
+| `NEXT_PUBLIC_LINKEDIN_URL` | optional | Company LinkedIn in the footer |
+| `NEXT_PUBLIC_LINKEDIN_IFEANYI`, `NEXT_PUBLIC_LINKEDIN_TOMIWA`, `NEXT_PUBLIC_PORTFOLIO_TOMIWA` | optional | Profile links |
 
 Never expose Sanity write tokens or the Resend key with a `NEXT_PUBLIC_` prefix.
 
@@ -59,6 +65,8 @@ The dry run prints the project ID, dataset, document ID, document type and inten
 
 ## Editorial model
 
+The Sanity model below describes the previous homepage and is retained for a later migration; the Conversion Design pages do not read from it yet.
+
 The model includes `siteSettings`, `homePage`, `service`, `project`, `testimonial` and `faq` documents, plus reusable CTA, SEO, image-with-alt, navigation, office, social-link, statistic and portable-text objects. Homepage sections are hero, about, services, projects, testimonials, FAQ and contact. Testimonials only render when explicitly marked approved.
 
 ## Visual editing
@@ -67,7 +75,7 @@ The model includes `siteSettings`, `homePage`, `service`, `project`, `testimonia
 
 ## Contact form
 
-`POST /api/contact` validates name, email and message length, rejects spam through a honeypot field, and sends through Resend when all delivery variables are present. Without delivery configuration it returns an explicit `503` configuration message; it never claims delivery that did not occur.
+Every form (CTA band sentence, contact, newsletter, tool emails and template requests) posts JSON to `POST /api/contact` with a `source`. The route validates per source with plain-language errors, rejects spam through a honeypot field, and sends through Resend when all delivery variables are present. Without delivery configuration it returns `503`, and the form hands the visitor a prefilled email (mailto) instead; it never claims delivery that did not occur.
 
 ## Quality checks
 

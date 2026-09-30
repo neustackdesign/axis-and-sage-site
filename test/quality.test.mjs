@@ -29,7 +29,6 @@ test("refined preview content keeps residue out and preserves approval gates", a
   assert.match(source, /"homepagePlacement": "featured"/);
   assert.match(source, /info@axisandsage\.com/);
   assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
-  assert.doesNotMatch(await read("src/components/home/ServiceIndex.tsx"), /Description pending editorial confirmation/);
 });
 
 test("contact handling has honest validation and configuration states", async () => {
@@ -57,27 +56,12 @@ test("reference audit and responsive capture records exist", async () => {
   }
 });
 
-test("controlled parity gates are documented and public fallbacks are conservative", async () => {
-  const publicSource = [
-    "src/app/globals.css",
-    "src/app/layout.tsx",
-    "src/components/home/AboutOverview.tsx",
-    "src/components/home/EditorialHero.tsx",
-    "src/components/home/ServiceIndex.tsx",
-    "src/components/home/SelectedWork.tsx",
-    "src/components/home/ClientPerspectives.tsx",
-    "src/components/home/Questions.tsx",
-    "src/components/home/ContactSection.tsx",
-  ].join("\n");
-  const sections = await Promise.all(publicSource.split("\n").map((path) => read(path)));
-  const designSpec = await read("reference/design-system/axis-sage-application-spec.md");
-  const structuralDelta = await read("reference/design-system/structural-delta.md");
-  const motion = await read("reference/motion-family-revision.md");
+test("design system rules hold across the public presentation", async () => {
   const audit = await read("scripts/audit-design-system.mjs");
-  assert.doesNotMatch(sections.join("\n"), /Instrument Serif|Mona Sans|linear-gradient|testimonial-ticker|contact-panel/);
-  assert.match(await read("src/components/home/ServiceIndex.tsx"), /detailApproved === true/);
-  assert.match(designSpec, /960px/);
-  assert.match(structuralDelta, /Deleted `HomeSections\.tsx`/);
-  assert.match(motion, /prefers-reduced-motion/);
+  const tokens = await read("src/styles/tokens.css");
   assert.match(audit, /prohibited/);
+  assert.match(tokens, /--orange-500: #E8590C/);
+  assert.match(tokens, /--font-serif: "Source Serif 4"/);
+  assert.match(tokens, /prefers-reduced-motion/);
+  assert.match(await read("reference/motion-family-revision.md"), /prefers-reduced-motion/);
 });

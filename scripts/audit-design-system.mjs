@@ -2,15 +2,16 @@ import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 const root = join(process.cwd(), "src");
+// Axis & Sage design system rules (reference/design-system/axis-sage-ds). Rules, not shadows; motion runs once.
 const prohibited = [
   ["Instrument Serif", /Instrument[_ ]Serif/],
   ["Mona Sans", /Mona[_ ]Sans/],
-  ["rejected sage accent token", /--(?:axis-)?sage\b|#727866/i],
-  ["decorative gradients", /linear-gradient|radial-gradient/],
-  ["autoplay ticker keyframes", /about-ticker|testimonial-ticker|ticker/],
+  ["drop shadows (use 1px rules)", /box-shadow:\s*(?!none|inset)[^;]*\d+px[^;]*\d+px[^;]*\d+px/],
+  ["gradient meshes", /radial-gradient|conic-gradient/],
+  ["autoplay tickers and carousels", /ticker|carousel|animation-iteration-count:\s*infinite|\binfinite\b/],
   ["old rounded project-card system", /project-card|project-media|project-content/],
   ["old testimonial-card system", /testimonial-card|testimonial-track/],
-  ["old FAQ-card system", /faq-item|faq-answer|faq-grid/],
+  ["old FAQ-card system", /faq-item|faq-grid/],
   ["old dark contact-panel system", /contact-panel|contact-form-wrap|contact-copy/],
   ["old section-band classes", /section-intro|section-label|section-band|services-grid|services-media/],
 ];

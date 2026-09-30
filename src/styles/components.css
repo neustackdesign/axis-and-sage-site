@@ -638,3 +638,4 @@ a.tool-card:hover { background: var(--sage-100); }
   .contact-route + .contact-route { padding-left: 0; border-left: 0; border-top: var(--border-rule); }
   .calendar-placeholder { min-height: 200px; }
 }
+.author-card .portrait-label { display: none; }

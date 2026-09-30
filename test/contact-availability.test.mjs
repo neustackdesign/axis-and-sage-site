@@ -22,16 +22,16 @@ test("contact form is enabled only when all delivery variables are configured", 
   assert.equal(isConfigured({ ...configured, CONTACT_TO_EMAIL: undefined }), false);
 });
 
-test("contact presentation is server-gated and offers email fallback", async () => {
-  const section = await read("src/components/home/ContactSection.tsx");
+test("contact delivery is server-gated and falls back to the visitor's email app", async () => {
   const availability = await read("src/lib/contact-availability.ts");
   const route = await read("src/app/api/contact/route.ts");
+  const hook = await read("src/components/forms/useLead.ts");
   assert.match(availability, /RESEND_API_KEY/);
   assert.match(availability, /CONTACT_FROM_EMAIL/);
   assert.match(availability, /CONTACT_TO_EMAIL/);
-  assert.match(section, /isContactFormConfigured\(\)/);
-  assert.match(section, /formEnabled \? <ContactForm \/> :/);
-  assert.match(section, />Email us<\/TextLink>/);
   assert.match(route, /if \(!isContactFormConfigured\(\)\)/);
-  assert.doesNotMatch(section, /NEXT_PUBLIC|process\.env/);
+  assert.match(route, /status: 503/);
+  assert.match(hook, /res\.status === 503/);
+  assert.match(hook, /mailtoFor\(payload\)/);
+  assert.doesNotMatch(route, /NEXT_PUBLIC/);
 });
