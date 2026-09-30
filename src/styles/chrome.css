@@ -66,6 +66,26 @@
   .menu-button { min-width: 56px; padding: 0 10px; }
 }
 
+/* Hero variant (homepage only): laid over the top edge of the homepage cover, inside its frame. */
+.site-header.is-hero { position: absolute; top: var(--cover-gutter); left: var(--cover-gutter); right: var(--cover-gutter); background: transparent; border-bottom: 0; }
+.site-header.is-hero .site-header-inner { max-width: none; padding-inline: var(--cover-pad); min-height: var(--cover-header); }
+.site-header.is-hero.on-dark .site-header-inner { color: var(--paper-50); }
+.site-header.is-hero.on-dark .nav-link { color: var(--paper-50); }
+.site-header.is-hero.on-dark .nav-link:hover, .site-header.is-hero.on-dark .nav-link[aria-expanded="true"] { text-decoration-color: var(--paper-50); }
+.site-header.is-hero.on-dark .nav-link[aria-current="page"] { text-decoration-color: var(--action); }
+.site-header.is-hero.on-dark .menu-button { color: var(--paper-50); border-color: var(--paper-50); }
+.site-header.is-hero.on-dark .menu-button:hover { background: rgba(251, 251, 250, 0.12); }
+/* Dropdowns still open on paper, with paper-side focus rings. */
+.site-header.is-hero .nav-panel { color: var(--charcoal-900); }
+.site-header.is-hero .nav-panel :focus-visible { outline-color: var(--focus-ring-paper); }
+/* With the drawer open, the bar becomes the ordinary paper bar so the drawer lines up under it. */
+.site-header.is-hero.is-open { position: fixed; top: 0; left: 0; right: 0; background: var(--paper-200); border-bottom: var(--border-rule); }
+.site-header.is-hero.is-open .site-header-inner { min-height: 72px; padding-inline: var(--grid-margin); }
+@media (max-width: 479px) {
+  .site-header.is-hero.is-open .site-header-inner { min-height: 64px; }
+  .site-header.is-hero .nav-compact .btn { display: none; } /* the cover carries its own call to action */
+}
+
 /* Footer */
 .site-footer { position: relative; overflow: hidden; background: var(--charcoal-800); color: var(--text-on-dark); padding-top: 80px; }
 .footer-orbits { position: absolute; right: -60px; bottom: -150px; width: 560px; height: auto; pointer-events: none; opacity: 0.7; }

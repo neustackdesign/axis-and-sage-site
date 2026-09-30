@@ -7,6 +7,7 @@ import { Lockup } from "@/components/ds/primitives";
 import { bookCallHref, contact, navGroups, primaryLinks, scorecardHref, whatsappHref, type NavGroup } from "@/content/site";
 
 type MenuKey = "whatWeDo" | "library";
+export type HeaderVariant = "default" | "hero";
 
 function isActive(pathname: string, href: string) {
   const path = href.split(/[?#]/)[0];
@@ -34,8 +35,12 @@ function Dropdown({ group, id, onNavigate }: { group: NavGroup; id: string; onNa
   );
 }
 
-/** Nav · Nav.Dropdown · Nav.Drawer. Paper bar, 1px rule below, one orange button. */
-export function SiteHeader() {
+/**
+ * Nav · Nav.Dropdown · Nav.Drawer. Default: sticky paper bar, 1px rule below, one orange button.
+ * Hero (homepage only): transparent, on-dark, laid over the top of the homepage cover. Dropdowns and the drawer
+ * still open on paper, and the bar turns paper while the drawer is open.
+ */
+export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant }) {
   const pathname = usePathname() || "/";
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [drawer, setDrawer] = useState(false);
@@ -69,10 +74,13 @@ export function SiteHeader() {
   const close = () => { setMenu(null); setDrawer(false); };
   const groups: MenuKey[] = ["whatWeDo", "library"];
 
+  const overArt = variant === "hero" && !drawer;
+  const className = ["site-header", variant === "hero" ? "is-hero" : "", drawer ? "is-open" : "", overArt ? "on-dark" : ""].filter(Boolean).join(" ");
+
   return (
-    <header className="site-header" ref={headerRef}>
+    <header className={className} ref={headerRef}>
       <div className="wrap site-header-inner">
-        <Link href="/" aria-label="Axis & Sage Advisory, home" onClick={close}><Lockup /></Link>
+        <Link href="/" aria-label="Axis & Sage Advisory, home" onClick={close}><Lockup dark={overArt} /></Link>
 
         <nav className="nav-desktop" aria-label="Primary">
           <div className="nav-item">

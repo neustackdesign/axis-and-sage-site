@@ -33,7 +33,7 @@ test("no lorem ipsum anywhere", async () => {
 });
 
 test("Lion Hospitality figures stay off the homepage", async () => {
-  const home = await readFile("src/app/(site)/page.tsx", "utf8");
+  const home = await readFile("src/app/(home)/page.tsx", "utf8");
   const homeData = JSON.stringify([work.homeStats, work.selectedWork, work.logoStrip]);
   assert.doesNotMatch(home + homeData, /31,324|1\.66bn|Lion Hospitality/);
 });

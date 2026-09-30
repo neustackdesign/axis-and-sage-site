@@ -1,14 +1,13 @@
 import { CTABand } from "@/components/ds/CTABand";
 import { CaseCard, EngagementTable, LogoStrip, SpecialistCard, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
-import { PaintingFrame, PlaneStack } from "@/components/ds/method";
-import { heroImage } from "@/content/site";
-import { ButtonLink, Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
+import { PlaneStack } from "@/components/ds/method";
+import { HomepageHero } from "@/components/sections/HomepageHero";
+import { Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
 import { FounderCards } from "@/components/sections/FounderCards";
 import { MethodSentencePanel } from "@/components/sections/MethodSentencePanel";
 import { diagnosticCreditNote, engagements, specialistCards } from "@/content/engagements";
 import { tools } from "@/content/library";
 import { gapCards, methodSteps } from "@/content/method";
-import { bookCallHref, scorecardHref } from "@/content/site";
 import { homeStats, homeStatsSource, homeTestimonials, logoStrip, selectedWork } from "@/content/work";
 import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
@@ -20,21 +19,8 @@ export default function HomePage() {
   return (
     <>
       <Breadcrumbs trail={[]} />
-      {/* 1 · Hero: PaintingFrame.Hero */}
-      <section className="section-tight tone-paper" aria-labelledby="hero-title" style={{ paddingTop: 32 }}>
-        <div className="wrap">
-          <PaintingFrame hero image={heroImage}>
-            <Eyebrow>ADVISORY · AFRICA AND THE GCC · ABU DHABI · DUBAI · LAGOS</Eyebrow>
-            <h1 id="hero-title" className="hero-title reveal" style={{ marginTop: 20, maxWidth: 980 }}>Get the people your business<br className="br-desktop" /> depends on to act.</h1>
-            <p className="t-body-l muted" style={{ marginTop: 20, maxWidth: 720 }}>Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design.</p>
-            <div className="button-row" style={{ marginTop: 28 }}>
-              <ButtonLink href={bookCallHref}>Book a 30-minute call</ButtonLink>
-              <ButtonLink href={scorecardHref} variant="secondary">Take the Conversion Scorecard ▸</ButtonLink>
-            </div>
-            <p className="t-label muted" style={{ marginTop: 24 }}>STRATEGY &amp; INVESTMENT · PRODUCT &amp; TECHNOLOGY · BRAND &amp; MARKET</p>
-          </PaintingFrame>
-        </div>
-      </section>
+      {/* 1 · Hero: one cover, with the navigation inside it */}
+      <HomepageHero />
 
       {/* 2 · LogoStrip */}
       <Section tight labelledBy="logos-title">

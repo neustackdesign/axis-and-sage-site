@@ -12,7 +12,8 @@ The design system source is `reference/design-system/axis-sage-ds/` (tokens and 
 | Button.Primary, Button.Secondary, TextLink | `ds/primitives.tsx` (`ButtonLink`, `TextLink`) | Square, 48px tall. One orange primary per view. |
 | Eyebrow | `ds/primitives.tsx` (`Eyebrow`) | Mono label, 12/16, uppercase. |
 | SectionHeader | `ds/primitives.tsx` (`SectionHeader`, `RailBody`) | 3/9 left rail. The rail stacks above the content below 1024px. |
-| PaintingFrame.Hero | `ds/method.tsx` (`PaintingFrame hero`) | "Sunset on Lagos skyline" by Chibuzo Nwaneri (Unsplash), with the credit label on the image. |
+| Homepage cover | `sections/HomepageHero.tsx`, with `SiteHeader variant="hero"` from `app/(home)/layout.tsx` | One framed surface: navigation inside it, the artwork as the whole field (graded, grained, shaded from the left), the message at lower left, the practices and the image credit at the bottom corners. |
+| PaintingFrame.Hero | `ds/method.tsx` (`PaintingFrame hero`) | Image above, paper panel below. No longer used on Home; kept for other pages. |
 | Portrait, initials tile | `ds/primitives.tsx` (`Portrait`) | Serif initials: "IM" on paper, "TO" on charcoal, until portraits are supplied. |
 | SpecGrid, SpecCell, spec list | `ds/blocks.tsx` (`SpecGrid`, `SpecList`) | 4 columns, then 2, then 1. |
 | StatTile | `ds/blocks.tsx` (`StatTile`, `StatGrid`) | Shows a role tag and a source line. |
@@ -40,7 +41,7 @@ The design system source is `reference/design-system/axis-sage-ds/` (tokens and 
 
 | Page | Sections and components, in order |
 |---|---|
-| `/` | PaintingFrame.Hero · LogoStrip · The gap (SectionHeader, Glyph cards) · Conversion Design (MethodSentence and panel, PlaneStack) · Founders (Terms paper card, Moments charcoal card) · What moved (charcoal, StatTile ×7) · Selected work (CaseCard ×6) · Testimonial ×3 · How to start (EngagementTable, specialist cards) · Library (sage, ToolCard ×6) · CTABand · Footer |
+| `/` | Homepage cover · LogoStrip · The gap (SectionHeader, Glyph cards) · Conversion Design (MethodSentence and panel, PlaneStack) · Founders (Terms paper card, Moments charcoal card) · What moved (charcoal, StatTile ×7) · Selected work (CaseCard ×6) · Testimonial ×3 · How to start (EngagementTable, specialist cards) · Library (sage, ToolCard ×6) · CTABand · Footer |
 | `/conversion-design` | Page hero · actor list with glyphs · two halves (paper Terms, charcoal Moments) · PlaneStack with expanded steps · Timeline (charcoal, Farmcrowdy) · CRO question · by type of action (links to /work filters) · FAQ 1, 2, 3, 7 · CTABand |
 | `/what-we-do/*` | The three practices: hero with the practice lead · When to call us (spec list) · What we do (SpecGrid) · How it connects · Proof (3 work cards) · Related tools · CTABand. |
 | `/engagements/embedded-leadership` | Same layout (`sections/PracticeView.tsx`): How it works, Proof and When it fits. `/what-we-do/embedded-leadership` redirects here with a 301. |
