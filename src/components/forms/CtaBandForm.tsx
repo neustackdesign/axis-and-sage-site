@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { whenOptions } from "@/content/site";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
+import { Turnstile } from "./Turnstile";
 
 /** The inline mono sentence form inside CTABand.Orange. */
 export function CtaBandForm() {
@@ -12,7 +13,7 @@ export function CtaBandForm() {
   const [what, setWhat] = useState("");
   const [when, setWhen] = useState("");
   const [email, setEmail] = useState("");
-  const { state, message, errors, fallback, submit, clearError } = useLead();
+  const { state, message, errors, fallback, submit, clearError, turnstile } = useLead();
 
   if (state === "success") {
     return (
@@ -56,6 +57,7 @@ export function CtaBandForm() {
         </div>
         {errors.email ? <span className="field-help">✕ {errors.email}</span> : null}
       </div>
+      <Turnstile ref={turnstile} />
       {state === "offline" || (state === "error" && !Object.keys(errors).length) ? <div style={{ marginTop: 16 }}><FormStatus state={state} message={message} fallback={fallback} /></div> : null}
     </form>
   );

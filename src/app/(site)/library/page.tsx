@@ -4,7 +4,7 @@ import { PageHero } from "@/components/ds/PageHero";
 import { RailBody, Section, SectionHeader, SmartLink, TextLink } from "@/components/ds/primitives";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { TemplateRequest } from "@/components/sections/TemplateRequest";
-import { guides, templates, tools } from "@/content/library";
+import { availableTemplates, guides, tools } from "@/content/library";
 import { newsletter } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -31,7 +31,7 @@ export default function LibraryPage() {
             {guides.map((g) => {
               const inner = (
                 <>
-                  <div className="work-card-head t-label"><span>GUIDE · {g.category}</span>{g.published ? null : <span>IN DRAFT</span>}</div>
+                  <div className="work-card-head t-label"><span>GUIDE · {g.category}</span>{g.published ? null : <span>COMING SOON</span>}</div>
                   <h3 className="t-h3">{g.title}</h3>
                   {g.published ? <span className="work-card-more" style={{ marginTop: "auto" }}>READ THE GUIDE ▸</span> : <span className="work-card-line" style={{ marginTop: "auto" }}>Coming soon. Subscribe to get it first.</span>}
                 </>
@@ -42,15 +42,17 @@ export default function LibraryPage() {
         </RailBody>
       </Section>
 
-      <Section id="templates" tone="alt" labelledBy="templates-title">
-        <SectionHeader id="templates-title" label="03 · TEMPLATES" title="Templates." lede="Downloads. Leave your work email and we send the file." />
-        <RailBody><TemplateRequest templates={templates} /></RailBody>
-      </Section>
+      {availableTemplates.length ? (
+        <Section id="templates" tone="alt" labelledBy="templates-title">
+          <SectionHeader id="templates-title" label="03 · TEMPLATES" title="Templates." lede="Downloads. Leave your work email and we send you a copy." />
+          <RailBody><TemplateRequest templates={availableTemplates} /></RailBody>
+        </Section>
+      ) : null}
 
       <Section id="newsletter" labelledBy="news-title">
         <div className="newsletter-inline">
           <div>
-            <p className="t-label muted">04 · NEWSLETTER</p>
+            <p className="t-label muted">{availableTemplates.length ? "04" : "03"} · NEWSLETTER</p>
             <h2 id="news-title" className="t-h2" style={{ marginTop: 12 }}>{newsletter.name}</h2>
             <p className="muted" style={{ marginTop: 8 }}>{newsletter.line}</p>
             <p style={{ marginTop: 16 }}><TextLink href="/newsletter">The archive</TextLink></p>

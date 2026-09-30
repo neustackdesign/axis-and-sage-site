@@ -1,3 +1,5 @@
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
+import { Tracking } from "@/components/analytics/Tracking";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 
@@ -8,6 +10,8 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
       <SiteHeader />
       <main id="main">{children}</main>
       <SiteFooter />
+      <Tracking />
+      <GoogleAnalytics />
     </>
   );
 }

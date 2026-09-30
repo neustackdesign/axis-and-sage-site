@@ -21,13 +21,16 @@ export const tools: ToolMeta[] = [
 
 export const toolBySlug = (slug: string) => tools.find((t) => t.slug === slug);
 
-export const templates = [
+// Templates show in the Library only once `file` points at a file in /public/templates.
+export type Template = { title: string; format: string; file?: string };
+export const templates: Template[] = [
   { title: "Delegation of authority matrix", format: ".xlsx" },
   { title: "Board charter", format: ".docx" },
   { title: "ESOP term sheet", format: ".docx" },
   { title: "Investor data room index", format: ".xlsx" },
   { title: "Pitch deck template", format: "slides" },
 ];
+export const availableTemplates = templates.filter((t) => !!t.file);
 
 export type Guide = { slug: string; title: string; category: string; published: boolean };
 

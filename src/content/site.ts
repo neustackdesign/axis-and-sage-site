@@ -1,3 +1,5 @@
+import { availableTemplates } from "./library";
+
 // Global copy and contact details. Anything in [square brackets] is a placeholder to fill before launch.
 
 export const contact = {
@@ -11,12 +13,13 @@ export const contact = {
   foundersBased: "Founders in Dubai and Lagos",
 };
 
-export function whatsappHref() {
-  const digits = contact.whatsappNumber.replace(/[^\d]/g, "");
-  return digits ? `https://wa.me/${digits}` : "/contact#whatsapp";
-}
+export const whatsappMessage = "Hi Axis & Sage, we need ___ to ___.";
 
-export const whatsappLabel = () => contact.whatsappNumber || "[number]";
+/** WhatsApp deep link with the message pre-filled. Null while the number is unset: every WhatsApp link then hides. */
+export function whatsappHref(message = whatsappMessage) {
+  const digits = contact.whatsappNumber.replace(/[^\d]/g, "");
+  return digits ? `https://wa.me/${digits}?text=${encodeURIComponent(message)}` : null;
+}
 
 export type NavLink = { label: string; href: string; description?: string };
 export type NavGroup = { label: string; key: string; eyebrow: string; blurb: string; items: NavLink[] };
@@ -32,7 +35,7 @@ export const practiceNav: NavLink[] = [
 export const libraryNav: NavLink[] = [
   { label: "Tools", href: "/library#tools", description: "Free tools for the decision in front of you." },
   { label: "Guides", href: "/library#guides", description: "Delegation of authority, ESOPs, investor readiness, pitch decks and the payment screen." },
-  { label: "Templates", href: "/library#templates", description: "Delegation of authority, board charter, ESOP term sheet and more." },
+  ...(availableTemplates.length ? [{ label: "Templates", href: "/library#templates", description: "Delegation of authority, board charter, ESOP term sheet and more." }] : []),
   { label: "Newsletter", href: "/newsletter", description: "Terms & Moments, each month." },
 ];
 

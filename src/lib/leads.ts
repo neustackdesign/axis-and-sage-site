@@ -1,4 +1,5 @@
-// Shared lead validation for the contact route and the client forms. Plain language, no jargon.
+// Shared lead validation for the pipeline routes and the client forms. Plain language, no jargon.
+import type { Attribution } from "./attribution";
 
 export const leadSources = ["contact", "cta", "newsletter", "tool"] as const;
 export type LeadSource = (typeof leadSources)[number];
@@ -18,7 +19,10 @@ export type LeadPayload = {
   consent?: boolean;
   tool?: string;
   summary?: string;
+  engagement?: string;
   website?: string; // honeypot
+  turnstileToken?: string;
+  attribution?: Attribution;
 };
 
 export type LeadErrors = Partial<Record<"email" | "name" | "message" | "who" | "what" | "consent", string>>;

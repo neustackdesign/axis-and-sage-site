@@ -2,7 +2,7 @@ import Link from "next/link";
 import { OrbitRings } from "@/components/ds/blocks";
 import { Lockup } from "@/components/ds/primitives";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
-import { contact, footerColumns, legalLine, newsletter, whatsappHref, whatsappLabel } from "@/content/site";
+import { contact, footerColumns, legalLine, newsletter, whatsappHref } from "@/content/site";
 
 /** Footer: charcoal, newsletter first, four columns, contact and legal lines, dotted orbit rings behind. */
 export function SiteFooter() {
@@ -29,10 +29,8 @@ export function SiteFooter() {
         </div>
         <p className="footer-contact">
           <a href={`mailto:${contact.email}`}>{contact.email}</a>
-          <span aria-hidden="true">·</span>
-          <a href={whatsappHref()}>WhatsApp {whatsappLabel()}</a>
-          <span aria-hidden="true">·</span>
-          {contact.companyLinkedIn ? <a href={contact.companyLinkedIn} target="_blank" rel="noopener noreferrer">LinkedIn</a> : <span>LinkedIn [URL]</span>}
+          {whatsappHref() ? <><span aria-hidden="true">·</span><a href={whatsappHref()!}>WhatsApp {contact.whatsappNumber}</a></> : null}
+          {contact.companyLinkedIn ? <><span aria-hidden="true">·</span><a href={contact.companyLinkedIn} target="_blank" rel="noopener noreferrer">LinkedIn</a></> : null}
         </p>
         <p className="footer-legal t-label"><span>{legalLine}</span><span>AFRICA · GCC</span></p>
       </div>

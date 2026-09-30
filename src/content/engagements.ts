@@ -1,3 +1,24 @@
+// Prices are numbers with a currency. `amount: null` means not set yet: previews show "[price]" and the
+// production build refuses to ship it (scripts/check-placeholders.mjs).
+export type Price = { amount: number | null; currency: "USD" | "AED" | "NGN" };
+
+export const prices = {
+  diagnostic: { amount: null, currency: "USD" } as Price,
+  investorReadinessSprint: { amount: null, currency: "USD" } as Price,
+  portfolioReview: { amount: null, currency: "USD" } as Price,
+  leadershipSession: { amount: null, currency: "USD" } as Price,
+};
+
+const symbols: Record<Price["currency"], string> = { USD: "US$", AED: "AED ", NGN: "₦" };
+
+export function formatPrice(price: Price) {
+  if (price.amount === null) return "[price]";
+  if (price.amount === 0) return "Free";
+  return `${symbols[price.currency]}${price.amount.toLocaleString("en-GB")}`;
+}
+
+export const fromPrice = (price: Price) => (price.amount === null || price.amount > 0 ? `From ${formatPrice(price)}` : formatPrice(price));
+
 export type EngagementColumn = {
   name: string;
   recommended?: boolean;
@@ -30,7 +51,7 @@ export const engagements: EngagementColumn[] = [
   {
     name: "Conversion Diagnostic",
     recommended: true,
-    price: "From [price]",
+    price: fromPrice(prices.diagnostic),
     time: "10 working days",
     bring: "One sentence: we need [who] to [do what] by [when]",
     weDo: "Interview the people who need to act, walk the path they take, read your numbers",
@@ -64,7 +85,7 @@ export type Specialist = { name: string; price: string; time: string; intro: str
 export const specialistCards: Specialist[] = [
   {
     name: "Investor Readiness Sprint",
-    price: "From [price]",
+    price: fromPrice(prices.investorReadinessSprint),
     time: "3 weeks",
     intro: "For founders and CEOs raising. We cover both halves:",
     points: [
@@ -74,7 +95,7 @@ export const specialistCards: Specialist[] = [
   },
   {
     name: "Portfolio Review",
-    price: "From [price]",
+    price: fromPrice(prices.portfolioReview),
     time: "4 weeks",
     intro: "For investors and groups. The Diagnostic run across three companies, with one report for the board.",
   },
@@ -82,7 +103,7 @@ export const specialistCards: Specialist[] = [
 
 export const leadershipSession: Specialist = {
   name: "Leadership working session",
-  price: "From [price]",
+  price: fromPrice(prices.leadershipSession),
   time: "half a day",
   intro: "Your leadership team in one room, one sentence each. We leave you with the three actions that matter and what's in the way of each.",
 };

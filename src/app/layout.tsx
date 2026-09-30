@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { defaultDescription, isPublicProduction, siteName, siteOrigin } from "@/lib/metadata";
 import "../styles/tokens.css";
 import "../styles/base.css";
@@ -31,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preload" href="/fonts/brand/source-serif-4-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/brand/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
-      <body>{children}</body>
+      <body>{children}<Analytics /><SpeedInsights /></body>
     </html>
   );
 }

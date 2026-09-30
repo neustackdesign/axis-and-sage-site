@@ -15,7 +15,7 @@ export function CTABand({ headline = ctaBand.headline }: { headline?: string }) 
           <CtaBandForm />
           <p className="cta-band-links">
             <TextLink href={bookCallHref}>Book a 30-minute call</TextLink>
-            <TextLink href={whatsappHref()}>WhatsApp us</TextLink>
+            {whatsappHref() ? <TextLink href={whatsappHref()!}>WhatsApp us</TextLink> : null}
           </p>
         </div>
       </div>

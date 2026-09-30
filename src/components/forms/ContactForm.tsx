@@ -1,19 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useId, useState } from "react";
+import { engagements } from "@/content/engagements";
 import { scorecardHref } from "@/content/site";
+import { sentenceOf } from "@/lib/leads";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
+import { Turnstile } from "./Turnstile";
 
 const whenChoices = ["this month", "this quarter", "this year", "exploring"];
 const heardChoices = ["LinkedIn", "A referral", "Search", "An event", "The newsletter", "Other"];
 
-/** Contact form: Fields in the design system treatment. Errors inline, in plain language. */
-export function ContactForm({ initialMessage = "", initialWhen = "" }: { initialMessage?: string; initialWhen?: string }) {
+type Prefill = { message: string; when: string; engagement: string };
+const empty: Prefill = { message: "", when: "", engagement: "" };
+
+/** Prefill from ?who=&what=&when=&engagement= (the Scorecard and the engagement buttons link here). Render inside Suspense. */
+export function ContactFormFromQuery() {
+  const q = useSearchParams();
+  const key = (q.get("engagement") || "").toLowerCase();
+  const engagement = key ? engagements.find((e) => e.name.toLowerCase().includes(key))?.name || q.get("engagement") || "" : "";
+  const sentence = sentenceOf({ who: q.get("who") || "", what: q.get("what") || "", when: q.get("when") || "" });
+  const prefill = { message: [sentence, engagement ? `We'd like to talk about: ${engagement}.` : ""].filter(Boolean).join(" "), when: q.get("when") || "", engagement };
+  return <ContactForm key={prefill.message} prefill={prefill} />;
+}
+
+/** Contact form: Fields in the design system treatment. Errors inline, in plain language. Success goes to /thank-you. */
+export function ContactForm({ prefill = empty }: { prefill?: Prefill }) {
+  const initialMessage = prefill.message;
+  const initialWhen = prefill.when;
   const id = useId();
   const [v, setV] = useState({ name: "", email: "", company: "", role: "", message: initialMessage, when: whenChoices.includes(initialWhen) ? initialWhen : "", heard: "", heardDetail: "", consent: false, website: "" });
-  const { state, message, errors, fallback, submit, clearError } = useLead();
+  const { state, message, errors, fallback, submit, clearError, turnstile } = useLead();
   const set = <K extends keyof typeof v>(k: K, value: (typeof v)[K]) => { setV((s) => ({ ...s, [k]: value })); if (k === "name" || k === "email" || k === "message" || k === "consent") clearError(k); };
 
   if (state === "success") {
@@ -29,7 +48,7 @@ export function ContactForm({ initialMessage = "", initialWhen = "" }: { initial
   const err = (k: keyof typeof errors) => errors[k];
 
   return (
-    <form noValidate onSubmit={(e) => { e.preventDefault(); submit({ source: "contact", ...v }); }}>
+    <form noValidate onSubmit={(e) => { e.preventDefault(); submit({ source: "contact", ...v, engagement: prefill.engagement || undefined }); }}>
       <div className="form-grid">
         <div className={`field${err("name") ? " is-error" : ""}`}>
           <label className="field-label" htmlFor={f("name")}>Name</label>
@@ -82,6 +101,7 @@ export function ContactForm({ initialMessage = "", initialWhen = "" }: { initial
           </label>
           {err("consent") ? <span id={f("consent-help")} className="field-help" style={{ color: "var(--error-600)" }}>✕ {err("consent")}</span> : null}
         </div>
+        <div className="span-2"><Turnstile ref={turnstile} /></div>
         <div className="span-2 stack-16">
           <button className="btn btn-primary" type="submit" disabled={state === "loading"}>{state === "loading" ? "Sending…" : "Send"}</button>
           {state !== "idle" ? <FormStatus state={state} message={message} fallback={fallback} /> : null}

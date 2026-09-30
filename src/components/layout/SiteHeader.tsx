@@ -128,7 +128,7 @@ export function SiteHeader() {
           </ul>
           <div className="drawer-foot">
             <Link className="btn btn-primary" href={bookCallHref} onClick={close}>Book a call</Link>
-            <a className="text-link" href={whatsappHref()}>WhatsApp us{contact.whatsappNumber ? ` · ${contact.whatsappNumber}` : ""}<span className="text-link-arrow" aria-hidden="true">▸</span></a>
+            {whatsappHref() ? <a className="text-link" href={whatsappHref()!}>WhatsApp us · {contact.whatsappNumber}<span className="text-link-arrow" aria-hidden="true">▸</span></a> : null}
             <div className="drawer-foot-meta t-label"><span>ABU DHABI · DUBAI · LAGOS</span><a href={`mailto:${contact.email}`}>{contact.email.toUpperCase()}</a></div>
           </div>
         </div>

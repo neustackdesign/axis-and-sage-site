@@ -164,7 +164,7 @@ export const casePages: CasePage[] = [
     stats: [
       { numeral: "18% → 60%", label: "First-time mobile sponsorship conversion", source: "INTERNAL FUNNEL TRACKING" },
       { numeral: "$1.86M → $9.14M", label: "Tracked sponsorship volume", source: "DURING THE WIDER PRODUCT AND GROWTH PERIOD" },
-      { numeral: "45,000+", label: "Customers" },
+      { numeral: "45,000+", label: "Customers", source: "Company records" },
     ],
     quote: testimonials.onyeka,
     tools: ["conversion-scorecard", "conversion-value-calculator"],

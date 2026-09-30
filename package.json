@@ -14,23 +14,19 @@
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test",
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
-    "audit:design-system": "node scripts/audit-design-system.mjs",
-    "seed:sanity": "node scripts/seed-sanity.mjs",
-    "seed:sanity:dry-run": "node scripts/seed-sanity.mjs --dry-run"
+    "audit:design-system": "node scripts/audit-design-system.mjs"
   },
   "dependencies": {
-    "@portabletext/react": "7.0.1",
-    "@sanity/client": "7.26.0",
-    "@sanity/icons": "3.7.4",
-    "@sanity/image-url": "2.1.1",
-    "@sanity/preview-url-secret": "4.1.2",
-    "@sanity/vision": "6.8.0",
+    "@neondatabase/serverless": "1.1.0",
+    "@upstash/ratelimit": "2.2.0",
+    "@upstash/redis": "1.39.0",
+    "@vercel/analytics": "2.0.1",
+    "@vercel/speed-insights": "2.0.0",
+    "exceljs": "4.4.0",
     "next": "16.2.12",
-    "next-sanity": "13.2.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "sanity": "6.8.0",
-    "styled-components": "6.4.4"
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@types/node": "26.1.2",

@@ -639,3 +639,8 @@ a.tool-card:hover { background: var(--sage-100); }
   .calendar-placeholder { min-height: 200px; }
 }
 .author-card .portrait-label { display: none; }
+.contact-routes.routes-1 { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+.contact-routes.routes-2 { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.turnstile:empty { display: none; }
+.turnstile { margin-top: 12px; }
+.testimonial-feature.no-portrait { grid-template-columns: 1fr; }

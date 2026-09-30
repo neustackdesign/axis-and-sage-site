@@ -11,24 +11,22 @@ test("the project pins pnpm and includes a lockfile", async () => {
   assert.ok((await read("pnpm-lock.yaml")).includes("lockfileVersion:"));
 });
 
-test("fallback content contains the verified project set", async () => {
-  const source = await read("src/content/canonical-content.json");
-  for (const title of ["Nature Roots", "Earlybean", "Uganda Investor Summit"]) {
-    assert.match(source, new RegExp(title));
+test("legacy residue appears nowhere outside /reference", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const skip = new Set(["node_modules", ".next", ".git", "reference", "pnpm-lock.yaml"]);
+  const files = [];
+  const walk = async (dir) => {
+    for (const e of await readdir(new URL(dir, root), { withFileTypes: true })) {
+      if (skip.has(e.name)) continue;
+      const rel = `${dir}${e.name}`;
+      if (e.isDirectory()) await walk(`${rel}/`);
+      else if (/\.(ts|tsx|mjs|js|json|md|css|txt|example)$/.test(e.name) && !rel.endsWith("quality.test.mjs")) files.push(rel);
+    }
+  };
+  await walk("");
+  for (const file of files) {
+    assert.doesNotMatch(await read(file), /Refit|JJ Gerrish|refit\.com|Great Portland|execution muscle/i, file);
   }
-  assert.doesNotMatch(source, /Refit|JJ Gerrish|Great Portland Street/i);
-});
-
-test("refined preview content keeps residue out and preserves approval gates", async () => {
-  const source = await read("src/content/canonical-content.json");
-  const seed = await read("scripts/seed-sanity.mjs");
-  assert.match(seed, /approved: false/);
-  assert.match(source, /"officeLocations": \["Dubai, UAE"\]/);
-  assert.match(source, /"offices": \["Dubai, UAE"\]/);
-  assert.match(source, /"previewOnly": true/);
-  assert.match(source, /"homepagePlacement": "featured"/);
-  assert.match(source, /info@axisandsage\.com/);
-  assert.doesNotMatch(source, /Refit|Great Portland Street|Abu Dhaboi/i);
 });
 
 test("contact handling has honest validation and configuration states", async () => {

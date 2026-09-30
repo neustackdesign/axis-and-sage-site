@@ -1,9 +1,9 @@
+import { Suspense } from "react";
 import { PageHero } from "@/components/ds/PageHero";
 import { Eyebrow, Section, SmartLink } from "@/components/ds/primitives";
-import { ContactForm } from "@/components/forms/ContactForm";
-import { contact, whatsappHref, whatsappLabel } from "@/content/site";
-import { engagements } from "@/content/engagements";
-import { sentenceOf } from "@/lib/leads";
+import { ContactForm, ContactFormFromQuery } from "@/components/forms/ContactForm";
+import { CalEmbed } from "@/components/forms/CalEmbed";
+import { contact, whatsappHref } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata({
@@ -12,47 +12,38 @@ export const metadata = pageMetadata({
   description: "Tell us who needs to act. One sentence is enough. We reply within one working day with a clear next step.",
 });
 
-type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
-const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || "";
-
-export default async function ContactPage({ searchParams }: Props) {
-  const q = await searchParams;
-  const sentence = sentenceOf({ who: one(q.who), what: one(q.what), when: one(q.when) });
-  const engagementKey = one(q.engagement).toLowerCase();
-  const engagement = engagementKey ? engagements.find((e) => e.name.toLowerCase().includes(engagementKey))?.name || one(q.engagement) : "";
-  const initialMessage = [sentence, engagement ? `We'd like to talk about: ${engagement}.` : ""].filter(Boolean).join(" ");
-  const bookSubject = encodeURIComponent("Book a 30-minute call");
-
+export default function ContactPage() {
+  const wa = whatsappHref();
+  const booking = !!contact.bookingUrl;
+  const routes = [booking, true, !!wa].filter(Boolean).length;
   return (
     <>
       <PageHero label="CONTACT" title="Tell us who needs to act." sub="One sentence is enough. We reply within one working day with a clear next step." />
       <Section tight labelledBy="routes-title">
-        <h2 id="routes-title" className="sr-only">Three ways to reach us</h2>
-        <div className="contact-routes">
-          <section id="book" className="contact-route" aria-labelledby="book-title">
-            <Eyebrow>01 · CALL</Eyebrow>
-            <h3 id="book-title" className="t-h3">Book a 30-minute call</h3>
-            {contact.bookingUrl ? (
-              <iframe className="calendar-embed" src={contact.bookingUrl} title="Book a 30-minute call" loading="lazy" />
-            ) : (
-              <div className="calendar-placeholder">
-                <span className="t-label">CALENDAR EMBED · [BOOKING LINK]</span>
-                <p className="t-small muted">Until the calendar is connected, email us and we&apos;ll send times.</p>
-                <a className="text-link" href={`mailto:${contact.email}?subject=${bookSubject}`}>Ask for a time<span className="text-link-arrow" aria-hidden="true">▸</span></a>
-              </div>
-            )}
-          </section>
-          <section id="note" className="contact-route contact-route-form" aria-labelledby="note-title">
-            <Eyebrow>02 · NOTE</Eyebrow>
+        <h2 id="routes-title" className="sr-only">Ways to reach us</h2>
+        <div className={`contact-routes routes-${routes}`}>
+          {booking ? (
+            <section id="book" className="contact-route" aria-labelledby="book-title">
+              <Eyebrow>01 · CALL</Eyebrow>
+              <h3 id="book-title" className="t-h3">Book a 30-minute call</h3>
+              <CalEmbed url={contact.bookingUrl} />
+            </section>
+          ) : null}
+          {/* While the booking link is unset, the note form takes the booking route's place (#book). */}
+          <section id={booking ? "note" : "book"} className="contact-route contact-route-form" aria-labelledby="note-title">
+            {!booking ? <span id="note" className="sr-only" /> : null}
+            <Eyebrow>{booking ? "02 · NOTE" : "01 · NOTE"}</Eyebrow>
             <h3 id="note-title" className="t-h3">Send a note</h3>
-            <ContactForm initialMessage={initialMessage} initialWhen={one(q.when)} />
+            <Suspense fallback={<ContactForm />}><ContactFormFromQuery /></Suspense>
           </section>
-          <section id="whatsapp" className="contact-route" aria-labelledby="wa-title">
-            <Eyebrow>03 · WHATSAPP</Eyebrow>
-            <h3 id="wa-title" className="t-h3">WhatsApp</h3>
-            <p className="muted">{whatsappLabel()}</p>
-            <SmartLink className="text-link" href={whatsappHref()}>Chat with us<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink>
-          </section>
+          {wa ? (
+            <section id="whatsapp" className="contact-route" aria-labelledby="wa-title">
+              <Eyebrow>{booking ? "03" : "02"} · WHATSAPP</Eyebrow>
+              <h3 id="wa-title" className="t-h3">WhatsApp</h3>
+              <p className="muted">{contact.whatsappNumber}</p>
+              <SmartLink className="text-link" href={wa}>Chat with us<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink>
+            </section>
+          ) : null}
         </div>
       </Section>
       <Section tone="alt" tight labelledBy="details-title">

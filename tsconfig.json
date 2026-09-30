@@ -33,8 +33,6 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "sanity.config.ts",
-    "sanity.cli.ts",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [

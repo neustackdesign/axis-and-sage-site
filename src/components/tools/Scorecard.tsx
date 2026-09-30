@@ -1,88 +1,84 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useMemo, useState } from "react";
-import { scaleLabels, scorecardCaseFor, scorecardStatements, scorecardWho, halfScore, verdictFor } from "@/content/tools";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { scaleLabels, scorecardStatements, scorecardWho } from "@/content/tools";
 import { whenOptions } from "@/content/site";
 import { caseBySlug } from "@/content/work";
+import { blockers, fillStatement, halfScore, relatedCaseSlug, scorecardSummary, unknownNote, verdict } from "@/lib/tools/scorecard";
 import { Quadrant, Segmented, Stepper, ToolPanel } from "./ToolBits";
 import { ToolEmail } from "./ToolEmail";
+import { toolShareUrl, useHashRestore, useToolEvents } from "./useTool";
 
 type State = { who: string; otherWho: string; what: string; when: string; outOf10: number; unknown: boolean; monthly: string; answers: Record<string, number> };
 
 const initial: State = { who: "", otherWho: "", what: "", when: "", outOf10: 3, unknown: false, monthly: "", answers: {} };
 const statementScreens = [0, 2, 4, 6, 8].map((i) => scorecardStatements.slice(i, i + 2));
 const SCREENS = 1 + 1 + statementScreens.length + 1; // action, standing, 5 statement screens, results
+const STEP_NAMES = ["The action", "Where things stand", "Ten statements", "Results"];
 
-function encode(s: State) {
-  try { return btoa(unescape(encodeURIComponent(JSON.stringify(s)))); } catch { return ""; }
-}
-function decode(v: string): State | null {
-  try { return { ...initial, ...JSON.parse(decodeURIComponent(escape(atob(v)))) }; } catch { return null; }
-}
-
-/** Conversion Scorecard: four steps with a progress bar, then results. Scoring is interim until file 06. */
+/** Conversion Scorecard: four steps with a progress bar, then results. All scoring lives in lib/tools/scorecard. */
 export function Scorecard({ preset }: { preset?: { who?: string; what?: string; when?: string } }) {
   const id = useId();
-  // A shared result link (#r=...) restores the answers and opens the results. The Scorecard renders on the client
-  // (it sits behind useSearchParams), so reading the hash in the initialiser is safe.
-  const [restored] = useState<State | null>(() => {
-    if (typeof window === "undefined") return null;
-    const m = window.location.hash.match(/^#r=(.+)$/);
-    return m ? decode(m[1]) : null;
-  });
+  const events = useToolEvents("Conversion Scorecard");
   const [s, setS] = useState<State>(() => {
-    if (restored) return restored;
     const who = scorecardWho.find((w) => w.key === preset?.who?.toLowerCase() || w.label.toLowerCase() === preset?.who?.toLowerCase())?.key || "";
     const whoDef = scorecardWho.find((w) => w.key === who);
     const what = whoDef?.actions.find((a) => a.startsWith(preset?.what || "\u0000")) || "";
     const when = whenOptions.find((w) => w === preset?.when) || "";
     return { ...initial, who, what, when };
   });
-  const [screen, setScreen] = useState(restored ? SCREENS - 1 : 0);
+  const [screen, setScreen] = useState(0);
   const [touched, setTouched] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  useHashRestore<State>(useCallback((restored) => { setS({ ...initial, ...restored }); setScreen(SCREENS - 1); }, []));
 
   const whoDef = scorecardWho.find((w) => w.key === s.who);
   const whoLabel = s.who === "other" ? s.otherWho || "they" : whoDef?.label.toLowerCase() || "[who]";
   const actionLabel = s.what || "[act]";
-  const set = (patch: Partial<State>) => setS((cur) => ({ ...cur, ...patch }));
+  const set = (patch: Partial<State>) => { events.start(); setS((cur) => ({ ...cur, ...patch })); };
   const stepIndex = screen === 0 ? 0 : screen === 1 ? 1 : screen < SCREENS - 1 ? 2 : 3;
   const progress = (screen / (SCREENS - 1)) * 100;
 
   const terms = halfScore(s.answers, "terms");
   const moments = halfScore(s.answers, "moments");
-  const verdict = verdictFor(terms, moments);
-  const lowest = useMemo(() => [...scorecardStatements].sort((a, b) => (s.answers[a.id] ?? 3) - (s.answers[b.id] ?? 3)).slice(0, 3), [s.answers]);
-  const related = caseBySlug(scorecardCaseFor[s.who] || "farmcrowdy");
+  const v = verdict(terms, moments);
+  const unknown = unknownNote(s.unknown);
+  const lowest = useMemo(() => blockers(s.answers), [s.answers]);
+  const related = caseBySlug(relatedCaseSlug(s.who));
   const sentence = `We need ${whoLabel} to ${actionLabel}${s.when && s.when !== "no date yet" ? ` by ${s.when}` : ""}.`;
+  const isResults = screen === SCREENS - 1;
+
+  useEffect(() => { if (isResults) events.complete({ verdict: v.key, terms, moments }); }, [isResults, events, v.key, terms, moments]);
 
   const screenValid = () => {
     if (screen === 0) return !!s.who && (s.who !== "other" || !!s.otherWho.trim()) && !!s.what.trim() && !!s.when;
     if (screen >= 2 && screen < SCREENS - 1) return statementScreens[screen - 2].every((st) => typeof s.answers[st.id] === "number");
     return true;
   };
-  const next = () => { setTouched(true); if (!screenValid()) return; setTouched(false); setScreen((n) => Math.min(SCREENS - 1, n + 1)); window.scrollTo({ top: (document.getElementById(`${id}-top`)?.offsetTop || 0) - 80, behavior: "smooth" }); };
+  const next = () => {
+    setTouched(true);
+    if (!screenValid()) return;
+    setTouched(false);
+    const n = Math.min(SCREENS - 1, screen + 1);
+    setScreen(n);
+    events.step(n === SCREENS - 1 ? "results" : n >= 2 ? `statements-${n - 1}` : STEP_NAMES[n]);
+    window.scrollTo({ top: (document.getElementById(`${id}-top`)?.offsetTop || 0) - 80, behavior: "smooth" });
+  };
   const back = () => { setTouched(false); setScreen((n) => Math.max(0, n - 1)); };
 
   const shareLink = () => {
-    const url = `${window.location.origin}${window.location.pathname}#r=${encode(s)}`;
+    const url = toolShareUrl(s);
     navigator.clipboard?.writeText(url).then(() => setCopied(true), () => window.prompt("Copy this link", url));
   };
 
-  const summary = () => [
-    `Sentence: ${sentence}`,
-    `Today: ${s.unknown ? "not known" : `${s.outOf10} out of 10`}${s.monthly ? `, ${s.monthly} reach the point each month` : ""}`,
-    `Terms ${terms}/100, Moments ${moments}/100: ${verdict.headline}`,
-    ...scorecardStatements.map((st) => `${st.half === "terms" ? "T" : "M"} ${s.answers[st.id] ?? "-"}/5  ${st.text}`),
-  ].join("\n");
-
+  const summary = () => scorecardSummary({ sentence, unknown: s.unknown, outOf10: s.outOf10, monthly: s.monthly, answers: s.answers, who: whoLabel, action: actionLabel });
   const diagnosticHref = `/contact?who=${encodeURIComponent(whoLabel)}&what=${encodeURIComponent(actionLabel)}&when=${encodeURIComponent(s.when)}&engagement=diagnostic#note`;
 
   return (
     <div id={`${id}-top`}>
-      <Stepper steps={["The action", "Where things stand", "Ten statements", "Results"]} active={stepIndex} progress={progress} />
+      <Stepper steps={STEP_NAMES} active={stepIndex} progress={progress} />
 
       {screen === 0 ? (
         <ToolPanel className="tool-body">
@@ -152,30 +148,34 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
         </ToolPanel>
       ) : null}
 
-      {screen >= 2 && screen < SCREENS - 1 ? (
+      {screen >= 2 && !isResults ? (
         <ToolPanel className="tool-body">
           <p className="t-label muted">STEP 3 · TEN STATEMENTS · {screen - 1} OF {statementScreens.length}</p>
-          <p className="tool-note" style={{ marginTop: 8 }}>How true is each statement for {whoLabel}, today?</p>
+          <p className="tool-note" style={{ marginTop: 8 }}>How true is each statement today?</p>
           <div style={{ marginTop: 24 }}>
-            {statementScreens[screen - 2].map((st) => (
-              <fieldset key={st.id} className="statement" style={{ border: 0, borderTop: "1px solid var(--charcoal-900)", margin: 0, padding: "20px 0 0" }}>
-                <p className="statement-tag t-label">{st.half === "terms" ? "TERMS" : "MOMENT"}</p>
-                <legend className="sr-only">{st.text}</legend>
-                <p className="statement-text" aria-hidden="true">{st.text}</p>
-                <Segmented label={st.text} value={s.answers[st.id] ? String(s.answers[st.id]) : null} onChange={(v) => set({ answers: { ...s.answers, [st.id]: Number(v) } })} options={scaleLabels.map((l, i) => ({ key: String(i + 1), label: l }))} />
-                {touched && typeof s.answers[st.id] !== "number" ? <p className="form-status is-error" role="alert" style={{ marginTop: 8 }}>✕ Choose one answer.</p> : null}
-              </fieldset>
-            ))}
+            {statementScreens[screen - 2].map((st) => {
+              const text = fillStatement(st.text, whoLabel, actionLabel);
+              return (
+                <fieldset key={st.id} className="statement" style={{ border: 0, borderTop: "1px solid var(--charcoal-900)", margin: 0, padding: "20px 0 0" }}>
+                  <p className="statement-tag t-label">{st.half === "terms" ? "TERMS" : "MOMENT"}</p>
+                  <legend className="sr-only">{text}</legend>
+                  <p className="statement-text" aria-hidden="true">{text}</p>
+                  <Segmented label={text} value={s.answers[st.id] ? String(s.answers[st.id]) : null} onChange={(val) => set({ answers: { ...s.answers, [st.id]: Number(val) } })} options={scaleLabels.map((l, i) => ({ key: String(i + 1), label: l }))} />
+                  {touched && typeof s.answers[st.id] !== "number" ? <p className="form-status is-error" role="alert" style={{ marginTop: 8 }}>✕ Choose one answer.</p> : null}
+                </fieldset>
+              );
+            })}
           </div>
         </ToolPanel>
       ) : null}
 
-      {screen === SCREENS - 1 ? (
+      {isResults ? (
         <div className="tool-body">
           <div className="tool-results-head">
             <p className="t-label muted">YOUR RESULT · {sentence.toUpperCase()}</p>
-            <h2 className="verdict">{verdict.headline}</h2>
-            <p className="t-body-l muted" style={{ maxWidth: 720 }}>{verdict.line}</p>
+            <h2 className="verdict">{v.headline}</h2>
+            <p className="t-body-l muted" style={{ maxWidth: 720 }}>{v.line}</p>
+            {unknown ? <div className="callout" style={{ maxWidth: 720 }}><span className="t-label">{unknown.headline.toUpperCase()}</span><span>{unknown.line}</span></div> : null}
           </div>
           <div className="result-panel">
             <div className="result-scores">
@@ -190,26 +190,24 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
                   {lowest.map((st, i) => (
                     <li key={st.id}>
                       <span>{String(i + 1).padStart(2, "0")}</span>
-                      <span>{st.text}<span className="blocker-check" style={{ display: "block" }}>What we&apos;d check first: {st.check}</span></span>
+                      <span>{fillStatement(st.text, whoLabel, actionLabel)}<span className="blocker-check" style={{ display: "block" }}>What we&apos;d check first: {st.check}</span></span>
                     </li>
                   ))}
                 </ol>
-                {related ? (
-                  <p style={{ marginTop: 20 }} className="t-small">Related case: <Link className="text-link" href={`/work/${related.slug}`}>{related.name}<span className="text-link-arrow" aria-hidden="true">▸</span></Link></p>
-                ) : null}
+                {related ? <p style={{ marginTop: 20 }} className="t-small">Related case: <Link className="text-link" href={`/work/${related.slug}`}>{related.name}<span className="text-link-arrow" aria-hidden="true">▸</span></Link></p> : null}
               </div>
             </div>
           </div>
           <div className="tool-actions">
             <Link className="btn btn-primary" href={diagnosticHref}>Book a Diagnostic with this sentence</Link>
-            <ToolEmail tool="Conversion Scorecard" label="Email me this report" summary={summary} successText="Done. The report is on its way to your inbox." />
+            <ToolEmail tool="Conversion Scorecard" label="Email me this report" summary={summary} result={() => ({ ...s, terms, moments, verdict: v.key })} shareUrl={() => toolShareUrl(s)} diagnosticUrl={() => `${window.location.origin}${diagnosticHref}`} />
             <button type="button" className="btn btn-secondary" onClick={shareLink}>{copied ? "Link copied" : "Share result link"}</button>
           </div>
           <p style={{ marginTop: 24 }}><button type="button" className="text-link" style={{ background: "none", border: 0, padding: 0 }} onClick={() => { setS(initial); setScreen(0); history.replaceState(null, "", window.location.pathname); }}>Start again</button></p>
         </div>
       ) : null}
 
-      {screen < SCREENS - 1 ? (
+      {!isResults ? (
         <div className="tool-actions">
           {screen > 0 ? <button type="button" className="btn btn-secondary" onClick={back}>Back</button> : null}
           <button type="button" className="btn btn-primary" onClick={next}>{screen === SCREENS - 2 ? "See my result" : "Continue"}</button>
