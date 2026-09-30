@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { recordToolComplete, trackEvent } from "@/lib/client/analytics";
+import { recordToolComplete } from "@/lib/client/analytics";
 import { readHashState, shareUrl } from "@/lib/tools/share";
 
 /** Restores tool state from a shared result link (#r=...) once, after mount. */
@@ -15,14 +15,14 @@ export function useHashRestore<T>(apply: (state: T) => void) {
   }, [apply]);
 }
 
-/** tool_start on first interaction, tool_step on each step, tool_complete once per result. */
-export function useToolEvents(tool: string) {
-  const started = useRef(false);
-  const completed = useRef(false);
-  const start = useCallback(() => { if (!started.current) { started.current = true; trackEvent("tool_start", { tool }); } }, [tool]);
-  const step = useCallback((name: string) => { start(); trackEvent("tool_step", { tool, step: name }); }, [start, tool]);
-  const complete = useCallback((meta: Record<string, string | number | boolean | null> = {}) => { if (!completed.current) { completed.current = true; recordToolComplete(tool, meta); } }, [tool]);
-  return { start, step, complete };
+/** Records one anonymous "Tools" row per result, the first time a result is shown. */
+export function useToolComplete(tool: string) {
+  const done = useRef(false);
+  return useCallback((answers: unknown, result: unknown) => {
+    if (done.current) return;
+    done.current = true;
+    recordToolComplete(tool, answers, result);
+  }, [tool]);
 }
 
 export const toolShareUrl = (state: unknown) => shareUrl(window.location.origin, window.location.pathname, state);

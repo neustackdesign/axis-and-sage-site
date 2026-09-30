@@ -3,13 +3,12 @@
 import { useId, useState } from "react";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
-import { Turnstile } from "./Turnstile";
 
 /** Newsletter.Inline · Newsletter.Footer: email and one button. */
 export function NewsletterForm({ label = "Work email", dark, primary }: { label?: string; dark?: boolean; primary?: boolean }) {
   const id = useId();
   const [email, setEmail] = useState("");
-  const { state, message, errors, fallback, submit, clearError, turnstile } = useLead();
+  const { state, message, errors, fallback, submit, clearError } = useLead();
   const done = state === "success";
   return (
     <form
@@ -25,7 +24,6 @@ export function NewsletterForm({ label = "Work email", dark, primary }: { label?
         </div>
         <span id={`${id}-help`} className="field-help">{errors.email ? `✕ ${errors.email}` : ""}</span>
       </div>
-      <Turnstile ref={turnstile} />
       {state !== "idle" && !errors.email ? <FormStatus state={state} message={message} fallback={fallback} /> : null}
     </form>
   );

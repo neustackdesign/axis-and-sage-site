@@ -1,8 +1,6 @@
 import { PageHero } from "@/components/ds/PageHero";
 import { Eyebrow, Section, TextLink } from "@/components/ds/primitives";
-import { Suspense } from "react";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
-import { NewsletterConfirmed } from "@/components/sections/NewsletterConfirmed";
 import { newsletter } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
@@ -17,7 +15,7 @@ export default function NewsletterPage() {
     <>
       <Breadcrumbs trail={[{ name: "Newsletter", path: "/newsletter" }]} />
       <PageHero label="NEWSLETTER" title={`${newsletter.name}.`} display sub={newsletter.line}>
-        <div style={{ width: "100%", maxWidth: 560 }}><NewsletterForm primary /><Suspense fallback={null}><NewsletterConfirmed /></Suspense></div>
+        <div style={{ width: "100%", maxWidth: 560 }}><NewsletterForm primary /></div>
       </PageHero>
       <Section tone="alt" labelledBy="archive-title">
         <div className="section-header rail-grid">

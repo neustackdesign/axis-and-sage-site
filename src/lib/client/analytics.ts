@@ -1,22 +1,11 @@
 "use client";
 
-import { track } from "@vercel/analytics";
 import { currentAttribution } from "./attribution";
 
-type Props = Record<string, string | number | boolean | null>;
-declare global { interface Window { gtag?: (...args: unknown[]) => void } }
-
-/** Client events: Vercel Analytics custom events, mirrored to GA4 when it is switched on and consented. */
-export function trackEvent(name: "cta_click" | "whatsapp_click" | "tool_start" | "tool_step" | "tool_complete", props: Props = {}) {
-  try { track(name, props); } catch { /* analytics must never break the page */ }
-  try { window.gtag?.("event", name, props); } catch { /* ignore */ }
-}
-
-/** tool_complete is also recorded on the server, where the conversions table is the source of truth. */
-export function recordToolComplete(tool: string, meta: Props = {}) {
-  trackEvent("tool_complete", { tool, ...meta });
+/** A completed tool: one anonymous row in the Pipeline Sheet's Tools tab. No start, step or click events. */
+export function recordToolComplete(tool: string, answers: unknown, result: unknown) {
   try {
-    const body = JSON.stringify({ event: "tool_complete", tool, meta, attribution: currentAttribution() });
-    if (!navigator.sendBeacon?.("/api/conversion", new Blob([body], { type: "application/json" }))) fetch("/api/conversion", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true });
-  } catch { /* ignore */ }
+    const body = JSON.stringify({ tool, answers, result, utmSource: currentAttribution().first?.utm_source });
+    if (!navigator.sendBeacon?.("/api/tool-complete", new Blob([body], { type: "application/json" }))) fetch("/api/tool-complete", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true });
+  } catch { /* never break the tool */ }
 }

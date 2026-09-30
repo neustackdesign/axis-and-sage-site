@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
-import { Turnstile, type TurnstileHandle } from "@/components/forms/Turnstile";
+import { useId, useState } from "react";
+import { useRenderedAt } from "@/components/forms/useLead";
 import { currentAttribution } from "@/lib/client/attribution";
 import { downloadBlob } from "@/lib/tools/xlsx";
 
@@ -9,12 +9,12 @@ type Download = { filename: string; build: () => Promise<Blob> };
 type State = "idle" | "loading" | "sent" | "failed" | "error";
 
 /**
- * Email capture for a tool result. Sends the result to the visitor (and a copy to info@), then downloads the
- * spreadsheet when the tool has one. Copy says only what actually happened.
+ * Email capture for a tool result. The result goes through the lead path; the Pipeline Sheet emails it to the visitor.
+ * Spreadsheets download straight after the email is captured. Copy says only what actually happened.
  */
 export function ToolEmail({ tool, label, summary, result, shareUrl, diagnosticUrl, download }: { tool: string; label: string; summary: () => string; result?: () => unknown; shareUrl?: () => string; diagnosticUrl?: () => string; download?: Download }) {
   const id = useId();
-  const turnstile = useRef<TurnstileHandle>(null);
+  const renderedAt = useRenderedAt();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [state, setState] = useState<State>("idle");
@@ -31,19 +31,18 @@ export function ToolEmail({ tool, label, summary, result, shareUrl, diagnosticUr
     if (!valid) { setState("error"); setMessage("Enter an email like name@company.com."); return; }
     setState("loading");
     try {
-      const token = await turnstile.current?.token();
-      const res = await fetch("/api/tool-result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tool, email, summary: summary(), result: result?.(), shareUrl: shareUrl?.(), diagnosticUrl: diagnosticUrl?.(), turnstileToken: token, attribution: currentAttribution() }) });
-      turnstile.current?.reset();
-      const body = (await res.json().catch(() => ({}))) as { sent?: boolean; message?: string };
-      if (res.ok && body.sent) {
+      const res = await fetch("/api/tool-result", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tool, email, summary: summary(), result: result?.(), shareUrl: shareUrl?.(), diagnosticUrl: diagnosticUrl?.(), renderedAt: renderedAt.current, submittedAt: Date.now(), attribution: currentAttribution() }) });
+      const body = (await res.json().catch(() => ({}))) as { stored?: boolean; delivered?: boolean; message?: string };
+      if (res.ok && body.stored) {
         const got = await runDownload();
+        const file = download ? (got ? " Your file has downloaded." : " The download didn't start: use the button below.") : "";
         setState("sent");
-        setMessage(`Sent to ${email}.${download ? (got ? " Your file has downloaded." : " The download didn't start: use the button below.") : ""}`);
+        setMessage(body.delivered ? `Sent to ${email}.${file}` : `Saved. We'll email it to ${email} shortly.${file}`);
         return;
       }
-      if (res.status === 502 || body.sent === false) { setState("failed"); setMessage("We couldn't send the email."); return; }
-      setState("error");
-      setMessage(body.message || "Something went wrong. Please try again.");
+      if (res.status === 400) { setState("error"); setMessage(body.message || "Enter an email like name@company.com."); return; }
+      setState("failed");
+      setMessage("We couldn't send the email.");
     } catch {
       setState("failed");
       setMessage("We couldn't reach our server, so nothing was sent.");
@@ -69,7 +68,6 @@ export function ToolEmail({ tool, label, summary, result, shareUrl, diagnosticUr
             </div>
             <span className="field-help" role={state === "error" ? "alert" : undefined}>{state === "error" ? `✕ ${message}` : `We send your result to this address${download ? " and download the file" : ""}. No newsletter unless you ask.`}</span>
           </div>
-          <Turnstile ref={turnstile} />
           {state === "failed" ? (
             <div className="form-fallback" role="alert" style={{ marginTop: 12 }}>
               <span>✕ {message}{download ? " You can still download the file." : ""}</span>

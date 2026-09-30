@@ -3,6 +3,8 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
+declare global { interface Window { gtag?: (...args: unknown[]) => void } }
+
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 const KEY = "as_consent";
 

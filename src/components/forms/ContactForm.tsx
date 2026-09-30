@@ -8,7 +8,6 @@ import { scorecardHref } from "@/content/site";
 import { sentenceOf } from "@/lib/leads";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
-import { Turnstile } from "./Turnstile";
 
 const whenChoices = ["this month", "this quarter", "this year", "exploring"];
 const heardChoices = ["LinkedIn", "A referral", "Search", "An event", "The newsletter", "Other"];
@@ -32,7 +31,7 @@ export function ContactForm({ prefill = empty }: { prefill?: Prefill }) {
   const initialWhen = prefill.when;
   const id = useId();
   const [v, setV] = useState({ name: "", email: "", company: "", role: "", message: initialMessage, when: whenChoices.includes(initialWhen) ? initialWhen : "", heard: "", heardDetail: "", consent: false, website: "" });
-  const { state, message, errors, fallback, submit, clearError, turnstile } = useLead();
+  const { state, message, errors, fallback, submit, clearError } = useLead();
   const set = <K extends keyof typeof v>(k: K, value: (typeof v)[K]) => { setV((s) => ({ ...s, [k]: value })); if (k === "name" || k === "email" || k === "message" || k === "consent") clearError(k); };
 
   if (state === "success") {
@@ -101,7 +100,6 @@ export function ContactForm({ prefill = empty }: { prefill?: Prefill }) {
           </label>
           {err("consent") ? <span id={f("consent-help")} className="field-help" style={{ color: "var(--error-600)" }}>✕ {err("consent")}</span> : null}
         </div>
-        <div className="span-2"><Turnstile ref={turnstile} /></div>
         <div className="span-2 stack-16">
           <button className="btn btn-primary" type="submit" disabled={state === "loading"}>{state === "loading" ? "Sending…" : "Send"}</button>
           {state !== "idle" ? <FormStatus state={state} message={message} fallback={fallback} /> : null}
