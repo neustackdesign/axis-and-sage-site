@@ -29,6 +29,7 @@ export function parseLead(raw: Record<string, unknown>): LeadPayload | null {
     consent: raw.consent === true || raw.consent === "on" || raw.consent === "true",
     tool: str(raw.tool, 80), summary: str(raw.summary, 8000), engagement: str(raw.engagement, 120),
     website: str(raw.website, 200),
+    origin: str(raw.origin, 40)?.toLowerCase().replace(/[^a-z0-9-]/g, "") || undefined,
     attribution: sanitiseAttribution(raw.attribution),
   };
 }
@@ -41,7 +42,7 @@ export function sheetPayload(type: SheetPayload["type"], lead: LeadPayload, extr
     type,
     id: randomId(),
     createdAt: new Date().toISOString(),
-    source: lead.source,
+    source: lead.origin ? `${lead.source} · ${lead.origin}` : lead.source,
     name: lead.name, email: lead.email, company: lead.company, role: lead.role, message: lead.message,
     who: lead.who, what: lead.what, when: lead.when, sentence: sentenceOf(lead) || undefined,
     heard: lead.heard, heardDetail: lead.heardDetail, engagement: lead.engagement,

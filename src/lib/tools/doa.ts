@@ -1,4 +1,7 @@
-import { doaAreaWeight, doaLimitShares, doaMonetaryAreas, doaUnbudgetedArea, type DoaCode } from "@/content/tools";
+import {
+  doaBands, doaGroupCeoShare, doaMonetaryAreas, doaNonMonetary, doaSubsidiaryLabel, doaUnbudgetedArea, money,
+  type CurrencyCode, type DoaArea, type DoaCode, type DoaLevel,
+} from "@/content/tools";
 
 /** Rounds to n significant figures (limits use 2). */
 export function roundSig(value: number, digits = 2) {
@@ -6,61 +9,102 @@ export function roundSig(value: number, digits = 2) {
   return Number(value.toPrecision(digits));
 }
 
-/** Monetary limits from annual revenue: 0.05%, 0.25%, 1% and 5%, rounded to 2 significant figures. */
-export const revenueLimits = (revenue: number) => doaLimitShares.map((s) => roundSig(revenue * s, 2));
+export type Structure = "single" | "group";
 
-export type DoaCell = { code: DoaCode; limit: number | null; note?: string };
+/** Where a monetary limit comes from, so the spreadsheet can rebuild it as a formula. */
+export type BandRef = { level: DoaLevel; basis: "revenue" | "group" };
+
+export type DoaCell = { code: DoaCode; limit: number | null; op?: "≤" | ">"; unit?: "money" | "pct"; note?: string; band?: BandRef };
+
+/** Levels that hold a monetary limit. Board committees never do. */
+const bandLevels: DoaLevel[] = ["Manager", "Function head", "CFO", "CEO / MD", "Group CEO", "Board"];
+
+/** The budgeted limit a level holds, rounded to 2 significant figures. The Board has no cap. */
+export function bandLimit(level: DoaLevel, revenue: number | null, groupRevenue: number | null): { limit: number | null; band: BandRef } | null {
+  const band = doaBands.find((b) => b.level === level);
+  if (band) return { limit: revenue && revenue > 0 ? roundSig(revenue * band.share) : null, band: { level, basis: "revenue" } };
+  if (level === "Group CEO") return { limit: groupRevenue && groupRevenue > 0 ? roundSig(groupRevenue * doaGroupCeoShare) : null, band: { level, basis: "group" } };
+  return null;
+}
+
+/** The budgeted limits by level for a revenue figure, lowest first. */
+export const revenueLimits = (revenue: number) => doaBands.map((b) => roundSig(revenue * b.share));
+
+/** Column label: in a group, CEO / MD is the subsidiary MD. */
+export const levelLabel = (level: DoaLevel, structure: Structure) => (structure === "group" && level === "CEO / MD" ? doaSubsidiaryLabel : level);
 
 /**
- * Default cell for an area and a level. `levels` are the active approval levels, highest first.
- * Monetary areas: the top level approves without a cap. Below it, the four revenue limits go to the lowest four levels
- * (lowest level, smallest limit); any extra levels between those and the top recommend. With fewer than four levels
- * below the top, they take the highest limits. Unbudgeted spend goes one level up: each level takes the limit of the
- * level below it, and the lowest level recommends.
+ * A monetary row. Each level approves up to its band; the Board approves above the highest band in the row.
+ * Unbudgeted spend goes one level up: each level takes the limit of the level below it, and the lowest recommends.
  */
-export function limitTier(levelIndex: number, levelCount: number, unbudgeted: boolean): number | "top" | "recommend" {
-  if (levelIndex === 0) return "top";
-  const tiers = doaLimitShares.length;
-  const below = levelCount - 1;
-  const fromBottom = levelCount - 1 - levelIndex;
-  let tier = below >= tiers ? fromBottom : fromBottom + (tiers - below);
-  if (tier >= tiers) return "recommend";
-  if (unbudgeted) tier -= 1;
-  return tier < 0 ? "recommend" : tier;
-}
-
-export function defaultCell(area: string, levelIndex: number, levels: string[], revenue: number | null): DoaCell {
-  const n = levels.length;
-  if (doaMonetaryAreas.includes(area)) {
-    const tier = limitTier(levelIndex, n, area === doaUnbudgetedArea);
-    if (tier === "top") return { code: "A", limit: null, note: n > 1 ? "Above the delegated limits" : undefined };
-    if (tier === "recommend") return { code: "R", limit: null };
-    return { code: "A", limit: revenue && revenue > 0 ? revenueLimits(revenue)[tier] : null };
+function monetaryRow(levels: DoaLevel[], revenue: number | null, groupRevenue: number | null, unbudgeted: boolean): DoaCell[] {
+  const chain = levels.filter((l) => bandLevels.includes(l)).reverse(); // lowest first
+  const capped = chain.filter((l) => l !== "Board");
+  const cells = new Map<DoaLevel, DoaCell>();
+  capped.forEach((level, k) => {
+    const source = unbudgeted ? capped[k - 1] : level;
+    if (!source) { cells.set(level, { code: "R", limit: null }); return; }
+    const b = bandLimit(source, revenue, groupRevenue)!;
+    cells.set(level, { code: "A", op: "≤", unit: "money", limit: b.limit, band: b.band });
+  });
+  if (chain.includes("Board")) {
+    const approvers = capped.map((l) => cells.get(l)!).filter((c) => c.code === "A");
+    const top = approvers.reduce<DoaCell | undefined>((best, c) => (!best || (c.limit ?? 0) > (best.limit ?? 0) ? c : best), undefined);
+    cells.set("Board", top ? { code: "A", op: ">", unit: "money", limit: top.limit, band: top.band } : { code: "A", limit: null });
   }
-  const approver = Math.min(n - 1, Math.round((doaAreaWeight[area] ?? 0.5) * (n - 1)));
-  if (levelIndex === approver) return { code: "A", limit: null };
-  if (levelIndex === approver + 1) return { code: "R", limit: null };
-  if (levelIndex < approver) return { code: "I", limit: null };
-  if (levelIndex === approver + 2) return { code: "C", limit: null };
-  return { code: "–", limit: null };
+  return levels.map((l) => cells.get(l) ?? { code: "–", limit: null });
 }
 
-/** Group rule (interim until file 06): in a group, the Group CEO is informed of every decision the CEO approves. */
-export function applyGroupRules(cell: DoaCell, level: string, row: DoaCell[], levels: string[], structure: "single" | "group"): DoaCell {
-  if (structure !== "group" || level !== "Group CEO" || cell.code !== "–") return cell;
-  const ceo = levels.indexOf("CEO");
-  return ceo >= 0 && row[ceo]?.code === "A" ? { ...cell, code: "I" } : cell;
+function nonMonetaryRow(area: DoaArea, levels: DoaLevel[], structure: Structure): DoaCell[] {
+  const defaults = doaNonMonetary[area] || {};
+  const cell = (level: DoaLevel): DoaCell => {
+    const d = defaults[level];
+    if (!d) return { code: "–", limit: null };
+    return d.pct ? { code: d.code, limit: d.pct.value, op: d.pct.op, unit: "pct", note: d.note } : { code: d.code, limit: null, note: d.note };
+  };
+  const row = levels.map(cell);
+  // Group rule: the Group CEO sits between the Board and the subsidiary MD. It is informed of what the MD approves,
+  // and recommends what the MD sends on to the Board.
+  if (structure === "group" && levels.includes("Group CEO")) {
+    const md = defaults["CEO / MD"], board = defaults.Board;
+    const g: DoaCell = md?.code === "A" ? { code: "I", limit: null } : md?.code === "R" && board?.code === "A" ? { code: "R", limit: null } : { code: "–", limit: null };
+    row[levels.indexOf("Group CEO")] = g;
+  }
+  return row;
 }
 
-export function buildMatrix(areas: string[], levels: string[], revenue: number | null, structure: "single" | "group") {
+/** Default cell for an area and a level. `levels` are the active levels, highest first. */
+export function defaultCell(area: DoaArea, levelIndex: number, levels: DoaLevel[], revenue: number | null, structure: Structure = "single", groupRevenue: number | null = null) {
+  return buildMatrix([area], levels, revenue, structure, groupRevenue)[0][levelIndex];
+}
+
+export function buildMatrix(areas: DoaArea[], levels: DoaLevel[], revenue: number | null, structure: Structure, groupRevenue: number | null = null) {
+  const active = levels.filter((l) => structure === "group" || l !== "Group CEO");
   return areas.map((area) => {
-    const row = levels.map((_, i) => defaultCell(area, i, levels, revenue));
-    return row.map((c, i) => applyGroupRules(c, levels[i], row, levels, structure));
+    const row = doaMonetaryAreas.includes(area) || area === doaUnbudgetedArea
+      ? monetaryRow(active, revenue, groupRevenue, area === doaUnbudgetedArea)
+      : nonMonetaryRow(area, active, structure);
+    return levels.map((l) => (active.includes(l) ? row[active.indexOf(l)] : { code: "–" as DoaCode, limit: null }));
   });
 }
 
-export const footnotes = [
-  "Limits are per transaction, in the currency of your revenue, and include tax.",
-  "Spend outside the approved budget needs approval one level higher than the same spend within budget.",
-  "Nobody approves a decision in which they have a personal interest; it goes one level up.",
-];
+/** The level that approves an amount in a monetary row: the lowest level whose limit covers it. */
+export function approverFor(amount: number, row: DoaCell[], levels: DoaLevel[]) {
+  for (let i = levels.length - 1; i >= 0; i--) {
+    const c = row[i];
+    if (c.code !== "A" || c.unit !== "money") continue;
+    if (c.op === "≤" && c.limit !== null && amount <= c.limit) return levels[i];
+    if (c.op === ">" && c.limit !== null && amount > c.limit) return levels[i];
+  }
+  return null;
+}
+
+/** Cell text, for example "A ≤ ₦25M", "A > ₦500M", "A ≤ 5%" or "A · within plan". Exports pass full = true for unabbreviated values. */
+export function formatCell(c: DoaCell, currency: CurrencyCode, full = false) {
+  let limit = "";
+  if (c.limit !== null && c.op) {
+    const value = c.unit === "pct" ? `${c.limit}%` : full ? `${currency} ${Math.round(c.limit).toLocaleString("en-GB")}` : money(c.limit, currency);
+    limit = ` ${c.op} ${value}`;
+  }
+  return `${c.code}${limit}${c.note ? ` · ${c.note}` : ""}`;
+}

@@ -21,7 +21,8 @@ export type LeadPayload = {
   summary?: string;
   engagement?: string;
   website?: string; // honeypot
-  turnstileToken?: string;
+  /** Where the visitor came from on the site, for example "scorecard" (?source= on /contact). */
+  origin?: string;
   attribution?: Attribution;
 };
 
@@ -56,7 +57,7 @@ export function sentenceOf(p: Pick<LeadPayload, "who" | "what" | "when">) {
 
 export function leadText(p: LeadPayload) {
   const lines = [
-    `Source: ${p.source}${p.tool ? ` (${p.tool})` : ""}`,
+    `Source: ${p.source}${p.origin ? ` · ${p.origin}` : ""}${p.tool ? ` (${p.tool})` : ""}`,
     p.name ? `Name: ${p.name}` : "",
     `Email: ${p.email}`,
     p.company ? `Company: ${p.company}` : "",

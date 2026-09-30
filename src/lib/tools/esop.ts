@@ -1,4 +1,7 @@
-export type EsopInput = { shares: number; founders: number; poolPct: number; grantPct: number; strike: number | null; valuation: number; exit: number; years: number; cliffMonths: number; round: boolean; dilutionPct: number };
+export type EsopInput = {
+  shares: number; founders: number; poolPct: number; grantPct: number; strike: number | null; valuation: number; exit: number;
+  years: number; cliffMonths: number; frequencyMonths?: number; round: boolean; dilutionPct: number;
+};
 
 export function validateEsop(i: EsopInput) {
   const e: Record<string, string> = {};
@@ -8,32 +11,40 @@ export function validateEsop(i: EsopInput) {
   if (i.grantPct < 0 || (i.poolPct > 0 && i.grantPct > i.poolPct)) e.grantPct = "The grant can't be bigger than the pool.";
   if (i.round && (i.dilutionPct < 0 || i.dilutionPct >= 100)) e.dilutionPct = "Dilution must be under 100%.";
   if (!(i.years >= 1)) e.years = "Vesting needs at least one year.";
+  if (i.cliffMonths < 0) e.cliffMonths = "The cliff can't be negative.";
   return e;
 }
 
+/** vested(m) = 0 while m < cliff, otherwise G × min(1, m / (years × 12)), counted in whole vesting periods. */
+export function vested(m: number, grant: number, years: number, cliffMonths: number, frequencyMonths = 1) {
+  if (m < cliffMonths) return 0;
+  const counted = Math.floor(m / frequencyMonths) * frequencyMonths;
+  return Math.round(grant * Math.min(1, counted / (years * 12)));
+}
+
 /**
- * Pool: created so it is poolPct of the company after creation. Dilution: one optional round issues new shares
- * equal to dilutionPct of the post-round company. Value = shares × (price per share − strike), never below zero.
+ * P = p / (100 − p) × S, rounded; FD = S + P; G = g / 100 × FD, rounded.
+ * strike = Vc / FD unless a strike is given; exit_price = Ve / FD × (1 − d) with the extra round on.
+ * grant_value = G × max(0, exit_price − strike).
  */
 export function esopModel(i: EsopInput) {
-  const pool = i.poolPct / 100, grant = i.grantPct / 100, dilution = i.round ? i.dilutionPct / 100 : 0;
-  const poolShares = pool > 0 ? (i.shares * pool) / (1 - pool) : 0;
-  const total = i.shares + poolShares;
-  const grantShares = total * grant;
-  const priceToday = total ? i.valuation / total : 0;
+  const P = i.poolPct > 0 ? Math.round((i.poolPct / (100 - i.poolPct)) * i.shares) : 0;
+  const FD = i.shares + P;
+  const G = Math.round((i.grantPct / 100) * FD);
+  const priceToday = FD ? i.valuation / FD : 0;
   const strike = i.strike ?? priceToday;
-  const exitShares = total / (1 - dilution);
-  const priceExit = exitShares ? i.exit / exitShares : 0;
-  const cliffYears = i.cliffMonths / 12;
-  const vesting = Array.from({ length: Math.round(i.years) }, (_, k) => ({ year: k + 1, vestedPct: k + 1 < cliffYears ? 0 : Math.min(1, (k + 1) / i.years) }));
+  const d = i.round ? i.dilutionPct / 100 : 0;
+  const exitPrice = FD ? (i.exit / FD) * (1 - d) : 0;
+  const months = Math.round(i.years * 12);
+  const freq = i.frequencyMonths || 1;
   return {
-    poolShares, total, grantShares, priceToday, strike, priceExit,
+    P, FD, G, priceToday, strike, exitPrice,
     foundersBefore: i.shares ? i.founders / i.shares : 0,
-    foundersAfter: total ? i.founders / total : 0,
-    foundersAtExit: exitShares ? i.founders / exitShares : 0,
-    grantPctAtExit: exitShares ? grantShares / exitShares : 0,
-    valueToday: grantShares * Math.max(0, priceToday - strike),
-    valueExit: grantShares * Math.max(0, priceExit - strike),
-    vesting,
+    foundersAfter: FD ? i.founders / FD : 0,
+    grantValue: G * Math.max(0, exitPrice - strike),
+    vesting: Array.from({ length: months + 1 }, (_, m) => ({ month: m, vested: vested(m, G, i.years, i.cliffMonths, freq) })),
   };
 }
+
+/** "About" figures in the sentence: 3 significant figures. */
+export const about = (n: number) => (n ? Number(n.toPrecision(3)) : 0);

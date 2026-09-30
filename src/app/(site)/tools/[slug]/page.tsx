@@ -11,7 +11,6 @@ import { ReadinessScore } from "@/components/tools/ReadinessScore";
 import { Scorecard } from "@/components/tools/Scorecard";
 import { ScorecardEntry } from "@/components/tools/ScorecardEntry";
 import { toolBySlug, tools } from "@/content/library";
-import { TOOL_DRAFT_NOTE } from "@/content/tools";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { webApplicationLd } from "@/lib/seo";
@@ -47,8 +46,7 @@ export default async function ToolPage({ params }: Props) {
       <section className="tool-section" aria-label={t.title}>
         <div className="wrap">
           {components[t.slug]}
-          <p className="tool-draft t-label">{TOOL_DRAFT_NOTE}</p>
-          <p className="tool-note" style={{ marginTop: 8, maxWidth: 680 }}>No sign-up to use it. Leave an email only if you want the full model or a copy of your results.</p>
+          <p className="tool-note" style={{ marginTop: 32, maxWidth: 680 }}>No sign-up to use it. Leave an email only if you want the full model or a copy of your results.</p>
         </div>
       </section>
       <CTABand />

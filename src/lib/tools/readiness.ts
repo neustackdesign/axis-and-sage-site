@@ -1,9 +1,9 @@
-import { readinessBands, readinessGroups, type ReadinessAnswer } from "@/content/tools";
+import { readinessBands, readinessGapOrder, readinessGroups, type ReadinessAnswer } from "@/content/tools";
 
 export const readinessPoints: Record<ReadinessAnswer, number> = { yes: 2, partly: 1, no: 0 };
 export const checkKey = (groupKey: string, index: number) => `${groupKey}-${index}`;
 
-/** Unanswered checks score 0. Percentages are of the maximum (2 points a check). */
+/** Group % = group points / 10 × 100; overall % = total points / 50 × 100. Unanswered checks score 0. */
 export function readinessScore(answers: Record<string, ReadinessAnswer | undefined>) {
   const groups = readinessGroups.map((g) => {
     const points = g.checks.reduce((n, _, i) => n + (answers[checkKey(g.key, i)] ? readinessPoints[answers[checkKey(g.key, i)]!] : 0), 0);
@@ -15,11 +15,12 @@ export function readinessScore(answers: Record<string, ReadinessAnswer | undefin
   return { groups, points, max, pct, band: readinessBands.find((b) => pct >= b.min)! };
 }
 
-/** Gaps: every check not answered yes. Interim ordering until file 06: "no" (and unanswered) before "partly", then group order, then check order. */
+/** Gaps: every "no" (unanswered counts as no), then every "partly". Within each: Terms, Numbers, Company, Story, Process. */
 export function readinessGaps(answers: Record<string, ReadinessAnswer | undefined>) {
   const rank = (a?: ReadinessAnswer) => (a === "partly" ? 1 : 0);
+  const groupRank = (key: string) => readinessGapOrder.indexOf(key);
   return readinessGroups
-    .flatMap((g, gi) => g.checks.map((text, i) => ({ group: g.label, text, answer: answers[checkKey(g.key, i)], gi, i })))
+    .flatMap((g) => g.checks.map((text, i) => ({ key: g.key, group: g.label, number: readinessGroups.findIndex((x) => x.key === g.key) * 5 + i + 1, text, answer: answers[checkKey(g.key, i)], i })))
     .filter((x) => x.answer !== "yes")
-    .sort((a, b) => rank(a.answer) - rank(b.answer) || a.gi - b.gi || a.i - b.i);
+    .sort((a, b) => rank(a.answer) - rank(b.answer) || groupRank(a.key) - groupRank(b.key) || a.i - b.i);
 }

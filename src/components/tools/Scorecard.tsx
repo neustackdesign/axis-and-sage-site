@@ -2,30 +2,29 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { scaleLabels, scorecardStatements, scorecardWho } from "@/content/tools";
-import { whenOptions } from "@/content/site";
+import { SCORECARD_FREE_TEXT_MAX, scaleLabels, scorecardRateQuestion, scorecardStatements, scorecardVolumeQuestion, scorecardWhen, scorecardWho } from "@/content/tools";
 import { caseBySlug } from "@/content/work";
-import { blockers, fillStatement, halfScore, relatedCaseSlug, scorecardSummary, unknownNote, verdict } from "@/lib/tools/scorecard";
-import { Quadrant, Segmented, Stepper, ToolPanel } from "./ToolBits";
+import { blockers, fill, halfScore, relatedCaseSlug, scorecardSummary, sentenceFor, unknownNote, verdict, whoForms } from "@/lib/tools/scorecard";
+import { Quadrant, Segmented, Stepper, ToolDisclaimer, ToolPanel } from "./ToolBits";
 import { ToolEmail } from "./ToolEmail";
-import { toolShareUrl, useHashRestore, useToolEvents } from "./useTool";
+import { toolShareUrl, useHashRestore, useToolComplete } from "./useTool";
 
-type State = { who: string; otherWho: string; what: string; when: string; outOf10: number; unknown: boolean; monthly: string; answers: Record<string, number> };
+type State = { who: string; otherWho: string; what: string; when: string; rate: number; unknown: boolean; volume: string; answers: Record<string, number> };
 
-const initial: State = { who: "", otherWho: "", what: "", when: "", outOf10: 3, unknown: false, monthly: "", answers: {} };
-const statementScreens = [0, 2, 4, 6, 8].map((i) => scorecardStatements.slice(i, i + 2));
-const SCREENS = 1 + 1 + statementScreens.length + 1; // action, standing, 5 statement screens, results
+const initial: State = { who: "", otherWho: "", what: "", when: "", rate: 3, unknown: false, volume: "", answers: {} };
+const statementScreens = [scorecardStatements.filter((s) => s.half === "terms"), scorecardStatements.filter((s) => s.half === "moments")];
+const SCREENS = 1 + 1 + statementScreens.length + 1; // action, standing, Terms, Moments, results
 const STEP_NAMES = ["The action", "Where things stand", "Ten statements", "Results"];
 
 /** Conversion Scorecard: four steps with a progress bar, then results. All scoring lives in lib/tools/scorecard. */
 export function Scorecard({ preset }: { preset?: { who?: string; what?: string; when?: string } }) {
   const id = useId();
-  const events = useToolEvents("Conversion Scorecard");
+  const complete = useToolComplete("Conversion Scorecard");
   const [s, setS] = useState<State>(() => {
     const who = scorecardWho.find((w) => w.key === preset?.who?.toLowerCase() || w.label.toLowerCase() === preset?.who?.toLowerCase())?.key || "";
     const whoDef = scorecardWho.find((w) => w.key === who);
     const what = whoDef?.actions.find((a) => a.startsWith(preset?.what || "\u0000")) || "";
-    const when = whenOptions.find((w) => w === preset?.when) || "";
+    const when = scorecardWhen.find((w) => w === preset?.when) || "";
     return { ...initial, who, what, when };
   });
   const [screen, setScreen] = useState(0);
@@ -35,22 +34,24 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
   useHashRestore<State>(useCallback((restored) => { setS({ ...initial, ...restored }); setScreen(SCREENS - 1); }, []));
 
   const whoDef = scorecardWho.find((w) => w.key === s.who);
-  const whoLabel = s.who === "other" ? s.otherWho || "they" : whoDef?.label.toLowerCase() || "[who]";
-  const actionLabel = s.what || "[act]";
-  const set = (patch: Partial<State>) => { events.start(); setS((cur) => ({ ...cur, ...patch })); };
+  const forms = whoForms(s.who, s.otherWho);
+  const actionLabel = s.what.trim() || "act";
+  const set = (patch: Partial<State>) => setS((cur) => ({ ...cur, ...patch }));
   const stepIndex = screen === 0 ? 0 : screen === 1 ? 1 : screen < SCREENS - 1 ? 2 : 3;
   const progress = (screen / (SCREENS - 1)) * 100;
 
   const terms = halfScore(s.answers, "terms");
   const moments = halfScore(s.answers, "moments");
-  const v = verdict(terms, moments);
+  const v = verdict(terms, moments, forms, actionLabel);
   const unknown = unknownNote(s.unknown);
   const lowest = useMemo(() => blockers(s.answers), [s.answers]);
   const related = caseBySlug(relatedCaseSlug(s.who));
-  const sentence = `We need ${whoLabel} to ${actionLabel}${s.when && s.when !== "no date yet" ? ` by ${s.when}` : ""}.`;
+  const sentence = sentenceFor(forms.who, actionLabel, s.when);
   const isResults = screen === SCREENS - 1;
 
-  useEffect(() => { if (isResults) events.complete({ verdict: v.key, terms, moments }); }, [isResults, events, v.key, terms, moments]);
+  useEffect(() => {
+    if (isResults) complete({ who: s.who === "other" ? "something else" : s.who, action: s.what, when: s.when, rate: s.unknown ? null : s.rate, volume: s.volume || null, answers: s.answers }, { terms, moments, verdict: v.key, blockers: lowest.map((b) => b.id.toUpperCase()) });
+  }, [isResults, complete, s, terms, moments, v.key, lowest]);
 
   const screenValid = () => {
     if (screen === 0) return !!s.who && (s.who !== "other" || !!s.otherWho.trim()) && !!s.what.trim() && !!s.when;
@@ -63,7 +64,6 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
     setTouched(false);
     const n = Math.min(SCREENS - 1, screen + 1);
     setScreen(n);
-    events.step(n === SCREENS - 1 ? "results" : n >= 2 ? `statements-${n - 1}` : STEP_NAMES[n]);
     window.scrollTo({ top: (document.getElementById(`${id}-top`)?.offsetTop || 0) - 80, behavior: "smooth" });
   };
   const back = () => { setTouched(false); setScreen((n) => Math.max(0, n - 1)); };
@@ -73,8 +73,8 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
     navigator.clipboard?.writeText(url).then(() => setCopied(true), () => window.prompt("Copy this link", url));
   };
 
-  const summary = () => scorecardSummary({ sentence, unknown: s.unknown, outOf10: s.outOf10, monthly: s.monthly, answers: s.answers, who: whoLabel, action: actionLabel });
-  const diagnosticHref = `/contact?who=${encodeURIComponent(whoLabel)}&what=${encodeURIComponent(actionLabel)}&when=${encodeURIComponent(s.when)}&engagement=diagnostic#note`;
+  const summary = () => scorecardSummary({ sentence, unknown: s.unknown, rate: s.rate, volume: s.volume, answers: s.answers, forms, action: actionLabel });
+  const diagnosticHref = `/contact?who=${encodeURIComponent(forms.who)}&what=${encodeURIComponent(actionLabel)}&when=${encodeURIComponent(s.when)}&engagement=diagnostic&source=scorecard#note`;
 
   return (
     <div id={`${id}-top`}>
@@ -96,7 +96,7 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
             </span>
             {s.who === "other" ? (
               <span className="ms-slot"><label className="sr-only" htmlFor={`${id}-otherwho`}>Who, in your words</label>
-                <input id={`${id}-otherwho`} className={`ms-input${s.otherWho ? " is-filled" : ""}`} placeholder="who" value={s.otherWho} onChange={(e) => set({ otherWho: e.target.value })} />
+                <input id={`${id}-otherwho`} className={`ms-input${s.otherWho ? " is-filled" : ""}`} placeholder="who" maxLength={SCORECARD_FREE_TEXT_MAX} value={s.otherWho} onChange={(e) => set({ otherWho: e.target.value })} />
               </span>
             ) : null}
             <span className="ms-slot"><span aria-hidden="true">TO</span>
@@ -109,7 +109,7 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
                   </select>
                 </span>
               ) : (
-                <input id={`${id}-what`} className={`ms-input${s.what ? " is-filled" : ""}`} placeholder="do what" value={s.what} onChange={(e) => set({ what: e.target.value })} disabled={!s.who} />
+                <input id={`${id}-what`} className={`ms-input${s.what ? " is-filled" : ""}`} placeholder="do what" maxLength={SCORECARD_FREE_TEXT_MAX} value={s.what} onChange={(e) => set({ what: e.target.value })} disabled={!s.who} />
               )}
             </span>
             <span className="ms-slot"><span aria-hidden="true">BY</span>
@@ -117,7 +117,7 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
               <span className={`ms-select${s.when ? " is-chosen" : ""}`}>
                 <select id={`${id}-when`} value={s.when} onChange={(e) => set({ when: e.target.value })} aria-invalid={touched && !s.when}>
                   <option value="">choose</option>
-                  {whenOptions.map((w) => <option key={w} value={w}>{w}</option>)}
+                  {scorecardWhen.map((w) => <option key={w} value={w}>{w}</option>)}
                 </select>
               </span>
             </span>
@@ -133,16 +133,16 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
           <div className="tool-inputs" style={{ marginTop: 28 }}>
             <div className="slider-field">
               <div className="slider-head">
-                <label className="field-label" htmlFor={`${id}-ten`}>Out of every 10 {whoLabel} who reach the point of deciding, how many {actionLabel} today?</label>
-                <span className="slider-value" aria-hidden="true">{s.unknown ? "?" : `${s.outOf10} / 10`}</span>
+                <label className="field-label" htmlFor={`${id}-ten`}>{fill(scorecardRateQuestion, forms, actionLabel)}</label>
+                <span className="slider-value" aria-hidden="true">{s.unknown ? "?" : `${s.rate} / 10`}</span>
               </div>
-              <input id={`${id}-ten`} type="range" min={0} max={10} step={1} value={s.outOf10} disabled={s.unknown} onChange={(e) => set({ outOf10: Number(e.target.value) })} aria-valuetext={`${s.outOf10} out of 10`} />
+              <input id={`${id}-ten`} type="range" min={0} max={10} step={1} value={s.rate} disabled={s.unknown} onChange={(e) => set({ rate: Number(e.target.value) })} aria-valuetext={`${s.rate} out of 10`} />
               <div className="slider-scale t-label"><span>0</span><span>10</span></div>
               <label className="check"><input type="checkbox" checked={s.unknown} onChange={(e) => set({ unknown: e.target.checked })} /><span>I don&apos;t know</span></label>
             </div>
             <div className="field" style={{ maxWidth: 320 }}>
-              <label className="field-label" htmlFor={`${id}-monthly`}>How many reach that point in a typical month? <span className="req">Optional</span></label>
-              <input id={`${id}-monthly`} className="field-control" type="number" inputMode="numeric" min={0} value={s.monthly} onChange={(e) => set({ monthly: e.target.value })} />
+              <label className="field-label" htmlFor={`${id}-volume`}>{scorecardVolumeQuestion} <span className="req">Optional</span></label>
+              <input id={`${id}-volume`} className="field-control" type="number" inputMode="numeric" min={0} step={1} value={s.volume} onChange={(e) => set({ volume: e.target.value.replace(/\D/g, "") })} />
             </div>
           </div>
         </ToolPanel>
@@ -150,11 +150,11 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
 
       {screen >= 2 && !isResults ? (
         <ToolPanel className="tool-body">
-          <p className="t-label muted">STEP 3 · TEN STATEMENTS · {screen - 1} OF {statementScreens.length}</p>
+          <p className="t-label muted">STEP 3 · TEN STATEMENTS · {screen === 2 ? "TERMS" : "MOMENTS"} · {screen - 1} OF {statementScreens.length}</p>
           <p className="tool-note" style={{ marginTop: 8 }}>How true is each statement today?</p>
           <div style={{ marginTop: 24 }}>
             {statementScreens[screen - 2].map((st) => {
-              const text = fillStatement(st.text, whoLabel, actionLabel);
+              const text = fill(st.text, forms, actionLabel);
               return (
                 <fieldset key={st.id} className="statement" style={{ border: 0, borderTop: "1px solid var(--charcoal-900)", margin: 0, padding: "20px 0 0" }}>
                   <p className="statement-tag t-label">{st.half === "terms" ? "TERMS" : "MOMENT"}</p>
@@ -174,8 +174,8 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
           <div className="tool-results-head">
             <p className="t-label muted">YOUR RESULT · {sentence.toUpperCase()}</p>
             <h2 className="verdict">{v.headline}</h2>
-            <p className="t-body-l muted" style={{ maxWidth: 720 }}>{v.line}</p>
-            {unknown ? <div className="callout" style={{ maxWidth: 720 }}><span className="t-label">{unknown.headline.toUpperCase()}</span><span>{unknown.line}</span></div> : null}
+            <p className="t-body-l muted" style={{ maxWidth: 720 }}>{v.body}</p>
+            {unknown ? <div className="callout" style={{ maxWidth: 720 }}><span className="t-label">{unknown.headline.toUpperCase()}</span><span>{unknown.body}</span></div> : null}
           </div>
           <div className="result-panel">
             <div className="result-scores">
@@ -190,7 +190,7 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
                   {lowest.map((st, i) => (
                     <li key={st.id}>
                       <span>{String(i + 1).padStart(2, "0")}</span>
-                      <span>{fillStatement(st.text, whoLabel, actionLabel)}<span className="blocker-check" style={{ display: "block" }}>What we&apos;d check first: {st.check}</span></span>
+                      <span>{fill(st.text, forms, actionLabel)}<span className="blocker-check" style={{ display: "block" }}>What we&apos;d check first: {fill(st.check, forms, actionLabel)}</span></span>
                     </li>
                   ))}
                 </ol>
@@ -200,9 +200,10 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
           </div>
           <div className="tool-actions">
             <Link className="btn btn-primary" href={diagnosticHref}>Book a Diagnostic with this sentence</Link>
-            <ToolEmail tool="Conversion Scorecard" label="Email me this report" summary={summary} result={() => ({ ...s, terms, moments, verdict: v.key })} shareUrl={() => toolShareUrl(s)} diagnosticUrl={() => `${window.location.origin}${diagnosticHref}`} />
+            <ToolEmail tool="Conversion Scorecard" label="Email me this report" summary={summary} result={() => ({ sentence, rate: s.unknown ? null : s.rate, terms, moments, verdict: v.headline, blockers: lowest.map((b) => b.id.toUpperCase()) })} shareUrl={() => toolShareUrl(s)} diagnosticUrl={() => `${window.location.origin}${diagnosticHref}`} />
             <button type="button" className="btn btn-secondary" onClick={shareLink}>{copied ? "Link copied" : "Share result link"}</button>
           </div>
+          <ToolDisclaimer />
           <p style={{ marginTop: 24 }}><button type="button" className="text-link" style={{ background: "none", border: 0, padding: 0 }} onClick={() => { setS(initial); setScreen(0); history.replaceState(null, "", window.location.pathname); }}>Start again</button></p>
         </div>
       ) : null}

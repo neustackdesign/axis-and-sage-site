@@ -2,27 +2,31 @@ import type { LiftMode } from "@/content/tools";
 
 export type LiftInput = { mode: LiftMode; base: number; rate: number; value: number; lift: number; target: number };
 
-/** Effective lift in points: Our team uses the target rate r1; the other modes add points to today's rate r0. */
-export function liftPoints(i: LiftInput) {
-  const r0 = clampPct(i.rate);
-  const r1 = i.mode === "team" ? clampPct(i.target) : clampPct(r0 + Math.max(0, i.lift));
-  return Math.max(0, r1 - r0);
-}
-
 const clampPct = (n: number) => Math.min(100, Math.max(0, Number.isFinite(n) ? n : 0));
+const pos = (n: number) => Math.max(0, Number.isFinite(n) ? n : 0);
 
+/**
+ * Customers: today = N × r0 / 100; extra = N × Δ / 100; value_month = extra × V; value_year × 12; per_point = N × 0.01 × V.
+ * Investors: extra commitments = N × Δ / 100; extra capital = extra × T; per_point = N × 0.01 × T.
+ * Our team: gap = N × (r1 − r0) / 100; value_month = gap × V; value_year × 12.
+ */
 export function liftModel(i: LiftInput) {
-  const base = Math.max(0, i.base || 0), value = Math.max(0, i.value || 0);
-  const points = liftPoints(i);
-  const r0 = clampPct(i.rate);
-  const extraActions = (base * points) / 100;
-  const extraMonth = extraActions * value;
-  const perPointMonth = (base / 100) * value;
-  return { r0, r1: r0 + points, points, extraActions, extraMonth, extraYear: extraMonth * 12, perPointMonth, perPointYear: perPointMonth * 12 };
+  const N = pos(i.base), V = pos(i.value), r0 = clampPct(i.rate);
+  const today = (N * r0) / 100;
+  if (i.mode === "team") {
+    const r1 = clampPct(i.target);
+    const extra = (N * Math.max(0, r1 - r0)) / 100;
+    const valueMonth = extra * V;
+    return { mode: i.mode, r0, r1, points: Math.max(0, r1 - r0), today, extra, valueMonth, valueYear: valueMonth * 12, perPoint: N * 0.01 * V };
+  }
+  const points = pos(i.lift);
+  const extra = (N * points) / 100;
+  const valueMonth = extra * V;
+  return { mode: i.mode, r0, r1: clampPct(r0 + points), points, today, extra, valueMonth, valueYear: valueMonth * 12, perPoint: N * 0.01 * V };
 }
 
-/** Months until the extra value pays back the Diagnostic fee. Null while the price is unset, the currencies differ, or nothing moves. */
-export function breakEvenMonths(extraMonth: number, price: { amount: number | null; currency: string }, currency: string) {
-  if (price.amount === null || price.amount <= 0 || price.currency !== currency || extraMonth <= 0) return null;
-  return Math.ceil((price.amount / extraMonth) * 10) / 10;
+/** Customers mode: payback_actions = ceil(F / V). Null while the price or the value is missing, or the currencies differ. */
+export function paybackActions(value: number, price: { amount: number | null; currency: string }, currency: string) {
+  if (price.amount === null || price.amount <= 0 || price.currency !== currency || !(value > 0)) return null;
+  return Math.ceil(price.amount / value);
 }

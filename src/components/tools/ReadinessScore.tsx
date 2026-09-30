@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { readinessGroups, type ReadinessAnswer } from "@/content/tools";
 import { checkKey, readinessGaps, readinessScore } from "@/lib/tools/readiness";
-import { Segmented, ToolPanel } from "./ToolBits";
+import { readinessWorkbook } from "@/lib/tools/xlsx";
+import { Segmented, ToolDisclaimer, ToolPanel } from "./ToolBits";
 import { ToolEmail } from "./ToolEmail";
-import { toolShareUrl, useHashRestore, useToolEvents } from "./useTool";
+import { toolShareUrl, useHashRestore, useToolComplete } from "./useTool";
 
 const options: { key: ReadinessAnswer; label: string }[] = [{ key: "yes", label: "Yes" }, { key: "partly", label: "Partly" }, { key: "no", label: "No" }];
 const total = readinessGroups.reduce((n, g) => n + g.checks.length, 0);
@@ -14,15 +15,16 @@ type State = { answers: Record<string, ReadinessAnswer>; showResult: boolean };
 
 /** Investor Readiness Score: twenty-five checks scored 2 / 1 / 0. All scoring in lib/tools/readiness. */
 export function ReadinessScore() {
-  const events = useToolEvents("Investor Readiness Score");
+  const complete = useToolComplete("Investor Readiness Score");
   const [s, setS] = useState<State>({ answers: {}, showResult: false });
   useHashRestore<State>(useCallback((r) => setS({ answers: r.answers || {}, showResult: true }), []));
   const answered = Object.keys(s.answers).length;
   const score = readinessScore(s.answers);
   const gaps = readinessGaps(s.answers);
-  useEffect(() => { if (s.showResult) events.complete({ pct: score.pct }); }, [s.showResult, events, score.pct]);
+  useEffect(() => { if (s.showResult) complete(s.answers, { pct: score.pct, band: score.band.headline, groups: Object.fromEntries(score.groups.map((g) => [g.key, g.pct])), gaps: gaps.length }); }, [s.showResult, complete, s.answers, score, gaps.length]);
 
-  const summary = () => [`Overall: ${score.pct}% · ${score.band.headline}`, score.band.line, "", ...score.groups.map((g) => `${g.label}: ${g.pct}% (${g.points}/${g.max})`), "", `Gaps (${gaps.length}):`, ...gaps.map((g) => `- [${g.group}] ${g.text} (${g.answer || "not answered"})`)].join("\n");
+  const summary = () => [`Overall: ${score.pct}% · ${score.band.headline} ${score.band.line}`, "", ...score.groups.map((g) => `${g.label}: ${g.pct}% (${g.points}/${g.max})`), "", `Gaps (${gaps.length}):`, ...gaps.map((g) => `- ${g.number}. [${g.group}] ${g.text} (${g.answer || "no"})`)].join("\n");
+  const checklist = () => readinessWorkbook({ groups: readinessGroups.map((g) => ({ label: g.label, checks: g.checks.map((text, i) => ({ text, answer: s.answers[checkKey(g.key, i)] })) })) });
 
   return (
     <div>
@@ -40,7 +42,7 @@ export function ReadinessScore() {
                     <div key={k} className="readiness-row">
                       <span className="t-label muted">{gi * 5 + i + 1}</span>
                       <span>{c}</span>
-                      <Segmented label={c} value={s.answers[k] || null} onChange={(v) => { events.start(); setS((cur) => ({ ...cur, answers: { ...cur.answers, [k]: v } })); }} options={options} />
+                      <Segmented label={c} value={s.answers[k] || null} onChange={(v) => { setS((cur) => ({ ...cur, answers: { ...cur.answers, [k]: v } })); }} options={options} />
                     </div>
                   );
                 })}
@@ -49,7 +51,7 @@ export function ReadinessScore() {
           ))}
         </div>
         <div className="tool-actions">
-          <button type="button" className="btn btn-dark" onClick={() => { events.step("results"); setS((cur) => ({ ...cur, showResult: true })); }}>See my score</button>
+          <button type="button" className="btn btn-dark" onClick={() => setS((cur) => ({ ...cur, showResult: true }))}>See my score</button>
           {answered < total ? <p className="tool-note" style={{ alignSelf: "center" }}>Unanswered checks count as no.</p> : null}
         </div>
       </ToolPanel>
@@ -63,11 +65,12 @@ export function ReadinessScore() {
             {score.groups.map((g) => <div key={g.key}><span className="t-label muted">{g.label.toUpperCase()}</span><span className="num">{g.pct}%</span><div className="result-bar" style={{ background: "var(--paper-100)" }}><div style={{ width: `${g.pct}%` }} /></div></div>)}
           </div>
           <p className="t-label" style={{ marginTop: 32 }}>YOUR GAPS · {gaps.length}</p>
-          {gaps.length ? <ol className="blockers">{gaps.map((g, i) => <li key={g.text}><span>{String(i + 1).padStart(2, "0")}</span><span>{g.text} <span className="t-label muted">· {g.group.toUpperCase()} · {(g.answer || "not answered").toUpperCase()}</span></span></li>)}</ol> : <p className="muted" style={{ marginTop: 12 }}>No gaps. Every check is a yes.</p>}
+          {gaps.length ? <ol className="blockers">{gaps.map((g, i) => <li key={g.text}><span>{String(i + 1).padStart(2, "0")}</span><span>{g.text} <span className="t-label muted">· {g.group.toUpperCase()} · {(g.answer || "no").toUpperCase()}</span></span></li>)}</ol> : <p className="muted" style={{ marginTop: 12 }}>No gaps. Every check is a yes.</p>}
           <div className="tool-actions">
-            <Link className="btn btn-primary" href="/contact?engagement=Investor%20Readiness%20Sprint#note">Book an Investor Readiness Sprint</Link>
-            <ToolEmail tool="Investor Readiness Score" label="Email me the checklist" summary={summary} result={() => ({ answers: s.answers, pct: score.pct })} shareUrl={() => toolShareUrl({ answers: s.answers })} />
+            <Link className="btn btn-primary" href="/contact?engagement=Investor%20Readiness%20Sprint&source=readiness#note">Book an Investor Readiness Sprint</Link>
+            <ToolEmail tool="Investor Readiness Score" label="Download the checklist" summary={summary} result={() => ({ pct: score.pct, band: score.band.headline, gaps: gaps.length })} shareUrl={() => toolShareUrl({ answers: s.answers })} download={{ filename: "investor-readiness-checklist.xlsx", build: checklist }} />
           </div>
+          <ToolDisclaimer />
         </ToolPanel>
       ) : null}
     </div>

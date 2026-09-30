@@ -12,16 +12,16 @@ import { FormStatus } from "./FormStatus";
 const whenChoices = ["this month", "this quarter", "this year", "exploring"];
 const heardChoices = ["LinkedIn", "A referral", "Search", "An event", "The newsletter", "Other"];
 
-type Prefill = { message: string; when: string; engagement: string };
+type Prefill = { message: string; when: string; engagement: string; origin?: string };
 const empty: Prefill = { message: "", when: "", engagement: "" };
 
-/** Prefill from ?who=&what=&when=&engagement= (the Scorecard and the engagement buttons link here). Render inside Suspense. */
+/** Prefill from ?who=&what=&when=&engagement=&source= (the tools and the engagement buttons link here). Render inside Suspense. */
 export function ContactFormFromQuery() {
   const q = useSearchParams();
   const key = (q.get("engagement") || "").toLowerCase();
   const engagement = key ? engagements.find((e) => e.name.toLowerCase().includes(key))?.name || q.get("engagement") || "" : "";
   const sentence = sentenceOf({ who: q.get("who") || "", what: q.get("what") || "", when: q.get("when") || "" });
-  const prefill = { message: [sentence, engagement ? `We'd like to talk about: ${engagement}.` : ""].filter(Boolean).join(" "), when: q.get("when") || "", engagement };
+  const prefill = { message: [sentence, engagement ? `We'd like to talk about: ${engagement}.` : ""].filter(Boolean).join(" "), when: q.get("when") || "", engagement, origin: q.get("source") || undefined };
   return <ContactForm key={prefill.message} prefill={prefill} />;
 }
 
@@ -47,7 +47,7 @@ export function ContactForm({ prefill = empty }: { prefill?: Prefill }) {
   const err = (k: keyof typeof errors) => errors[k];
 
   return (
-    <form noValidate onSubmit={(e) => { e.preventDefault(); submit({ source: "contact", ...v, engagement: prefill.engagement || undefined }); }}>
+    <form noValidate onSubmit={(e) => { e.preventDefault(); submit({ source: "contact", ...v, engagement: prefill.engagement || undefined, origin: prefill.origin }); }}>
       <div className="form-grid">
         <div className={`field${err("name") ? " is-error" : ""}`}>
           <label className="field-label" htmlFor={f("name")}>Name</label>

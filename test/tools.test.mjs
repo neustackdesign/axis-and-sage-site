@@ -1,9 +1,8 @@
-// Tool logic tests. Cases below cover the rules stated in brief 08.
-// FILE 06: add every test case from 06-library-tools-and-guides.md here, word for word, when the file is supplied.
+// Tool logic tests. Every test case in Spec A (reference/briefs/06-tools-spec.md) is here, plus the rules around them.
 import assert from "node:assert/strict";
 import test from "node:test";
 
-const [scorecard, lift, doa, esop, readiness, deck, share, content] = await Promise.all([
+const [scorecard, lift, doa, esop, readiness, deck, share, content, work] = await Promise.all([
   import("../src/lib/tools/scorecard.ts"),
   import("../src/lib/tools/lift.ts"),
   import("../src/lib/tools/doa.ts"),
@@ -12,55 +11,152 @@ const [scorecard, lift, doa, esop, readiness, deck, share, content] = await Prom
   import("../src/lib/tools/deck.ts"),
   import("../src/lib/tools/share.ts"),
   import("../src/content/tools.ts"),
+  import("../src/content/work.ts"),
 ]);
 
-test("scorecard: {who} and {action} are substituted", () => {
-  assert.equal(scorecard.fillStatement("We ask {who} to {action} now.", "investors", "commit to the round"), "We ask investors to commit to the round now.");
-  for (const s of content.scorecardStatements) assert.doesNotMatch(scorecard.fillStatement(s.text, "x", "y"), /\{who\}|\{action\}/);
+/* ---------- Tool 1 · Conversion Scorecard ---------- */
+
+const answersFrom = (t, m) => Object.fromEntries([...t.map((a, i) => [`t${i + 1}`, a]), ...m.map((a, i) => [`m${i + 1}`, a])]);
+const run = (t, m) => {
+  const a = answersFrom(t, m);
+  const terms = scorecard.halfScore(a, "terms"), moments = scorecard.halfScore(a, "moments");
+  return { terms, moments, verdict: scorecard.verdict(terms, moments), blockers: scorecard.blockers(a).map((s) => s.id.toUpperCase()) };
+};
+
+test("Scorecard case 1: all 5s → 100 / 100, It's reach, speed or proof", () => {
+  const r = run([5, 5, 5, 5, 5], [5, 5, 5, 5, 5]);
+  assert.equal(r.terms, 100); assert.equal(r.moments, 100);
+  assert.equal(r.verdict.headline, "It's reach, speed or proof.");
 });
 
-test("scorecard: each answer scores 0 to 100 and each half is the average", () => {
-  assert.deepEqual([1, 2, 3, 4, 5].map(scorecard.answerScore), [0, 25, 50, 75, 100]);
-  const answers = Object.fromEntries(content.scorecardStatements.map((s, i) => [s.id, s.half === "terms" ? [1, 2, 3, 4, 5][i % 5] : 5]));
-  const terms = content.scorecardStatements.filter((s) => s.half === "terms").map((s) => scorecard.answerScore(answers[s.id]));
-  assert.equal(scorecard.halfScore(answers, "terms"), Math.round(terms.reduce((a, b) => a + b) / terms.length));
-  assert.equal(scorecard.halfScore(answers, "moments"), 100);
+test("Scorecard case 2: terms 25, moments 75 → It's the terms; blockers T5, T1, T2", () => {
+  const r = run([2, 2, 3, 2, 1], [4, 4, 4, 4, 4]);
+  assert.equal(r.terms, 25); assert.equal(r.moments, 75);
+  assert.equal(r.verdict.headline, "It's the terms.");
+  assert.deepEqual(r.blockers, ["T5", "T1", "T2"]);
 });
 
-test("scorecard: four verdicts", () => {
-  assert.equal(scorecard.verdict(20, 80).key, "terms");
-  assert.equal(scorecard.verdict(80, 20).key, "moment");
-  assert.equal(scorecard.verdict(20, 20).key, "both");
-  assert.equal(scorecard.verdict(80, 80).key, "reach");
+test("Scorecard case 3: terms 75, moments 20 → It's the moment; blockers M1, M5, M2", () => {
+  const r = run([4, 4, 4, 4, 4], [1, 2, 2, 3, 1]);
+  assert.equal(r.terms, 75); assert.equal(r.moments, 20);
+  assert.equal(r.verdict.headline, "It's the moment.");
+  assert.deepEqual(r.blockers, ["M1", "M5", "M2"]);
 });
 
-test("scorecard: 'I don't know' shows the 'You can't see it yet' line", () => {
-  assert.equal(scorecard.unknownNote(true).headline, "You can't see it yet");
+test("Scorecard case 4: 25 / 25 → It's both; blockers T1, T2, T3", () => {
+  const r = run([2, 2, 2, 2, 2], [2, 2, 2, 2, 2]);
+  assert.equal(r.terms, 25); assert.equal(r.moments, 25);
+  assert.equal(r.verdict.headline, "It's both.");
+  assert.deepEqual(r.blockers, ["T1", "T2", "T3"]);
+});
+
+test("Scorecard case 5: unknown_rate → the 'You can't see it yet' line appears", () => {
+  assert.equal(scorecard.unknownNote(true).headline, "You can't see it yet.");
   assert.equal(scorecard.unknownNote(false), null);
+  const report = scorecard.scorecardSummary({ sentence: "We need customers to buy again.", unknown: true, rate: 3, answers: answersFrom([3, 3, 3, 3, 3], [3, 3, 3, 3, 3]), forms: scorecard.whoForms("customers"), action: "buy again" });
+  assert.match(report, /You can't see it yet\. Measuring the action is step one/);
+  assert.match(report, /Today: not known/);
 });
 
-test("scorecard: three blockers, lowest first, each with its check line", () => {
-  const answers = Object.fromEntries(content.scorecardStatements.map((s) => [s.id, 4]));
-  answers.m3 = 1; answers.t2 = 1; answers.m1 = 2;
-  const b = scorecard.blockers(answers);
-  assert.equal(b.length, 3);
-  assert.deepEqual(b.map((s) => s.id), ["t2", "m3", "m1"]); // tie at 0: Terms first (interim rule)
-  for (const s of b) assert.ok(s.check.length > 10);
+test("Scorecard: answers convert to 0, 25, 50, 75, 100 and the threshold is 60", () => {
+  assert.deepEqual([1, 2, 3, 4, 5].map(scorecard.answerScore), [0, 25, 50, 75, 100]);
+  assert.equal(scorecard.verdictKey(60, 60), "reach");
+  assert.equal(scorecard.verdictKey(59, 60), "terms");
+  assert.equal(scorecard.verdictKey(60, 59), "moment");
 });
 
-test("lift: customers and investors add points; Our team uses the target rate r1", () => {
-  const c = lift.liftModel({ mode: "customers", base: 2000, rate: 3, lift: 2, target: 0, value: 50 });
-  assert.equal(c.extraActions, 40); assert.equal(c.extraMonth, 2000); assert.equal(c.extraYear, 24000); assert.equal(c.perPointMonth, 1000);
-  const t = lift.liftModel({ mode: "team", base: 120, rate: 40, lift: 99, target: 80, value: 400 });
-  assert.equal(t.points, 40); assert.equal(t.extraActions, 48); assert.equal(t.r1, 80);
-  assert.equal(lift.liftModel({ mode: "team", base: 10, rate: 50, lift: 0, target: 30, value: 1 }).points, 0);
+test("Scorecard: display forms of {who}", () => {
+  const team = scorecard.whoForms("our team");
+  assert.equal(team.who, "our team"); assert.equal(team.Who, "Our team"); assert.equal(team.whoCount, "people on our team");
+  assert.equal(scorecard.fill(content.scorecardRateQuestion, team, "hit the new plan"), "Out of every 10 people on our team who reach the point of deciding, how many hit the new plan today?");
+  assert.equal(scorecard.fill(content.scorecardStatements[0].text, scorecard.whoForms("users"), "sign up"), "Users or beneficiaries can see what's in it for them, in their words, in one sentence.");
+  const own = scorecard.whoForms("other", "Franchise owners");
+  assert.equal(own.who, "franchise owners"); assert.equal(own.Who, "Franchise owners"); assert.equal(own.whoCount, "franchise owners");
+  for (const s of content.scorecardStatements) assert.doesNotMatch(scorecard.fill(`${s.text} ${s.check}`, team, "x"), /\{/);
 });
 
-test("lift: break-even uses the Diagnostic price and hides while unset", () => {
-  assert.equal(lift.breakEvenMonths(1000, { amount: null, currency: "USD" }, "USD"), null);
-  assert.equal(lift.breakEvenMonths(1000, { amount: 5000, currency: "USD" }, "USD"), 5);
-  assert.equal(lift.breakEvenMonths(1500, { amount: 5000, currency: "USD" }, "USD"), 3.4);
-  assert.equal(lift.breakEvenMonths(1000, { amount: 5000, currency: "USD" }, "NGN"), null);
+test("Scorecard: verdict bodies fill {Who} and {who}", () => {
+  const f = scorecard.whoForms("investors");
+  assert.equal(scorecard.verdict(20, 80, f).body.slice(0, 26), "Investors can act easily. ");
+  assert.match(scorecard.verdict(80, 80, f).body, /how many investors reach the decision/);
+});
+
+test("Scorecard: sentence and actions follow Spec A", () => {
+  assert.equal(scorecard.sentenceFor("partners", "renew", "this quarter"), "We need partners to renew by this quarter.");
+  assert.equal(scorecard.sentenceFor("partners", "renew", "no date yet"), "We need partners to renew.");
+  assert.deepEqual(content.scorecardWho.find((w) => w.key === "customers").actions, ["buy for the first time", "buy again", "switch to us", "pay on time"]);
+});
+
+test("Scorecard: each related case links to a case page that exists", () => {
+  assert.equal(scorecard.relatedCaseSlug("users"), "mular");
+  assert.equal(scorecard.relatedCaseSlug("our team"), "gv-solutions");
+  assert.equal(scorecard.relatedCaseSlug("other"), "farmcrowdy");
+  for (const w of content.scorecardWho) assert.ok(work.caseBySlug(scorecard.relatedCaseSlug(w.key)), w.key);
+});
+
+/* ---------- Tool 2 · What's a lift worth? ---------- */
+
+test("Lift case 1: Customers N 1,000; r0 10; V $100; Δ 5", () => {
+  const m = lift.liftModel({ mode: "customers", base: 1000, rate: 10, value: 100, lift: 5, target: 0 });
+  assert.equal(m.today, 100); assert.equal(m.extra, 50); assert.equal(m.valueMonth, 5000); assert.equal(m.valueYear, 60000); assert.equal(m.perPoint, 1000);
+  assert.equal(content.money(m.perPoint, "USD"), "$1,000");
+});
+
+test("Lift case 2: Investors N 40; T $250,000; Δ 5", () => {
+  const m = lift.liftModel({ mode: "investors", base: 40, rate: 5, value: 250000, lift: 5, target: 0 });
+  assert.equal(m.extra, 2); assert.equal(m.valueMonth, 500000); assert.equal(m.perPoint, 100000);
+});
+
+test("Lift case 3: Team N 50; r0 40; r1 90; V $500", () => {
+  const m = lift.liftModel({ mode: "team", base: 50, rate: 40, value: 500, lift: 0, target: 90 });
+  assert.equal(m.extra, 25); assert.equal(m.valueMonth, 12500); assert.equal(m.valueYear, 150000);
+  assert.equal(lift.liftModel({ mode: "team", base: 10, rate: 50, value: 1, lift: 0, target: 30 }).extra, 0);
+});
+
+test("Lift case 4: break-even F $5,000; V $100 → 50 extra actions", () => {
+  assert.equal(lift.paybackActions(100, { amount: 5000, currency: "USD" }, "USD"), 50);
+  assert.equal(lift.paybackActions(30, { amount: 5000, currency: "USD" }, "USD"), 167);
+  assert.equal(lift.paybackActions(100, { amount: null, currency: "USD" }, "USD"), null);
+  assert.equal(lift.paybackActions(100, { amount: 5000, currency: "USD" }, "NGN"), null);
+});
+
+test("Lift: Spec A defaults", () => {
+  const d = Object.fromEntries(content.liftModes.map((m) => [m.key, m.defaults]));
+  assert.deepEqual([d.customers.base, d.customers.rate, d.customers.value, d.customers.lift], [1000, 10, 100, 5]);
+  assert.deepEqual([d.investors.base, d.investors.rate, d.investors.value, d.investors.lift], [40, 5, 250000, 5]);
+  assert.deepEqual([d.team.base, d.team.rate, d.team.target, d.team.value], [50, 40, 90, 500]);
+});
+
+test("Formatting: en-GB digits and abbreviated large values", () => {
+  assert.equal(content.money(1_660_000_000, "NGN"), "₦1.66bn");
+  assert.equal(content.money(2_100_000, "USD"), "$2.1M");
+  assert.equal(content.money(1234567.89, "USD", { decimals: 2 }), "$1.23M");
+  assert.equal(content.money(123456.7, "USD"), "$123,457");
+  assert.equal(content.money(0.45, "USD", { decimals: 2 }), "$0.45");
+  assert.equal(content.count(1234567), "1,234,567");
+});
+
+/* ---------- Tool 3 · Delegation of Authority Builder ---------- */
+
+const allLevels = [...content.doaLevels];
+
+test("DoA test case: ₦10bn, single company, all levels on", () => {
+  const [row] = doa.buildMatrix(["Capital spend"], allLevels, 10_000_000_000, "single");
+  const by = Object.fromEntries(allLevels.map((l, i) => [l, row[i]]));
+  assert.equal(doa.formatCell(by.Manager, "NGN"), "A ≤ ₦5M");
+  assert.equal(doa.formatCell(by["Function head"], "NGN"), "A ≤ ₦25M");
+  assert.equal(doa.formatCell(by.CFO, "NGN"), "A ≤ ₦100M");
+  assert.equal(doa.formatCell(by["CEO / MD"], "NGN"), "A ≤ ₦500M");
+  assert.equal(doa.formatCell(by.Board, "NGN"), "A > ₦500M");
+  assert.equal(by["Board committee"].limit, null);
+  assert.equal(by["Group CEO"].code, "–");
+});
+
+test("DoA test case: unbudgeted spend of ₦80M goes to the CEO, one level up from the CFO", () => {
+  const [budgeted, unbudgeted] = doa.buildMatrix(["Capital spend", "Unbudgeted spend"], allLevels, 10_000_000_000, "single");
+  assert.equal(doa.approverFor(80_000_000, budgeted, allLevels), "CFO");
+  assert.equal(doa.approverFor(80_000_000, unbudgeted, allLevels), "CEO / MD");
+  assert.equal(unbudgeted[allLevels.indexOf("Manager")].code, "R");
 });
 
 test("DoA: limits are 0.05%, 0.25%, 1% and 5% of revenue, rounded to 2 significant figures", () => {
@@ -69,55 +165,133 @@ test("DoA: limits are 0.05%, 0.25%, 1% and 5% of revenue, rounded to 2 significa
   assert.equal(doa.roundSig(0.0456, 2), 0.046);
 });
 
-test("DoA: lowest level gets the smallest limit; the top level approves without a cap", () => {
-  const levels = ["Board", "CEO", "CFO", "Head of function", "Line manager"];
-  const row = levels.map((_, i) => doa.defaultCell("Capital expenditure", i, levels, 10_000_000));
-  assert.deepEqual(row.map((c) => c.limit), [null, 500000, 100000, 25000, 5000]);
-  assert.equal(row[0].code, "A");
+test("DoA: bands follow the named level, not the column position, and apply to the five monetary areas", () => {
+  const levels = ["Board", "CFO", "CEO / MD", "Manager"]; // reordered, with levels off
+  const [row] = doa.buildMatrix(["Supplier contracts"], levels, 10_000_000_000, "single");
+  assert.deepEqual(row.map((c) => c.limit), [500_000_000, 100_000_000, 500_000_000, 5_000_000]);
+  for (const area of content.doaMonetaryAreas) assert.equal(doa.buildMatrix([area], allLevels, 1e9, "single")[0][allLevels.indexOf("CFO")].op, "≤");
 });
 
-test("DoA: unbudgeted spend goes one level up", () => {
-  const levels = ["Board", "CEO", "CFO", "Head of function", "Line manager"];
-  const budgeted = levels.map((_, i) => doa.defaultCell("Capital expenditure", i, levels, 10_000_000));
-  const unbudgeted = levels.map((_, i) => doa.defaultCell("Spend outside the approved budget", i, levels, 10_000_000));
-  assert.equal(unbudgeted[4].code, "R");
-  for (let i = 1; i < 4; i++) assert.equal(unbudgeted[i].limit, budgeted[i + 1].limit);
+test("DoA: Board committees never hold a monetary limit", () => {
+  const rows = doa.buildMatrix([...content.doaAreas], allLevels, 1e10, "group", 5e10);
+  const i = allLevels.indexOf("Board committee");
+  for (const row of rows) assert.ok(row[i].unit !== "money", "committee holds no monetary limit");
 });
 
-test("ESOP: pool, grant, strike, dilution and vesting", () => {
-  const m = esop.esopModel({ shares: 900_000, founders: 900_000, poolPct: 10, grantPct: 1, strike: null, valuation: 10_000_000, exit: 100_000_000, years: 4, cliffMonths: 12, round: true, dilutionPct: 20 });
-  assert.equal(Math.round(m.poolShares), 100_000);
-  assert.equal(Math.round(m.total), 1_000_000);
-  assert.equal(Math.round(m.grantShares), 10_000);
-  assert.equal(m.priceToday, 10);
-  assert.equal(m.strike, 10);
-  assert.equal(Math.round(m.priceExit), 80);
-  assert.equal(Math.round(m.valueExit), 700_000);
-  assert.deepEqual(m.vesting.map((v) => v.vestedPct), [0.25, 0.5, 0.75, 1]);
-  assert.equal(m.foundersAfter, 0.9);
+test("DoA: groups add the Group CEO up to 5% of group revenue and label the MD as subsidiary MD", () => {
+  const [row] = doa.buildMatrix(["Capital spend"], allLevels, 10_000_000_000, "group", 40_000_000_000);
+  const by = Object.fromEntries(allLevels.map((l, i) => [l, row[i]]));
+  assert.equal(doa.formatCell(by["CEO / MD"], "NGN"), "A ≤ ₦500M");
+  assert.equal(doa.formatCell(by["Group CEO"], "NGN"), "A ≤ ₦2bn");
+  assert.equal(doa.formatCell(by.Board, "NGN"), "A > ₦2bn");
+  assert.equal(doa.levelLabel("CEO / MD", "group"), "Subsidiary MD");
+  assert.equal(doa.levelLabel("CEO / MD", "single"), "CEO / MD");
 });
 
-test("readiness: 25 checks scored 2 / 1 / 0", () => {
-  const all = (a) => Object.fromEntries(content.readinessGroups.flatMap((g) => g.checks.map((_, i) => [readiness.checkKey(g.key, i), a])));
+test("DoA: Spec A non-monetary defaults", () => {
+  const rows = doa.buildMatrix(["Annual budget and plan", "Pricing and discounts", "Borrowing and guarantees", "Related-party transactions", "Mergers, acquisitions and disposals"], allLevels, null, "single");
+  const codes = (row) => Object.fromEntries(allLevels.map((l, i) => [l, row[i].code]));
+  assert.deepEqual(codes(rows[0]), { Board: "A", "Board committee": "C", "Group CEO": "–", "CEO / MD": "R", CFO: "R", "Function head": "R", Manager: "–" });
+  const pricing = rows[1];
+  assert.equal(doa.formatCell(pricing[allLevels.indexOf("Manager")], "NGN"), "A ≤ 5%");
+  assert.equal(doa.formatCell(pricing[allLevels.indexOf("Function head")], "NGN"), "A ≤ 15%");
+  assert.equal(doa.formatCell(pricing[allLevels.indexOf("CEO / MD")], "NGN"), "A > 15%");
+  assert.equal(codes(rows[2]).Board, "A"); assert.equal(codes(rows[2]).CFO, "R");
+  assert.equal(codes(rows[3])["Board committee"], "C"); assert.equal(codes(rows[3]).Board, "A");
+  assert.deepEqual(codes(rows[4]), { Board: "A", "Board committee": "–", "Group CEO": "–", "CEO / MD": "R", CFO: "–", "Function head": "–", Manager: "–" });
+});
+
+test("DoA: footnotes include Spec A's three rules and the personal-interest rule", () => {
+  assert.equal(content.doaFootnotes.length, 4);
+  assert.match(content.doaFootnotes.join(" "), /Related-party transactions always go to the Board/);
+  assert.match(content.doaFootnotes.join(" "), /within 48 hours/);
+  assert.match(content.doaFootnotes.join(" "), /personal interest/);
+});
+
+/* ---------- Tool 4 · ESOP & Share Pool Calculator ---------- */
+
+const esopDefaults = { shares: 10_000_000, founders: 8_000_000, poolPct: 10, grantPct: 0.5, strike: null, valuation: 5_000_000, exit: 50_000_000, years: 4, cliffMonths: 12, round: false, dilutionPct: 20 };
+
+test("ESOP test case (defaults)", () => {
+  const m = esop.esopModel(esopDefaults);
+  assert.equal(m.P, 1_111_111);
+  assert.equal(m.FD, 11_111_111);
+  assert.equal((m.foundersBefore * 100).toFixed(2), "80.00");
+  assert.equal((m.foundersAfter * 100).toFixed(2), "72.00");
+  assert.equal(m.G, 55_556);
+  assert.equal(m.strike.toFixed(2), "0.45");
+  assert.equal(m.exitPrice.toFixed(2), "4.50");
+  assert.equal(esop.about(m.grantValue), 225_000);
+});
+
+test("ESOP test case: toggle on → exit price $3.60, grant value ≈ $175,000", () => {
+  const m = esop.esopModel({ ...esopDefaults, round: true });
+  assert.equal(m.exitPrice.toFixed(2), "3.60");
+  assert.equal(esop.about(m.grantValue), 175_000);
+});
+
+test("ESOP test case: vesting at months 11, 12, 24 and 48", () => {
+  const m = esop.esopModel(esopDefaults);
+  assert.equal(esop.vested(11, m.G, 4, 12), 0);
+  assert.equal(esop.vested(12, m.G, 4, 12), 13_889);
+  assert.equal(esop.vested(24, m.G, 4, 12), 27_778);
+  assert.equal(esop.vested(48, m.G, 4, 12), 55_556);
+  assert.deepEqual([11, 12, 24, 48].map((x) => m.vesting[x].vested), [0, 13_889, 27_778, 55_556]);
+});
+
+test("ESOP: an entered strike replaces Vc / FD, and value never goes below zero", () => {
+  assert.equal(esop.esopModel({ ...esopDefaults, strike: 1 }).strike, 1);
+  assert.equal(esop.esopModel({ ...esopDefaults, strike: 10 }).grantValue, 0);
+});
+
+/* ---------- Tool 5 · Investor Readiness Score ---------- */
+
+const allAnswers = (a) => Object.fromEntries(content.readinessGroups.flatMap((g) => g.checks.map((_, i) => [readiness.checkKey(g.key, i), a])));
+
+test("Readiness test cases: all yes 100% Ready; all partly 50% Close; all no 0% Not yet with 25 gaps", () => {
   assert.equal(content.readinessGroups.reduce((n, g) => n + g.checks.length, 0), 25);
-  assert.equal(readiness.readinessScore(all("yes")).points, 50);
-  assert.equal(readiness.readinessScore(all("partly")).pct, 50);
-  assert.equal(readiness.readinessScore({}).pct, 0);
-  const gaps = readiness.readinessGaps({ ...all("yes"), "story-1": "partly", "terms-0": "no" });
-  assert.deepEqual(gaps.map((g) => g.answer), ["no", "partly"]);
+  const yes = readiness.readinessScore(allAnswers("yes"));
+  assert.equal(yes.pct, 100); assert.equal(yes.band.headline, "Ready.");
+  const partly = readiness.readinessScore(allAnswers("partly"));
+  assert.equal(partly.pct, 50); assert.equal(partly.band.headline, "Close.");
+  const no = readiness.readinessScore(allAnswers("no"));
+  assert.equal(no.pct, 0); assert.equal(no.band.headline, "Not yet.");
+  assert.equal(readiness.readinessGaps(allAnswers("no")).length, 25);
 });
 
-test("pitch deck: twelve questions give twelve slides with the user's words", () => {
+test("Readiness: group % is points / 10 and bands break at 50 and 80", () => {
+  const a = { ...allAnswers("no"), "story-0": "yes", "story-1": "partly" };
+  assert.equal(readiness.readinessScore(a).groups.find((g) => g.key === "story").pct, 30);
+  assert.equal(readiness.readinessScore({ ...allAnswers("yes"), ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [`process-${i}`, "no"])) }).band.headline, "Ready.");
+  assert.equal(readiness.readinessScore({ ...allAnswers("yes"), ...Object.fromEntries(Array.from({ length: 5 }, (_, i) => [`process-${i}`, "no"])), "company-0": "partly" }).band.headline, "Close.");
+});
+
+test("Readiness: gaps list every no, then every partly; within each Terms, Numbers, Company, Story, Process", () => {
+  const gaps = readiness.readinessGaps({ ...allAnswers("yes"), "story-0": "no", "process-0": "partly", "terms-2": "partly", "company-1": "no", "numbers-4": "no", "terms-0": "no" });
+  assert.deepEqual(gaps.map((g) => `${g.answer}:${g.key}-${g.i}`), ["no:terms-0", "no:numbers-4", "no:company-1", "no:story-0", "partly:terms-2", "partly:process-0"]);
+});
+
+/* ---------- Tool 6 · Pitch Deck Outline ---------- */
+
+test("Pitch deck: twelve questions give twelve slides, each with a headline from the answer and one note", () => {
   assert.equal(content.deckQuestions.length, 12);
-  const o = deck.deckOutline(["Axis & Sage"]);
+  assert.deepEqual(content.deckQuestions.map((q) => q.slide), ["Title", "Problem", "Customer", "Solution", "Why now", "Traction", "Business model", "Market", "Competition", "Team", "The ask", "Milestones"]);
+  const o = deck.deckOutline(["we help farmers get paid on time. We do it with a wallet."]);
   assert.equal(o.length, 12);
-  assert.equal(o[0].words, "Axis & Sage");
+  assert.equal(o[0].headline, "We help farmers get paid on time");
+  assert.equal(o[0].note, "Say it the way a customer would.");
   assert.match(deck.deckText([]), /\[to write\]/);
 });
 
-test("share links round-trip tool state, including non-ASCII", () => {
+/* ---------- Shared ---------- */
+
+test("Share links round-trip tool state, including non-ASCII", () => {
   const state = { who: "investors", answers: { t1: 3 }, note: "₦ 1.66bn · Dubai" };
   assert.deepEqual(share.decodeState(share.encodeState(state)), state);
   assert.deepEqual(share.readHashState(`#r=${share.encodeState(state)}`), state);
   assert.equal(share.decodeState("%%%"), null);
+});
+
+test("Every result carries the disclaimer line", () => {
+  assert.equal(content.TOOL_DISCLAIMER, "An illustrative planning estimate, not financial, legal or tax advice.");
 });

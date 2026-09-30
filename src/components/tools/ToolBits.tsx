@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
+import { TOOL_DISCLAIMER } from "@/content/tools";
 
 /** Stepper · ProgressBar. The active step is orange; done steps are charcoal with a tick. */
 export function Stepper({ steps, active, progress }: { steps: string[]; active: number; progress: number }) {
@@ -79,4 +80,9 @@ export function Segmented<T extends string>({ options, value, onChange, label }:
       {options.map((o) => <button key={o.key} type="button" aria-pressed={value === o.key} onClick={() => onChange(o.key)}>{o.label}</button>)}
     </div>
   );
+}
+
+/** The small line under every result. */
+export function ToolDisclaimer() {
+  return <p className="tool-disclaimer t-small muted">{TOOL_DISCLAIMER}</p>;
 }
