@@ -28,9 +28,10 @@ export const practiceNav: NavLink[] = [
   { label: "Strategy & Investment", href: "/what-we-do/strategy-and-investment", description: "Get the terms right." },
   { label: "Product & Technology", href: "/what-we-do/product-and-technology", description: "Make the moment clear." },
   { label: "Brand & Market", href: "/what-we-do/brand-and-market", description: "Say it so they act." },
-  { label: "Embedded leadership", href: "/what-we-do/embedded-leadership", description: "A principal in the seat." },
   { label: "Engagements and pricing", href: "/engagements", description: "Start with one sentence. Know the price before we start." },
 ];
+
+export const embeddedLeadershipHref = "/engagements/embedded-leadership";
 
 export const libraryNav: NavLink[] = [
   { label: "Tools", href: "/library#tools", description: "Free tools for the decision in front of you." },
@@ -63,6 +64,17 @@ export const primaryLinks: NavLink[] = [
 ];
 
 export const bookCallHref = "/contact#book";
+
+/**
+ * Home hero: "Sunset on Lagos skyline" by Chibuzo Nwaneri, Unsplash License (https://unsplash.com/photos/gE3ign9Lx1Q).
+ * Served from Unsplash's CDN (images.unsplash.com is in next.config images.remotePatterns). To self-host, save it at
+ * about 2400px wide in public/images/ and point src there.
+ */
+export const heroImage = {
+  src: "https://images.unsplash.com/photo-1638437155671-167865b8bd49?auto=format&fit=crop&w=2400&q=80",
+  alt: "The Lagos skyline across the water at sunset.",
+  credit: "LAGOS AT SUNSET · PHOTO: CHIBUZO NWANERI / UNSPLASH",
+};
 export const scorecardHref = "/tools/conversion-scorecard";
 
 export const ctaBand = {
@@ -80,7 +92,7 @@ export const whenOptions = ["this month", "this quarter", "this year", "no date 
 export const footerColumns: { title: string; links: NavLink[] }[] = [
   {
     title: "What we do",
-    links: practiceNav.map(({ label, href }) => ({ label, href })),
+    links: [...practiceNav.map(({ label, href }) => ({ label, href })), { label: "Embedded leadership", href: embeddedLeadershipHref }],
   },
   {
     title: "Work",

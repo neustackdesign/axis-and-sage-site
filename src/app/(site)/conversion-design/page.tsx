@@ -5,14 +5,16 @@ import { PageHero } from "@/components/ds/PageHero";
 import { Eyebrow, Glyph, RailBody, Section, SectionHeader, SmartLink } from "@/components/ds/primitives";
 import { faqs } from "@/content/engagements";
 import { actionCards, conversionActors, methodStepsExpanded } from "@/content/method";
+import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { faqLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Conversion Design",
+  title: pageTitles.conversionDesign.title,
+  absoluteTitle: true,
   path: "/conversion-design",
-  description: "Conversion Design is how we get investors, partners, teams and customers to act. We name the action, find what's in the way in the terms or the moment, fix it, and measure what moved.",
+  description: pageTitles.conversionDesign.description,
 });
 
 export default function ConversionDesignPage() {

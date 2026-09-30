@@ -12,6 +12,8 @@ export type Person = {
   education: string;
   basedIn: string;
   links: { label: string; href: string }[];
+  /** Shown on the initials tile while there is no portrait: paper for Terms, charcoal for Moments. */
+  initials: string;
   portrait?: string;
 };
 
@@ -19,7 +21,8 @@ export const people: Person[] = [
   {
     slug: "ifeanyi-monyei",
     name: "Ifeanyi Monyei",
-    title: "Co-founder & [CEO]",
+    title: "Co-founder & CEO",
+    initials: "IM",
     half: "terms",
     line: "Designs the terms people act on.",
     cardBody: "Governance, delegation of authority, executive and employee incentives, deal structures and mergers. Eleven years inside a pan-African technology group, from consulting manager to chief of staff to group head of strategy and growth.",
@@ -46,6 +49,7 @@ export const people: Person[] = [
     slug: "tomiwa-ogunmodede",
     name: "Tomiwa Ogunmodede",
     title: "Co-founder, Product & Technology",
+    initials: "TO",
     half: "moments",
     line: "Designs the moments people act in.",
     cardBody: "Products, services and brands where money, access and trust meet. More than ten years across fintech, education, hospitality and AI-assisted products, from first design hire to co-founder.",

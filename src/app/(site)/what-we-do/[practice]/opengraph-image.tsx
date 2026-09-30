@@ -1,4 +1,5 @@
 import { practiceBySlug, practices } from "@/content/practices";
+import { practiceMeta } from "@/content/titles";
 import { ogContentType, ogSize, renderOg } from "@/lib/og/render";
 
 export const alt = "Axis & Sage Advisory";
@@ -10,5 +11,5 @@ export function generateStaticParams() { return practices.map((p) => ({ practice
 export default async function Image({ params }: { params: Promise<{ practice: string }> }) {
   const { practice } = await params;
   const c = practiceBySlug(practice)!;
-  return renderOg({ label: c.eyebrow, title: c.h1 });
+  return renderOg({ label: c.eyebrow, title: practiceMeta[c.slug].og });
 }

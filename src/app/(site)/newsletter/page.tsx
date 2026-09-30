@@ -25,7 +25,7 @@ export default function NewsletterPage() {
           ) : (
             <div className="work-empty" style={{ borderTop: "1px solid var(--charcoal-900)", paddingTop: 24 }}>
               <p className="t-h3">No issues yet.</p>
-              <p className="muted">The archive starts with the first issue: [first issue date]. Subscribe above to get it.</p>
+              <p className="muted">The archive starts with the first issue on Tuesday 3 November 2026. Subscribe above to get it.</p>
             </div>
           )}
         </div>

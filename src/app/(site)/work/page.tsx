@@ -5,11 +5,13 @@ import { PageHero } from "@/components/ds/PageHero";
 import { Section } from "@/components/ds/primitives";
 import { WorkFilter } from "@/components/sections/WorkFilter";
 import { workIndex } from "@/content/work";
+import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
-  title: "Work",
+  title: pageTitles.work.title,
+  absoluteTitle: true,
   path: "/work",
   description: "Work by Axis & Sage and its founders. Every case is tagged with our role: founded, ran, built, advised or embedded.",
 });

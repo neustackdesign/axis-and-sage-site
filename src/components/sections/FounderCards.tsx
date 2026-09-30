@@ -11,7 +11,7 @@ export function FounderCards() {
           <article key={p.slug} className={`founder-card ${moments ? "is-moments on-dark" : "is-terms"}`}>
             <p className="t-label" style={{ color: moments ? "var(--text-muted-dark)" : "var(--text-muted)" }}>{moments ? "MOMENTS" : "TERMS"}</p>
             <div className="founder-card-top">
-              <Portrait alt={`Portrait of ${p.name}`} label={moments ? "PORTRAIT · CHARCOAL" : "PORTRAIT · PAPER"} dark={moments} src={p.portrait} />
+              <Portrait alt={p.name} initials={p.initials} dark={moments} src={p.portrait} />
               <div>
                 <h3 className="founder-name">{p.name}</h3>
                 <p className="founder-role">{p.title}</p>

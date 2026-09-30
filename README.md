@@ -1,14 +1,14 @@
 # Axis & Sage site
 
-This is the Axis & Sage Advisory website. It's a strict TypeScript Next.js App Router application built on the Axis & Sage design system, and it deploys on Vercel.
+This is the Axis & Sage Advisory website. It's a strict TypeScript Next.js App Router application built on the Axis & Sage design system. It deploys on Vercel Hobby and has no database.
 
 ## Status
 
 **Pages built:** the full sitemap from the Conversion Design brief.
 - Home.
 - `/conversion-design`.
-- The four practice pages.
-- `/engagements`.
+- The three practice pages.
+- `/engagements` and `/engagements/embedded-leadership`.
 - `/work` with filters, and six case pages.
 - `/people` and both profiles.
 - `/library`, the six tools and the guides.
@@ -16,12 +16,13 @@ This is the Axis & Sage Advisory website. It's a strict TypeScript Next.js App R
 
 **Where things live:**
 - **Content:** typed modules in `src/content/`. There is no CMS.
-- **Tool logic:** pure functions in `src/lib/tools/`.
-- **Leads:** one server pipeline in `src/lib/server/`.
+- **Tool logic:** pure functions in `src/lib/tools/`, from Spec A (`reference/briefs/06-tools-spec.md`).
+- **Leads:** `src/lib/pipeline/` (pure, tested) and `src/lib/server/` (Vercel wiring).
+- **Pipeline Sheet script:** `integrations/google-apps-script/`.
 
 DNS, AWS infrastructure and the production domain are intentionally untouched.
 
-The component usage map, the placeholders and the assets still needed are listed in `reference/design-system/website-component-map.md`.
+The component usage map is in `reference/design-system/website-component-map.md`.
 
 ## Requirements
 
@@ -36,116 +37,93 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-The site runs with no keys at all, and every integration degrades safely:
-- **No database or email:** forms offer the visitor a prefilled email instead.
-- **No Turnstile secret:** verification is skipped and logged.
-- **No Upstash:** an in-memory rate limiter stands in.
+The site runs with no keys at all:
+- **No Blob token:** forms can't store anything, so they offer the visitor a prefilled email instead.
+- **No Sheet URL:** leads are stored in Blob and wait for the cron.
+- **No MailerLite key:** sign-ups are parked in Blob and wait for the cron.
 
-## The lead pipeline
+## The stack
 
-Every entry point goes through the same steps. The entry points are:
-- the contact form
-- the CTA band
-- newsletter sign-ups
-- tool emails
-- Cal.com bookings
+| Service | What it does |
+| --- | --- |
+| Google Workspace Apps Script | A web app on the Sheet "Axis & Sage · Pipeline". It writes each lead to the Sheet and sends every email from info@axisandsage.com. |
+| Vercel Blob (private store) | Holds every lead until the Sheet confirms it, plus newsletter sign-ups that MailerLite didn't accept. |
+| MailerLite | The newsletter list. MailerLite sends its own confirmation email. |
+| Cal.com | Booking, as an inline embed on `/contact#book`. |
+| Vercel Web Analytics and Speed Insights | Page views and performance. They need no keys. |
+| GA4 | Off. It switches on only if `NEXT_PUBLIC_GA_ID` is set, and then uses Consent Mode. |
+
+## The lead path
+
+The contact form, the CTA band, tool emails and Cal.com bookings all take the same path:
 
 | Step | What happens |
 | --- | --- |
-| 1 | Validate with `validateLead` (`src/lib/leads.ts`). |
-| 2 | Verify Cloudflare Turnstile on the server. The honeypot field is kept. |
-| 3 | Rate limit with Upstash Redis: 5 submissions per 10 minutes per IP, and 3 per hour per email. |
-| 4 | Save to Neon Postgres: `leads`, `tool_results`, `subscribers`, and `conversions` for events. |
-| 5 | Notify `info@axisandsage.com` through Resend, with `FOUNDER_EMAILS` copied. |
-| 6 | Send the autoresponder, for contact and CTA leads only. It's plain text and strips any URLs from what the visitor typed. |
-| 7 | Sync to HubSpot, best effort: create or update the contact and add a deal. Retried, and never blocks the response. |
-| 8 | Respond. The contact form redirects to `/thank-you`. |
+| 1 | Validate with `validateLead` (`src/lib/leads.ts`). The honeypot field is kept: if it's filled, the visitor sees the normal success and nothing is stored. |
+| 2 | Minimum fill time. A submission sent less than 3 seconds after the form rendered also gets the normal success, and nothing is stored. |
+| 3 | Store first: JSON in the private Blob store at `pending/leads/<ISO time>-<random id>.json`. The record holds the fields, the sentence, first-touch and last-touch UTMs, the referrer, the landing page, the submission page, and a SHA-256 hash of the IP salted with `IP_HASH_SALT`. The IP itself is never stored. |
+| 4 | Forward: a signed POST to `SHEET_WEBHOOK_URL`, with an 8-second timeout. When the Apps Script replies `{ ok: true }`, the Blob file is deleted. |
+| 5 | Respond with success once the Blob write succeeds, even if the forward failed. The contact form redirects to `/thank-you`. |
+| 6 | The mailto hand-over appears only when the Blob write itself fails. |
 
-**Failure handling:**
-- If the database write fails, the notification email is still sent.
-- The visitor sees the mailto hand-over only when both the database and the email fail.
-- Every failure is logged as JSON with `event: "lead_pipeline_failure"`.
+**Signing.** Apps Script can't read request headers, so the signature travels in the body: `{ payload, ts, sig }`, where `sig` is the hex HMAC-SHA256 of `ts + "." + JSON.stringify(payload)` using `SHEET_WEBHOOK_SECRET`. The script checks it with `Utilities.computeHmacSha256Signature` and rejects any `ts` older than 5 minutes. Apps Script answers a POST with a 302 to `script.googleusercontent.com`; the site follows the redirect and reads `{ ok: true }`.
 
-**Attribution:** first-touch and last-touch UTMs, the referrer and the landing page are kept in localStorage for 90 days. They're sent with every submission and stored on every row.
+**Daily cron.** `vercel.json` runs `/api/cron/retry` once a day, with `Authorization: Bearer CRON_SECRET`. Each run:
+- re-forwards everything in `pending/leads/`, deleting each file once delivered
+- re-sends everything in `pending/subscribers/` to MailerLite
+- logs a count of anything still pending (`event: "cron_retry"`)
 
-**Email:**
-- Mail is sent from "Axis & Sage <hello@notify.axisandsage.com>", with Reply-To set to info@axisandsage.com.
-- Verify `notify.axisandsage.com` in Resend: add its SPF, DKIM and DMARC records. That keeps website mail off the founders' own domain reputation.
-- DNS for the subdomain is a separate, approved change. This repo does not touch DNS.
+**What the Apps Script does** (details in `integrations/google-apps-script/README.md`):
+- verifies the signature
+- applies a soft rate limit: 5 per 10 minutes per IP hash, and 3 per hour per email. Over the limit, the row is still added and marked "limited", and no email is sent.
+- appends one row per lead or booking to the "Leads" tab. It never edits existing rows.
+- sends the lead alert to info@, copying the founders
+- sends the auto-reply for contact and CTA leads, only when the site passes `sendAutoreply` (the site checks the domain has MX records first)
+- sends tool results to the visitor as HTML and text, with a share link and a "Book a Diagnostic" link
+- adds one anonymous row per completed tool to the "Tools" tab: date, tool, answers, result and UTM source
 
-**Newsletter:**
-- Double opt-in with a signed, expiring link (`/api/newsletter/confirm`).
-- Confirmed subscribers sync to Beehiiv once `BEEHIIV_API_KEY` and `BEEHIIV_PUBLICATION_ID` are set.
+**Newsletter.** Sign-ups go to the MailerLite API, into group `MAILERLITE_GROUP_ID`. In MailerLite, switch on double opt-in for API sign-ups (Subscribers → Settings → Double opt-in, and tick it for API and integrations). MailerLite then sends the confirmation itself. If the API call fails, the sign-up is written to `pending/subscribers/` for the cron. The visitor sees "Check your inbox to confirm your subscription."
 
-**Bookings:**
-- The Cal.com inline embed on `/contact#book` is built from `NEXT_PUBLIC_BOOKING_URL`. While that's unset, the note form takes its place.
-- Point a Cal.com webhook (BOOKING_CREATED) at `/api/cal` with the secret in `CAL_WEBHOOK_SECRET`.
+**Bookings.** The Cal.com inline embed on `/contact#book` uses `NEXT_PUBLIC_BOOKING_URL` (`https://cal.com/axisandsage/30min`). Point a Cal.com webhook (BOOKING_CREATED) at `/api/cal`, with its secret in `CAL_WEBHOOK_SECRET`. The route verifies the `x-cal-signature-256` signature, then sends the booking down the lead path with source `booking`.
 
-**Tools:**
-- Results are emailed to the visitor as HTML and plain text, with a share link and a "Book a Diagnostic with this sentence" link. info@ gets a copy.
-- The lift model, the DoA matrix and the ESOP model also download an `.xlsx` with live formulas, built in the browser with ExcelJS.
+**Tools.** Tool pages need no sign-up. An email is asked for only to send a result, a model or a checklist. The lift model, the DoA matrix, the ESOP model and the readiness checklist download as `.xlsx` files with live formulas, built in the browser with ExcelJS. There are no start, step or click events: a completed tool writes one anonymous row to the Tools tab.
 
-### Database
+## Setup, in order
 
-Apply the schema once, and again after any change to `db/schema.sql`. It's idempotent:
+Each value below, in the order you'll get it. `NEXT_PUBLIC_*` values are public; everything else is secret. Set the Vercel values in the project's Settings → Environment Variables, for Production and Preview.
 
-```bash
-DATABASE_URL=... pnpm db:migrate
-```
+| # | Name | Where | Where the value comes from |
+| --- | --- | --- | --- |
+| 1 | `SHEET_WEBHOOK_SECRET` | Vercel and Script Property | Make it once, for example with `openssl rand -hex 32`, and use the same value in both places. |
+| 2 | `FOUNDER_EMAILS` | Script Property | Both founders' addresses, comma-separated. They're copied on every lead alert. |
+| 3 | `FROM_ADDRESS` | Script Property | `info@axisandsage.com`. |
+| 4 | `SHEET_WEBHOOK_URL` | Vercel | The web app URL from Apps Script → Deploy → Manage deployments. It ends in `/exec`. |
+| 5 | `BLOB_READ_WRITE_TOKEN` | Vercel | Vercel → Storage → Create → Blob, with **Private** access, then connect it to the project. Vercel adds the token itself. |
+| 6 | `CRON_SECRET` | Vercel | Any long random string. Vercel sends it to the cron route. |
+| 7 | `IP_HASH_SALT` | Vercel | Any long random string. Changing it later only breaks rate-limit continuity. |
+| 8 | `NEXT_PUBLIC_SITE_URL` | Vercel | `https://axisandsage.com` in Production. Previews fall back to the Vercel URL. |
+| 9 | `NEXT_PUBLIC_BOOKING_URL` | Vercel | `https://cal.com/axisandsage/30min`. |
+| 10 | `CAL_WEBHOOK_SECRET` | Vercel | Cal.com → Settings → Developer → Webhooks: add `https://axisandsage.com/api/cal` for BOOKING_CREATED, and copy its secret. |
+| 11 | `MAILERLITE_API_KEY` | Vercel, optional | MailerLite → Integrations → API → Generate new token. |
+| 12 | `MAILERLITE_GROUP_ID` | Vercel, optional | MailerLite → Subscribers → Groups → open the group; the ID is in the URL. |
+| 13 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Vercel, optional | International format, for example `+971…`. WhatsApp links stay hidden until it's set. |
+| 14 | `NEXT_PUBLIC_LINKEDIN_URL`, `NEXT_PUBLIC_LINKEDIN_IFEANYI`, `NEXT_PUBLIC_LINKEDIN_TOMIWA`, `NEXT_PUBLIC_PORTFOLIO_TOMIWA` | Vercel, optional | Profile URLs. Each link stays hidden until it's set. |
+| 15 | `NEXT_PUBLIC_GA_ID` | Vercel, off at launch | A GA4 measurement ID. Leave it unset. |
 
-## Environment variables
+Numbers 1 to 10, except the Script Properties, are required in Production: `scripts/check-launch-env.mjs` stops the build without them. The optional ones print a warning.
 
-Set these in the Vercel project (Settings → Environment Variables) for Production and Preview. `NEXT_PUBLIC_*` values are public. Everything else is secret.
-
-| Variable | Required for launch | Where it comes from |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | yes | `https://axisandsage.com` in Production. Previews fall back to the Vercel URL. |
-| `DATABASE_URL` | yes | Vercel Marketplace → Neon. Added automatically when you connect the store. |
-| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | yes | Vercel Marketplace → Upstash Redis. Added automatically. `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` also work. |
-| `RESEND_API_KEY` | yes | Resend → API Keys, after verifying `notify.axisandsage.com`. |
-| `FOUNDER_EMAILS` | yes | Both founders' addresses, comma-separated. They're copied on every lead. |
-| `CONTACT_TO_EMAIL` | no | Defaults to `info@axisandsage.com`. |
-| `MAIL_FROM`, `MAIL_REPLY_TO` | no | Default to `Axis & Sage <hello@notify.axisandsage.com>` and `info@axisandsage.com`. |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | yes | Cloudflare dashboard → Turnstile → add a widget for the site's domains. |
-| `SIGNING_SECRET` | yes | Any long random string, for example `openssl rand -base64 32`. Signs the newsletter links. |
-| `HUBSPOT_PRIVATE_APP_TOKEN` | recommended | HubSpot → Settings → Integrations → Private apps. Needs these scopes: `crm.objects.contacts.write`, `crm.objects.deals.write` and the matching read scopes. |
-| `HUBSPOT_PIPELINE_ID`, `HUBSPOT_STAGE_NEW_LEAD`, `HUBSPOT_STAGE_CALL_BOOKED` | recommended | HubSpot → Settings → Objects → Deals → Pipelines. Create "New lead" and "Call booked", then copy their internal IDs. Without them, deals go to `default` / `appointmentscheduled`. |
-| `NEXT_PUBLIC_BOOKING_URL` | recommended | The Cal.com event link, for example `https://cal.com/axisandsage/30min`. |
-| `CAL_WEBHOOK_SECRET` | if booking is set | Cal.com → Settings → Developer → Webhooks → the secret. |
-| `BEEHIIV_API_KEY`, `BEEHIIV_PUBLICATION_ID` | optional | Beehiiv → Settings → Integrations → API. |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | optional | In international format, for example `+971…`. All WhatsApp links stay hidden until it's set. |
-| `NEXT_PUBLIC_LINKEDIN_URL`, `NEXT_PUBLIC_LINKEDIN_IFEANYI`, `NEXT_PUBLIC_LINKEDIN_TOMIWA`, `NEXT_PUBLIC_PORTFOLIO_TOMIWA` | optional | Profile URLs. Each link stays hidden until it's set. |
-| `NEXT_PUBLIC_GA_ID` | off at launch | A GA4 measurement ID. Switches on GA4 with Consent Mode and a consent bar. |
-
-Vercel Web Analytics and Speed Insights need no keys. Turn them on in the Vercel project's Analytics and Speed Insights tabs.
-
-## Measurement
-
-- **Server conversions** go to the `conversions` table, which is the source of truth: `form_submit`, `booking_complete`, `tool_complete`, `tool_email_requested` and `newsletter_signup`.
-- **Client events** go to Vercel Analytics as custom events: `cta_click`, `whatsapp_click`, `tool_start` and `tool_step`.
-- **GA4** stays off unless `NEXT_PUBLIC_GA_ID` is set. When it's on, it uses Consent Mode v2 and stores nothing until the visitor accepts.
+Vercel Web Analytics and Speed Insights need no keys. Turn them on in the project's Analytics and Speed Insights tabs.
 
 ## Launch inputs and the production gate
 
 A production build (`VERCEL_ENV=production`) runs four gates in order:
 
-1. `scripts/check-launch-env.mjs` fails if any launch-critical key above is missing.
-2. The full test suite runs, including every tool test.
+1. `scripts/check-launch-env.mjs` fails if a required variable is missing.
+2. The full test suite runs. A failing test fails the build.
 3. `next build`.
-4. `scripts/check-placeholders.mjs` fails if any rendered page still contains a placeholder, such as `[price]`, `[Title]`, `[CEO]`, `DRAFT`, `PORTRAIT ·` or `PAINTING:`.
+4. `scripts/check-placeholders.mjs` fails if any rendered page still contains a placeholder, such as `[price]`, `[Title]` or `DRAFT`.
 
-Previews keep the placeholders visible so you can see what's missing. Run `pnpm check:placeholders` after a local build for the same report.
-
-Most inputs live in `src/content/`:
-
-| Input | File |
-| --- | --- |
-| Prices | `engagements.ts` → `prices`. Numbers with a currency. |
-| Titles | `people.ts` for Ifeanyi's title, `work.ts` for testimonial titles. |
-| Portraits | `people.ts` → `portrait`. |
-| Hero painting | `components/ds/method.tsx` (`PaintingFrame`). |
-| Template files | `library.ts` → `templates[].file`, with the files in `public/templates/`. |
-| Tool copy and test cases | File 06, going into `tools.ts`, `src/lib/tools/` and `test/tools.test.mjs`. |
+Previews keep any placeholder visible. Run `pnpm check:placeholders` after a local build for the same report.
 
 ## Quality checks
 
@@ -158,9 +136,9 @@ pnpm build
 
 ## Deployment
 
-1. Link the repository to the Axis & Sage project on a Vercel **Pro** team. Hobby is for non-commercial use only.
+1. Link the repository to the Axis & Sage project on Vercel.
 2. Turn on Deployment Protection for previews.
-3. Connect Neon and Upstash from the Marketplace, set the variables above, and run `pnpm db:migrate`.
+3. Create the Sheet and deploy the Apps Script (see its README), create the private Blob store, and set the variables above.
 4. Review the preview.
 
 Do not attach `axisandsage.com` until the preview is explicitly approved and every line of the launch gate passes.

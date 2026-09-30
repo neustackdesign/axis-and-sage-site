@@ -1,6 +1,7 @@
 import { CTABand } from "@/components/ds/CTABand";
 import { CaseCard, EngagementTable, LogoStrip, SpecialistCard, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
 import { PaintingFrame, PlaneStack } from "@/components/ds/method";
+import { heroImage } from "@/content/site";
 import { ButtonLink, Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
 import { FounderCards } from "@/components/sections/FounderCards";
 import { MethodSentencePanel } from "@/components/sections/MethodSentencePanel";
@@ -9,10 +10,11 @@ import { tools } from "@/content/library";
 import { gapCards, methodSteps } from "@/content/method";
 import { bookCallHref, scorecardHref } from "@/content/site";
 import { homeStats, homeStatsSource, homeTestimonials, logoStrip, selectedWork } from "@/content/work";
+import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 
-export const metadata = pageMetadata({ path: "/" });
+export const metadata = pageMetadata({ title: pageTitles.home.title, absoluteTitle: true, path: "/", description: pageTitles.home.description });
 
 export default function HomePage() {
   return (
@@ -21,7 +23,7 @@ export default function HomePage() {
       {/* 1 · Hero: PaintingFrame.Hero */}
       <section className="section-tight tone-paper" aria-labelledby="hero-title" style={{ paddingTop: 32 }}>
         <div className="wrap">
-          <PaintingFrame hero label="Lagos lagoon at dusk">
+          <PaintingFrame hero image={heroImage}>
             <Eyebrow>ADVISORY · AFRICA AND THE GCC · ABU DHABI · DUBAI · LAGOS</Eyebrow>
             <h1 id="hero-title" className="hero-title reveal" style={{ marginTop: 20, maxWidth: 980 }}>Get the people your business<br className="br-desktop" /> depends on to act.</h1>
             <p className="t-body-l muted" style={{ marginTop: 20, maxWidth: 720 }}>Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design.</p>

@@ -93,11 +93,11 @@ export function Lockup({ dark }: { dark?: boolean }) {
   );
 }
 
-/** Portrait in the principal treatment. Labelled placeholder until a licensed portrait is supplied. */
-export function Portrait({ src, alt, label, dark, className = "" }: { src?: string; alt: string; label?: string; dark?: boolean; className?: string }) {
+/** Portrait in the principal treatment: a photo when one is supplied, otherwise an initials tile with serif initials. */
+export function Portrait({ src, alt, initials, dark, className = "" }: { src?: string; alt: string; initials?: string; dark?: boolean; className?: string }) {
   return (
-    <div className={`portrait${dark ? " portrait-dark" : ""} ${className}`.trim()}>
-      {src ? <img src={src} alt={alt} loading="lazy" /> : <span className="portrait-label t-label" role="img" aria-label={alt}>{label || "PORTRAIT"}</span>}
+    <div className={`portrait${dark ? " portrait-dark" : ""}${!src && initials ? " portrait-initials" : ""} ${className}`.trim()}>
+      {src ? <img src={src} alt={alt} loading="lazy" /> : initials ? <span className="portrait-monogram" role="img" aria-label={alt}>{initials}</span> : null}
     </div>
   );
 }

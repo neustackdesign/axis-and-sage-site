@@ -15,8 +15,7 @@
     "test": "node --import tsx --test",
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
     "audit:design-system": "node scripts/audit-design-system.mjs",
-    "check:placeholders": "node scripts/check-placeholders.mjs --force",
-    "db:migrate": "node scripts/db-migrate.mjs"
+    "check:placeholders": "node scripts/check-placeholders.mjs --force"
   },
   "dependencies": {
     "@vercel/analytics": "2.0.1",

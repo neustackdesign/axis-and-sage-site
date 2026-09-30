@@ -39,7 +39,7 @@ export function personLd(p: Person) {
   };
 }
 
-export function articleLd({ headline, description, path, date, author }: { headline: string; description: string; path: string; date: string; author?: string }) {
+export function articleLd({ headline, description, path, date, authors }: { headline: string; description: string; path: string; date: string; authors?: { name: string; path: string }[] }) {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -49,7 +49,7 @@ export function articleLd({ headline, description, path, date, author }: { headl
     mainEntityOfPage: abs(path),
     datePublished: date,
     dateModified: date,
-    author: author ? { "@type": "Person", name: author } : { "@id": orgId() },
+    author: authors?.length ? authors.map((a) => ({ "@type": "Person", name: a.name, url: abs(a.path) })) : { "@id": orgId() },
     publisher: { "@id": orgId() },
   };
 }

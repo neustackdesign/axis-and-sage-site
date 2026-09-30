@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { defaultDescription, isPublicProduction, siteName, siteOrigin } from "@/lib/metadata";
+import { defaultDescription, isPublicProduction, siteName, siteOrigin, titleSuffix } from "@/lib/metadata";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/components.css";
@@ -11,7 +11,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin()),
-  title: { default: siteName, template: `%s · ${siteName}` },
+  title: { default: siteName, template: `%s${titleSuffix}` },
   description: defaultDescription,
   icons: {
     icon: [

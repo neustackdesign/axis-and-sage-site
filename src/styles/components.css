@@ -66,13 +66,9 @@ button.chip[aria-pressed="true"] { background: var(--orange-100); border-color: 
 
 /* ---------- PaintingFrame ---------- */
 .painting-frame { background: var(--charcoal-800); padding: 24px; }
-.painting {
-  position: relative; background-color: var(--paper-100);
-  background-image: repeating-linear-gradient(135deg, rgba(182, 182, 162, 0.35) 0 1px, transparent 1px 14px), linear-gradient(180deg, #d9d7cc 0%, #d4d3c6 60%, #cfcdbf 100%);
-  aspect-ratio: 16 / 7;
-}
+.painting { position: relative; overflow: hidden; background-color: var(--paper-100); aspect-ratio: 16 / 7; }
 .painting img { width: 100%; height: 100%; object-fit: cover; }
-.painting-label { position: absolute; left: 16px; bottom: 16px; background: var(--paper-50); color: var(--charcoal-900); padding: 8px 10px; }
+.painting-label { position: absolute; z-index: 1; left: 16px; bottom: 16px; right: 16px; width: fit-content; background: var(--paper-50); color: var(--charcoal-900); padding: 8px 10px; }
 .painting-frame.is-hero .painting { aspect-ratio: 4 / 1; }
 .painting-panel { background: var(--paper-200); padding: 40px 40px 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; }
 .painting-panel-mark { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 24px; height: 100%; }
@@ -149,7 +145,6 @@ a.work-card:hover { background: var(--paper-100); }
 .testimonial blockquote { font-family: var(--font-serif); font-size: 21px; line-height: 30px; }
 .testimonial-person { display: flex; gap: 16px; align-items: center; margin-top: auto; }
 .testimonial-portrait { width: 56px; height: 56px; flex: none; overflow: hidden; aspect-ratio: 1; }
-.testimonial-portrait .portrait-label { display: none; }
 .testimonial-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.15) sepia(0.08); }
 .testimonial-name { font-weight: var(--weight-sans-medium); font-size: 16px; line-height: 22px; }
 .testimonial-title { font-size: 14px; line-height: 20px; color: var(--text-muted); }
@@ -157,7 +152,7 @@ a.work-card:hover { background: var(--paper-100); }
 .testimonial-feature blockquote { font-family: var(--font-serif); font-size: 32px; line-height: 40px; }
 @media (max-width: 1023px) { .testimonial-grid { grid-template-columns: 1fr; } .testimonial-feature { grid-template-columns: 1fr; } .testimonial-feature blockquote { font-size: 24px; line-height: 32px; } }
 
-/* ---------- Portrait placeholder ---------- */
+/* ---------- Portrait and initials tile ---------- */
 .portrait {
   position: relative; aspect-ratio: 4 / 5; overflow: hidden;
   background-color: var(--paper-100);
@@ -165,7 +160,10 @@ a.work-card:hover { background: var(--paper-100); }
 }
 .portrait-dark { background-color: var(--charcoal-700); background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 12px), linear-gradient(180deg, #3a3a3a, #2f2f2f); }
 .portrait img { width: 100%; height: 100%; object-fit: cover; }
-.portrait-label { position: absolute; left: 10px; right: 10px; bottom: 10px; background: var(--paper-50); color: var(--charcoal-900); padding: 8px 10px; }
+.portrait-initials { background-image: none; background-color: var(--paper-100); display: grid; place-items: center; container-type: inline-size; }
+.portrait-initials.portrait-dark { background-color: var(--charcoal-900); }
+.portrait-monogram { font-family: var(--font-serif); font-weight: 400; font-size: 34cqi; line-height: 1; letter-spacing: -0.02em; color: var(--charcoal-900); }
+.portrait-dark .portrait-monogram { color: var(--paper-50); }
 
 /* ---------- EngagementTable ---------- */
 .engagement-table { display: grid; grid-template-columns: minmax(120px, 0.7fr) repeat(4, minmax(0, 1fr)); border-top: var(--border-strong); border-left: var(--border-rule); }
@@ -564,8 +562,9 @@ a.tool-card:hover { background: var(--sage-100); }
 .article-head { padding-block: 80px 48px; }
 .article-title { margin-top: 20px; max-width: 900px; }
 .article-standfirst { margin-top: 24px; max-width: 680px; color: var(--text-muted); }
+.author-cards { display: flex; flex-wrap: wrap; gap: 16px 32px; }
 .author-card { display: flex; gap: 16px; align-items: center; }
-.author-card .portrait { width: 56px; height: 56px; aspect-ratio: 1; border-radius: 50%; }
+.author-card .portrait { width: 56px; height: 56px; aspect-ratio: 1; border-radius: 50%; flex: none; }
 .author-name { font-weight: var(--weight-sans-medium); font-size: 16px; line-height: 22px; }
 .author-role { font-size: 14px; line-height: 20px; color: var(--text-muted); }
 .article-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 24px; padding-bottom: 96px; }
@@ -576,6 +575,11 @@ a.tool-card:hover { background: var(--sage-100); }
 .article-body > * + * { margin-top: 20px; }
 .article-body h2 { font-family: var(--font-serif); font-weight: 400; font-size: 32px; line-height: 38px; margin-top: 56px; scroll-margin-top: 96px; }
 .article-body h2:first-child { margin-top: 0; }
+.article-body > section + section { margin-top: 56px; }
+.article-body section > * + * { margin-top: 20px; }
+.article-body section ul { list-style: disc; padding-left: 20px; }
+.article-body section li + li { margin-top: 8px; }
+.article-body section h2 { margin-top: 0; }
 .pull-quote { border-top: var(--border-strong); border-bottom: var(--border-rule); padding: 28px 0; font-family: var(--font-serif); font-size: 30px; line-height: 38px; margin-block: 40px !important; }
 .callout { background: var(--sage-100); border: 1px solid var(--sage-400); padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; }
 .callout .t-label { color: var(--sage-700); }
@@ -638,7 +642,6 @@ a.tool-card:hover { background: var(--sage-100); }
   .contact-route + .contact-route { padding-left: 0; border-left: 0; border-top: var(--border-rule); }
   .calendar-placeholder { min-height: 200px; }
 }
-.author-card .portrait-label { display: none; }
 .contact-routes.routes-1 { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
 .contact-routes.routes-2 { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
 .turnstile:empty { display: none; }

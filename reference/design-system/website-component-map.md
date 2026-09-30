@@ -1,6 +1,6 @@
 # Axis & Sage website: component usage map and build notes
 
-This file covers the Conversion Design rebuild (brief 03). It maps each section to its design system component, lists the placeholders still visible, flags copy that was drafted rather than supplied, and names the assets still needed.
+This file covers the Conversion Design rebuild (brief 03, finished for launch in brief 11). It maps each section to its design system component, flags copy that was drafted rather than supplied, and names the assets still worth replacing.
 
 The design system source is `reference/design-system/axis-sage-ds/` (tokens and glyphs). Components are implemented in `src/components/ds/` under the names used on the design system's components page.
 
@@ -12,7 +12,8 @@ The design system source is `reference/design-system/axis-sage-ds/` (tokens and 
 | Button.Primary, Button.Secondary, TextLink | `ds/primitives.tsx` (`ButtonLink`, `TextLink`) | Square, 48px tall. One orange primary per view. |
 | Eyebrow | `ds/primitives.tsx` (`Eyebrow`) | Mono label, 12/16, uppercase. |
 | SectionHeader | `ds/primitives.tsx` (`SectionHeader`, `RailBody`) | 3/9 left rail. The rail stacks above the content below 1024px. |
-| PaintingFrame.Hero | `ds/method.tsx` (`PaintingFrame hero`) | Labelled CSS placeholder that needs no image request. |
+| PaintingFrame.Hero | `ds/method.tsx` (`PaintingFrame hero`) | "Sunset on Lagos skyline" by Chibuzo Nwaneri (Unsplash), with the credit label on the image. |
+| Portrait, initials tile | `ds/primitives.tsx` (`Portrait`) | Serif initials: "IM" on paper, "TO" on charcoal, until portraits are supplied. |
 | SpecGrid, SpecCell, spec list | `ds/blocks.tsx` (`SpecGrid`, `SpecList`) | 4 columns, then 2, then 1. |
 | StatTile | `ds/blocks.tsx` (`StatTile`, `StatGrid`) | Shows a role tag and a source line. |
 | Chip.Role, Chip.Conversion | `ds/primitives.tsx` (`Chip`, `ChipRow`) | The filter chips on /work use the selected state (orange-100). |
@@ -41,7 +42,8 @@ The design system source is `reference/design-system/axis-sage-ds/` (tokens and 
 |---|---|
 | `/` | PaintingFrame.Hero · LogoStrip · The gap (SectionHeader, Glyph cards) · Conversion Design (MethodSentence and panel, PlaneStack) · Founders (Terms paper card, Moments charcoal card) · What moved (charcoal, StatTile ×7) · Selected work (CaseCard ×6) · Testimonial ×3 · How to start (EngagementTable, specialist cards) · Library (sage, ToolCard ×6) · CTABand · Footer |
 | `/conversion-design` | Page hero · actor list with glyphs · two halves (paper Terms, charcoal Moments) · PlaneStack with expanded steps · Timeline (charcoal, Farmcrowdy) · CRO question · by type of action (links to /work filters) · FAQ 1, 2, 3, 7 · CTABand |
-| `/what-we-do/*` | Hero with the practice lead · When to call us (spec list) · What we do (SpecGrid) · How it connects · Proof (3 work cards) · Related tools · CTABand. Embedded leadership shows How it works, Proof and When it fits instead. |
+| `/what-we-do/*` | The three practices: hero with the practice lead · When to call us (spec list) · What we do (SpecGrid) · How it connects · Proof (3 work cards) · Related tools · CTABand. |
+| `/engagements/embedded-leadership` | Same layout (`sections/PracticeView.tsx`): How it works, Proof and When it fits. `/what-we-do/embedded-leadership` redirects here with a 301. |
 | `/engagements` | Hero · EngagementTable · 3 specialist cards · Diagnostic DayTimeline · fee · FAQ (all 8) · CTABand |
 | `/work` | Hero · action and role filter chips (state in the URL) · work card grid · empty state · CTABand |
 | `/work/[slug]` | Header · intro · Needed (large mono) · In the way · What we changed (TERMS and MOMENT tags) · What moved (StatTile) · Visuals · Quote · Related tools · Next case · CTABand |
@@ -50,82 +52,45 @@ The design system source is `reference/design-system/axis-sage-ds/` (tokens and 
 | `/tools/*` | Hero · sage tool section · CTABand |
 | `/guides/[slug]` | Label, title, standfirst, author card, reading time, contents rail, pull quote, callout, table, embedded ToolCard, end CTA |
 | `/contact` | Hero · three routes (calendar, form, WhatsApp) · details |
-| `/newsletter`, `/thank-you`, `/privacy`, `/terms`, 404 | As specified |
+| `/privacy`, `/terms` | Article layout (`sections/LegalArticle.tsx`), with the text from brief 11 §5 in `content/legal.ts`. |
+| `/newsletter`, `/thank-you`, 404 | As specified |
 
 Charcoal sections: Home uses two (What moved, and the Moments card). Every other page uses at most two.
 
 ## Forms and states
 
-- Every form goes through one lead pipeline: `/api/contact` for contact and the CTA band, `/api/newsletter` (double opt-in), `/api/tool-result` for tool emails, and `/api/cal` for bookings. See the README, "The lead pipeline".
+- Every form takes one lead path: `/api/contact` for contact and the CTA band, `/api/newsletter` (MailerLite), `/api/tool-result` for tool emails, and `/api/cal` for bookings. See the README, "The lead path".
 - **Error:** errors are inline and in plain language, and each field carries its own message.
-- **Success:** the contact form shows "Thanks. One of us will reply within one working day." with the Scorecard link.
-- **Last resort (503):** when both the database write and the notification email fail, or the server can't verify the browser (403), the form shows a notice and an "Open it in your email app" link that carries the full message. Nothing is lost and nothing is claimed as sent.
-- **Rate limited (429):** a plain-language message to wait and try again.
-- **Tool emails:** "Sent to {email}. Your file has downloaded." If the send fails, the tool says so and offers the download and a retry.
+- **Success:** shown once the lead is stored in Blob, even if the Pipeline Sheet hasn't confirmed yet. The contact form goes to `/thank-you`.
+- **Last resort (503):** only when the Blob write itself fails. The form shows a notice and an "Open it in your email app" link that carries the full message.
+- **Tool emails:** "Sent to {email}." or "Saved. We'll email it to {email} shortly.", plus "Your file has downloaded." when there's a file. If it can't be saved, the tool says so and offers the download and a retry.
 - **Loading:** buttons change their label to "Sending…" and are disabled.
 - **Empty states:** a /work filter with no results, a DoA matrix with no levels or areas, the newsletter archive, and a guide still in draft.
 
-## Placeholders still visible
+## Copy drafted, not supplied
 
-- **Prices:** the price for the Diagnostic, Investor Readiness Sprint, Portfolio Review and Leadership working session.
-- **Titles and names:**
-  - Ifeanyi Monyei's title: "Co-founder & [CEO]".
-  - Kunmi Demuren's [Title].
-  - Temi Olateru's [Title] and [Firm].
-  - The [Agency name] on the university innovation platform card.
-  - The guide author, shown as [Author].
-- **Contact details:**
-  - The WhatsApp [number] (`NEXT_PUBLIC_WHATSAPP_NUMBER`).
-  - The calendar embed, shown as [BOOKING LINK] (`NEXT_PUBLIC_BOOKING_URL`).
-  - LinkedIn and portfolio URLs, shown as [URL].
-- **Other:**
-  - Privacy and terms text.
-  - The newsletter's [first issue date].
-
-## Copy drafted, not supplied (replace from file 06)
-
-These were written so the tool screens can be reviewed. They live in `src/content/tools.ts` and are marked on every tool page as "DRAFT COPY AND SCORING · FINAL VERSION FROM FILE 06".
-
-- **Conversion Scorecard:**
-  - The ten statements and their "What we'd check first" lines.
-  - The interim scoring and the verdict lines.
-  - The mapping from action to related case.
-- **What's a lift worth?:** the input labels and default values.
-- **Delegation of Authority Builder:**
-  - The default approval levels and decision areas.
-  - The rule for the default A/R/C/I pattern.
-- **Investor Readiness Score:** the 25 checks, the verdict bands and their lines.
-- **Pitch Deck Outline:** the 12 questions and the slide notes.
-- **Tool screens (all):** the ESOP sentence template and the tool microcopy, such as "Unanswered checks count as no."
-
-Other lines written to fill a layout need:
+The tool copy and logic are Spec A, word for word (`reference/briefs/06-tools-spec.md`). Lines written to fill a layout need:
 
 - **Nav dropdown descriptions:** the Library items (Guides, Templates, Newsletter). The practice items reuse their H1s.
-- **Section headings that the brief named but didn't write:**
-  - "The four steps."
-  - "By type of action."
-  - "Frequently asked questions."
-  - "Specialist engagements."
-  - "Related work."
-  - "Visuals."
+- **Section headings that the brief named but didn't write:** "The four steps.", "By type of action.", "Frequently asked questions.", "Specialist engagements.", "Related work.", "Visuals."
 - **Guide cards:** "Coming soon. Subscribe to get it first." on guides still in draft.
-- **Contact:** the calendar placeholder line.
 - **Case page artifacts:** the rows on the redrawn screens and documents (for example, "Stage · Planting").
-
-The example guide, "What the Conversion Diagnostic fee pays for", is assembled only from the supplied engagement copy.
+- **Tool microcopy beyond Spec A:**
+  - field help text
+  - "Unanswered checks count as no."
+  - the search phrases in the tool page titles (only the DoA phrase is in Spec B)
+  - the Group CEO's non-monetary codes: informed where the subsidiary MD approves; recommends where the MD recommends to the Board
 
 ## Content decisions to confirm
 
-- **Farmcrowdy "45,000+ Customers":** the brief gives no source line. The tile renders without one, which conflicts with the design system rule "if there is no source, there is no number". Supply a source or drop the tile.
-- **Case pages for GV Solutions, Venture Garden Group, Mular, Nature Roots and Uganda Investor Summit:** these use only the Needed, Changed and Moved copy from the home cards. The other ten work entries have no case page, so their cards are not links.
-- **Related tools on those case pages:** these follow each practice's tool list.
-- **Stat source lines on the GV Solutions and Mular case pages:** these read "COMPANY RECORDS", taken from the homepage sources line. Confirm them.
-- **Testimonial portraits:** Bunmi Akinyemiju, Temi Olateru and Onyeka Akumah use the portraits already migrated from the live site. Their usage approval was still marked pending in `reference/asset-inventory.json`. Kunmi Demuren has no portrait.
+- **DoA defaults:** Spec A says Ifeanyi confirms or replaces the default bands and codes before launch.
+- **Privacy and terms:** drafts for Ifeanyi's approval, not legal advice.
+- **Farmcrowdy "45,000+ Customers":** the brief gives no source line.
+- **Testimonial portraits:** Bunmi Akinyemiju, Temi Olateru and Onyeka Akumah use the portraits migrated from the live site. Their usage approval is marked pending in `reference/asset-inventory.json`.
 
-## Assets needed
+## Assets worth replacing
 
-- **Hero painting:** "Lagos lagoon at dusk", licensed or commissioned. Supply around 2400px wide in WebP, and keep the paper placeholder colour as the background.
-- **Founder portraits:** Ifeanyi Monyei (paper backdrop) and Tomiwa Ogunmodede (charcoal backdrop). Set `portrait` in `src/content/people.ts`.
+- **Hero image:** served from Unsplash's CDN because the build sandbox couldn't download it. To self-host, save it at about 2400px wide in `public/images/` and change `heroImage.src` in `src/content/site.ts`.
+- **Founder portraits,** if wanted instead of the initials tiles: set `portrait` in `src/content/people.ts`.
 - **Client logos,** if wanted instead of type in the LogoStrip.
 - **Template files:** the five templates, for sending by email.
-- **Open Graph image:** `public/og/axis-sage.png` is the previous design. Replace it with the new lockup.

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ToolCard } from "@/components/ds/blocks";
 import { ButtonLink, Eyebrow, Portrait } from "@/components/ds/primitives";
 import { diagnosticCreditNote, diagnosticDays, diagnosticFeePays, engagements, faqs } from "@/content/engagements";
 import { guideBySlug, guides, toolBySlug } from "@/content/library";
+import { people } from "@/content/people";
 import { bookCallHref, ctaBand } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
@@ -41,16 +43,20 @@ export default async function GuidePage({ params }: Props) {
   return (
     <>
     <Breadcrumbs trail={[{ name: "Library", path: "/library" }, { name: g.title, path: `/guides/${g.slug}` }]} />
-    <JsonLd data={articleLd({ headline: g.title, description: diagnosticFeePays, path: `/guides/${g.slug}`, date: contentDate(`/guides/${g.slug}`) })} />
+    <JsonLd data={articleLd({ headline: g.title, description: diagnosticFeePays, path: `/guides/${g.slug}`, date: contentDate(`/guides/${g.slug}`), authors: people.map((p) => ({ name: p.name, path: `/people/${p.slug}` })) })} />
     <article className="article">
       <header className="wrap article-head">
         <Eyebrow strong>GUIDE · {g.category}</Eyebrow>
         <h1 className="t-h1 article-title reveal">{g.title}.</h1>
         <p className="article-standfirst t-body-l">Every engagement begins with the action you need and a fixed fee. Nothing starts without both.</p>
         <div className="page-hero-meta">
-          <div className="author-card">
-            <Portrait alt="Author portrait placeholder" label=" " />
-            <div><p className="author-name">[Author]</p><p className="author-role">Co-founder, Axis &amp; Sage Advisory</p></div>
+          <div className="author-cards">
+            {people.map((p) => (
+              <div key={p.slug} className="author-card">
+                <Portrait alt={p.name} initials={p.initials} dark={p.half === "moments"} src={p.portrait} />
+                <div><p className="author-name"><Link className="text-link" href={`/people/${p.slug}`}>{p.name}</Link></p><p className="author-role">{p.title}, Axis &amp; Sage Advisory</p></div>
+              </div>
+            ))}
           </div>
           <span className="t-label muted">{readingMinutes} MIN READ</span>
         </div>

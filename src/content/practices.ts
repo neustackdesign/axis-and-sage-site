@@ -101,18 +101,20 @@ export const practices: Practice[] = [
     proof: ["nature-roots", "uganda-investor-summit", "oui-life"],
     tools: ["pitch-deck-outline", "conversion-scorecard"],
   },
-  {
-    slug: "embedded-leadership",
-    label: "Embedded leadership",
-    eyebrow: "WHAT WE DO · EMBEDDED LEADERSHIP",
-    h1: "A principal in the seat.",
-    sub: "When the fix needs someone who owns it, one of us takes a named role (COO, head of product or strategy lead) for a fixed term.",
-    howItWorks: ["A named role", "Defined hours", "A fixed term, reviewed every quarter", "Contracted through Axis & Sage"],
-    proof: ["gv-solutions"],
-    proofNote: "GV Solutions, where Ifeanyi Monyei has been fractional COO since August 2026. Her remit covers business operations, the group's interfaces across finance, legal, brand, technology and data, delivery oversight and team performance.",
-    whenItFits: "You need operating ownership now, and a permanent hire is the wrong answer or too slow.",
-    tools: [],
-  },
 ];
+
+/** Embedded leadership is a way of engaging, not a practice: it lives under /engagements. */
+export const embeddedLeadership: Practice = {
+  slug: "embedded-leadership",
+  label: "Embedded leadership",
+  eyebrow: "ENGAGEMENTS · EMBEDDED LEADERSHIP",
+  h1: "A principal in the seat.",
+  sub: "When the fix needs someone who owns it, one of us takes a named role (COO, head of product or strategy lead) for a fixed term.",
+  howItWorks: ["A named role", "Defined hours", "A fixed term, reviewed every quarter", "Contracted through Axis & Sage"],
+  proof: ["gv-solutions"],
+  proofNote: "GV Solutions, where Ifeanyi Monyei has been fractional COO since August 2026. Her remit covers business operations, the group's interfaces across finance, legal, brand, technology and data, delivery oversight and team performance.",
+  whenItFits: "You need operating ownership now, and a permanent hire is the wrong answer or too slow.",
+  tools: [],
+};
 
 export const practiceBySlug = (slug: string) => practices.find((p) => p.slug === slug);

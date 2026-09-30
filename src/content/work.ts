@@ -39,8 +39,8 @@ export const workIndex: WorkItem[] = [
   { slug: "uganda-investor-summit", name: "Uganda Investor Summit", sector: "Investment convening", roles: ["ADVISED"], actions: ["investors-commit"], line: "Strategy, investor narrative and identity for a national investment conference.", hasCase: true },
   { slug: "lasric", name: "LASRIC", sector: "Public innovation", roles: ["ADVISED"], actions: ["partners-sign"], line: "An identity that helped a public innovation council speak to government and private partners." },
   { slug: "africa-agrighg-summit", name: "Africa AgriGHG Innovation and Investment Summit", sector: "Investment convening", roles: ["ADVISED"], actions: ["investors-commit"], line: "Summit platform designed with Qinisa Initiative." },
-  { slug: "university-innovation-platform", name: "University innovation platform", sector: "Public innovation", roles: ["BUILT"], actions: ["partners-sign"], line: "Puts university innovations in front of industry, with an IP-protection framework. [Agency name]" },
-  { slug: "oui-life", name: "OUI Life", sector: "Beauty manufacturing", roles: ["BUILT"], actions: ["customers-buy"], line: "Rebuilt site with engagement routes and a launch-economics calculator; a substantial increase in qualified leads." },
+  { slug: "university-innovation-platform", name: "University innovation platform", sector: "Public innovation", roles: ["BUILT"], actions: ["partners-sign"], line: "Puts university innovations in front of industry, with an IP-protection framework." },
+  { slug: "oui-life", name: "OUI Life", sector: "Beauty manufacturing", roles: ["BUILT"], actions: ["customers-buy"], line: "Rebuilt site with engagement routes and a launch-economics calculator; the client reports a substantial increase in qualified leads." },
 ];
 
 export const workBySlug = (slug: string) => workIndex.find((w) => w.slug === slug);
@@ -94,12 +94,12 @@ export const logoStrip = [
   "National Social Investment Programme",
 ];
 
-export type Testimonial = { quote: string; name: string; title: string; company: string; portrait?: string };
+export type Testimonial = { quote: string; name: string; title: string; company?: string; portrait?: string };
 
 export const testimonials: Record<string, Testimonial> = {
   kunmi: {
     quote: "Axis & Sage's work was quick, high quality, and completely transformed our brand, making it both beautiful and highly functional. The team was professional and communicative even under crushing deadlines. We couldn't be happier with the result — it gave our investors confidence and unlocked new partnerships.",
-    name: "Kunmi Demuren", title: "[Title]", company: "Nature Roots",
+    name: "Kunmi Demuren", title: "Founder", company: "Nature Roots",
   },
   bunmi: {
     quote: "Axis & Sage has been a thought partner in the truest sense. They see beyond design into the heart of business strategy — aligning brand, structure, and execution seamlessly.",
@@ -107,7 +107,7 @@ export const testimonials: Record<string, Testimonial> = {
   },
   temi: {
     quote: "Their frameworks for brand and product positioning have consistently given our portfolio companies the edge in competitive markets.",
-    name: "Temi Olateru", title: "[Title]", company: "[Firm]", portrait: "/images/axis-sage/portraits/portrait-6.jpg",
+    name: "Temi Olateru", title: "Investor", portrait: "/images/axis-sage/portraits/portrait-6.jpg",
   },
   onyeka: {
     quote: "Tomiwa helped sharpen our identity. The clarity, speed, and creativity meant that our brand matched our ambitions and spoke to investors, farmers, and customers alike.",

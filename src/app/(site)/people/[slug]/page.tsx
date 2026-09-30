@@ -37,7 +37,7 @@ export default async function PersonPage({ params }: Props) {
       <section className="tone-paper" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="profile-hero">
-            <Portrait alt={`Portrait of ${p.name}`} label={moments ? "PORTRAIT · CHARCOAL BACKDROP" : "PORTRAIT · PAPER BACKDROP"} dark={moments} src={p.portrait} />
+            <Portrait alt={p.name} initials={p.initials} dark={moments} src={p.portrait} />
             <div>
               <Eyebrow strong>PEOPLE · {moments ? "MOMENTS" : "TERMS"}</Eyebrow>
               <h1 id="page-title" className="t-display reveal" style={{ marginTop: 20 }}>{p.name}</h1>

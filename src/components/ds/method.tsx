@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { planes } from "@/content/method";
 import { InView } from "./InView";
@@ -26,12 +27,15 @@ export function PlaneStack({ steps }: { steps: { index: string; title: string; b
   );
 }
 
-/** PaintingFrame.Hero: painting above, paper panel below. One painting per page. Placeholders stay labelled until licensed. */
-export function PaintingFrame({ label, children, aside, hero }: { label: string; children: ReactNode; aside?: ReactNode; hero?: boolean }) {
+export type FrameImage = { src: string; alt: string; credit: string };
+
+/** PaintingFrame.Hero: the image above, paper panel below, with the credit label on the image. One per page. */
+export function PaintingFrame({ image, children, aside, hero }: { image: FrameImage; children: ReactNode; aside?: ReactNode; hero?: boolean }) {
   return (
     <div className={`painting-frame${hero ? " is-hero" : ""}`}>
-      <div className="painting" role="img" aria-label={`Painting placeholder: ${label}`}>
-        <span className="painting-label t-label">PAINTING: {label.toUpperCase()}</span>
+      <div className="painting">
+        <Image src={image.src} alt={image.alt} fill priority={hero} sizes="(max-width: 1440px) 100vw, 1392px" />
+        <span className="painting-label t-label">{image.credit}</span>
       </div>
       <div className="painting-panel">
         <div>{children}</div>

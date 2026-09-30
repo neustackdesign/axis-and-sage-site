@@ -91,7 +91,7 @@ export function Testimonial({ t }: { t: TestimonialData }) {
         {t.portrait ? <Portrait className="testimonial-portrait" src={t.portrait} alt={t.name} /> : null}
         <span>
           <span className="testimonial-name" style={{ display: "block" }}>{t.name}</span>
-          <span className="testimonial-title" style={{ display: "block" }}>{t.title}, {t.company}</span>
+          <span className="testimonial-title" style={{ display: "block" }}>{t.company ? `${t.title}, ${t.company}` : t.title}</span>
         </span>
       </figcaption>
     </figure>
@@ -104,7 +104,7 @@ export function TestimonialFeature({ t }: { t: TestimonialData }) {
       {t.portrait ? <Portrait src={t.portrait} alt={t.name} /> : null}
       <div className="stack-24">
         <blockquote>“{t.quote}”</blockquote>
-        <figcaption><span className="testimonial-name" style={{ display: "block" }}>{t.name}</span><span className="testimonial-title">{t.title}, {t.company}</span></figcaption>
+        <figcaption><span className="testimonial-name" style={{ display: "block" }}>{t.name}</span><span className="testimonial-title">{t.company ? `${t.title}, ${t.company}` : t.title}</span></figcaption>
       </div>
     </figure>
   );

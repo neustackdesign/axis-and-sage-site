@@ -11,6 +11,7 @@ import { ReadinessScore } from "@/components/tools/ReadinessScore";
 import { Scorecard } from "@/components/tools/Scorecard";
 import { ScorecardEntry } from "@/components/tools/ScorecardEntry";
 import { toolBySlug, tools } from "@/content/library";
+import { toolTitle } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { webApplicationLd } from "@/lib/seo";
@@ -23,7 +24,7 @@ export function generateStaticParams() { return tools.map((t) => ({ slug: t.slug
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = toolBySlug((await params).slug);
   if (!t) return {};
-  return pageMetadata({ title: t.title, path: `/tools/${t.slug}`, description: t.line });
+  return pageMetadata({ title: toolTitle(t.slug, t.title), absoluteTitle: true, path: `/tools/${t.slug}`, description: t.line });
 }
 
 const components: Record<string, React.ReactNode> = {

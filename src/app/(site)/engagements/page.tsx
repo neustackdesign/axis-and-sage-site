@@ -3,14 +3,16 @@ import { DayTimeline, EngagementTable, Faq, SpecialistCard } from "@/components/
 import { PageHero } from "@/components/ds/PageHero";
 import { RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
 import { diagnosticCreditNote, diagnosticDays, diagnosticFeePays, engagements, faqs, leadershipSession, specialistCards } from "@/content/engagements";
+import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { faqLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Engagements and pricing",
+  title: pageTitles.engagements.title,
+  absoluteTitle: true,
   path: "/engagements",
-  description: "Every engagement begins with the action you need and a fixed fee. Nothing starts without both.",
+  description: pageTitles.engagements.description,
 });
 
 export default function EngagementsPage() {

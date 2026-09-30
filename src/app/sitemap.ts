@@ -9,7 +9,7 @@ import { siteOrigin } from "@/lib/metadata";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteOrigin();
   const paths = [
-    "/", "/conversion-design", "/engagements", "/work", "/people", "/library", "/newsletter", "/contact", "/privacy", "/terms",
+    "/", "/conversion-design", "/engagements", "/engagements/embedded-leadership", "/work", "/people", "/library", "/newsletter", "/contact", "/privacy", "/terms",
     ...practices.map((p) => `/what-we-do/${p.slug}`),
     ...casePages.map((c) => `/work/${c.slug}`),
     ...people.map((p) => `/people/${p.slug}`),

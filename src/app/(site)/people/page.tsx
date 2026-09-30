@@ -2,11 +2,13 @@ import { CTABand } from "@/components/ds/CTABand";
 import { PageHero } from "@/components/ds/PageHero";
 import { Eyebrow, Portrait, Section, TextLink } from "@/components/ds/primitives";
 import { people, specialists } from "@/content/people";
+import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
-  title: "People",
+  title: pageTitles.people.title,
+  absoluteTitle: true,
   path: "/people",
   description: "Two founders. Both of them on your work. Ifeanyi designs the terms people act on. Tomiwa designs the moments they act in.",
 });
@@ -19,7 +21,7 @@ export default function PeoplePage() {
       {people.map((p, i) => (
         <Section key={p.slug} tone={p.half === "moments" ? "charcoal" : "paper"} labelledBy={`${p.slug}-name`}>
           <div className="person-row">
-            <Portrait alt={`Portrait of ${p.name}`} label={p.half === "moments" ? "PORTRAIT · CHARCOAL BACKDROP" : "PORTRAIT · PAPER BACKDROP"} dark={p.half === "moments"} src={p.portrait} />
+            <Portrait alt={p.name} initials={p.initials} dark={p.half === "moments"} src={p.portrait} />
             <div className="stack-24">
               <Eyebrow>{String(i + 1).padStart(2, "0")} · {p.half === "terms" ? "TERMS" : "MOMENTS"}</Eyebrow>
               <div>

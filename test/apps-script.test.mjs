@@ -17,7 +17,7 @@ function sandbox() {
   const makeSheet = (name) => {
     const rows = [];
     let hidden = false;
-    const range = (r, c, nr = 1, nc = 1) => ({
+    const range = (r, c, nr = 1) => ({
       setValues(v) { v.forEach((row, i) => { rows[r - 1 + i] = [...row]; }); return this; },
       setFontWeight() { return this; }, setDataValidation() { return this; }, setNumberFormat() { return this; },
       createTextFinder(text) { return { matchEntireCell() { return { findNext: () => rows.slice(r - 1, r - 1 + nr).some((row) => String(row[c - 1]) === text) || null }; } }; },
