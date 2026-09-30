@@ -3,8 +3,7 @@ import { doaAreaWeight, doaLimitShares, doaMonetaryAreas, doaUnbudgetedArea, typ
 /** Rounds to n significant figures (limits use 2). */
 export function roundSig(value: number, digits = 2) {
   if (!value || !Number.isFinite(value)) return 0;
-  const p = Math.pow(10, digits - Math.ceil(Math.log10(Math.abs(value))));
-  return Math.round(value * p) / p;
+  return Number(value.toPrecision(digits));
 }
 
 /** Monetary limits from annual revenue: 0.05%, 0.25%, 1% and 5%, rounded to 2 significant figures. */

@@ -7,7 +7,7 @@ export type Mail = { to: string[]; cc?: string[]; subject: string; text: string;
 export async function sendMail(mail: Mail, step: string): Promise<boolean> {
   if (!config.resendKey) { logFailure(step, "RESEND_API_KEY not configured"); return false; }
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetch(`${config.resendBase}/emails`, {
       method: "POST",
       headers: { Authorization: `Bearer ${config.resendKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({ from: config.mailFrom, to: mail.to, cc: mail.cc?.length ? mail.cc : undefined, reply_to: mail.replyTo || config.mailReplyTo, subject: mail.subject, text: mail.text, html: mail.html }),

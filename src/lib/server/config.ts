@@ -9,6 +9,7 @@ export const config = {
   siteUrl: (env("NEXT_PUBLIC_SITE_URL") || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")).replace(/\/$/, ""),
   databaseUrl: env("DATABASE_URL"),
   resendKey: env("RESEND_API_KEY"),
+  resendBase: env("RESEND_API_BASE") || "https://api.resend.com", // override only for local testing
   mailFrom: env("MAIL_FROM") || "Axis & Sage <hello@notify.axisandsage.com>",
   mailReplyTo: env("MAIL_REPLY_TO") || "info@axisandsage.com",
   notifyTo: env("CONTACT_TO_EMAIL") || "info@axisandsage.com",

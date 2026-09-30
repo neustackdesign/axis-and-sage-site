@@ -4,6 +4,8 @@ import { PageHero } from "@/components/ds/PageHero";
 import { RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
 import { diagnosticCreditNote, diagnosticDays, diagnosticFeePays, engagements, faqs, leadershipSession, specialistCards } from "@/content/engagements";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { faqLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Engagements and pricing",
@@ -14,6 +16,8 @@ export const metadata = pageMetadata({
 export default function EngagementsPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Engagements and pricing", path: "/engagements" }]} />
+      <JsonLd data={faqLd(faqs)} />
       <PageHero label="ENGAGEMENTS AND PRICING" title={<>Start with one sentence.<br className="br-desktop" /> Know the price before we start.</>} sub="Every engagement begins with the action you need and a fixed fee. Nothing starts without both." />
 
       <Section tight labelledBy="table-title">

@@ -9,6 +9,7 @@ import { personBySlug } from "@/content/people";
 import { practiceBySlug, practices } from "@/content/practices";
 import { workBySlug } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 type Props = { params: Promise<{ practice: string }> };
 
@@ -33,6 +34,7 @@ export default async function PracticePage({ params }: Props) {
 
   return (
     <>
+      <Breadcrumbs trail={[{ name: p.label, path: `/what-we-do/${p.slug}` }]} />
       <PageHero label={p.eyebrow} title={p.h1} display sub={p.sub}>
         {leads.length ? (
           <span className="t-small muted">Led by {p.ledBy === "both founders" ? "both founders: " : ""}{leads.map((l, i) => <span key={l!.slug}>{i ? " and " : ""}<SmartLink className="text-link" href={`/people/${l!.slug}`}>{l!.name}</SmartLink></span>)}</span>

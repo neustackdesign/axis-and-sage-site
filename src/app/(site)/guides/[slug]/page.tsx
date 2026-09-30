@@ -6,6 +6,9 @@ import { diagnosticCreditNote, diagnosticDays, diagnosticFeePays, engagements, f
 import { guideBySlug, guides, toolBySlug } from "@/content/library";
 import { bookCallHref, ctaBand } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { articleLd } from "@/lib/seo";
+import { contentDate } from "@/content/dates";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,6 +39,9 @@ export default async function GuidePage({ params }: Props) {
   const tool = toolBySlug("conversion-scorecard")!;
 
   return (
+    <>
+    <Breadcrumbs trail={[{ name: "Library", path: "/library" }, { name: g.title, path: `/guides/${g.slug}` }]} />
+    <JsonLd data={articleLd({ headline: g.title, description: diagnosticFeePays, path: `/guides/${g.slug}`, date: contentDate(`/guides/${g.slug}`) })} />
     <article className="article">
       <header className="wrap article-head">
         <Eyebrow strong>GUIDE · {g.category}</Eyebrow>
@@ -86,5 +92,6 @@ export default async function GuidePage({ params }: Props) {
         </div>
       </div>
     </article>
+    </>
   );
 }

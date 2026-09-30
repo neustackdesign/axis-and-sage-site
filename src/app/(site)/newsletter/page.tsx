@@ -5,6 +5,7 @@ import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { NewsletterConfirmed } from "@/components/sections/NewsletterConfirmed";
 import { newsletter } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({ title: "Terms & Moments", path: "/newsletter", description: newsletter.line });
 
@@ -14,6 +15,7 @@ const issues: { title: string; date: string; href: string }[] = [];
 export default function NewsletterPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Newsletter", path: "/newsletter" }]} />
       <PageHero label="NEWSLETTER" title={`${newsletter.name}.`} display sub={newsletter.line}>
         <div style={{ width: "100%", maxWidth: 560 }}><NewsletterForm primary /><Suspense fallback={null}><NewsletterConfirmed /></Suspense></div>
       </PageHero>

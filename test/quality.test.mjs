@@ -29,12 +29,13 @@ test("legacy residue appears nowhere outside /reference", async () => {
   }
 });
 
-test("contact handling has honest validation and configuration states", async () => {
-  const source = await read("src/app/api/contact/route.ts");
-  assert.match(source, /status: 400/);
-  assert.match(source, /status: 503/);
-  assert.match(source, /RESEND_API_KEY/);
-  assert.match(source, /company/);
+test("contact handling has honest validation and failure states", async () => {
+  const route = await read("src/app/api/contact/route.ts");
+  const pipeline = await read("src/lib/server/pipeline.ts");
+  assert.match(pipeline, /status: 400/);
+  assert.match(route, /status: 503/);
+  assert.match(route, /fallback: true/);
+  assert.match(await read("src/lib/server/email.ts"), /RESEND_API_KEY/);
 });
 
 test("reference audit and responsive capture records exist", async () => {

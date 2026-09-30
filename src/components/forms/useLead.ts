@@ -31,6 +31,8 @@ export function useLead() {
       const body = (await res.json().catch(() => ({}))) as { message?: string; errors?: LeadErrors; fallback?: boolean; redirect?: string };
       turnstile.current?.reset();
       if (body.fallback) { setState("offline"); setMessage(body.message || "We couldn't send that just now."); setFallback(mailtoFor(payload)); return false; }
+      // Turnstile couldn't verify this browser (a blocker, a flaky network): never strand the enquiry.
+      if (res.status === 403) { setState("offline"); setMessage("We couldn't verify this browser, so nothing was sent. Try again, or let your email app send it."); setFallback(mailtoFor(payload)); return false; }
       if (!res.ok) { setErrors(body.errors || {}); setState("error"); setMessage(body.message || "We couldn't send that. Please try again."); return false; }
       if (body.redirect) { router.push(body.redirect); return true; }
       setState("success");

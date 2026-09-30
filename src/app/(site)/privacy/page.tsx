@@ -2,12 +2,14 @@ import { PageHero } from "@/components/ds/PageHero";
 import { Section } from "@/components/ds/primitives";
 import { contact } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({ title: "Privacy", path: "/privacy" });
 
 export default function PrivacyPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Privacy", path: "/privacy" }]} />
       <PageHero label="PRIVACY" title="Privacy." />
       <Section tight labelledBy="body-title">
         <div className="rail-grid">

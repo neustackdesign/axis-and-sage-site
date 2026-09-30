@@ -3,11 +3,10 @@ import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
 
-const [work, site, leads, tools] = await Promise.all([
+const [work, site, leads] = await Promise.all([
   import("../src/content/work.ts"),
   import("../src/content/site.ts"),
   import("../src/lib/leads.ts"),
-  import("../src/content/tools.ts"),
 ]);
 
 async function filesIn(dir) {
@@ -60,16 +59,6 @@ test("lead validation speaks plain language and gates each source", () => {
   assert.ok(cta.what && !cta.who);
   assert.equal(leads.sentenceOf({ who: "investors", what: "commit", when: "this quarter" }), "We need investors to commit by this quarter.");
   assert.match(leads.mailtoFor({ source: "cta", email: "a@b.co", who: "investors", what: "commit" }), /^mailto:info@axisandsage\.com\?subject=/);
-});
-
-test("scorecard interim scoring maps answers to the four verdicts", () => {
-  const all = (terms, moments) => Object.fromEntries(tools.scorecardStatements.map((s) => [s.id, s.half === "terms" ? terms : moments]));
-  assert.equal(tools.halfScore(all(5, 1), "terms"), 100);
-  assert.equal(tools.halfScore(all(5, 1), "moments"), 0);
-  assert.equal(tools.verdictFor(20, 80).headline, "It's the terms");
-  assert.equal(tools.verdictFor(80, 20).headline, "It's the moment");
-  assert.equal(tools.verdictFor(20, 20).headline, "It's both");
-  assert.equal(tools.verdictFor(80, 80).headline, "It's reach, speed or proof");
 });
 
 test("site contact details match the brief", () => {

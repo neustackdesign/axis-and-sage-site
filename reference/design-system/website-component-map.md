@@ -56,10 +56,12 @@ Charcoal sections: Home uses two (What moved, and the Moments card). Every other
 
 ## Forms and states
 
-- All forms post to `/api/contact` with a `source` (`cta`, `contact`, `newsletter`, `tool`).
+- Every form goes through one lead pipeline: `/api/contact` for contact and the CTA band, `/api/newsletter` (double opt-in), `/api/tool-result` for tool emails, and `/api/cal` for bookings. See the README, "The lead pipeline".
 - **Error:** errors are inline and in plain language, and each field carries its own message.
 - **Success:** the contact form shows "Thanks. One of us will reply within one working day." with the Scorecard link.
-- **Delivery not configured (503):** the form shows a notice and an "Open it in your email app" link that carries the full message. Nothing is lost and nothing is claimed as sent.
+- **Last resort (503):** when both the database write and the notification email fail, or the server can't verify the browser (403), the form shows a notice and an "Open it in your email app" link that carries the full message. Nothing is lost and nothing is claimed as sent.
+- **Rate limited (429):** a plain-language message to wait and try again.
+- **Tool emails:** "Sent to {email}. Your file has downloaded." If the send fails, the tool says so and offers the download and a retry.
 - **Loading:** buttons change their label to "Sending…" and are disabled.
 - **Empty states:** a /work filter with no results, a DoA matrix with no levels or areas, the newsletter archive, and a guide still in draft.
 

@@ -13,6 +13,8 @@ import { ScorecardEntry } from "@/components/tools/ScorecardEntry";
 import { toolBySlug, tools } from "@/content/library";
 import { TOOL_DRAFT_NOTE } from "@/content/tools";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { webApplicationLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -39,6 +41,8 @@ export default async function ToolPage({ params }: Props) {
   if (!t) notFound();
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Library", path: "/library" }, { name: t.title, path: `/tools/${t.slug}` }]} />
+      <JsonLd data={webApplicationLd(t)} />
       <PageHero label={`FREE TOOL · ${t.kind}`} title={t.title} sub={t.line} />
       <section className="tool-section" aria-label={t.title}>
         <div className="wrap">

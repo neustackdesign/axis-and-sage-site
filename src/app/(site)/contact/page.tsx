@@ -5,6 +5,7 @@ import { ContactForm, ContactFormFromQuery } from "@/components/forms/ContactFor
 import { CalEmbed } from "@/components/forms/CalEmbed";
 import { contact, whatsappHref } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Contact",
@@ -18,6 +19,7 @@ export default function ContactPage() {
   const routes = [booking, true, !!wa].filter(Boolean).length;
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Contact", path: "/contact" }]} />
       <PageHero label="CONTACT" title="Tell us who needs to act." sub="One sentence is enough. We reply within one working day with a clear next step." />
       <Section tight labelledBy="routes-title">
         <h2 id="routes-title" className="sr-only">Ways to reach us</h2>

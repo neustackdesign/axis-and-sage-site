@@ -1,12 +1,14 @@
 import { PageHero } from "@/components/ds/PageHero";
 import { Section, SmartLink } from "@/components/ds/primitives";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = { ...pageMetadata({ title: "Thank you", path: "/thank-you" }), robots: { index: false, follow: false } };
 
 export default function ThankYouPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Thank you", path: "/thank-you" }]} />
       <PageHero label="THANK YOU" title="Thanks. We'll be in touch within one working day." />
       <Section tight labelledBy="next-title">
         <h2 id="next-title" className="sr-only">While you wait</h2>

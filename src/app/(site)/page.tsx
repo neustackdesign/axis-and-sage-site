@@ -10,12 +10,14 @@ import { gapCards, methodSteps } from "@/content/method";
 import { bookCallHref, scorecardHref } from "@/content/site";
 import { homeStats, homeStatsSource, homeTestimonials, logoStrip, selectedWork } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({ path: "/" });
 
 export default function HomePage() {
   return (
     <>
+      <Breadcrumbs trail={[]} />
       {/* 1 · Hero: PaintingFrame.Hero */}
       <section className="section-tight tone-paper" aria-labelledby="hero-title" style={{ paddingTop: 32 }}>
         <div className="wrap">

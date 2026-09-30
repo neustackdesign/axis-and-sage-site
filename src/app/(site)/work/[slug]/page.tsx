@@ -8,6 +8,9 @@ import { toolBySlug } from "@/content/library";
 import { people } from "@/content/people";
 import { caseBySlug, casePages, type CasePage } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { articleLd } from "@/lib/seo";
+import { contentDate } from "@/content/dates";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -73,6 +76,8 @@ export default async function CasePageRoute({ params }: Props) {
 
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Work", path: "/work" }, { name: c.name, path: `/work/${c.slug}` }]} />
+      <JsonLd data={articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: contentDate(`/work/${c.slug}`), author: c.ledBy })} />
       <section className="tone-paper" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="page-hero-grid">

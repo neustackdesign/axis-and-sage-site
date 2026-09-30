@@ -6,6 +6,8 @@ import { Eyebrow, Portrait, RailBody, Section, SectionHeader, SmartLink } from "
 import { people, personBySlug } from "@/content/people";
 import { workBySlug } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { personLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,6 +32,8 @@ export default async function PersonPage({ params }: Props) {
   const work = (relatedWork[p.slug] || []).map(workBySlug).filter((w) => !!w);
   return (
     <>
+      <Breadcrumbs trail={[{ name: "People", path: "/people" }, { name: p.name, path: `/people/${p.slug}` }]} />
+      <JsonLd data={personLd(p)} />
       <section className="tone-paper" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="profile-hero">
@@ -40,7 +44,7 @@ export default async function PersonPage({ params }: Props) {
               <p className="muted t-body-l" style={{ marginTop: 12 }}>{p.title}</p>
               <p className="founder-line" style={{ marginTop: 32 }}>{p.line}</p>
               <div className="page-hero-meta">
-                {p.links.map((l) => l.href ? <SmartLink key={l.label} className="text-link" href={l.href}>{l.label}<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink> : <span key={l.label} className="t-small muted">{l.label} [URL]</span>)}
+                {p.links.filter((l) => l.href).map((l) => <SmartLink key={l.label} className="text-link" href={l.href}>{l.label}<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink>)}
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { guides, tools } from "@/content/library";
 import { people } from "@/content/people";
 import { practices } from "@/content/practices";
 import { casePages } from "@/content/work";
+import { contentDate } from "@/content/dates";
 import { siteOrigin } from "@/lib/metadata";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,5 +16,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...tools.map((t) => `/tools/${t.slug}`),
     ...guides.filter((g) => g.published).map((g) => `/guides/${g.slug}`),
   ];
-  return paths.map((path) => ({ url: `${base}${path}`, lastModified: new Date() }));
+  return paths.map((path) => ({ url: `${base}${path}`, lastModified: new Date(contentDate(path)) }));
 }

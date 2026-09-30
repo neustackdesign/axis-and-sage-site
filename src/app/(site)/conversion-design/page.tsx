@@ -6,6 +6,8 @@ import { Eyebrow, Glyph, RailBody, Section, SectionHeader, SmartLink } from "@/c
 import { faqs } from "@/content/engagements";
 import { actionCards, conversionActors, methodStepsExpanded } from "@/content/method";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
+import { faqLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Conversion Design",
@@ -16,6 +18,8 @@ export const metadata = pageMetadata({
 export default function ConversionDesignPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Conversion Design", path: "/conversion-design" }]} />
+      <JsonLd data={faqLd([faqs[0], faqs[1], faqs[2], faqs[6]])} />
       <PageHero label="THE METHOD" title="Start from the action." display sub="Conversion Design is how we get investors, partners, teams and customers to act. We name the action, find what's in the way in the terms or the moment, fix it, and measure what moved." />
 
       <Section labelledBy="counts-title">

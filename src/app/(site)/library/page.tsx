@@ -7,6 +7,7 @@ import { TemplateRequest } from "@/components/sections/TemplateRequest";
 import { availableTemplates, guides, tools } from "@/content/library";
 import { newsletter } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "Library",
@@ -17,6 +18,7 @@ export const metadata = pageMetadata({
 export default function LibraryPage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "Library", path: "/library" }]} />
       <PageHero label="LIBRARY" title="Free tools for the decision in front of you." sub="Built from the frameworks we use with clients. No sign-up to use them. Leave an email only if you want the full model or a copy of your results." />
 
       <Section id="tools" tone="sage" labelledBy="tools-title">

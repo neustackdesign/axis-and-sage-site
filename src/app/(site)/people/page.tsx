@@ -3,6 +3,7 @@ import { PageHero } from "@/components/ds/PageHero";
 import { Eyebrow, Portrait, Section, TextLink } from "@/components/ds/primitives";
 import { people, specialists } from "@/content/people";
 import { pageMetadata } from "@/lib/metadata";
+import { Breadcrumbs } from "@/components/seo/JsonLd";
 
 export const metadata = pageMetadata({
   title: "People",
@@ -13,6 +14,7 @@ export const metadata = pageMetadata({
 export default function PeoplePage() {
   return (
     <>
+      <Breadcrumbs trail={[{ name: "People", path: "/people" }]} />
       <PageHero label="PEOPLE" title="Two founders. Both of them on your work." sub="Ifeanyi designs the terms people act on. Tomiwa designs the moments they act in." />
       {people.map((p, i) => (
         <Section key={p.slug} tone={p.half === "moments" ? "charcoal" : "paper"} labelledBy={`${p.slug}-name`}>
