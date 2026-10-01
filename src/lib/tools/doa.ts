@@ -1,7 +1,7 @@
 import {
   doaBands, doaGroupCeoShare, doaMonetaryAreas, doaNonMonetary, doaSubsidiaryLabel, doaUnbudgetedArea, money,
   type CurrencyCode, type DoaArea, type DoaCode, type DoaLevel,
-} from "@/content/tools";
+} from "@/lib/tools/spec";
 
 /** Rounds to n significant figures (limits use 2). */
 export function roundSig(value: number, digits = 2) {

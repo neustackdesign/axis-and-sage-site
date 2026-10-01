@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useId, useState } from "react";
-import { engagements } from "@/content/engagements";
-import { scorecardHref } from "@/content/site";
+import { scorecardHref } from "@/lib/routes";
 import { sentenceOf } from "@/lib/leads";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
@@ -16,10 +15,10 @@ type Prefill = { message: string; when: string; engagement: string; origin?: str
 const empty: Prefill = { message: "", when: "", engagement: "" };
 
 /** Prefill from ?who=&what=&when=&engagement=&source= (the tools and the engagement buttons link here). Render inside Suspense. */
-export function ContactFormFromQuery() {
+export function ContactFormFromQuery({ engagements }: { engagements: string[] }) {
   const q = useSearchParams();
   const key = (q.get("engagement") || "").toLowerCase();
-  const engagement = key ? engagements.find((e) => e.name.toLowerCase().includes(key))?.name || q.get("engagement") || "" : "";
+  const engagement = key ? engagements.find((name) => name.toLowerCase().includes(key)) || q.get("engagement") || "" : "";
   const sentence = sentenceOf({ who: q.get("who") || "", what: q.get("what") || "", when: q.get("when") || "" });
   const prefill = { message: [sentence, engagement ? `We'd like to talk about: ${engagement}.` : ""].filter(Boolean).join(" "), when: q.get("when") || "", engagement, origin: q.get("source") || undefined };
   return <ContactForm key={prefill.message} prefill={prefill} />;

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { bookCallHref } from "@/content/site";
+import { bookCallHref } from "@/lib/routes";
 import {
   currencies, doaAreas, doaBands, doaBookCopy, doaCodeNames, doaCodes, doaFootnotes, doaGroupCeoShare, doaLevelNotes, doaLevels,
   type CurrencyCode, type DoaArea, type DoaCode, type DoaLevel,
-} from "@/content/tools";
+} from "@/lib/tools/spec";
 import { buildMatrix, formatCell, levelLabel, type DoaCell, type Structure } from "@/lib/tools/doa";
 import { doaWorkbook } from "@/lib/tools/xlsx";
 import { Segmented, ToolDisclaimer, ToolPanel } from "./ToolBits";

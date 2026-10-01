@@ -1,7 +1,14 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { planes } from "@/content/method";
 import { InView } from "./InView";
+
+/** The four planes of the method diagram. A fixed illustration, so it stays in code. */
+const planes = [
+  { index: "01", name: "THE DECISION", kind: "decision" },
+  { index: "02", name: "THE TERMS", kind: "terms" },
+  { index: "03", name: "THE MOMENT", kind: "moment" },
+  { index: "04", name: "THE ACTION", kind: "action" },
+] as const;
 
 /** PlaneStack: the method in four layers. The action plane is orange. Steps sit in a spec column to the right. */
 export function PlaneStack({ steps }: { steps: { index: string; title: string; body: ReactNode }[] }) {

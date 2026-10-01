@@ -1,4 +1,4 @@
-import type { LiftMode } from "@/content/tools";
+import type { LiftMode } from "@/lib/tools/spec";
 
 export type LiftInput = { mode: LiftMode; base: number; rate: number; value: number; lift: number; target: number };
 

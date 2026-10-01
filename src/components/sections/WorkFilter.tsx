@@ -2,7 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { WorkCard } from "@/components/ds/blocks";
-import { actions, roles, type ActionKey, type Role, type WorkItem } from "@/content/work";
+import type { WorkItem } from "@/lib/content/types";
+import { actions, roles, type ActionKey, type Role } from "@/lib/content/vocab";
 
 /** Filter chips for the work index. State lives in the URL so filters can be linked from the footer and case pages. */
 export function WorkFilter({ items }: { items: WorkItem[] }) {

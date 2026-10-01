@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { glyphDots, type GlyphName } from "@/lib/glyphs";
-import type { Chip as ChipData } from "@/content/work";
+import type { Chip as ChipData } from "@/lib/content/types";
 
 type Tone = "paper" | "alt" | "sage" | "charcoal";
 

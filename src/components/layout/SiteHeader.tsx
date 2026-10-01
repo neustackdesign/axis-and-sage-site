@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Lockup } from "@/components/ds/primitives";
-import { bookCallHref, contact, navGroups, primaryLinks, scorecardHref, whatsappHref, type NavGroup } from "@/content/site";
+import type { HeaderNav, NavGroup } from "@/lib/content/types";
 
 type MenuKey = "whatWeDo" | "library";
 export type HeaderVariant = "default" | "hero";
@@ -40,7 +40,9 @@ function Dropdown({ group, id, onNavigate }: { group: NavGroup; id: string; onNa
  * Hero (homepage only): transparent, on-dark, laid over the top of the homepage cover. Dropdowns and the drawer
  * still open on paper, and the bar turns paper while the drawer is open.
  */
-export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant }) {
+export function SiteHeader({ variant = "default", nav }: { variant?: HeaderVariant; nav: HeaderNav }) {
+  const { navigation: navGroups, primaryCta, scorecardCta } = nav;
+  const primaryLinks = navGroups.primaryLinks;
   const pathname = usePathname() || "/";
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [drawer, setDrawer] = useState(false);
@@ -99,13 +101,13 @@ export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant })
             </button>
           </div>
           <div className="nav-actions">
-            <Link className="text-link" href={scorecardHref}>Take the Scorecard</Link>
-            <Link className="btn btn-primary btn-sm" href={bookCallHref}>Book a call</Link>
+            <Link className="text-link" href={scorecardCta.href}>{scorecardCta.label}</Link>
+            <Link className="btn btn-primary btn-sm" href={primaryCta.href}>{primaryCta.label}</Link>
           </div>
         </nav>
 
         <div className="nav-compact">
-          <Link className="btn btn-primary btn-sm" href={bookCallHref} onClick={close}>Book a call</Link>
+          <Link className="btn btn-primary btn-sm" href={primaryCta.href} onClick={close}>{primaryCta.label}</Link>
           <button ref={drawerButton} className="menu-button" type="button" aria-expanded={drawer} aria-controls="nav-drawer" onClick={() => setDrawer((v) => !v)}>
             {drawer ? "CLOSE" : "MENU"}
           </button>
@@ -132,12 +134,12 @@ export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant })
               </button>
               {drawerGroup === "library" ? <div className="drawer-sub">{navGroups.library.items.map((i) => <Link key={i.href} href={i.href} onClick={close}>{i.label}</Link>)}</div> : null}
             </li>
-            <li><Link className="drawer-row" href={scorecardHref} onClick={close}>Take the Scorecard<span className="nav-chev" aria-hidden="true">▸</span></Link></li>
+            <li><Link className="drawer-row" href={scorecardCta.href} onClick={close}>{scorecardCta.label}<span className="nav-chev" aria-hidden="true">▸</span></Link></li>
           </ul>
           <div className="drawer-foot">
-            <Link className="btn btn-primary" href={bookCallHref} onClick={close}>Book a call</Link>
-            {whatsappHref() ? <a className="text-link" href={whatsappHref()!}>WhatsApp us · {contact.whatsappNumber}<span className="text-link-arrow" aria-hidden="true">▸</span></a> : null}
-            <div className="drawer-foot-meta t-label"><span>ABU DHABI · DUBAI · LAGOS</span><a href={`mailto:${contact.email}`}>{contact.email.toUpperCase()}</a></div>
+            <Link className="btn btn-primary" href={primaryCta.href} onClick={close}>{primaryCta.label}</Link>
+            {nav.whatsapp ? <a className="text-link" href={nav.whatsapp.href}>WhatsApp us · {nav.whatsapp.number}<span className="text-link-arrow" aria-hidden="true">▸</span></a> : null}
+            <div className="drawer-foot-meta t-label"><span>{nav.locations.join(" · ").toUpperCase()}</span><a href={`mailto:${nav.contactEmail}`}>{nav.contactEmail.toUpperCase()}</a></div>
             {/* The visible CLOSE button sits in the bar, outside the dialog; this one keeps closing reachable inside it. */}
             <button type="button" className="sr-only drawer-close-hidden" onClick={() => { setDrawer(false); drawerButton.current?.focus(); }}>Close menu</button>
           </div>

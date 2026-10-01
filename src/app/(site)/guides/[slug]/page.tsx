@@ -1,60 +1,78 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { PortableTextComponents } from "next-sanity";
 import { ToolCard } from "@/components/ds/blocks";
 import { ButtonLink, Eyebrow, Portrait } from "@/components/ds/primitives";
-import { diagnosticCreditNote, diagnosticDays, diagnosticFeePays, engagements, faqs } from "@/content/engagements";
-import { guideBySlug, guides, toolBySlug } from "@/content/library";
-import { people } from "@/content/people";
-import { bookCallHref, ctaBand } from "@/content/site";
+import { headingId, plainText, RichText } from "@/components/ds/RichText";
+import type { ToolMeta } from "@/lib/content/types";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { articleLd } from "@/lib/seo";
-import { contentDate } from "@/content/dates";
+import { getGuide, getGuides, getSettings } from "@/sanity/load";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
-export function generateStaticParams() { return guides.filter((g) => g.published).map((g) => ({ slug: g.slug })); }
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export async function generateStaticParams() { return (await getGuides()).filter((g) => g.published).map((g) => ({ slug: g.slug })); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const g = guideBySlug((await params).slug);
+  const g = await getGuide((await params).slug);
   if (!g) return {};
-  return pageMetadata({ title: g.title, path: `/guides/${g.slug}`, type: "article", description: diagnosticFeePays });
+  return pageMetadata({ title: g.seo.title ?? g.title, absoluteTitle: !!g.seo.title, path: `/guides/${g.slug}`, type: "article", description: g.seo.description ?? g.excerpt });
 }
 
-const diagnostic = engagements.find((e) => e.recommended)!;
-const sections = [
-  { id: "the-fee", title: "What the fee pays for" },
-  { id: "the-ten-days", title: "The ten working days" },
-  { id: "what-you-get", title: "What you get" },
-  { id: "the-credit", title: "The credit" },
-];
+const textOf = (children: unknown): string => (Array.isArray(children) ? children.map(textOf).join("") : typeof children === "string" ? children : "");
 
-// Body copy for the example guide is assembled from the approved engagement copy; nothing new is claimed.
-const bodyWords = [diagnosticFeePays, ...diagnosticDays.map((d) => d.what), diagnostic.weDo, diagnostic.youGet, diagnosticCreditNote, faqs[3].a].join(" ").split(/\s+/).length;
-const readingMinutes = Math.max(1, Math.round(bodyWords / 220));
+/** The article body: Portable Text with the guide's own blocks (timeline, callout, tool embed, closing call to action). */
+const articleComponents: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p>{children}</p>,
+    h2: ({ value, children }) => <h2 id={headingId(textOf((value as { children?: { text: string }[] }).children?.map((c) => c.text)))}>{children}</h2>,
+    blockquote: ({ children }) => <blockquote className="pull-quote">{children}</blockquote>,
+  },
+  types: {
+    asEngagementTimeline: ({ value }: { value: { days?: { when: string; what: string }[] } }) => (
+      <table className="data-table">
+        <thead><tr><th scope="col">When</th><th scope="col">What happens</th></tr></thead>
+        <tbody>{(value.days ?? []).map((d) => <tr key={d.when}><td style={{ whiteSpace: "nowrap" }}>{d.when}</td><td>{d.what}</td></tr>)}</tbody>
+      </table>
+    ),
+    asCallout: ({ value }: { value: { label?: string; text?: string } }) => (
+      <div className="callout"><span className="t-label">{value.label}</span><span>{value.text}</span></div>
+    ),
+    asToolEmbed: ({ value }: { value: { tool?: ToolMeta } }) => (value.tool ? <div className="article-embed"><ToolCard tool={value.tool} /></div> : null),
+    asArticleEnd: ({ value }: { value: { headline?: string; cta?: { label: string; href: string } } }) => (
+      <div className="article-end on-dark">
+        <p>{value.headline}</p>
+        {value.cta ? <ButtonLink href={value.cta.href}>{value.cta.label}</ButtonLink> : null}
+      </div>
+    ),
+  },
+};
 
 export default async function GuidePage({ params }: Props) {
-  const g = guideBySlug((await params).slug);
-  if (!g || !g.published) notFound();
-  const tool = toolBySlug("conversion-scorecard")!;
+  const [g, settings] = await Promise.all([getGuide((await params).slug), getSettings()]);
+  if (!g) notFound();
+  const headings = g.body.filter((b) => b._type === "block" && (b as { style?: string }).style === "h2").map((b) => plainText([b]));
+  const readingMinutes = Math.max(1, Math.round(plainText(g.body).split(/\s+/).filter(Boolean).length / 220));
+  const date = g.publishedAt ?? (g.updatedAt ?? "").slice(0, 10);
 
   return (
     <>
     <Breadcrumbs trail={[{ name: "Library", path: "/library" }, { name: g.title, path: `/guides/${g.slug}` }]} />
-    <JsonLd data={articleLd({ headline: g.title, description: diagnosticFeePays, path: `/guides/${g.slug}`, date: contentDate(`/guides/${g.slug}`), authors: people.map((p) => ({ name: p.name, path: `/people/${p.slug}` })) })} />
+    <JsonLd data={articleLd({ headline: g.title, description: g.seo.description ?? g.excerpt, path: `/guides/${g.slug}`, date, modified: g.updatedAt?.slice(0, 10), authors: g.authors.map((p) => ({ name: p.name, path: `/people/${p.slug}` })) })} />
     <article className="article">
       <header className="wrap article-head">
         <Eyebrow strong>GUIDE · {g.category}</Eyebrow>
         <h1 className="t-h1 article-title reveal">{g.title}.</h1>
-        <p className="article-standfirst t-body-l">Every engagement begins with the action you need and a fixed fee. Nothing starts without both.</p>
+        {g.excerpt ? <p className="article-standfirst t-body-l">{g.excerpt}</p> : null}
         <div className="page-hero-meta">
           <div className="author-cards">
-            {people.map((p) => (
+            {g.authors.map((p) => (
               <div key={p.slug} className="author-card">
                 <Portrait alt={p.name} initials={p.initials} dark={p.half === "moments"} src={p.portrait} />
-                <div><p className="author-name"><Link className="text-link" href={`/people/${p.slug}`}>{p.name}</Link></p><p className="author-role">{p.title}, Axis &amp; Sage Advisory · {p.practice}</p></div>
+                <div><p className="author-name"><Link className="text-link" href={`/people/${p.slug}`}>{p.name}</Link></p><p className="author-role">{p.title}, {settings.companyName} · {p.practice}</p></div>
               </div>
             ))}
           </div>
@@ -64,37 +82,10 @@ export default async function GuidePage({ params }: Props) {
       <div className="wrap article-layout">
         <nav className="article-toc" aria-label="Contents">
           <span className="t-label muted">CONTENTS</span>
-          {sections.map((s, i) => <a key={s.id} href={`#${s.id}`}>{String(i + 1).padStart(2, "0")} {s.title}</a>)}
+          {headings.map((h, i) => <a key={h} href={`#${headingId(h)}`}>{String(i + 1).padStart(2, "0")} {h}</a>)}
         </nav>
         <div className="article-body">
-          <h2 id="the-fee">What the fee pays for</h2>
-          <p>{diagnosticFeePays}</p>
-          <blockquote className="pull-quote">&ldquo;You know the price before we start.&rdquo;</blockquote>
-
-          <h2 id="the-ten-days">The ten working days</h2>
-          <table className="data-table">
-            <thead><tr><th scope="col">When</th><th scope="col">What happens</th></tr></thead>
-            <tbody>{diagnosticDays.map((d) => <tr key={d.when}><td style={{ whiteSpace: "nowrap" }}>{d.when}</td><td>{d.what}</td></tr>)}</tbody>
-          </table>
-          <div className="callout">
-            <span className="t-label">CALLOUT · YOU BRING</span>
-            <span>{diagnostic.bring}.</span>
-          </div>
-
-          <div className="article-embed">
-            <ToolCard tool={tool} />
-          </div>
-
-          <h2 id="what-you-get">What you get</h2>
-          <p>We {diagnostic.weDo.charAt(0).toLowerCase() + diagnostic.weDo.slice(1)}. You get {diagnostic.youGet.charAt(0).toLowerCase() + diagnostic.youGet.slice(1)}.</p>
-
-          <h2 id="the-credit">The credit</h2>
-          <p>{diagnosticCreditNote} {faqs[3].a}</p>
-
-          <div className="article-end on-dark">
-            <p>{ctaBand.headline}</p>
-            <ButtonLink href={bookCallHref}>Book a 30-minute call</ButtonLink>
-          </div>
+          <RichText value={g.body} components={articleComponents} />
         </div>
       </div>
     </article>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useState } from "react";
-import { count, currencies, esopDefaults, esopFrequencies, esopSentence, money, type CurrencyCode, type EsopFrequency } from "@/content/tools";
+import { count, currencies, esopDefaults, esopFrequencies, esopSentence, money, type CurrencyCode, type EsopFrequency } from "@/lib/tools/spec";
 import { about, esopModel, validateEsop, type EsopInput } from "@/lib/tools/esop";
 import { esopWorkbook } from "@/lib/tools/xlsx";
 import { NumberField, Segmented, ToolDisclaimer, ToolPanel } from "./ToolBits";

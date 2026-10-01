@@ -6,7 +6,7 @@ import { currentAttribution } from "@/lib/client/attribution";
 type CalFn = ((...args: unknown[]) => void) & { ns?: Record<string, (...args: unknown[]) => void>; q?: unknown[]; loaded?: boolean };
 declare global { interface Window { Cal?: CalFn } }
 
-/** Cal.com inline embed built from NEXT_PUBLIC_BOOKING_URL (e.g. https://cal.com/axisandsage/30min). */
+/** Cal.com inline embed built from the booking link in Sanity Site settings (e.g. https://cal.com/axisandsage/30min). */
 export function CalEmbed({ url }: { url: string }) {
   const el = useRef<HTMLDivElement>(null);
   useEffect(() => {

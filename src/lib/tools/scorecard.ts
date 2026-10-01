@@ -1,4 +1,4 @@
-import { scorecardCaseFor, scorecardStatements, scorecardUnknown, scorecardVerdicts, scorecardWho, type Statement } from "@/content/tools";
+import { scorecardCaseFor, scorecardStatements, scorecardUnknown, scorecardVerdicts, scorecardWho, type Statement } from "@/lib/tools/spec";
 
 export type ScorecardAnswers = Record<string, number>; // statement id -> 1..5
 

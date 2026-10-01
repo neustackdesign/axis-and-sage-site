@@ -1,6 +1,6 @@
 "use client";
 
-import { doaBands, doaCodeNames, doaCodes, doaGroupCeoShare, TOOL_DISCLAIMER, type CurrencyCode, type LiftMode } from "@/content/tools";
+import { doaBands, doaCodeNames, doaCodes, doaGroupCeoShare, TOOL_DISCLAIMER, type CurrencyCode, type LiftMode } from "@/lib/tools/spec";
 import { formatCell, type DoaCell } from "./doa";
 import type { EsopInput } from "./esop";
 

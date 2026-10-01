@@ -16,14 +16,20 @@
     "audit:assets": "node scripts/audit-legacy-assets.mjs",
     "audit:design-system": "node scripts/audit-design-system.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs --force",
-    "fetch:hero": "node scripts/fetch-hero-image.mjs"
+    "sanity:seed": "tsx scripts/sanity-seed.mts",
+    "sanity:verify": "tsx scripts/sanity-seed.mts --verify",
+    "studio:validate": "pnpm --dir studio validate",
+    "studio:build": "pnpm --dir studio build"
   },
   "dependencies": {
+    "@sanity/image-url": "2.1.1",
     "@vercel/analytics": "2.0.1",
     "@vercel/blob": "2.8.0",
     "@vercel/speed-insights": "2.0.0",
     "exceljs": "4.4.0",
+    "groq-js": "2.0.0",
     "next": "16.2.12",
+    "next-sanity": "13.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "0.0.1"

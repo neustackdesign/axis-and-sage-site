@@ -11,15 +11,15 @@ export function siteOrigin() {
 export const isPublicProduction = () => process.env.VERCEL_ENV === "production";
 
 export const siteName = "Axis & Sage Advisory";
-export const defaultDescription = "Get the people your business depends on to act. Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design.";
 
 export const titleSuffix = " | Axis & Sage";
 
 /**
  * Per-page metadata with canonical URL, Open Graph and Twitter cards. Non-production previews are noindex.
- * `absoluteTitle` pages carry a full title from Spec B; the rest get " | Axis & Sage" added.
+ * Titles and descriptions come from each page's Sanity SEO fields. `absoluteTitle` pages carry the full title; the rest get
+ * " | Axis & Sage" added. A page without a description inherits Site settings' default (root layout).
  */
-export function pageMetadata({ title, absoluteTitle = false, description = defaultDescription, path, type = "website" }: { title?: string; absoluteTitle?: boolean; description?: string; path: string; type?: "website" | "article" }): Metadata {
+export function pageMetadata({ title, absoluteTitle = false, description, path, type = "website" }: { title?: string; absoluteTitle?: boolean; description?: string; path: string; type?: "website" | "article" }): Metadata {
   const origin = siteOrigin();
   const url = new URL(path, origin).toString();
   const fullTitle = !title ? siteName : absoluteTitle ? title : `${title}${titleSuffix}`;

@@ -1,5 +1,5 @@
 import type { LeadState } from "./useLead";
-import { contact } from "@/content/site";
+import { CONTACT_EMAIL } from "@/lib/routes";
 
 /** Inline status: error, success, and the email hand-over when online sending is off. */
 export function FormStatus({ state, message, fallback }: { state: LeadState; message: string; fallback: string }) {
@@ -8,7 +8,7 @@ export function FormStatus({ state, message, fallback }: { state: LeadState; mes
       <div className="form-fallback" role="status">
         <span>{message}</span>
         <a className="text-link" href={fallback}>Open it in your email app<span className="text-link-arrow" aria-hidden="true">▸</span></a>
-        <span className="t-small">Or write to <a className="text-link" href={`mailto:${contact.email}`}>{contact.email}</a>.</span>
+        <span className="t-small">Or write to <a className="text-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</span>
       </div>
     );
   }

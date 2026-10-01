@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { SCORECARD_FREE_TEXT_MAX, scaleLabels, scorecardRateQuestion, scorecardStatements, scorecardVolumeQuestion, scorecardWhen, scorecardWho } from "@/content/tools";
-import { caseBySlug } from "@/content/work";
+import { SCORECARD_FREE_TEXT_MAX, scaleLabels, scorecardRateQuestion, scorecardStatements, scorecardVolumeQuestion, scorecardWhen, scorecardWho } from "@/lib/tools/spec";
 import { blockers, fill, halfScore, relatedCaseSlug, scorecardSummary, sentenceFor, unknownNote, verdict, whoForms } from "@/lib/tools/scorecard";
 import { Quadrant, Segmented, Stepper, ToolDisclaimer, ToolPanel } from "./ToolBits";
 import { ToolEmail } from "./ToolEmail";
@@ -17,7 +16,7 @@ const SCREENS = 1 + 1 + statementScreens.length + 1; // action, standing, Terms,
 const STEP_NAMES = ["The action", "Where things stand", "Ten statements", "Results"];
 
 /** Conversion Scorecard: four steps with a progress bar, then results. All scoring lives in lib/tools/scorecard. */
-export function Scorecard({ preset }: { preset?: { who?: string; what?: string; when?: string } }) {
+export function Scorecard({ preset, cases = [] }: { preset?: { who?: string; what?: string; when?: string }; cases?: { slug: string; name: string }[] }) {
   const id = useId();
   const complete = useToolComplete("Conversion Scorecard");
   const [s, setS] = useState<State>(() => {
@@ -45,7 +44,7 @@ export function Scorecard({ preset }: { preset?: { who?: string; what?: string; 
   const v = verdict(terms, moments, forms, actionLabel);
   const unknown = unknownNote(s.unknown);
   const lowest = useMemo(() => blockers(s.answers), [s.answers]);
-  const related = caseBySlug(relatedCaseSlug(s.who));
+  const related = cases.find((c) => c.slug === relatedCaseSlug(s.who));
   const sentence = sentenceFor(forms.who, actionLabel, s.when);
   const isResults = screen === SCREENS - 1;
 

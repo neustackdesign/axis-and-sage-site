@@ -4,23 +4,22 @@ import { CTABand } from "@/components/ds/CTABand";
 import { StatGrid, StatTile, TestimonialFeature, ToolCard } from "@/components/ds/blocks";
 import { ArtifactDoc, ArtifactScreen } from "@/components/ds/method";
 import { ChipRow, Eyebrow, RailBody, Section, SectionHeader, SmartLink } from "@/components/ds/primitives";
-import { toolBySlug } from "@/content/library";
-import { people } from "@/content/people";
-import { caseBySlug, casePages, provenanceOf, type CasePage } from "@/content/work";
+import type { CasePage } from "@/lib/content/types";
+import { provenanceLabel } from "@/lib/content/vocab";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { articleLd } from "@/lib/seo";
-import { contentDate } from "@/content/dates";
+import { getCase, getCaseList } from "@/sanity/load";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
-export function generateStaticParams() { return casePages.map((c) => ({ slug: c.slug })); }
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export async function generateStaticParams() { return (await getCaseList()).map((c) => ({ slug: c.slug })); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const c = caseBySlug((await params).slug);
+  const c = await getCase((await params).slug);
   if (!c) return {};
-  return pageMetadata({ title: `${c.name} · Work`, path: `/work/${c.slug}`, type: "article", description: c.intro || `${c.name}: ${c.moved}` });
+  return pageMetadata({ title: c.seo.title ?? `${c.name} · Work`, absoluteTitle: !!c.seo.title, path: `/work/${c.slug}`, type: "article", description: c.seo.description || c.intro || `${c.name}: ${c.moved}` });
 }
 
 function Visuals({ c }: { c: CasePage }) {
@@ -65,11 +64,12 @@ function Visuals({ c }: { c: CasePage }) {
 }
 
 export default async function CasePageRoute({ params }: Props) {
-  const c = caseBySlug((await params).slug);
+  const [c, cases] = await Promise.all([getCase((await params).slug), getCaseList()]);
   if (!c) notFound();
-  const i = casePages.findIndex((x) => x.slug === c.slug);
-  const next = casePages[(i + 1) % casePages.length];
-  const lead = c.ledBy ? people.find((p) => p.name === c.ledBy) : undefined;
+  const i = cases.findIndex((x) => x.slug === c.slug);
+  const next = cases[(i + 1) % cases.length];
+  const lead = c.ledBy;
+  const provenance = provenanceLabel(c.provenance);
   const hasVisuals = !!c.artifact || c.slug === "nature-roots" || c.slug === "uganda-investor-summit";
   let n = 0;
   const idx = () => String(++n).padStart(2, "0");
@@ -77,14 +77,14 @@ export default async function CasePageRoute({ params }: Props) {
   return (
     <>
       <Breadcrumbs trail={[{ name: "Work", path: "/work" }, { name: c.name, path: `/work/${c.slug}` }]} />
-      <JsonLd data={articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: contentDate(`/work/${c.slug}`), authors: people.filter((p) => p.name === c.ledBy).map((p) => ({ name: p.name, path: `/people/${p.slug}` })) })} />
+      <JsonLd data={articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: (c.updatedAt ?? "").slice(0, 10), authors: lead ? [{ name: lead.name, path: `/people/${lead.slug}` }] : undefined })} />
       <section className="tone-paper" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="page-hero-grid">
             <div className="stack-8">
               <Eyebrow strong>CASE</Eyebrow>
               <p className="t-label muted">{c.sector.toUpperCase()}{c.years ? ` · ${c.years}` : ""}</p>
-              {provenanceOf(c.slug) ? <p className="provenance t-label">{provenanceOf(c.slug)}</p> : null}
+              {provenance ? <p className="provenance t-label">{provenance}</p> : null}
             </div>
             <div>
               <h1 id="page-title" className="t-display reveal">{c.name}</h1>
@@ -145,7 +145,7 @@ export default async function CasePageRoute({ params }: Props) {
 
       <Section tone="sage" labelledBy="tools-title">
         <SectionHeader id="tools-title" label={`${idx()} · RELATED TOOLS`} title="Related tools." />
-        <RailBody full><div className="tool-grid">{c.tools.map((slug) => toolBySlug(slug)).filter(Boolean).map((t) => <ToolCard key={t!.slug} tool={t!} />)}</div></RailBody>
+        <RailBody full><div className="tool-grid">{c.tools.map((t) => <ToolCard key={t.slug} tool={t} />)}</div></RailBody>
       </Section>
 
       <Section tight labelledBy="next-title">

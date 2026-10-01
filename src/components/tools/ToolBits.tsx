@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
-import { TOOL_DISCLAIMER } from "@/content/tools";
+import { TOOL_DISCLAIMER } from "@/lib/tools/spec";
 
 /** Stepper · ProgressBar. The active step is orange; done steps are charcoal with a tick. */
 export function Stepper({ steps, active, progress }: { steps: string[]; active: number; progress: number }) {

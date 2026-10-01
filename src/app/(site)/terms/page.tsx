@@ -1,15 +1,22 @@
+import type { Metadata } from "next";
 import { LegalArticle } from "@/components/sections/LegalArticle";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
-import { termsOfUse } from "@/content/legal";
 import { pageMetadata } from "@/lib/metadata";
+import { getLegal } from "@/sanity/load";
 
-export const metadata = pageMetadata({ title: termsOfUse.title, path: "/terms", description: "The terms that apply to your use of axisandsage.com." });
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
-export default function TermsPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const doc = await getLegal("terms");
+  return pageMetadata({ title: doc.seo.title ?? doc.title, absoluteTitle: !!doc.seo.title, path: "/terms", description: doc.seo.description });
+}
+
+export default async function TermsPage() {
+  const doc = await getLegal("terms");
   return (
     <>
-      <Breadcrumbs trail={[{ name: termsOfUse.title, path: "/terms" }]} />
-      <LegalArticle doc={termsOfUse} />
+      <Breadcrumbs trail={[{ name: doc.title, path: "/terms" }]} />
+      <LegalArticle doc={doc} />
     </>
   );
 }

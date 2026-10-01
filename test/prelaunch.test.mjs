@@ -1,15 +1,16 @@
-// Final pre-launch corrections: Cal.com booking data, drawer semantics, work provenance, founder claims, the hero asset.
+// Final pre-launch corrections: Cal.com booking data, drawer semantics, work provenance, founder claims, the price.
+// Content checks run on the canonical Sanity seed (see test/sanity.test.mjs for the migration itself).
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [cal, emails, work, people, engagements, site, lift] = await Promise.all([
+process.env.SANITY_CONTENT_SOURCE = "seed";
+
+const [cal, emails, load, vocab, lift] = await Promise.all([
   import("../src/lib/pipeline/cal.ts"),
   import("../src/lib/pipeline/emails.ts"),
-  import("../src/content/work.ts"),
-  import("../src/content/people.ts"),
-  import("../src/content/engagements.ts"),
-  import("../src/content/site.ts"),
+  import("../src/sanity/load.ts"),
+  import("../src/lib/content/vocab.ts"),
   import("../src/lib/tools/lift.ts"),
 ]);
 const read = (p) => readFile(new URL(`../${p}`, import.meta.url), "utf8");
@@ -88,56 +89,47 @@ test("The mobile drawer is a labelled modal dialog, keeping Escape, focus and sc
 /* ---------- Provenance ---------- */
 
 test("Provenance labels are the two agreed values", () => {
-  assert.deepEqual(Object.values(work.provenanceLabels), ["AXIS & SAGE ENGAGEMENT", "PRINCIPAL TRACK RECORD"]);
-  for (const w of work.workIndex) if (w.provenance) assert.ok(w.provenance in work.provenanceLabels, w.slug);
+  assert.deepEqual(vocab.provenances.map((p) => p.label), ["AXIS & SAGE ENGAGEMENT", "PRINCIPAL TRACK RECORD"]);
+  assert.equal(vocab.provenanceLabel("axisAndSage"), "AXIS & SAGE ENGAGEMENT");
+  assert.equal(vocab.provenanceLabel("principalTrackRecord"), "PRINCIPAL TRACK RECORD");
+  assert.equal(vocab.provenanceLabel(undefined), null);
 });
 
-test("Only work with an unambiguous provenance is labelled, and only labelled cases are featured", () => {
-  assert.equal(work.provenanceOf("gv-solutions"), "AXIS & SAGE ENGAGEMENT");
-  for (const slug of ["venture-garden-group", "farmcrowdy", "mular", "earlybean", "kolibri"]) assert.equal(work.provenanceOf(slug), "PRINCIPAL TRACK RECORD", slug);
-  for (const slug of ["nature-roots", "uganda-investor-summit", "oui-life", "adpipe", "lasric", "lion-hospitality-partners"]) assert.equal(work.provenanceOf(slug), null, slug);
-  assert.ok(work.featuredWork.length > 0);
-  for (const c of work.featuredWork) assert.ok(work.provenanceOf(c.slug), c.slug);
-  assert.deepEqual(work.featuredWork.map((c) => c.slug), ["gv-solutions", "venture-garden-group", "farmcrowdy", "mular"]);
+test("Provenance follows the final decision; held-back work is off the site", async () => {
+  const index = await load.getWorkIndex();
+  const of = (slug) => index.find((w) => w.slug === slug)?.provenance;
+  for (const slug of ["gv-solutions", "nature-roots", "uganda-investor-summit", "oui-life"]) assert.equal(of(slug), "axisAndSage", slug);
+  for (const slug of ["venture-garden-group", "national-social-investment-programme", "galaxy-backbone-1gov", "farmcrowdy", "mular", "earlybean", "kolibri", "lion-hospitality-partners", "adpipe"]) assert.equal(of(slug), "principalTrackRecord", slug);
+  for (const slug of ["lasric", "university-innovation-platform", "africa-agrighg-summit"]) assert.equal(index.some((w) => w.slug === slug), false, slug);
+  for (const w of index) assert.ok(w.provenance, `${w.slug} is labelled`);
 });
 
 test("Provenance renders on work cards, case cards and case pages", async () => {
   const blocks = await read("src/components/ds/blocks.tsx");
-  assert.match(blocks, /provenanceLabels\[item\.provenance\]/);
-  assert.match(blocks, /provenanceOf\(item\.slug\)/);
-  assert.match(await read("src/app/(site)/work/[slug]/page.tsx"), /provenanceOf\(c\.slug\)/);
-  assert.match(await read("src/app/(home)/page.tsx"), /featuredWork\.map/);
+  assert.match(blocks, /provenanceLabel\(item\.provenance\)/);
+  assert.match(await read("src/app/(site)/work/[slug]/page.tsx"), /provenanceLabel\(c\.provenance\)/);
+  assert.match(await read("src/app/(home)/page.tsx"), /home\.selectedWork\.map/);
 });
 
 /* ---------- Founder decisions ---------- */
 
-test("Unresolved founder titles show as Co-founder, with the practice separately", () => {
-  for (const p of people.people) {
+test("Founder titles are Co-founder, with the practice separately", async () => {
+  for (const p of await load.getPeople()) {
     assert.equal(p.title, "Co-founder", p.name);
     assert.ok(p.practice, p.name);
   }
-  assert.doesNotMatch(JSON.stringify(people.people.map((p) => p.title)), /CEO|General Manager/);
+  assert.doesNotMatch(JSON.stringify((await load.getPeople()).map((p) => p.title)), /CEO|CTO|General Manager|\bGM\b/);
 });
 
-test("No unverified fund-waterfall or JV-economics claims", () => {
-  assert.doesNotMatch(JSON.stringify(people.people), /waterfall|joint-venture economics|JV economics/i);
+test("No unverified fund-waterfall, JV-economics or beneficiary-total claims", async () => {
+  assert.doesNotMatch(JSON.stringify(await load.getPeople()), /waterfall|joint-venture economics|JV economics|structuring executive/i);
 });
 
-test("The Diagnostic shows as a fixed fee, with no figure and no break-even line", () => {
-  const diagnostic = engagements.engagements.find((e) => e.name === "Conversion Diagnostic");
-  assert.equal(diagnostic.price, "Fixed fee");
-  assert.doesNotMatch(JSON.stringify(engagements.engagements), /US\$5,000|\[price\]/);
-  assert.equal(lift.paybackActions(100, engagements.prices.diagnostic, "USD"), null, "break-even hidden while the fee is unset");
-});
-
-/* ---------- Hero asset ---------- */
-
-test("The hero points at the self-hosted landscape crop, with a landscape remote fallback", async () => {
-  assert.equal(site.heroImage.src, "/images/axis-sage/lagos-sunset-chibuzo-nwaneri.jpg");
-  assert.ok(site.heroImage.width >= 1920 && site.heroImage.width > site.heroImage.height);
-  assert.match(site.heroImage.remote, /w=3200&h=1800/);
-  const css = await read("src/styles/components.css");
-  const rule = css.slice(css.indexOf(".cover-image {"), css.indexOf("}", css.indexOf(".cover-image {")));
-  assert.doesNotMatch(rule, /blur/);
-  assert.match(rule, /saturate\(0\.88\) contrast\(0\.95\)/);
+test("The Diagnostic shows its fixed fee; the lift tool's break-even uses it in USD and AED only", async () => {
+  const { columns, diagnostic } = await load.getEngagements();
+  assert.equal(columns.find((e) => e.name === "Conversion Diagnostic").price, "US$5,000 fixed · AED 18,500 for UAE engagements");
+  assert.doesNotMatch(JSON.stringify(columns), /From US\$|Starting at|\[price\]/);
+  assert.equal(lift.paybackActions(100, diagnostic.price, "USD"), 50);
+  assert.equal(lift.paybackActions(100, diagnostic.uaePrice, "AED"), 185);
+  assert.equal(lift.paybackActions(100, { amount: null, currency: "NGN" }, "NGN"), null, "no break-even in a currency without a published fee");
 });

@@ -1,4 +1,4 @@
-import type { GlyphName } from "@/lib/glyphs";
+import type { GlyphName } from "../../src/lib/glyphs";
 
 export const gapCards: { glyph: GlyphName; text: string }[] = [
   { glyph: "investors", text: "Investors take the meeting and don't commit." },

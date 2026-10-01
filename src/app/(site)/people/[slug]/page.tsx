@@ -3,33 +3,28 @@ import { notFound } from "next/navigation";
 import { CTABand } from "@/components/ds/CTABand";
 import { SpecList, WorkCard } from "@/components/ds/blocks";
 import { Eyebrow, Portrait, RailBody, Section, SectionHeader, SmartLink } from "@/components/ds/primitives";
-import { people, personBySlug } from "@/content/people";
-import { workBySlug } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { personLd } from "@/lib/seo";
+import { getPeople, getPerson } from "@/sanity/load";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
-export function generateStaticParams() { return people.map((p) => ({ slug: p.slug })); }
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export async function generateStaticParams() { return (await getPeople()).map((p) => ({ slug: p.slug })); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const p = personBySlug((await params).slug);
+  const p = await getPerson((await params).slug);
   if (!p) return {};
-  return pageMetadata({ title: p.name, path: `/people/${p.slug}`, description: `${p.name}, ${p.title}, ${p.practice}. ${p.line}` });
+  return pageMetadata({ title: p.seo.title ?? p.name, absoluteTitle: !!p.seo.title, path: `/people/${p.slug}`, description: p.seo.description ?? `${p.name}, ${p.title}, ${p.practice}. ${p.line}` });
 }
 
-const relatedWork: Record<string, string[]> = {
-  "ifeanyi-monyei": ["venture-garden-group", "gv-solutions", "national-social-investment-programme", "galaxy-backbone-1gov"],
-  "tomiwa-ogunmodede": ["farmcrowdy", "kolibri", "mular", "earlybean", "lion-hospitality-partners", "adpipe"],
-};
-
 export default async function PersonPage({ params }: Props) {
-  const p = personBySlug((await params).slug);
+  const p = await getPerson((await params).slug);
   if (!p) notFound();
   const moments = p.half === "moments";
-  const work = (relatedWork[p.slug] || []).map(workBySlug).filter((w) => !!w);
+  const work = p.relatedWork;
+  const facts = [p.extra, p.education ? { label: "Education", value: p.education } : null, p.basedIn ? { label: "Based in", value: p.basedIn } : null].filter((f) => !!f);
   return (
     <>
       <Breadcrumbs trail={[{ name: "People", path: "/people" }, { name: p.name, path: `/people/${p.slug}` }]} />
@@ -54,7 +49,7 @@ export default async function PersonPage({ params }: Props) {
 
       <Section labelledBy="bio-title">
         <SectionHeader id="bio-title" label="01 · BIOGRAPHY" title={p.line}>
-          <p className="t-body-l" style={{ marginTop: 24, maxWidth: 760 }}>{p.bio}</p>
+          <div className="stack-16" style={{ marginTop: 24, maxWidth: 760 }}>{p.bioParagraphs.map((para) => <p key={para} className="t-body-l">{para}</p>)}</div>
         </SectionHeader>
       </Section>
 
@@ -65,17 +60,15 @@ export default async function PersonPage({ params }: Props) {
 
       <Section tone="alt" labelledBy="facts-title">
         <h2 id="facts-title" className="sr-only">Background</h2>
-        <div className="spec-grid" style={{ ["--cols" as string]: 3 }}>
-          <div className="spec-cell"><div className="spec-cell-head t-label"><span>{p.extra.label.toUpperCase()}</span><span>01</span></div><div className="spec-cell-value">{p.extra.value}</div></div>
-          <div className="spec-cell"><div className="spec-cell-head t-label"><span>EDUCATION</span><span>02</span></div><div className="spec-cell-value">{p.education}</div></div>
-          <div className="spec-cell"><div className="spec-cell-head t-label"><span>BASED IN</span><span>03</span></div><div className="spec-cell-value">{p.basedIn}</div></div>
+        <div className="spec-grid" style={{ ["--cols" as string]: facts.length }}>
+          {facts.map((f, i) => <div className="spec-cell" key={f.label}><div className="spec-cell-head t-label"><span>{f.label.toUpperCase()}</span><span>{String(i + 1).padStart(2, "0")}</span></div><div className="spec-cell-value">{f.value}</div></div>)}
         </div>
       </Section>
 
       {work.length ? (
         <Section labelledBy="work-title">
           <SectionHeader id="work-title" label="03 · IN THE WORK INDEX" title="Related work." />
-          <RailBody full><div className="work-grid">{work.map((w) => <WorkCard key={w!.slug} item={w!} />)}</div></RailBody>
+          <RailBody full><div className="work-grid">{work.map((w) => <WorkCard key={w.slug} item={w} />)}</div></RailBody>
         </Section>
       ) : null}
 

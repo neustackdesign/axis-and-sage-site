@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { readinessGroups, type ReadinessAnswer } from "@/content/tools";
+import { readinessGroups, type ReadinessAnswer } from "@/lib/tools/spec";
 import { checkKey, readinessGaps, readinessScore } from "@/lib/tools/readiness";
 import { readinessWorkbook } from "@/lib/tools/xlsx";
 import { Segmented, ToolDisclaimer, ToolPanel } from "./ToolBits";

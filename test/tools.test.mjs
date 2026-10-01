@@ -2,7 +2,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-const [scorecard, lift, doa, esop, readiness, deck, share, content, work] = await Promise.all([
+process.env.SANITY_CONTENT_SOURCE = "seed";
+
+const [scorecard, lift, doa, esop, readiness, deck, share, content, load] = await Promise.all([
   import("../src/lib/tools/scorecard.ts"),
   import("../src/lib/tools/lift.ts"),
   import("../src/lib/tools/doa.ts"),
@@ -10,9 +12,10 @@ const [scorecard, lift, doa, esop, readiness, deck, share, content, work] = awai
   import("../src/lib/tools/readiness.ts"),
   import("../src/lib/tools/deck.ts"),
   import("../src/lib/tools/share.ts"),
-  import("../src/content/tools.ts"),
-  import("../src/content/work.ts"),
+  import("../src/lib/tools/spec.ts"),
+  import("../src/sanity/load.ts"),
 ]);
+const caseSlugs = (await load.getCaseList()).map((c) => c.slug);
 
 /* ---------- Tool 1 · Conversion Scorecard ---------- */
 
@@ -91,7 +94,7 @@ test("Scorecard: each related case links to a case page that exists", () => {
   assert.equal(scorecard.relatedCaseSlug("users"), "mular");
   assert.equal(scorecard.relatedCaseSlug("our team"), "gv-solutions");
   assert.equal(scorecard.relatedCaseSlug("other"), "farmcrowdy");
-  for (const w of content.scorecardWho) assert.ok(work.caseBySlug(scorecard.relatedCaseSlug(w.key)), w.key);
+  for (const w of content.scorecardWho) assert.ok(caseSlugs.includes(scorecard.relatedCaseSlug(w.key)), w.key);
 });
 
 /* ---------- Tool 2 · What's a lift worth? ---------- */

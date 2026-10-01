@@ -1,7 +1,7 @@
 "use client";
 
 import { ToolEmail } from "@/components/tools/ToolEmail";
-import type { Template } from "@/content/library";
+import type { Template } from "@/lib/content/types";
 
 /** Templates: leave a work email, we send a copy and the file downloads. Only templates with a file are listed. */
 export function TemplateRequest({ templates }: { templates: Template[] }) {

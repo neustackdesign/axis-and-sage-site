@@ -1,15 +1,22 @@
+import type { Metadata } from "next";
 import { LegalArticle } from "@/components/sections/LegalArticle";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
-import { privacyNotice } from "@/content/legal";
 import { pageMetadata } from "@/lib/metadata";
+import { getLegal } from "@/sanity/load";
 
-export const metadata = pageMetadata({ title: privacyNotice.title, path: "/privacy", description: "How Axis & Sage Advisory collects, uses and protects personal data from axisandsage.com." });
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
-export default function PrivacyPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const doc = await getLegal("privacy");
+  return pageMetadata({ title: doc.seo.title ?? doc.title, absoluteTitle: !!doc.seo.title, path: "/privacy", description: doc.seo.description });
+}
+
+export default async function PrivacyPage() {
+  const doc = await getLegal("privacy");
   return (
     <>
-      <Breadcrumbs trail={[{ name: privacyNotice.title, path: "/privacy" }]} />
-      <LegalArticle doc={privacyNotice} />
+      <Breadcrumbs trail={[{ name: doc.title, path: "/privacy" }]} />
+      <LegalArticle doc={doc} />
     </>
   );
 }

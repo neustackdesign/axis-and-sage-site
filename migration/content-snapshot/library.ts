@@ -1,4 +1,4 @@
-import type { GlyphName } from "@/lib/glyphs";
+import type { GlyphName } from "../../src/lib/glyphs";
 
 export type ToolMeta = {
   slug: string;

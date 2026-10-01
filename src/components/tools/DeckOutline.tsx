@@ -2,15 +2,15 @@
 
 import { useCallback, useEffect, useId, useState } from "react";
 import { SpecialistCard } from "@/components/ds/blocks";
-import { specialistCards } from "@/content/engagements";
-import { deckQuestions } from "@/content/tools";
+import type { Specialist } from "@/lib/content/types";
+import { deckQuestions } from "@/lib/tools/spec";
 import { deckOutline, deckText } from "@/lib/tools/deck";
 import { ToolDisclaimer, ToolPanel } from "./ToolBits";
 import { ToolEmail } from "./ToolEmail";
 import { toolShareUrl, useHashRestore, useToolComplete } from "./useTool";
 
 /** Pitch Deck Outline: twelve short questions, twelve slides with the user's words in place. */
-export function DeckOutline() {
+export function DeckOutline({ sprint }: { sprint?: Specialist }) {
   const id = useId();
   const complete = useToolComplete("Pitch Deck Outline");
   const [answers, setAnswers] = useState<string[]>(() => deckQuestions.map(() => ""));
@@ -58,7 +58,7 @@ export function DeckOutline() {
           </div>
           <ToolDisclaimer />
         </ToolPanel>
-        <SpecialistCard s={specialistCards[0]} cta={{ label: "Book an Investor Readiness Sprint", href: "/contact?engagement=Investor%20Readiness%20Sprint&source=deck#note" }} />
+        {sprint ? <SpecialistCard s={sprint} cta={{ label: "Book an Investor Readiness Sprint", href: "/contact?engagement=Investor%20Readiness%20Sprint&source=deck#note" }} /> : null}
       </div>
     </div>
   );

@@ -1,27 +1,25 @@
-import { contact } from "@/content/site";
-import { people, type Person } from "@/content/people";
-import type { ToolMeta } from "@/content/library";
+import type { Person, SiteSettings, ToolMeta } from "@/lib/content/types";
 import { siteOrigin } from "./metadata";
 
 const abs = (path: string) => new URL(path, siteOrigin()).toString();
 const orgId = () => `${abs("/")}#organization`;
 
 /** Organization / ProfessionalService, on every page. */
-export function organizationLd() {
+export function organizationLd(s: SiteSettings, people: Person[]) {
   return {
     "@context": "https://schema.org",
     "@type": ["Organization", "ProfessionalService"],
     "@id": orgId(),
-    name: "Axis & Sage Advisory",
-    legalName: contact.legalName,
+    name: s.companyName,
+    legalName: s.legalName,
     url: abs("/"),
     logo: abs("/icons/axis-sage-dark.png"),
-    email: contact.email,
-    description: "Advisory for Africa and the GCC. We get investors, partners, teams and customers to act, by designing the terms and the moment. We call it Conversion Design.",
+    email: s.contactEmail,
+    description: s.defaultSeo.description,
     address: { "@type": "PostalAddress", addressLocality: "Masdar City Free Zone, Abu Dhabi", addressCountry: "AE" },
     areaServed: ["Africa", "Nigeria", "United Arab Emirates", "Saudi Arabia", "Gulf Cooperation Council"],
     founder: people.map((p) => ({ "@type": "Person", name: p.name, url: abs(`/people/${p.slug}`) })),
-    ...(contact.companyLinkedIn ? { sameAs: [contact.companyLinkedIn] } : {}),
+    ...(s.socialLinks.length ? { sameAs: s.socialLinks.map((l) => l.href) } : {}),
   };
 }
 
@@ -31,7 +29,7 @@ export function personLd(p: Person) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: p.name,
-    jobTitle: p.title,
+    jobTitle: `${p.title}, ${p.practice}`,
     description: p.line,
     url: abs(`/people/${p.slug}`),
     worksFor: { "@id": orgId() },
@@ -39,7 +37,7 @@ export function personLd(p: Person) {
   };
 }
 
-export function articleLd({ headline, description, path, date, authors }: { headline: string; description: string; path: string; date: string; authors?: { name: string; path: string }[] }) {
+export function articleLd({ headline, description, path, date, modified, authors }: { headline: string; description: string; path: string; date: string; modified?: string; authors?: { name: string; path: string }[] }) {
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -48,7 +46,7 @@ export function articleLd({ headline, description, path, date, authors }: { head
     url: abs(path),
     mainEntityOfPage: abs(path),
     datePublished: date,
-    dateModified: date,
+    dateModified: modified ?? date,
     author: authors?.length ? authors.map((a) => ({ "@type": "Person", name: a.name, url: abs(a.path) })) : { "@id": orgId() },
     publisher: { "@id": orgId() },
   };

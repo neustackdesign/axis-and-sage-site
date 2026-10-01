@@ -1,12 +1,18 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { CaseStat, SelectedCase, StatTileData, Testimonial as TestimonialData, WorkItem } from "@/content/work";
-import { actionLabel, provenanceLabels, provenanceOf } from "@/content/work";
-import type { ToolMeta } from "@/content/library";
-import type { EngagementColumn, Specialist } from "@/content/engagements";
-import { engagementRows } from "@/content/engagements";
+import type { CaseStat, EngagementColumn, SelectedCase, Specialist, StatTileData, Testimonial as TestimonialData, ToolMeta, WorkItem } from "@/lib/content/types";
+import { actionLabel, provenanceLabel } from "@/lib/content/vocab";
 import { ButtonLink, Chip, ChipRow, Eyebrow, Glyph, Portrait, SmartLink, TextLink } from "./primitives";
 
 const cssVars = (vars: Record<string, string | number>) => vars as CSSProperties;
+
+/** The engagement table's rows. Layout, not content: the values come from each Sanity engagement. */
+const engagementRows = [
+  { key: "price", label: "Price" },
+  { key: "time", label: "Time" },
+  { key: "bring", label: "You bring" },
+  { key: "weDo", label: "We do" },
+  { key: "youGet", label: "You get" },
+] as const;
 
 /** SpecGrid · SpecCell: 1px rules between cells, no fills. Mono label, sans value, optional index. */
 export function SpecGrid({ cells, cols = 4 }: { cells: { label: string; value: ReactNode; index?: string }[]; cols?: number }) {
@@ -48,7 +54,7 @@ export function StatGrid({ children, cols = 3 }: { children: ReactNode; cols?: n
 export function CaseCard({ item, index, dark, href }: { item: SelectedCase; index: number; dark?: boolean; href?: string }) {
   return (
     <article className={`case-card${dark ? " case-card-dark" : ""}`}>
-      <div className="case-card-head t-label"><span>CASE · {String(index).padStart(2, "0")}</span>{provenanceOf(item.slug) ? <span className="provenance">{provenanceOf(item.slug)}</span> : null}</div>
+      <div className="case-card-head t-label"><span>CASE · {String(index).padStart(2, "0")}</span>{provenanceLabel(item.provenance) ? <span className="provenance">{provenanceLabel(item.provenance)}</span> : null}</div>
       <div className="case-card-body">
         <h3 className="t-h3">{item.name}</h3>
         <dl className="case-card-rows">
@@ -70,7 +76,7 @@ export function WorkCard({ item }: { item: WorkItem }) {
   const inner = (
     <>
       <div className="work-card-head t-label"><span>{item.sector.toUpperCase()}</span></div>
-      {item.provenance ? <p className="provenance t-label">{provenanceLabels[item.provenance]}</p> : null}
+      {provenanceLabel(item.provenance) ? <p className="provenance t-label">{provenanceLabel(item.provenance)}</p> : null}
       <h3 className="t-h3">{item.name}</h3>
       <p className="work-card-line">{item.line}</p>
       <ul className="chip-row" aria-label="Role and action">

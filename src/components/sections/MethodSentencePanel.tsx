@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { sentenceRows } from "@/content/method";
-import { whenOptions } from "@/content/site";
+import { whenOptions } from "@/lib/content/vocab";
+
+type Row = { who: string; action: string; stops: string; look: string };
 
 /** MethodSentence with its answer panel. Choosing an option updates "What usually stops them" and "Where we'd look first". */
-export function MethodSentencePanel() {
+export function MethodSentencePanel({ rows: sentenceRows }: { rows: Row[] }) {
   const id = useId();
   const [row, setRow] = useState(0);
   const [when, setWhen] = useState<string>("this quarter");

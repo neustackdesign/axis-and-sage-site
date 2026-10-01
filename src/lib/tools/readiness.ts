@@ -1,4 +1,4 @@
-import { readinessBands, readinessGapOrder, readinessGroups, type ReadinessAnswer } from "@/content/tools";
+import { readinessBands, readinessGapOrder, readinessGroups, type ReadinessAnswer } from "@/lib/tools/spec";
 
 export const readinessPoints: Record<ReadinessAnswer, number> = { yes: 2, partly: 1, no: 0 };
 export const checkKey = (groupKey: string, index: number) => `${groupKey}-${index}`;

@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useId, useState } from "react";
-import { prices } from "@/content/engagements";
-import { scorecardHref } from "@/content/site";
-import { count, currencies, liftBreakEvenCopy, liftModes, liftPerPointCopy, money, type CurrencyCode, type LiftField, type LiftMode } from "@/content/tools";
+import { scorecardHref } from "@/lib/routes";
+import { count, currencies, liftBreakEvenCopy, liftModes, liftPerPointCopy, money, type CurrencyCode, type LiftField, type LiftMode } from "@/lib/tools/spec";
 import { liftModel, paybackActions } from "@/lib/tools/lift";
 import { liftWorkbook } from "@/lib/tools/xlsx";
 import { Segmented, SliderField, ToolDisclaimer, ToolPanel } from "./ToolBits";
@@ -17,7 +16,7 @@ type State = { mode: LiftMode; currency: CurrencyCode; values: Record<LiftMode, 
 const initialState = (): State => ({ mode: "customers", currency: "USD", values: Object.fromEntries(liftModes.map((m) => [m.key, { ...m.defaults }])) as Record<LiftMode, Values> });
 
 /** What's a lift worth? Live outputs from lib/tools/lift. */
-export function LiftCalculator() {
+export function LiftCalculator({ diagnosticPrices = [] }: { diagnosticPrices?: { amount: number; currency: string }[] }) {
   const id = useId();
   const complete = useToolComplete("What's a lift worth?");
   const [s, setS] = useState<State>(initialState);
@@ -29,7 +28,9 @@ export function LiftCalculator() {
   const set = (k: keyof Values, n: number) => { setTouched(true); setS((cur) => ({ ...cur, values: { ...cur.values, [cur.mode]: { ...cur.values[cur.mode], [k]: Number.isFinite(n) ? Math.max(0, n) : 0 } } })); };
   const m = liftModel({ mode: s.mode, ...v });
   const cur = (n: number) => money(n, s.currency);
-  const payback = s.mode === "customers" ? paybackActions(v.value, prices.diagnostic, s.currency) : null;
+  // The published Diagnostic fee in the chosen currency (US$ or the UAE AED price); no break-even line in other currencies.
+  const diagnosticPrice = diagnosticPrices.find((p) => p.currency === s.currency) ?? { amount: null, currency: s.currency };
+  const payback = s.mode === "customers" ? paybackActions(v.value, diagnosticPrice, s.currency) : null;
   const labels = Object.fromEntries(def.fields.map((f) => [f.key, f.label]));
   const perPointLine = liftPerPointCopy.replace("{per_point}", cur(m.perPoint));
   const breakEvenLine = payback !== null ? liftBreakEvenCopy.replace("{payback_actions}", count(payback)).replace("{actions}", "actions") : null;
@@ -107,7 +108,7 @@ export function LiftCalculator() {
           <Link className="btn btn-primary" href="/contact?engagement=diagnostic&source=lift#note">Book a Diagnostic</Link>
           <ToolEmail
             tool="What's a lift worth?" label="Send me the model" summary={summary} result={() => ({ mode: s.mode, currency: s.currency, inputs: v, outputs: m })} shareUrl={() => toolShareUrl(s)}
-            download={{ filename: "lift-model.xlsx", build: () => liftWorkbook({ mode: s.mode, modeLabel: def.label, labels, base: v.base, rate: v.rate, lift: v.lift, target: v.target, value: v.value, currency: s.currency, diagnosticPrice: prices.diagnostic.currency === s.currency ? prices.diagnostic.amount : null }) }}
+            download={{ filename: "lift-model.xlsx", build: () => liftWorkbook({ mode: s.mode, modeLabel: def.label, labels, base: v.base, rate: v.rate, lift: v.lift, target: v.target, value: v.value, currency: s.currency, diagnosticPrice: diagnosticPrice.amount }) }}
           />
         </div>
         <ToolDisclaimer />

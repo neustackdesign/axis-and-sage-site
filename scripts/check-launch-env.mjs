@@ -10,24 +10,23 @@ const required = [
   ["RESEND_API_KEY", "sends every website email: the lead alert, the auto-reply and tool results"],
   ["CRON_SECRET", "protects the daily retry cron"],
   ["IP_HASH_SALT", "salts the IP hash; the IP itself is never stored"],
-  ["NEXT_PUBLIC_BOOKING_URL", "the Cal.com booking embed"],
   ["CAL_WEBHOOK_SECRET", "verifies the Cal.com booking webhook"],
 ];
 const optional = [
   [["MAILERLITE_API_KEY", "MAILERLITE_GROUP_ID"], "newsletter sign-ups park in Blob until these are set"],
   [["FOUNDER_EMAILS"], "lead alerts go to CONTACT_TO_EMAIL only"],
   [["NEXT_PUBLIC_WHATSAPP_NUMBER"], "WhatsApp links stay hidden"],
-  [["NEXT_PUBLIC_LINKEDIN_URL", "NEXT_PUBLIC_LINKEDIN_IFEANYI", "NEXT_PUBLIC_LINKEDIN_TOMIWA"], "LinkedIn links stay hidden"],
   [["NEXT_PUBLIC_GA_ID"], "GA4 stays off"],
 ];
 for (const [keys, why] of optional) {
   const unset = keys.filter((k) => !has(k));
   if (unset.length) console.warn(`Optional and not set: ${unset.join(", ")} (${why}).`);
 }
-// The hero should be self-hosted before launch; until then it falls back to Unsplash's CDN.
-const { existsSync } = await import("node:fs");
-if (!existsSync(new URL("../public/images/axis-sage/lagos-sunset-chibuzo-nwaneri.jpg", import.meta.url))) {
-  console.warn("Hero image not self-hosted yet (it falls back to images.unsplash.com). Run `pnpm fetch:hero` and commit the file.");
+// Content (including the booking link, social links and the hero crops) is in Sanity. Production reads it published;
+// the local seed is for development only.
+if (process.env.SANITY_CONTENT_SOURCE === "seed") {
+  console.error("\nLaunch env check failed: SANITY_CONTENT_SOURCE=seed is set. Production reads published Sanity content only.");
+  process.exit(1);
 }
 const missing = required.filter(([k]) => !has(k));
 if (missing.length) {

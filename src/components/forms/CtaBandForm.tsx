@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { whenOptions } from "@/content/site";
+import { whenOptions } from "@/lib/content/vocab";
 import { useLead } from "./useLead";
 import { FormStatus } from "./FormStatus";
 

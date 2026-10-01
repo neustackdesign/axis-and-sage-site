@@ -1,33 +1,38 @@
+import type { Metadata } from "next";
 import { CTABand } from "@/components/ds/CTABand";
 import { ToolCard } from "@/components/ds/blocks";
 import { PageHero } from "@/components/ds/PageHero";
 import { RailBody, Section, SectionHeader, SmartLink, TextLink } from "@/components/ds/primitives";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { TemplateRequest } from "@/components/sections/TemplateRequest";
-import { availableTemplates, guides, tools } from "@/content/library";
-import { newsletter } from "@/content/site";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
+import { getGuides, getSettings, getSitePage, getTemplates, getTools } from "@/sanity/load";
 
-export const metadata = pageMetadata({
-  title: "Library",
-  path: "/library",
-  description: "Free tools for the decision in front of you. Built from the frameworks we use with clients. No sign-up to use them.",
-});
+export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
-export default function LibraryPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const p = await getSitePage("library");
+  return pageMetadata({ title: p.seo.title, absoluteTitle: true, path: "/library", description: p.seo.description });
+}
+
+const label = (n: number, text?: string) => `${String(n).padStart(2, "0")} · ${text ?? ""}`;
+
+export default async function LibraryPage() {
+  const [p, settings, tools, guides, templates] = await Promise.all([getSitePage("library"), getSettings(), getTools(), getGuides(), getTemplates()]);
+  const s = p.sectionMap;
   return (
     <>
       <Breadcrumbs trail={[{ name: "Library", path: "/library" }]} />
-      <PageHero label="LIBRARY" title="Free tools for the decision in front of you." sub="Built from the frameworks we use with clients. No sign-up to use them. Leave an email only if you want the full model or a copy of your results." />
+      <PageHero label={p.hero.label} title={p.hero.title} sub={p.hero.sub} />
 
       <Section id="tools" tone="sage" labelledBy="tools-title">
-        <SectionHeader id="tools-title" label="01 · TOOLS" title="Tools." />
+        <SectionHeader id="tools-title" label={label(1, s.tools?.label)} title={s.tools?.title} />
         <RailBody full><div className="tool-grid">{tools.map((t) => <ToolCard key={t.slug} tool={t} />)}</div></RailBody>
       </Section>
 
       <Section id="guides" labelledBy="guides-title">
-        <SectionHeader id="guides-title" label="02 · GUIDES" title="Guides." />
+        <SectionHeader id="guides-title" label={label(2, s.guides?.label)} title={s.guides?.title} />
         <RailBody full>
           <div className="work-grid">
             {guides.map((g) => {
@@ -35,7 +40,7 @@ export default function LibraryPage() {
                 <>
                   <div className="work-card-head t-label"><span>GUIDE · {g.category}</span>{g.published ? null : <span>COMING SOON</span>}</div>
                   <h3 className="t-h3">{g.title}</h3>
-                  {g.published ? <span className="work-card-more" style={{ marginTop: "auto" }}>READ THE GUIDE ▸</span> : <span className="work-card-line" style={{ marginTop: "auto" }}>Coming soon. Subscribe to get it first.</span>}
+                  {g.published ? <span className="work-card-more" style={{ marginTop: "auto" }}>{p.strings.readGuide}</span> : <span className="work-card-line" style={{ marginTop: "auto" }}>{p.strings.comingSoon}</span>}
                 </>
               );
               return g.published ? <SmartLink key={g.slug} href={`/guides/${g.slug}`} className="work-card">{inner}</SmartLink> : <article key={g.slug} className="work-card">{inner}</article>;
@@ -44,20 +49,20 @@ export default function LibraryPage() {
         </RailBody>
       </Section>
 
-      {availableTemplates.length ? (
+      {templates.length ? (
         <Section id="templates" tone="alt" labelledBy="templates-title">
-          <SectionHeader id="templates-title" label="03 · TEMPLATES" title="Templates." lede="Downloads. Leave your work email and we send you a copy." />
-          <RailBody><TemplateRequest templates={availableTemplates} /></RailBody>
+          <SectionHeader id="templates-title" label={label(3, s.templates?.label)} title={s.templates?.title} lede={s.templates?.intro} />
+          <RailBody><TemplateRequest templates={templates} /></RailBody>
         </Section>
       ) : null}
 
       <Section id="newsletter" labelledBy="news-title">
         <div className="newsletter-inline">
           <div>
-            <p className="t-label muted">{availableTemplates.length ? "04" : "03"} · NEWSLETTER</p>
-            <h2 id="news-title" className="t-h2" style={{ marginTop: 12 }}>{newsletter.name}</h2>
-            <p className="muted" style={{ marginTop: 8 }}>{newsletter.line}</p>
-            <p style={{ marginTop: 16 }}><TextLink href="/newsletter">The archive</TextLink></p>
+            <p className="t-label muted">{label(templates.length ? 4 : 3, s.newsletter?.label)}</p>
+            <h2 id="news-title" className="t-h2" style={{ marginTop: 12 }}>{settings.newsletter.name}</h2>
+            <p className="muted" style={{ marginTop: 8 }}>{settings.newsletter.line}</p>
+            <p style={{ marginTop: 16 }}><TextLink href="/newsletter">{p.strings.archiveLink}</TextLink></p>
           </div>
           <NewsletterForm />
         </div>

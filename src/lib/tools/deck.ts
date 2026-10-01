@@ -1,4 +1,4 @@
-import { deckQuestions } from "@/content/tools";
+import { deckQuestions } from "@/lib/tools/spec";
 
 /** A suggested headline from the answer: its first sentence, capitalised, without the closing full stop. */
 export function headlineFrom(answer: string) {
