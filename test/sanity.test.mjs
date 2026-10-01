@@ -2,9 +2,15 @@
 // Runs offline: the same queries the site sends to Sanity are evaluated against the local seed with groq-js.
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import test from "node:test";
 
+// Opt into the local Sanity seed for this test process only. Vercel Production builds run the tests with
+// VERCEL_ENV=production, which the production guard (src/sanity/env.ts) rightly refuses with the seed; this file's
+// process drops it so the offline content tests can run. The shell that runs `next build` is unaffected.
+const parentVercelEnv = process.env.VERCEL_ENV;
+delete process.env.VERCEL_ENV;
 process.env.SANITY_CONTENT_SOURCE = "seed";
 
 const [build, verify, plan, seed, queries, load, env, vocab, studioVocab] = await Promise.all([
@@ -116,22 +122,39 @@ test("no route or component imports the frozen content snapshot or the old src/c
   }
 });
 
+/** Run fn with the given variables set (undefined = unset), then put both back exactly as they were. */
+function withEnv(vars, fn) {
+  const before = Object.fromEntries(Object.keys(vars).map((k) => [k, process.env[k]]));
+  const apply = (v) => { for (const [k, x] of Object.entries(v)) { if (x === undefined) delete process.env[k]; else process.env[k] = x; } };
+  apply(vars);
+  try { return fn(); } finally { apply(before); }
+}
+
 test("production refuses the local seed; only development and tests may use it", () => {
-  const saved = { ...process.env };
-  try {
-    process.env.SANITY_CONTENT_SOURCE = "seed";
-    process.env.VERCEL_ENV = "production";
-    assert.throws(() => env.contentSource(), /not allowed in production/);
-    process.env.VERCEL_ENV = "preview";
-    assert.equal(env.contentSource(), "seed");
-    delete process.env.SANITY_CONTENT_SOURCE;
-    assert.equal(env.contentSource(), "sanity");
-  } finally {
-    process.env = saved;
-  }
+  withEnv({ SANITY_CONTENT_SOURCE: "seed", VERCEL_ENV: "production" }, () => assert.throws(() => env.contentSource(), /not allowed in production/));
+  withEnv({ SANITY_CONTENT_SOURCE: "seed", VERCEL_ENV: "preview" }, () => assert.equal(env.contentSource(), "seed"));
+  withEnv({ SANITY_CONTENT_SOURCE: undefined, VERCEL_ENV: "production" }, () => assert.equal(env.contentSource(), "sanity"));
+  withEnv({ SANITY_CONTENT_SOURCE: undefined, VERCEL_ENV: "preview" }, () => assert.equal(env.contentSource(), "sanity"));
+  assert.equal(process.env.VERCEL_ENV, undefined, "restored");
+  assert.equal(process.env.SANITY_CONTENT_SOURCE, "seed", "restored");
   assert.equal(env.projectId, "dltrl1ld");
   assert.equal(env.dataset, "production");
   assert.equal(env.REVALIDATE_SECONDS, 60);
+});
+
+test("regression: the seed tests run under a Vercel Production build environment; the guard still throws", () => {
+  // 1. This process dropped any inherited VERCEL_ENV, so the seed works here, whatever the parent set.
+  assert.equal(process.env.VERCEL_ENV, undefined, `inherited VERCEL_ENV (${parentVercelEnv ?? "unset"}) is dropped in this process`);
+  assert.equal(env.contentSource(), "seed");
+  // 2. The exact Vercel Production failure: a seed-backed test file launched with VERCEL_ENV=production passes.
+  const childEnv = { ...process.env, VERCEL_ENV: "production" };
+  delete childEnv.SANITY_CONTENT_SOURCE;
+  delete childEnv.NODE_TEST_CONTEXT;
+  const run = spawnSync(process.execPath, ["--import", "tsx", "--test", "test/content-rules.test.mjs"], { env: childEnv, encoding: "utf8" });
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.doesNotMatch(run.stdout + run.stderr, /not allowed in production/);
+  // 3. Application code is unchanged: asked for the seed with VERCEL_ENV=production, contentSource() still throws.
+  withEnv({ VERCEL_ENV: "production", SANITY_CONTENT_SOURCE: "seed" }, () => assert.throws(() => env.contentSource(), /not allowed in production/));
 });
 
 test("the client reads published content only, and pages revalidate every 60 seconds", async () => {

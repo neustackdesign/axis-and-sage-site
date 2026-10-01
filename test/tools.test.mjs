@@ -2,6 +2,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+// Opt into the local Sanity seed for this test process only. Vercel Production builds run the tests with
+// VERCEL_ENV=production, which the production guard (src/sanity/env.ts) rightly refuses with the seed; this file's
+// process drops it so the offline content tests can run. The shell that runs `next build` is unaffected.
+delete process.env.VERCEL_ENV;
 process.env.SANITY_CONTENT_SOURCE = "seed";
 
 const [scorecard, lift, doa, esop, readiness, deck, share, content, load] = await Promise.all([
