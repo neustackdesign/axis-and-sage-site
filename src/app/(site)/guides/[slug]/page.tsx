@@ -54,7 +54,7 @@ export default async function GuidePage({ params }: Props) {
             {people.map((p) => (
               <div key={p.slug} className="author-card">
                 <Portrait alt={p.name} initials={p.initials} dark={p.half === "moments"} src={p.portrait} />
-                <div><p className="author-name"><Link className="text-link" href={`/people/${p.slug}`}>{p.name}</Link></p><p className="author-role">{p.title}, Axis &amp; Sage Advisory</p></div>
+                <div><p className="author-name"><Link className="text-link" href={`/people/${p.slug}`}>{p.name}</Link></p><p className="author-role">{p.title}, Axis &amp; Sage Advisory · {p.practice}</p></div>
               </div>
             ))}
           </div>

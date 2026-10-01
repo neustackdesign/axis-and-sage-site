@@ -1,7 +1,10 @@
 export type Person = {
   slug: string;
   name: string;
+  /** Public title. "Co-founder" until the founders settle the officer titles. */
   title: string;
+  /** The practice the founder leads, shown separately from the title. */
+  practice: string;
   half: "terms" | "moments";
   line: string;
   cardBody: string;
@@ -21,7 +24,8 @@ export const people: Person[] = [
   {
     slug: "ifeanyi-monyei",
     name: "Ifeanyi Monyei",
-    title: "Co-founder & CEO",
+    title: "Co-founder",
+    practice: "Strategy & Investment",
     initials: "IM",
     half: "terms",
     line: "Designs the terms people act on.",
@@ -40,7 +44,7 @@ export const people: Person[] = [
       "Payments strategy with Glenbrook Partners.",
       "Co-founder and CEO of Business Analyst Community Nigeria.",
     ],
-    extra: { label: "Craft", value: "Founder equity, incentive design, fund waterfalls, board reward, joint-venture economics, and the commercial terms of agreements across several jurisdictions." },
+    extra: { label: "Craft", value: "Founder equity, incentive design, board reward, and the commercial terms of agreements across several jurisdictions." },
     education: "BSc Biochemistry, University of Benin.",
     basedIn: "Dubai.",
     links: [{ label: "LinkedIn", href: process.env.NEXT_PUBLIC_LINKEDIN_IFEANYI || "" }],
@@ -48,7 +52,8 @@ export const people: Person[] = [
   {
     slug: "tomiwa-ogunmodede",
     name: "Tomiwa Ogunmodede",
-    title: "Co-founder, Product & Technology",
+    title: "Co-founder",
+    practice: "Product & Technology",
     initials: "TO",
     half: "moments",
     line: "Designs the moments people act in.",

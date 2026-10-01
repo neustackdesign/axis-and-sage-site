@@ -102,7 +102,8 @@ function recordLead(p) {
   if (p.engagement) notes.push("Interested in: " + p.engagement);
   if (p.message && p.message !== sentence) notes.push(p.message);
   if (isTool && p.summary) notes.push(p.summary);
-  if (isBooking && p.booking && p.booking.startTime) notes.push("Call: " + p.booking.startTime);
+  // The site sends the call time already in Asia/Dubai, with the zone spelled out.
+  if (isBooking && p.booking && (p.booking.startTimeLocal || p.booking.startTime)) notes.push("Call: " + (p.booking.startTimeLocal || p.booking.startTime + " (UTC)"));
 
   var row = [
     new Date(p.createdAt || Date.now()),
@@ -111,7 +112,8 @@ function recordLead(p) {
     first.utm_source, first.utm_medium, first.utm_campaign,
     p.landingPage,
     limited ? "limited" : "",
-    isBooking ? "Call booked" : "New lead",
+    // A limited row is kept for the record but never enters the pipeline: no Stage.
+    limited ? "" : isBooking ? "Call booked" : "New lead",
     "", "",
     notes.join("\n\n"),
   ];

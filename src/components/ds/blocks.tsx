@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { CaseStat, SelectedCase, StatTileData, Testimonial as TestimonialData, WorkItem } from "@/content/work";
-import { actionLabel } from "@/content/work";
+import { actionLabel, provenanceLabels, provenanceOf } from "@/content/work";
 import type { ToolMeta } from "@/content/library";
 import type { EngagementColumn, Specialist } from "@/content/engagements";
 import { engagementRows } from "@/content/engagements";
@@ -48,7 +48,7 @@ export function StatGrid({ children, cols = 3 }: { children: ReactNode; cols?: n
 export function CaseCard({ item, index, dark, href }: { item: SelectedCase; index: number; dark?: boolean; href?: string }) {
   return (
     <article className={`case-card${dark ? " case-card-dark" : ""}`}>
-      <div className="case-card-head t-label"><span>CASE · {String(index).padStart(2, "0")}</span></div>
+      <div className="case-card-head t-label"><span>CASE · {String(index).padStart(2, "0")}</span>{provenanceOf(item.slug) ? <span className="provenance">{provenanceOf(item.slug)}</span> : null}</div>
       <div className="case-card-body">
         <h3 className="t-h3">{item.name}</h3>
         <dl className="case-card-rows">
@@ -70,6 +70,7 @@ export function WorkCard({ item }: { item: WorkItem }) {
   const inner = (
     <>
       <div className="work-card-head t-label"><span>{item.sector.toUpperCase()}</span></div>
+      {item.provenance ? <p className="provenance t-label">{provenanceLabels[item.provenance]}</p> : null}
       <h3 className="t-h3">{item.name}</h3>
       <p className="work-card-line">{item.line}</p>
       <ul className="chip-row" aria-label="Role and action">

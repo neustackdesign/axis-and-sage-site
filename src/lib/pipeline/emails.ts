@@ -47,6 +47,7 @@ export function alertMail(p: SheetPayload, opts: { to: string; cc?: string[] }):
     `Email: ${p.email || ""}`,
     p.company ? `Company: ${p.company}` : "",
     p.role ? `Role: ${p.role}` : "",
+    p.booking?.startTimeLocal ? `Call: ${p.booking.startTimeLocal}` : "",
     p.when ? `When: ${p.when}` : "",
     p.engagement ? `Interested in: ${p.engagement}` : "",
     p.heard ? `Heard via: ${p.heard}${p.heardDetail ? ` (${p.heardDetail})` : ""}` : "",

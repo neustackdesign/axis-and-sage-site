@@ -155,7 +155,8 @@ pnpm build
 1. Link the repository to the Axis & Sage project on Vercel (Hobby).
 2. Turn on Deployment Protection for previews.
 3. Create the Sheet and deploy the Apps Script (see its README), create the private Blob store, verify the domain in Resend, and set the variables above.
-4. Review the preview.
+4. Self-host the hero image: run `pnpm fetch:hero` (it needs access to images.unsplash.com) and commit `public/images/axis-sage/lagos-sunset-chibuzo-nwaneri.jpg`. Until then the hero falls back to the same crop from Unsplash's CDN, and the production build prints a warning.
+5. Review the preview.
 
 Do not attach `axisandsage.com` until the preview is explicitly approved and every line of the launch gate passes.
 

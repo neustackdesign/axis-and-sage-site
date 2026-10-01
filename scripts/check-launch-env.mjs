@@ -24,6 +24,11 @@ for (const [keys, why] of optional) {
   const unset = keys.filter((k) => !has(k));
   if (unset.length) console.warn(`Optional and not set: ${unset.join(", ")} (${why}).`);
 }
+// The hero should be self-hosted before launch; until then it falls back to Unsplash's CDN.
+const { existsSync } = await import("node:fs");
+if (!existsSync(new URL("../public/images/axis-sage/lagos-sunset-chibuzo-nwaneri.jpg", import.meta.url))) {
+  console.warn("Hero image not self-hosted yet (it falls back to images.unsplash.com). Run `pnpm fetch:hero` and commit the file.");
+}
 const missing = required.filter(([k]) => !has(k));
 if (missing.length) {
   console.error("\nLaunch env check failed. Missing:");

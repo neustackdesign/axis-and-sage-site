@@ -8,7 +8,7 @@ import { MethodSentencePanel } from "@/components/sections/MethodSentencePanel";
 import { diagnosticCreditNote, engagements, specialistCards } from "@/content/engagements";
 import { tools } from "@/content/library";
 import { gapCards, methodSteps } from "@/content/method";
-import { homeStats, homeStatsSource, homeTestimonials, logoStrip, selectedWork } from "@/content/work";
+import { featuredWork, homeStats, homeStatsSource, homeTestimonials, logoStrip } from "@/content/work";
 import { pageTitles } from "@/content/titles";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
@@ -81,7 +81,7 @@ export default function HomePage() {
         <SectionHeader id="work-title" label="05 · SELECTED WORK" title="Who needed to act, and what changed." />
         <RailBody full>
           <div className="case-grid">
-            {selectedWork.map((c, i) => <CaseCard key={c.slug} item={c} index={i + 1} href={`/work/${c.slug}`} />)}
+            {featuredWork.map((c, i) => <CaseCard key={c.slug} item={c} index={i + 1} href={`/work/${c.slug}`} />)}
           </div>
           <p style={{ marginTop: 32 }}><TextLink href="/work">All work</TextLink></p>
         </RailBody>

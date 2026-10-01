@@ -6,7 +6,7 @@ import { ArtifactDoc, ArtifactScreen } from "@/components/ds/method";
 import { ChipRow, Eyebrow, RailBody, Section, SectionHeader, SmartLink } from "@/components/ds/primitives";
 import { toolBySlug } from "@/content/library";
 import { people } from "@/content/people";
-import { caseBySlug, casePages, type CasePage } from "@/content/work";
+import { caseBySlug, casePages, provenanceOf, type CasePage } from "@/content/work";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { articleLd } from "@/lib/seo";
@@ -84,6 +84,7 @@ export default async function CasePageRoute({ params }: Props) {
             <div className="stack-8">
               <Eyebrow strong>CASE</Eyebrow>
               <p className="t-label muted">{c.sector.toUpperCase()}{c.years ? ` · ${c.years}` : ""}</p>
+              {provenanceOf(c.slug) ? <p className="provenance t-label">{provenanceOf(c.slug)}</p> : null}
             </div>
             <div>
               <h1 id="page-title" className="t-display reveal">{c.name}</h1>

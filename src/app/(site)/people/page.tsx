@@ -27,6 +27,7 @@ export default function PeoplePage() {
               <div>
                 <h2 id={`${p.slug}-name`} className="t-h2">{p.name}</h2>
                 <p className="muted" style={{ marginTop: 8 }}>{p.title}</p>
+                <p className="t-label muted" style={{ marginTop: 6 }}>{p.practice.toUpperCase()}</p>
               </div>
               <p className="founder-line">{p.line}</p>
               <p className="prose">{p.bio}</p>

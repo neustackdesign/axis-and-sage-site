@@ -1,12 +1,14 @@
-// The one published price is the Diagnostic's. Everything else is quoted. `amount: null` would show "[price]",
-// which the production build refuses to ship (scripts/check-placeholders.mjs).
+// No figure is published until the founders fix the Diagnostic fee: it shows as "Fixed fee", and the lift tool's
+// break-even line stays hidden while `amount` is null. Never render formatPrice() of a null price: "[price]" fails the
+// production build (scripts/check-placeholders.mjs).
 export type Price = { amount: number | null; currency: "USD" | "AED" | "NGN" };
 
 export const prices = {
-  diagnostic: { amount: 5000, currency: "USD" } as Price,
+  diagnostic: { amount: null, currency: "USD" } as Price,
 };
 
 export const QUOTED_ON_A_CALL = "Quoted on a 30-minute call";
+export const DIAGNOSTIC_FEE_LABEL = "Fixed fee";
 
 const symbols: Record<Price["currency"], string> = { USD: "US$", AED: "AED ", NGN: "₦" };
 
@@ -50,7 +52,7 @@ export const engagements: EngagementColumn[] = [
   {
     name: "Conversion Diagnostic",
     recommended: true,
-    price: fromPrice(prices.diagnostic),
+    price: prices.diagnostic.amount === null ? DIAGNOSTIC_FEE_LABEL : fromPrice(prices.diagnostic),
     time: "10 working days",
     bring: "One sentence: we need [who] to [do what] by [when]",
     weDo: "Interview the people who need to act, walk the path they take, read your numbers",

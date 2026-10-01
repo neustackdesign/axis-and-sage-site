@@ -17,7 +17,7 @@ export function generateStaticParams() { return people.map((p) => ({ slug: p.slu
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = personBySlug((await params).slug);
   if (!p) return {};
-  return pageMetadata({ title: p.name, path: `/people/${p.slug}`, description: `${p.name}, ${p.title}. ${p.line}` });
+  return pageMetadata({ title: p.name, path: `/people/${p.slug}`, description: `${p.name}, ${p.title}, ${p.practice}. ${p.line}` });
 }
 
 const relatedWork: Record<string, string[]> = {
@@ -42,6 +42,7 @@ export default async function PersonPage({ params }: Props) {
               <Eyebrow strong>PEOPLE · {moments ? "MOMENTS" : "TERMS"}</Eyebrow>
               <h1 id="page-title" className="t-display reveal" style={{ marginTop: 20 }}>{p.name}</h1>
               <p className="muted t-body-l" style={{ marginTop: 12 }}>{p.title}</p>
+              <p className="t-label muted" style={{ marginTop: 6 }}>{p.practice.toUpperCase()}</p>
               <p className="founder-line" style={{ marginTop: 32 }}>{p.line}</p>
               <div className="page-hero-meta">
                 {p.links.filter((l) => l.href).map((l) => <SmartLink key={l.label} className="text-link" href={l.href}>{l.label}<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink>)}

@@ -29,7 +29,7 @@ To check it's live, open the URL in a browser. It should show `{"ok":true,"servi
 
 1. **Verifies the signature.** The body is `{ payload, ts, sig }`, where `sig` is the hex HMAC-SHA256 of `ts + "." + JSON.stringify(payload)`. It's checked with `Utilities.computeHmacSha256Signature`. A `ts` older than 5 minutes is rejected.
 2. **Ignores a repeat.** Each post carries an id. Ids already written are kept in a hidden "Delivered" tab for 90 days, so a lead the site retries is never written twice.
-3. **Applies a soft rate limit** with CacheService: 5 per 10 minutes per IP hash, and 3 per hour per email. Over the limit, the row is still added with "limited" in the Limited column. Bookings are never limited. The IP hash is used for the count and never written to the Sheet.
+3. **Applies a soft rate limit** with CacheService: 5 per 10 minutes per IP hash, and 3 per hour per email. Over the limit, the row is still added with "limited" in the Limited column and a blank Stage, so it stays out of the pipeline. Bookings are never limited. The IP hash is used for the count and never written to the Sheet.
 4. **Adds a Leads row** for each lead, tool email and booking, and never edits an existing row. Text that starts like a formula (`=`, `+`, `-`, `@`) is stored as text.
 5. **Adds a Tools row** for each completed tool: date, tool, answers, result and UTM source. These rows are anonymous.
 6. **Replies** `{ ok: true, limited }`. With `limited: true`, the website sends no email for that lead. Anything else, and the website keeps the lead in Blob and retries it the next day.
@@ -43,14 +43,14 @@ To check it's live, open the URL in a browser. It should show `{"ok":true,"servi
 | Date | The script: the time of the submission. |
 | Source | The script: `contact`, `cta`, `booking` or `tool · <tool name>`. A contact form reached from a tool reads, for example, `contact · scorecard`. |
 | Name, Email, Company, Role | The visitor. |
-| Sentence | The visitor's "We need … to … by …" sentence. For a contact message, it's the message's first line. |
+| Sentence | The visitor's "We need … to … by …" sentence. For a contact message, it's the message's first line. For a booking, it's the answer to the required Cal.com question "Who needs to act, and what do you need them to do?" |
 | When, Heard via | The visitor. |
 | UTM source, UTM medium, UTM campaign | The visitor's first touch, or the last touch if there's no first. Both touches are in the alert email. |
 | Landing page | The first page of the visit. |
 | Limited | "limited" when the soft rate limit applied. |
-| Stage | Starts at **New lead**, or **Call booked** for a booking. The dropdown holds: New lead, Qualified, Call booked, Diagnostic proposed, Diagnostic signed, Programme proposed, Programme signed, Embedded, Lost. |
+| Stage | Starts at **New lead**, or **Call booked** for a booking. Blank for a limited row, which stays out of the pipeline. The dropdown holds: New lead, Qualified, Call booked, Diagnostic proposed, Diagnostic signed, Programme proposed, Programme signed, Embedded, Lost. |
 | Owner, Next action | You. |
-| Notes | The script fills the full message, the engagement asked about, and a tool's result; you add to it. |
+| Notes | The script fills the full message, the engagement asked about, a tool's result, and for a booking the call time in Asia/Dubai (for example "Call: Fri, 2 Oct 2026, 13:00 GST (Asia/Dubai, UTC+4)"); you add to it. |
 
 ## Testing
 

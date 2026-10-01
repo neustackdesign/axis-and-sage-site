@@ -67,11 +67,14 @@ export const bookCallHref = "/contact#book";
 
 /**
  * Home hero: "Sunset on Lagos skyline" by Chibuzo Nwaneri, Unsplash License (https://unsplash.com/photos/gE3ign9Lx1Q).
- * Served from Unsplash's CDN (images.unsplash.com is in next.config images.remotePatterns). To self-host, save it at
- * about 2400px wide in public/images/ and point src there.
+ * Self-hosted as a 3200×1800 landscape crop at `src` (run `pnpm fetch:hero` to create it). Until that file exists,
+ * the hero falls back to the same landscape crop from Unsplash's CDN (`remote`), so nothing ships broken.
  */
 export const heroImage = {
-  src: "https://images.unsplash.com/photo-1638437155671-167865b8bd49?auto=format&fit=crop&w=2400&q=80",
+  src: "/images/axis-sage/lagos-sunset-chibuzo-nwaneri.jpg",
+  remote: "https://images.unsplash.com/photo-1638437155671-167865b8bd49?auto=format&fit=crop&crop=entropy&w=3200&h=1800&q=82&fm=jpg",
+  width: 3200,
+  height: 1800,
   alt: "The Lagos skyline across the water at sunset.",
   credit: "LAGOS AT SUNSET · PHOTO: CHIBUZO NWANERI / UNSPLASH",
 };

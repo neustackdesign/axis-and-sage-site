@@ -93,13 +93,25 @@ test("Apps Script soft limit: the sixth lead in 10 minutes from one IP hash is a
   const replies = [];
   for (let i = 0; i < 6; i++) replies.push(s.post(signBody(lead({ email: `p${i}@example.com` }), SECRET)).limited);
   assert.deepEqual(replies, [false, false, false, false, false, true]);
-  assert.deepEqual(s.sheets.get("Leads").rows.slice(1).map((r) => r[13]), ["", "", "", "", "", "limited"]);
+  const rows = s.sheets.get("Leads").rows.slice(1);
+  assert.deepEqual(rows.map((r) => r[13]), ["", "", "", "", "", "limited"]);
+  assert.deepEqual(rows.map((r) => r[14]), ["New lead", "New lead", "New lead", "New lead", "New lead", ""], "a limited row keeps no Stage");
 });
 
 test("Apps Script soft limit: the fourth lead in an hour from one email is limited", () => {
   const s = sandbox();
   for (let i = 0; i < 4; i++) s.post(signBody(lead({ ipHash: `ip${i}` }), SECRET));
-  assert.deepEqual(s.sheets.get("Leads").rows.slice(1).map((r) => r[13]), ["", "", "", "limited"]);
+  const rows = s.sheets.get("Leads").rows.slice(1);
+  assert.deepEqual(rows.map((r) => r[13]), ["", "", "", "limited"]);
+  assert.deepEqual(rows.map((r) => r[14]), ["New lead", "New lead", "New lead", ""], "a limited row keeps no Stage");
+});
+
+test("Apps Script: a booking's Notes carry the call time in Asia/Dubai", () => {
+  const s = sandbox();
+  s.post(signBody(lead({ source: "booking", sentence: "We need investors to commit.", booking: { startTime: "2026-10-02T09:00:00Z", startTimeLocal: "Fri, 2 Oct 2026, 13:00 GST (Asia/Dubai, UTC+4)", timeZone: "Asia/Dubai" } }), SECRET));
+  const row = s.sheets.get("Leads").rows[1];
+  assert.equal(row[6], "We need investors to commit.");
+  assert.match(row[17], /Call: Fri, 2 Oct 2026, 13:00 GST \(Asia\/Dubai, UTC\+4\)/);
 });
 
 test("Apps Script: bookings start at Call booked and are never limited", () => {

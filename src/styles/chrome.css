@@ -49,6 +49,7 @@
 .drawer-foot { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
 .drawer-foot .btn { width: 100%; }
 .drawer-foot-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: var(--text-muted); }
+.drawer-close-hidden:focus-visible { position: static !important; width: auto; height: auto; margin: 0; clip: auto; overflow: visible; min-height: 44px; border: 1px solid var(--charcoal-900); background: transparent; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 
 @media (max-width: 1119px) {
   .nav-desktop { display: none; }

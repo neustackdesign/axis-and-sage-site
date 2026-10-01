@@ -31,7 +31,7 @@ export function personLd(p: Person) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: p.name,
-    jobTitle: p.title.replace(/\s*\[.*?\]\s*/g, "").replace(/&\s*$/, "").trim() || undefined,
+    jobTitle: p.title,
     description: p.line,
     url: abs(`/people/${p.slug}`),
     worksFor: { "@id": orgId() },

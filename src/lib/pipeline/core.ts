@@ -31,7 +31,8 @@ export type SheetPayload = {
   name?: string; email?: string; company?: string; role?: string; message?: string;
   who?: string; what?: string; when?: string; sentence?: string; heard?: string; heardDetail?: string; engagement?: string;
   tool?: string; summary?: string; result?: unknown; shareUrl?: string; diagnosticUrl?: string;
-  booking?: unknown;
+  /** Cal.com bookings: startTime is UTC ISO; startTimeLocal is the same moment in Asia/Dubai, zone spelled out. */
+  booking?: { title?: string; startTime?: string; startTimeLocal?: string; timeZone?: string };
   /** Sent to the Sheet for its rate limit only. Never stored in Blob. */
   ipHash?: string;
   utm?: { first?: Touch; last?: Touch };

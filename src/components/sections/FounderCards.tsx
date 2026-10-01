@@ -15,6 +15,7 @@ export function FounderCards() {
               <div>
                 <h3 className="founder-name">{p.name}</h3>
                 <p className="founder-role">{p.title}</p>
+                <p className="founder-practice t-label">{p.practice.toUpperCase()}</p>
               </div>
             </div>
             <p className="founder-line">{p.line}</p>

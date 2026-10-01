@@ -114,7 +114,7 @@ export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant })
 
       {groups.map((key) => menu === key ? <Dropdown key={key} id={`nav-panel-${navGroups[key].key}`} group={navGroups[key]} onNavigate={close} /> : null)}
 
-      <div className="drawer" id="nav-drawer" hidden={!drawer} ref={drawerRef} aria-label="Menu">
+      <div className="drawer" id="nav-drawer" hidden={!drawer} ref={drawerRef} role="dialog" aria-modal="true" aria-label="Site menu">
         <div className="wrap drawer-inner">
           <ul className="drawer-list">
             {(["whatWeDo"] as MenuKey[]).map((key) => (
@@ -138,6 +138,8 @@ export function SiteHeader({ variant = "default" }: { variant?: HeaderVariant })
             <Link className="btn btn-primary" href={bookCallHref} onClick={close}>Book a call</Link>
             {whatsappHref() ? <a className="text-link" href={whatsappHref()!}>WhatsApp us · {contact.whatsappNumber}<span className="text-link-arrow" aria-hidden="true">▸</span></a> : null}
             <div className="drawer-foot-meta t-label"><span>ABU DHABI · DUBAI · LAGOS</span><a href={`mailto:${contact.email}`}>{contact.email.toUpperCase()}</a></div>
+            {/* The visible CLOSE button sits in the bar, outside the dialog; this one keeps closing reachable inside it. */}
+            <button type="button" className="sr-only drawer-close-hidden" onClick={() => { setDrawer(false); drawerButton.current?.focus(); }}>Close menu</button>
           </div>
         </div>
       </div>

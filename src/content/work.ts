@@ -14,6 +14,13 @@ export type ActionKey = (typeof actions)[number]["key"];
 
 export const actionLabel = (key: ActionKey) => actions.find((a) => a.key === key)!.label;
 
+/**
+ * Where a piece of work comes from: an Axis & Sage engagement, or a founder's own track record before or outside
+ * the firm. Set only where the content states it outright; leave it unset until the founders confirm the rest.
+ */
+export const provenanceLabels = { engagement: "AXIS & SAGE ENGAGEMENT", principal: "PRINCIPAL TRACK RECORD" } as const;
+export type Provenance = keyof typeof provenanceLabels;
+
 export type WorkItem = {
   slug: string;
   name: string;
@@ -22,18 +29,22 @@ export type WorkItem = {
   actions: ActionKey[];
   line: string;
   hasCase?: boolean;
+  provenance?: Provenance;
 };
 
+// Provenance is set only where the existing content states it: GV Solutions ("Axis & Sage holds the COO seat");
+// Venture Garden Group and the NSIP work (Ifeanyi, inside the group); Farmcrowdy (Tomiwa's first design hire role),
+// Mular and Earlybean (co-founded) and Kolibri (Tomiwa at Learning Equality). Everything else awaits the founders.
 export const workIndex: WorkItem[] = [
-  { slug: "gv-solutions", name: "GV Solutions", sector: "Advisory and technology services", roles: ["EMBEDDED"], actions: ["teams-execute"], line: "Two firms merged into one. Axis & Sage holds the COO seat.", hasCase: true },
-  { slug: "venture-garden-group", name: "Venture Garden Group", sector: "Technology group", roles: ["RAN"], actions: ["teams-execute"], line: "Group governance, delegation of authority, board pay, CEO reward and a redesigned share scheme.", hasCase: true },
-  { slug: "national-social-investment-programme", name: "National Social Investment Programme", sector: "Public programme", roles: ["ADVISED"], actions: ["users-adopt"], line: "Consulting lead within the group across four national social investment programmes." },
+  { slug: "gv-solutions", name: "GV Solutions", sector: "Advisory and technology services", roles: ["EMBEDDED"], actions: ["teams-execute"], line: "Two firms merged into one. Axis & Sage holds the COO seat.", hasCase: true, provenance: "engagement" },
+  { slug: "venture-garden-group", name: "Venture Garden Group", sector: "Technology group", roles: ["RAN"], actions: ["teams-execute"], line: "Group governance, delegation of authority, board pay, CEO reward and a redesigned share scheme.", hasCase: true, provenance: "principal" },
+  { slug: "national-social-investment-programme", name: "National Social Investment Programme", sector: "Public programme", roles: ["ADVISED"], actions: ["users-adopt"], line: "Consulting lead within the group across four national social investment programmes.", provenance: "principal" },
   { slug: "galaxy-backbone-1gov", name: "Galaxy Backbone · 1Gov.ng", sector: "Government technology", roles: ["ADVISED"], actions: ["users-adopt"], line: "Led the ease-of-doing-business workstream and the 1Gov.ng single-window vision." },
-  { slug: "farmcrowdy", name: "Farmcrowdy", sector: "Agriculture investment", roles: ["BUILT", "RAN"], actions: ["customers-buy"], line: "First-time mobile sponsorship conversion from 18% to 60%.", hasCase: true },
-  { slug: "mular", name: "Mular", sector: "Payments", roles: ["FOUNDED"], actions: ["customers-buy"], line: "$2.1M+ processed across 19K+ transactions.", hasCase: true },
-  { slug: "earlybean", name: "Earlybean", sector: "Family finance", roles: ["FOUNDED"], actions: ["users-adopt"], line: "3,416 active users; Techstars '23; Web Summit Qatar PITCH top three." },
+  { slug: "farmcrowdy", name: "Farmcrowdy", sector: "Agriculture investment", roles: ["BUILT", "RAN"], actions: ["customers-buy"], line: "First-time mobile sponsorship conversion from 18% to 60%.", hasCase: true, provenance: "principal" },
+  { slug: "mular", name: "Mular", sector: "Payments", roles: ["FOUNDED"], actions: ["customers-buy"], line: "$2.1M+ processed across 19K+ transactions.", hasCase: true, provenance: "principal" },
+  { slug: "earlybean", name: "Earlybean", sector: "Family finance", roles: ["FOUNDED"], actions: ["users-adopt"], line: "3,416 active users; Techstars '23; Web Summit Qatar PITCH top three.", provenance: "principal" },
   { slug: "lion-hospitality-partners", name: "Lion Hospitality Partners", sector: "Hospitality, 14 venues", roles: ["RAN"], actions: ["teams-execute"], line: "31,324 paid orders and ₦1.66bn (about US$1.25M) processed in five months across the order, payment and kitchen systems." },
-  { slug: "kolibri", name: "Kolibri · Learning Equality", sector: "Education", roles: ["BUILT"], actions: ["users-adopt"], line: "85% better discoverability and 60% fewer failed imports in usability testing." },
+  { slug: "kolibri", name: "Kolibri · Learning Equality", sector: "Education", roles: ["BUILT"], actions: ["users-adopt"], line: "85% better discoverability and 60% fewer failed imports in usability testing.", provenance: "principal" },
   { slug: "adpipe", name: "AdPipe", sector: "Enterprise video", roles: ["BUILT"], actions: ["customers-buy"], line: "AI-assisted creation workflows, designed during the period leading into AdPipe's first announced $3M seed." },
   { slug: "nature-roots", name: "Nature Roots", sector: "Agri-commodities", roles: ["ADVISED"], actions: ["partners-sign", "investors-commit"], line: "Brand, packaging and identity that took the company into retail channels.", hasCase: true },
   { slug: "uganda-investor-summit", name: "Uganda Investor Summit", sector: "Investment convening", roles: ["ADVISED"], actions: ["investors-commit"], line: "Strategy, investor narrative and identity for a national investment conference.", hasCase: true },
@@ -44,6 +55,12 @@ export const workIndex: WorkItem[] = [
 ];
 
 export const workBySlug = (slug: string) => workIndex.find((w) => w.slug === slug);
+
+/** The provenance label for a piece of work, or null while it is unconfirmed. */
+export const provenanceOf = (slug: string) => {
+  const p = workBySlug(slug)?.provenance;
+  return p ? provenanceLabels[p] : null;
+};
 
 export type Chip = { label: string; kind: "role" | "conversion" };
 const role = (label: Role): Chip => ({ label, kind: "role" });
@@ -58,6 +75,7 @@ export type SelectedCase = {
   moved: string;
 };
 
+/** Candidates for the homepage. Only cases with a confirmed provenance are featured (see featuredWork). */
 export const selectedWork: SelectedCase[] = [
   { slug: "gv-solutions", name: "GV Solutions", chips: [role("EMBEDDED"), conv("TEAMS EXECUTE")], needed: "Two firms to work as one company.", changed: "Merger design, operating model, and group interfaces for finance, legal, brand and technology.", moved: "GV Solutions formed. Axis & Sage holds the COO seat." },
   { slug: "venture-garden-group", name: "Venture Garden Group", chips: [role("RAN"), conv("TEAMS EXECUTE")], needed: "Executives across a pan-African group to decide at the right level and be rewarded for the right things.", changed: "Governance framework and delegation of authority, board pay, CEO reward, employee share scheme.", moved: "One written way of deciding across the group." },
@@ -66,6 +84,9 @@ export const selectedWork: SelectedCase[] = [
   { slug: "nature-roots", name: "Nature Roots", chips: [role("ADVISED"), conv("PARTNERS SIGN"), conv("INVESTORS COMMIT")], needed: "Retail buyers and investors to trust a young organic-commodities brand.", changed: "Brand strategy, packaging system and digital identity.", moved: "Entry into retail channels; the founder credits the work with investor confidence and new partnerships." },
   { slug: "uganda-investor-summit", name: "Uganda Investor Summit", chips: [role("ADVISED"), conv("INVESTORS COMMIT")], needed: "International investors and policymakers to see Uganda as a regional capital hub.", changed: "Event strategy, stakeholder mapping, investor narrative and identity.", moved: "A narrative that, in the client's words, resonated with local policymakers and international investors." },
 ];
+
+/** Featured on the homepage: selected cases whose provenance is confirmed. Others return once the founders map them. */
+export const featuredWork = selectedWork.filter((c) => provenanceOf(c.slug));
 
 export type StatTileData = { numeral: string; label: string; tag: string; source?: string };
 
