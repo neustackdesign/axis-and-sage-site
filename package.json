@@ -18,6 +18,7 @@
     "check:placeholders": "node scripts/check-placeholders.mjs --force",
     "sanity:seed": "tsx scripts/sanity-seed.mts",
     "sanity:verify": "tsx scripts/sanity-seed.mts --verify",
+    "sanity:export": "tsx scripts/sanity-export.mts",
     "studio:validate": "pnpm --dir studio validate",
     "studio:build": "pnpm --dir studio build"
   },

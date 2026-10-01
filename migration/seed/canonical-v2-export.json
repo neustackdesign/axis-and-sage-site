@@ -1,0 +1,4444 @@
+{
+  "manifest": {
+    "projectId": "dltrl1ld",
+    "dataset": "production",
+    "documentCount": 71,
+    "typeCounts": {
+      "companySettings": 1,
+      "homePageV2": 1,
+      "conversionMethod": 1,
+      "sitePage": 8,
+      "person": 2,
+      "practice": 4,
+      "workItem": 16,
+      "testimonialQuote": 4,
+      "engagement": 7,
+      "faqItem": 8,
+      "libraryItem": 11,
+      "toolContent": 6,
+      "legalPage": 2
+    },
+    "generatedFromCommit": "a618820718d97fc4f6307c5a6f62307679e04701",
+    "contentChecksum": "sha256:92819c38ff57f99a8ff29a450ae3b3ccfbc2fbf122dd3e47b5a033f73188433f",
+    "assets": [
+      {
+        "ref": "image-a185f2e2010886c9d656a1c7c03b265d35a5f09d-900x683-jpg",
+        "file": "public/images/axis-sage/portraits/portrait-1.jpg"
+      },
+      {
+        "ref": "image-499a64b157c0a645aab48f024bb8d98e67635f56-300x300-png",
+        "file": "public/images/axis-sage/portraits/portrait-2.png"
+      },
+      {
+        "ref": "image-f39598157777ba5bafb855e3eaf981257c5c7d89-140x140-jpg",
+        "file": "public/images/axis-sage/portraits/portrait-6.jpg"
+      }
+    ]
+  },
+  "documents": [
+    {
+      "_id": "axisSage-tool-conversion-scorecard",
+      "_type": "toolContent",
+      "seedKey": "tool:conversion-scorecard",
+      "title": "Conversion Scorecard",
+      "slug": {
+        "_type": "slug",
+        "current": "conversion-scorecard"
+      },
+      "eyebrow": "SCORECARD · 6 MIN",
+      "badge": "FREE",
+      "intro": "Who isn't acting, and is it the terms or the moment? Six minutes.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Take the Scorecard",
+      "glyph": "moment",
+      "order": 1,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Conversion Scorecard (free 6-minute self-assessment) | Axis & Sage",
+        "description": "Who isn't acting, and is it the terms or the moment? Six minutes.",
+        "ogTitle": "Conversion Scorecard (free 6-minute self-assessment)"
+      }
+    },
+    {
+      "_id": "axisSage-tool-conversion-value-calculator",
+      "_type": "toolContent",
+      "seedKey": "tool:conversion-value-calculator",
+      "title": "What's a lift worth?",
+      "slug": {
+        "_type": "slug",
+        "current": "conversion-value-calculator"
+      },
+      "eyebrow": "CALCULATOR",
+      "badge": "NGN · USD · AED",
+      "intro": "Put a number on moving the needle, for customers, investors or your team.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Open the calculator",
+      "glyph": "money",
+      "order": 2,
+      "seo": {
+        "_type": "asSeo",
+        "title": "What's a lift worth? Conversion value calculator (free) | Axis & Sage",
+        "description": "Put a number on moving the needle, for customers, investors or your team.",
+        "ogTitle": "What's a lift worth? Conversion value calculator (free)"
+      }
+    },
+    {
+      "_id": "axisSage-tool-delegation-of-authority-builder",
+      "_type": "toolContent",
+      "seedKey": "tool:delegation-of-authority-builder",
+      "title": "Delegation of Authority Builder",
+      "slug": {
+        "_type": "slug",
+        "current": "delegation-of-authority-builder"
+      },
+      "eyebrow": "BUILDER",
+      "badge": "FREE",
+      "intro": "Who can approve what, up to which limit. Download the matrix.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Build the matrix",
+      "glyph": "document",
+      "order": 3,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Delegation of Authority Matrix Builder (free template) | Axis & Sage",
+        "description": "Who can approve what, up to which limit. Download the matrix.",
+        "ogTitle": "Delegation of Authority Matrix Builder (free template)"
+      }
+    },
+    {
+      "_id": "axisSage-tool-esop-calculator",
+      "_type": "toolContent",
+      "seedKey": "tool:esop-calculator",
+      "title": "ESOP & Share Pool Calculator",
+      "slug": {
+        "_type": "slug",
+        "current": "esop-calculator"
+      },
+      "eyebrow": "CALCULATOR",
+      "badge": "FREE",
+      "intro": "Pool size, dilution, vesting and what a grant is worth.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Open the calculator",
+      "glyph": "terms",
+      "order": 4,
+      "seo": {
+        "_type": "asSeo",
+        "title": "ESOP & Share Pool Calculator (free dilution and vesting model) | Axis & Sage",
+        "description": "Pool size, dilution, vesting and what a grant is worth.",
+        "ogTitle": "ESOP & Share Pool Calculator (free dilution and vesting model)"
+      }
+    },
+    {
+      "_id": "axisSage-tool-investor-readiness-score",
+      "_type": "toolContent",
+      "seedKey": "tool:investor-readiness-score",
+      "title": "Investor Readiness Score",
+      "slug": {
+        "_type": "slug",
+        "current": "investor-readiness-score"
+      },
+      "eyebrow": "CHECKLIST · 25 CHECKS",
+      "badge": "FREE",
+      "intro": "Twenty-five checks investors will run on you. See your gaps first.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Check your readiness",
+      "glyph": "investors",
+      "order": 5,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Investor Readiness Score (free 25-point checklist) | Axis & Sage",
+        "description": "Twenty-five checks investors will run on you. See your gaps first.",
+        "ogTitle": "Investor Readiness Score (free 25-point checklist)"
+      }
+    },
+    {
+      "_id": "axisSage-tool-pitch-deck-outline",
+      "_type": "toolContent",
+      "seedKey": "tool:pitch-deck-outline",
+      "title": "Pitch Deck Outline",
+      "slug": {
+        "_type": "slug",
+        "current": "pitch-deck-outline"
+      },
+      "eyebrow": "OUTLINE · 12 QUESTIONS",
+      "badge": "FREE",
+      "intro": "Answer twelve questions and get a twelve-slide outline.",
+      "instructions": "No sign-up to use it. Leave an email only if you want the full model or a copy of your results.",
+      "cta": "Start the outline",
+      "glyph": "screen",
+      "order": 6,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Pitch Deck Outline (free 12-slide template) | Axis & Sage",
+        "description": "Answer twelve questions and get a twelve-slide outline.",
+        "ogTitle": "Pitch Deck Outline (free 12-slide template)"
+      }
+    },
+    {
+      "_id": "axisSage-testimonial-kunmi",
+      "_type": "testimonialQuote",
+      "seedKey": "testimonial:kunmi",
+      "quote": "Axis & Sage's work was quick, high quality, and completely transformed our brand, making it both beautiful and highly functional. The team was professional and communicative even under crushing deadlines. We couldn't be happier with the result — it gave our investors confidence and unlocked new partnerships.",
+      "name": "Kunmi Demuren",
+      "title": "Founder",
+      "company": "Nature Roots"
+    },
+    {
+      "_id": "axisSage-testimonial-bunmi",
+      "_type": "testimonialQuote",
+      "seedKey": "testimonial:bunmi",
+      "quote": "Axis & Sage has been a thought partner in the truest sense. They see beyond design into the heart of business strategy — aligning brand, structure, and execution seamlessly.",
+      "name": "Bunmi Akinyemiju",
+      "title": "Group CEO",
+      "company": "Venture Garden Group",
+      "portrait": {
+        "_type": "image",
+        "alt": "Bunmi Akinyemiju",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-a185f2e2010886c9d656a1c7c03b265d35a5f09d-900x683-jpg"
+        }
+      }
+    },
+    {
+      "_id": "axisSage-testimonial-temi",
+      "_type": "testimonialQuote",
+      "seedKey": "testimonial:temi",
+      "quote": "Their frameworks for brand and product positioning have consistently given our portfolio companies the edge in competitive markets.",
+      "name": "Temi Olateru",
+      "title": "Investor",
+      "portrait": {
+        "_type": "image",
+        "alt": "Temi Olateru",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-f39598157777ba5bafb855e3eaf981257c5c7d89-140x140-jpg"
+        }
+      }
+    },
+    {
+      "_id": "axisSage-testimonial-onyeka",
+      "_type": "testimonialQuote",
+      "seedKey": "testimonial:onyeka",
+      "quote": "Tomiwa helped sharpen our identity. The clarity, speed, and creativity meant that our brand matched our ambitions and spoke to investors, farmers, and customers alike.",
+      "name": "Onyeka Akumah",
+      "title": "Founder",
+      "company": "Farmcrowdy",
+      "portrait": {
+        "_type": "image",
+        "alt": "Onyeka Akumah",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-499a64b157c0a645aab48f024bb8d98e67635f56-300x300-png"
+        }
+      }
+    },
+    {
+      "_id": "axisSage-person-ifeanyi-monyei",
+      "_type": "person",
+      "seedKey": "person:ifeanyi-monyei",
+      "name": "Ifeanyi Monyei",
+      "slug": {
+        "_type": "slug",
+        "current": "ifeanyi-monyei"
+      },
+      "publicTitle": "Co-founder",
+      "practiceTitle": "Strategy & Investment",
+      "initials": "IM",
+      "focus": "terms",
+      "principleLine": "Designs the terms people act on.",
+      "shortBio": "Governance, delegation of authority, executive and employee incentives, operating structure, partnerships and business integration. More than a decade across Venture Garden Group and its portfolio, through consulting leadership and Chief of Staff to Group Strategy & Growth.",
+      "longBio": "Ifeanyi works on the terms behind action: governance, operating structure, incentives, partnerships and commercial decision-making.\n\nShe has spent more than a decade across Venture Garden Group and its portfolio, progressing through consulting leadership and Chief of Staff to Group Strategy & Growth. Her work includes governance and delegation of authority, executive reward, employee equity, operating models, business integration and partnership structures.\n\nShe designed and led the merger that created GV Solutions and now serves as its fractional COO through Axis & Sage.\n\nEarlier work includes consulting leadership across programmes within Nigeria's National Social Investment Programme and public-sector transformation through Galaxy Backbone.\n\nAt Axis & Sage, she leads Strategy & Investment.",
+      "proofPoints": [
+        "Governance framework, delegation of authority, board pay policy, executive reward and employee share scheme redesign across Venture Garden Group.",
+        "Designed and led the merger that created GV Solutions, where she now serves as fractional COO through Axis & Sage.",
+        "Consulting leadership across programmes within Nigeria's National Social Investment Programme."
+      ],
+      "selectedWork": [
+        "Governance framework and delegation of authority, board compensation policy, CEO total reward framework and employee share scheme redesign for Venture Garden Group.",
+        "The iGate Advisory and Garden Ventures merger that created GV Solutions.",
+        "Consulting lead within the group on Nigeria's National Social Investment Programme (GEEP, National Cash Transfer, Home-Grown School Feeding, N-Power).",
+        "On secondment to Galaxy Backbone, led the ease-of-doing-business reform workstream and the 1Gov.ng single-window vision.",
+        "Payments strategy with Glenbrook Partners.",
+        "Co-founded Business Analyst Community Nigeria."
+      ],
+      "extra": {
+        "label": "Craft",
+        "value": "Founder equity, incentive design, board reward, and the commercial terms of agreements across several jurisdictions."
+      },
+      "education": "BSc Biochemistry, University of Benin.",
+      "basedIn": "Dubai.",
+      "links": [],
+      "relatedWork": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-venture-garden-group",
+          "_key": "venture-garden-group-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-gv-solutions",
+          "_key": "gv-solutions-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-national-social-investment-programme",
+          "_key": "national-social-investment-programme-2"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-galaxy-backbone-1gov",
+          "_key": "galaxy-backbone-1gov-3"
+        }
+      ],
+      "order": 1,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Ifeanyi Monyei | Axis & Sage",
+        "description": "Ifeanyi Monyei, Co-founder, Strategy & Investment. Designs the terms people act on."
+      }
+    },
+    {
+      "_id": "axisSage-person-tomiwa-ogunmodede",
+      "_type": "person",
+      "seedKey": "person:tomiwa-ogunmodede",
+      "name": "Tomiwa Ogunmodede",
+      "slug": {
+        "_type": "slug",
+        "current": "tomiwa-ogunmodede"
+      },
+      "publicTitle": "Co-founder",
+      "practiceTitle": "Product & Technology",
+      "initials": "TO",
+      "focus": "moments",
+      "principleLine": "Designs the moments people act in.",
+      "shortBio": "Products, services and brands where money, access and trust meet. More than ten years across fintech, education, hospitality and AI-assisted products, from first design hire to co-founder.",
+      "longBio": "Tomiwa works on the moments where people act: products, interfaces, services and systems.\n\nHe has more than ten years across product design, technology, growth and venture building in fintech, education, hospitality and operational software.\n\nHe was the first design hire at Farmcrowdy, where internal funnel tracking recorded first-time mobile sponsorship conversion moving from 18% to 60%. He spent nearly four years as Senior Product Designer on Learning Equality's Kolibri platform, co-founded Mular and Earlybean, and currently leads Product & Technology for Lion Hospitality Partners.\n\nAt Axis & Sage, he leads Product & Technology.",
+      "proofPoints": [
+        "Farmcrowdy: first-time mobile sponsorship conversion from 18% to 60%, recorded by internal funnel tracking.",
+        "Co-founded Mular: $2.1M+ processed across 19K+ transactions.",
+        "Designed for Kolibri, a learning platform used in 220+ countries and territories."
+      ],
+      "selectedWork": [
+        "Farmcrowdy sponsorship flow and first design system (300+ components).",
+        "Kolibri content import and coach tools; contributor to the open-source Kolibri Design System (500+ components).",
+        "Mular's payment, rates and settlement experience.",
+        "Earlybean's four-sided permissions for parents, children, schools and merchants.",
+        "Lion Hospitality Partners' order, payment, kitchen and inventory systems.",
+        "AdPipe's AI-assisted creation workflows."
+      ],
+      "extra": {
+        "label": "Writing and speaking",
+        "value": "BusinessDay SME Clinic panellist (2025); Learning Equality, “When the Internet Behaves Like Weather” (2026)."
+      },
+      "education": "BSc Computer Science with Economics, Obafemi Awolowo University.",
+      "basedIn": "Dubai and Lagos.",
+      "links": [],
+      "relatedWork": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-farmcrowdy",
+          "_key": "farmcrowdy-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-kolibri",
+          "_key": "kolibri-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-mular",
+          "_key": "mular-2"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-earlybean",
+          "_key": "earlybean-3"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-lion-hospitality-partners",
+          "_key": "lion-hospitality-partners-4"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-adpipe",
+          "_key": "adpipe-5"
+        }
+      ],
+      "order": 2,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Tomiwa Ogunmodede | Axis & Sage",
+        "description": "Tomiwa Ogunmodede, Co-founder, Product & Technology. Designs the moments people act in."
+      }
+    },
+    {
+      "_id": "axisSage-work-gv-solutions",
+      "_type": "workItem",
+      "seedKey": "work:gv-solutions",
+      "title": "GV Solutions",
+      "slug": {
+        "_type": "slug",
+        "current": "gv-solutions"
+      },
+      "entity": "GV Solutions",
+      "sector": "Advisory and technology services",
+      "roles": [
+        "EMBEDDED"
+      ],
+      "actions": [
+        "teams-execute"
+      ],
+      "provenance": "axisAndSage",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "Two firms merged into one. Axis & Sage holds the COO seat.",
+      "needed": "Two firms to work as one company.",
+      "changed": "Merger design, operating model, and group interfaces for finance, legal, brand and technology.",
+      "moved": "GV Solutions formed. Axis & Sage holds the COO seat.",
+      "metrics": [
+        {
+          "_key": "m0",
+          "_type": "asStat",
+          "numeral": "2 → 1",
+          "label": "iGate Advisory and Garden Ventures merged into GV Solutions",
+          "source": "COMPANY RECORDS"
+        }
+      ],
+      "relatedPeople": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        }
+      ],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-strategy-and-investment",
+          "_key": "strategy-and-investment-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-embedded-leadership",
+          "_key": "embedded-leadership-1"
+        }
+      ],
+      "caseStudy": true,
+      "caseNeeded": "TWO FIRMS TO WORK AS ONE COMPANY.",
+      "inTheWay": [],
+      "changes": [],
+      "artifact": "merger",
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-delegation-of-authority-builder",
+          "_key": "delegation-of-authority-builder-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-esop-calculator",
+          "_key": "esop-calculator-1"
+        }
+      ],
+      "order": 1,
+      "seo": {
+        "_type": "asSeo",
+        "title": "GV Solutions · Work | Axis & Sage",
+        "description": "GV Solutions: GV Solutions formed. Axis & Sage holds the COO seat."
+      }
+    },
+    {
+      "_id": "axisSage-work-venture-garden-group",
+      "_type": "workItem",
+      "seedKey": "work:venture-garden-group",
+      "title": "Venture Garden Group",
+      "slug": {
+        "_type": "slug",
+        "current": "venture-garden-group"
+      },
+      "entity": "Venture Garden Group",
+      "sector": "Technology group",
+      "roles": [
+        "RAN"
+      ],
+      "actions": [
+        "teams-execute"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "Group governance, delegation of authority, board pay, CEO reward and a redesigned share scheme.",
+      "needed": "Executives across a pan-African group to decide at the right level and be rewarded for the right things.",
+      "changed": "Governance framework and delegation of authority, board pay, CEO reward, employee share scheme.",
+      "moved": "One written way of deciding across the group.",
+      "metrics": [],
+      "quote": {
+        "_type": "reference",
+        "_ref": "axisSage-testimonial-bunmi"
+      },
+      "relatedPeople": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        }
+      ],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-strategy-and-investment",
+          "_key": "strategy-and-investment-0"
+        }
+      ],
+      "caseStudy": true,
+      "caseNeeded": "EXECUTIVES ACROSS A PAN-AFRICAN GROUP TO DECIDE AT THE RIGHT LEVEL AND BE REWARDED FOR THE RIGHT THINGS.",
+      "inTheWay": [],
+      "changes": [],
+      "artifact": "governance",
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-delegation-of-authority-builder",
+          "_key": "delegation-of-authority-builder-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-esop-calculator",
+          "_key": "esop-calculator-1"
+        }
+      ],
+      "order": 2,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Venture Garden Group · Work | Axis & Sage",
+        "description": "Venture Garden Group: One written way of deciding across the group."
+      }
+    },
+    {
+      "_id": "axisSage-work-national-social-investment-programme",
+      "_type": "workItem",
+      "seedKey": "work:national-social-investment-programme",
+      "title": "National Social Investment Programme",
+      "slug": {
+        "_type": "slug",
+        "current": "national-social-investment-programme"
+      },
+      "entity": "National Social Investment Programme",
+      "sector": "Public programme",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "users-adopt"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "Consulting lead within the group across four national social investment programmes.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-strategy-and-investment",
+          "_key": "strategy-and-investment-0"
+        }
+      ],
+      "caseStudy": false,
+      "order": 3,
+      "seo": {
+        "_type": "asSeo",
+        "title": "National Social Investment Programme · Work | Axis & Sage",
+        "description": "National Social Investment Programme: Consulting lead within the group across four national social investment programmes."
+      }
+    },
+    {
+      "_id": "axisSage-work-galaxy-backbone-1gov",
+      "_type": "workItem",
+      "seedKey": "work:galaxy-backbone-1gov",
+      "title": "Galaxy Backbone · 1Gov.ng",
+      "slug": {
+        "_type": "slug",
+        "current": "galaxy-backbone-1gov"
+      },
+      "entity": "Galaxy Backbone",
+      "sector": "Government technology",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "users-adopt"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "Led the ease-of-doing-business workstream and the 1Gov.ng single-window vision.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 4,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Galaxy Backbone · 1Gov.ng · Work | Axis & Sage",
+        "description": "Galaxy Backbone · 1Gov.ng: Led the ease-of-doing-business workstream and the 1Gov.ng single-window vision."
+      }
+    },
+    {
+      "_id": "axisSage-work-farmcrowdy",
+      "_type": "workItem",
+      "seedKey": "work:farmcrowdy",
+      "title": "Farmcrowdy",
+      "slug": {
+        "_type": "slug",
+        "current": "farmcrowdy"
+      },
+      "entity": "Farmcrowdy",
+      "sector": "Agriculture investment",
+      "roles": [
+        "BUILT",
+        "RAN"
+      ],
+      "actions": [
+        "customers-buy"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "First-time mobile sponsorship conversion from 18% to 60%.",
+      "needed": "City professionals to sponsor farms they would never visit.",
+      "changed": "The first-time mobile sponsorship flow, and farm updates in text, photo and video from planting to harvest.",
+      "moved": "First-time mobile sponsorship conversion from 18% to 60%.",
+      "metrics": [
+        {
+          "_key": "m0",
+          "_type": "asStat",
+          "numeral": "18% → 60%",
+          "label": "First-time mobile sponsorship conversion",
+          "source": "INTERNAL FUNNEL TRACKING"
+        },
+        {
+          "_key": "m1",
+          "_type": "asStat",
+          "numeral": "$1.86M → $9.14M",
+          "label": "Tracked sponsorship volume",
+          "source": "DURING THE WIDER PRODUCT AND GROWTH PERIOD"
+        },
+        {
+          "_key": "m2",
+          "_type": "asStat",
+          "numeral": "45,000+",
+          "label": "Customers",
+          "source": "Company records"
+        }
+      ],
+      "quote": {
+        "_type": "reference",
+        "_ref": "axisSage-testimonial-onyeka"
+      },
+      "relatedPeople": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-0"
+        }
+      ],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-product-and-technology",
+          "_key": "product-and-technology-0"
+        }
+      ],
+      "caseStudy": true,
+      "years": "2017–2020",
+      "intro": "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest.",
+      "caseNeeded": "FIRST-TIME VISITORS TO SPONSOR A FARM ON THEIR PHONE.",
+      "inTheWay": [
+        "Sponsors would never see the farm.",
+        "The first-time mobile flow asked for commitment before it built trust.",
+        "Nothing showed a sponsor their money at work."
+      ],
+      "changes": [
+        {
+          "_key": "ch0",
+          "_type": "asCaseChange",
+          "tag": "MOMENT",
+          "text": "Redesigned the first-time mobile sponsorship flow."
+        },
+        {
+          "_key": "ch1",
+          "_type": "asCaseChange",
+          "tag": "MOMENT",
+          "text": "Farm updates in text, photo and video, from planting to harvest."
+        },
+        {
+          "_key": "ch2",
+          "_type": "asCaseChange",
+          "tag": "MOMENT",
+          "text": "The company's first design system, 300+ components, across sponsorship, tracking and farmer tools."
+        },
+        {
+          "_key": "ch3",
+          "_type": "asCaseChange",
+          "tag": "TERMS",
+          "text": "Then led product and growth as Head of Products and Program Management."
+        }
+      ],
+      "artifact": "farmcrowdy",
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-scorecard",
+          "_key": "conversion-scorecard-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-value-calculator",
+          "_key": "conversion-value-calculator-1"
+        }
+      ],
+      "order": 5,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Farmcrowdy · Work | Axis & Sage",
+        "description": "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest."
+      }
+    },
+    {
+      "_id": "axisSage-work-mular",
+      "_type": "workItem",
+      "seedKey": "work:mular",
+      "title": "Mular",
+      "slug": {
+        "_type": "slug",
+        "current": "mular"
+      },
+      "entity": "Mular",
+      "sector": "Payments",
+      "roles": [
+        "FOUNDED"
+      ],
+      "actions": [
+        "customers-buy"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "$2.1M+ processed across 19K+ transactions.",
+      "needed": "Senders and businesses to trust a stablecoin-to-Naira transfer with real money.",
+      "changed": "Rates and fees shown before commitment; clear settlement states and recovery.",
+      "moved": "$2.1M+ processed, 5,400+ users, 80+ business accounts.",
+      "metrics": [
+        {
+          "_key": "m0",
+          "_type": "asStat",
+          "numeral": "$2.1M+",
+          "label": "Processed across 19K+ transactions in live production",
+          "source": "COMPANY RECORDS"
+        }
+      ],
+      "relatedPeople": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-0"
+        }
+      ],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-product-and-technology",
+          "_key": "product-and-technology-0"
+        }
+      ],
+      "caseStudy": true,
+      "caseNeeded": "SENDERS AND BUSINESSES TO TRUST A STABLECOIN-TO-NAIRA TRANSFER WITH REAL MONEY.",
+      "inTheWay": [],
+      "changes": [],
+      "artifact": "mular",
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-scorecard",
+          "_key": "conversion-scorecard-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-value-calculator",
+          "_key": "conversion-value-calculator-1"
+        }
+      ],
+      "order": 6,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Mular · Work | Axis & Sage",
+        "description": "Mular: $2.1M+ processed, 5,400+ users, 80+ business accounts."
+      }
+    },
+    {
+      "_id": "axisSage-work-earlybean",
+      "_type": "workItem",
+      "seedKey": "work:earlybean",
+      "title": "Earlybean",
+      "slug": {
+        "_type": "slug",
+        "current": "earlybean"
+      },
+      "entity": "Earlybean",
+      "sector": "Family finance",
+      "roles": [
+        "FOUNDED"
+      ],
+      "actions": [
+        "users-adopt"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "3,416 active users; Techstars '23; Web Summit Qatar PITCH top three.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 7,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Earlybean · Work | Axis & Sage",
+        "description": "Earlybean: 3,416 active users; Techstars '23; Web Summit Qatar PITCH top three."
+      }
+    },
+    {
+      "_id": "axisSage-work-lion-hospitality-partners",
+      "_type": "workItem",
+      "seedKey": "work:lion-hospitality-partners",
+      "title": "Lion Hospitality Partners",
+      "slug": {
+        "_type": "slug",
+        "current": "lion-hospitality-partners"
+      },
+      "entity": "Lion Hospitality Partners",
+      "sector": "Hospitality, 14 venues",
+      "roles": [
+        "RAN"
+      ],
+      "actions": [
+        "teams-execute"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "31,324 paid orders and ₦1.66bn (about US$1.25M) processed in five months across the order, payment and kitchen systems.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 8,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Lion Hospitality Partners · Work | Axis & Sage",
+        "description": "Lion Hospitality Partners: 31,324 paid orders and ₦1.66bn (about US$1.25M) processed in five months across the order, payment and kitchen systems."
+      }
+    },
+    {
+      "_id": "axisSage-work-kolibri",
+      "_type": "workItem",
+      "seedKey": "work:kolibri",
+      "title": "Kolibri · Learning Equality",
+      "slug": {
+        "_type": "slug",
+        "current": "kolibri"
+      },
+      "entity": "Kolibri",
+      "sector": "Education",
+      "roles": [
+        "BUILT"
+      ],
+      "actions": [
+        "users-adopt"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "85% better discoverability and 60% fewer failed imports in usability testing.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-product-and-technology",
+          "_key": "product-and-technology-0"
+        }
+      ],
+      "caseStudy": false,
+      "order": 9,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Kolibri · Learning Equality · Work | Axis & Sage",
+        "description": "Kolibri · Learning Equality: 85% better discoverability and 60% fewer failed imports in usability testing."
+      }
+    },
+    {
+      "_id": "axisSage-work-adpipe",
+      "_type": "workItem",
+      "seedKey": "work:adpipe",
+      "title": "AdPipe",
+      "slug": {
+        "_type": "slug",
+        "current": "adpipe"
+      },
+      "entity": "AdPipe",
+      "sector": "Enterprise video",
+      "roles": [
+        "BUILT"
+      ],
+      "actions": [
+        "customers-buy"
+      ],
+      "provenance": "principalTrackRecord",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "AI-assisted creation workflows, designed during the period leading into AdPipe's first announced $3M seed.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 10,
+      "seo": {
+        "_type": "asSeo",
+        "title": "AdPipe · Work | Axis & Sage",
+        "description": "AdPipe: AI-assisted creation workflows, designed during the period leading into AdPipe's first announced $3M seed."
+      }
+    },
+    {
+      "_id": "axisSage-work-nature-roots",
+      "_type": "workItem",
+      "seedKey": "work:nature-roots",
+      "title": "Nature Roots",
+      "slug": {
+        "_type": "slug",
+        "current": "nature-roots"
+      },
+      "entity": "Nature Roots",
+      "sector": "Agri-commodities",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "partners-sign",
+        "investors-commit"
+      ],
+      "provenance": "axisAndSage",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "Brand, packaging and identity that took the company into retail channels.",
+      "needed": "Retail buyers and investors to trust a young organic-commodities brand.",
+      "changed": "Brand strategy, packaging system and digital identity.",
+      "moved": "Entry into retail channels; the founder credits the work with investor confidence and new partnerships.",
+      "metrics": [],
+      "quote": {
+        "_type": "reference",
+        "_ref": "axisSage-testimonial-kunmi"
+      },
+      "relatedPeople": [],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-brand-and-market",
+          "_key": "brand-and-market-0"
+        }
+      ],
+      "caseStudy": true,
+      "caseNeeded": "RETAIL BUYERS AND INVESTORS TO TRUST A YOUNG ORGANIC-COMMODITIES BRAND.",
+      "inTheWay": [],
+      "changes": [],
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-pitch-deck-outline",
+          "_key": "pitch-deck-outline-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-scorecard",
+          "_key": "conversion-scorecard-1"
+        }
+      ],
+      "order": 11,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Nature Roots · Work | Axis & Sage",
+        "description": "Nature Roots: Entry into retail channels; the founder credits the work with investor confidence and new partnerships."
+      }
+    },
+    {
+      "_id": "axisSage-work-uganda-investor-summit",
+      "_type": "workItem",
+      "seedKey": "work:uganda-investor-summit",
+      "title": "Uganda Investor Summit",
+      "slug": {
+        "_type": "slug",
+        "current": "uganda-investor-summit"
+      },
+      "entity": "Uganda Investor Summit",
+      "sector": "Investment convening",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "investors-commit"
+      ],
+      "provenance": "axisAndSage",
+      "featured": true,
+      "homepageFeatured": true,
+      "summary": "Strategy, investor narrative and identity for a national investment conference.",
+      "needed": "International investors and policymakers to see Uganda as a regional capital hub.",
+      "changed": "Event strategy, stakeholder mapping, investor narrative and identity.",
+      "moved": "A narrative that, in the client's words, resonated with local policymakers and international investors.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-brand-and-market",
+          "_key": "brand-and-market-0"
+        }
+      ],
+      "caseStudy": true,
+      "caseNeeded": "INTERNATIONAL INVESTORS AND POLICYMAKERS TO SEE UGANDA AS A REGIONAL CAPITAL HUB.",
+      "inTheWay": [],
+      "changes": [],
+      "relatedTools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-pitch-deck-outline",
+          "_key": "pitch-deck-outline-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-investor-readiness-score",
+          "_key": "investor-readiness-score-1"
+        }
+      ],
+      "order": 12,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Uganda Investor Summit · Work | Axis & Sage",
+        "description": "Uganda Investor Summit: A narrative that, in the client's words, resonated with local policymakers and international investors."
+      }
+    },
+    {
+      "_id": "axisSage-work-lasric",
+      "_type": "workItem",
+      "seedKey": "work:lasric",
+      "title": "LASRIC",
+      "slug": {
+        "_type": "slug",
+        "current": "lasric"
+      },
+      "entity": "LASRIC",
+      "sector": "Public innovation",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "partners-sign"
+      ],
+      "featured": false,
+      "homepageFeatured": false,
+      "summary": "An identity that helped a public innovation council speak to government and private partners.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 13,
+      "seo": {
+        "_type": "asSeo",
+        "title": "LASRIC · Work | Axis & Sage",
+        "description": "LASRIC: An identity that helped a public innovation council speak to government and private partners."
+      }
+    },
+    {
+      "_id": "axisSage-work-africa-agrighg-summit",
+      "_type": "workItem",
+      "seedKey": "work:africa-agrighg-summit",
+      "title": "Africa AgriGHG Innovation and Investment Summit",
+      "slug": {
+        "_type": "slug",
+        "current": "africa-agrighg-summit"
+      },
+      "entity": "Africa AgriGHG Innovation and Investment Summit",
+      "sector": "Investment convening",
+      "roles": [
+        "ADVISED"
+      ],
+      "actions": [
+        "investors-commit"
+      ],
+      "featured": false,
+      "homepageFeatured": false,
+      "summary": "Summit platform designed with Qinisa Initiative.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 14,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Africa AgriGHG Innovation and Investment Summit · Work | Axis & Sage",
+        "description": "Africa AgriGHG Innovation and Investment Summit: Summit platform designed with Qinisa Initiative."
+      }
+    },
+    {
+      "_id": "axisSage-work-university-innovation-platform",
+      "_type": "workItem",
+      "seedKey": "work:university-innovation-platform",
+      "title": "University innovation platform",
+      "slug": {
+        "_type": "slug",
+        "current": "university-innovation-platform"
+      },
+      "entity": "University innovation platform",
+      "sector": "Public innovation",
+      "roles": [
+        "BUILT"
+      ],
+      "actions": [
+        "partners-sign"
+      ],
+      "featured": false,
+      "homepageFeatured": false,
+      "summary": "Puts university innovations in front of industry, with an IP-protection framework.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [],
+      "caseStudy": false,
+      "order": 15,
+      "seo": {
+        "_type": "asSeo",
+        "title": "University innovation platform · Work | Axis & Sage",
+        "description": "University innovation platform: Puts university innovations in front of industry, with an IP-protection framework."
+      }
+    },
+    {
+      "_id": "axisSage-work-oui-life",
+      "_type": "workItem",
+      "seedKey": "work:oui-life",
+      "title": "OUI Life",
+      "slug": {
+        "_type": "slug",
+        "current": "oui-life"
+      },
+      "entity": "OUI Life",
+      "sector": "Beauty manufacturing",
+      "roles": [
+        "BUILT"
+      ],
+      "actions": [
+        "customers-buy"
+      ],
+      "provenance": "axisAndSage",
+      "featured": true,
+      "homepageFeatured": false,
+      "summary": "Rebuilt site with engagement routes and a launch-economics calculator; the client reports a substantial increase in qualified leads.",
+      "metrics": [],
+      "relatedPeople": [],
+      "relatedPractices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-brand-and-market",
+          "_key": "brand-and-market-0"
+        }
+      ],
+      "caseStudy": false,
+      "order": 16,
+      "seo": {
+        "_type": "asSeo",
+        "title": "OUI Life · Work | Axis & Sage",
+        "description": "OUI Life: Rebuilt site with engagement routes and a launch-economics calculator; the client reports a substantial increase in qualified leads."
+      }
+    },
+    {
+      "_id": "axisSage-practice-strategy-and-investment",
+      "_type": "practice",
+      "seedKey": "practice:strategy-and-investment",
+      "title": "Strategy & Investment",
+      "slug": {
+        "_type": "slug",
+        "current": "strategy-and-investment"
+      },
+      "section": "whatWeDo",
+      "eyebrow": "WHAT WE DO · STRATEGY & INVESTMENT",
+      "headline": "Get the terms right.",
+      "summary": "The structure, incentives and deals that decide whether investors, partners and teams want to act.",
+      "navDescription": "Get the terms right.",
+      "ledBy": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        }
+      ],
+      "whenToCall": [
+        "You're raising and investors stall after the first meeting.",
+        "You've merged or restructured and teams still work the old way.",
+        "Managers escalate everything because nobody knows their limits.",
+        "Your share scheme isn't keeping the people you need.",
+        "A partner deal is agreed in principle and stuck in drafting."
+      ],
+      "capabilities": [
+        "Corporate and growth strategy",
+        "Market entry",
+        "Operating-model and organisation design",
+        "Governance and delegation of authority",
+        "Executive and employee incentives",
+        "Investment readiness",
+        "Transaction-structuring support",
+        "Merger design and integration",
+        "Partnership and joint-venture commercial terms"
+      ],
+      "howItWorks": [],
+      "connectsCopy": "Terms decide whether people want to act. Product & Technology and Brand & Market make sure they can.",
+      "proof": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-gv-solutions",
+          "_key": "gv-solutions-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-venture-garden-group",
+          "_key": "venture-garden-group-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-national-social-investment-programme",
+          "_key": "national-social-investment-programme-2"
+        }
+      ],
+      "tools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-delegation-of-authority-builder",
+          "_key": "delegation-of-authority-builder-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-esop-calculator",
+          "_key": "esop-calculator-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-investor-readiness-score",
+          "_key": "investor-readiness-score-2"
+        }
+      ],
+      "order": 1,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Strategy & Investment for Africa and the GCC | Axis & Sage",
+        "description": "Governance, delegation of authority, incentives and share schemes, investment readiness, mergers and market entry.",
+        "ogTitle": "Strategy & Investment for Africa and the GCC"
+      }
+    },
+    {
+      "_id": "axisSage-practice-product-and-technology",
+      "_type": "practice",
+      "seedKey": "practice:product-and-technology",
+      "title": "Product & Technology",
+      "slug": {
+        "_type": "slug",
+        "current": "product-and-technology"
+      },
+      "section": "whatWeDo",
+      "eyebrow": "WHAT WE DO · PRODUCT & TECHNOLOGY",
+      "headline": "Make the moment clear.",
+      "summary": "The products, flows and systems where customers pay, users sign up and teams do the work.",
+      "navDescription": "Make the moment clear.",
+      "ledBy": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-0"
+        }
+      ],
+      "whenToCall": [
+        "People start sign-up and don't finish.",
+        "Customers trust you until the payment screen.",
+        "Your teams work around the system instead of in it.",
+        "You're launching a product and need it right the first time.",
+        "You want AI in a workflow without losing control of the output."
+      ],
+      "capabilities": [
+        "Product strategy",
+        "Service and experience design",
+        "Digital platforms and MVPs",
+        "Operational software (orders, payments, inventory, approvals)",
+        "AI-assisted workflows with human review",
+        "Design systems",
+        "Build and implementation support"
+      ],
+      "howItWorks": [],
+      "connectsCopy": "Moments decide whether people can act. They only work when the terms behind them do.",
+      "proof": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-farmcrowdy",
+          "_key": "farmcrowdy-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-mular",
+          "_key": "mular-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-kolibri",
+          "_key": "kolibri-2"
+        }
+      ],
+      "tools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-scorecard",
+          "_key": "conversion-scorecard-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-value-calculator",
+          "_key": "conversion-value-calculator-1"
+        }
+      ],
+      "order": 2,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Product and technology advisory | Axis & Sage",
+        "description": "Product strategy, platforms and operational software designed around the moment customers and teams act.",
+        "ogTitle": "Product and technology advisory"
+      }
+    },
+    {
+      "_id": "axisSage-practice-brand-and-market",
+      "_type": "practice",
+      "seedKey": "practice:brand-and-market",
+      "title": "Brand & Market",
+      "slug": {
+        "_type": "slug",
+        "current": "brand-and-market"
+      },
+      "section": "whatWeDo",
+      "eyebrow": "WHAT WE DO · BRAND & MARKET",
+      "headline": "Say it so they act.",
+      "summary": "The positioning, identity and go-to-market that tell customers, partners and investors why to act, and why now.",
+      "navDescription": "Say it so they act.",
+      "ledByLabel": "both founders",
+      "ledBy": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "whenToCall": [
+        "Your market doesn't understand what you've become.",
+        "You're entering Nigeria, the UAE or Saudi Arabia and the story doesn't travel.",
+        "Investors like the numbers and forget the company.",
+        "You're convening investors or partners and need them in the room and committed.",
+        "Your website gets visits and no enquiries."
+      ],
+      "capabilities": [
+        "Positioning and proposition",
+        "Identity systems and packaging",
+        "Go-to-market and launch",
+        "Investor and stakeholder narrative",
+        "Convenings and summits",
+        "Websites with tools that qualify buyers"
+      ],
+      "howItWorks": [],
+      "connectsCopy": "The promise sits across both halves. It sets the terms people expect and the moment they meet.",
+      "proof": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-nature-roots",
+          "_key": "nature-roots-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-uganda-investor-summit",
+          "_key": "uganda-investor-summit-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-oui-life",
+          "_key": "oui-life-2"
+        }
+      ],
+      "tools": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-pitch-deck-outline",
+          "_key": "pitch-deck-outline-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-tool-conversion-scorecard",
+          "_key": "conversion-scorecard-1"
+        }
+      ],
+      "order": 3,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Positioning, brand and go-to-market | Axis & Sage",
+        "description": "Positioning, identity, investor narrative and convenings that get customers, partners and investors to act.",
+        "ogTitle": "Positioning, brand and go-to-market"
+      }
+    },
+    {
+      "_id": "axisSage-practice-embedded-leadership",
+      "_type": "practice",
+      "seedKey": "practice:embedded-leadership",
+      "title": "Embedded leadership",
+      "slug": {
+        "_type": "slug",
+        "current": "embedded-leadership"
+      },
+      "section": "engagements",
+      "eyebrow": "ENGAGEMENTS · EMBEDDED LEADERSHIP",
+      "headline": "A principal in the seat.",
+      "summary": "When the fix needs someone who owns it, one of us takes a named role (COO, head of product or strategy lead) for a fixed term.",
+      "ledBy": [],
+      "whenToCall": [],
+      "capabilities": [],
+      "howItWorks": [
+        "A named role",
+        "Defined hours",
+        "A fixed term, reviewed every quarter",
+        "Contracted through Axis & Sage"
+      ],
+      "proof": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-gv-solutions",
+          "_key": "gv-solutions-0"
+        }
+      ],
+      "proofNote": "GV Solutions, where Ifeanyi Monyei has been fractional COO since August 2026. Her remit covers business operations, the group's interfaces across finance, legal, brand, technology and data, delivery oversight and team performance.",
+      "whenItFits": "You need operating ownership now, and a permanent hire is the wrong answer or too slow.",
+      "tools": [],
+      "order": 4,
+      "seo": {
+        "_type": "asSeo",
+        "title": "Fractional COO and embedded leadership | Axis & Sage",
+        "description": "A principal in a named role for a fixed term when the fix needs someone who owns it.",
+        "ogTitle": "Fractional COO and embedded leadership"
+      }
+    },
+    {
+      "_id": "axisSage-engagement-conversion-scorecard",
+      "_type": "engagement",
+      "seedKey": "engagement:conversion-scorecard",
+      "name": "Conversion Scorecard",
+      "slug": {
+        "_type": "slug",
+        "current": "conversion-scorecard"
+      },
+      "tier": "core",
+      "recommended": false,
+      "publishedPrice": false,
+      "duration": "6 minutes",
+      "bring": "Six minutes",
+      "weDo": "Nothing yet. It's yours.",
+      "youGet": "Your Terms and Moments scores and the three blockers to fix first",
+      "cta": {
+        "_type": "asCta",
+        "label": "Take the Scorecard",
+        "href": "/tools/conversion-scorecard"
+      },
+      "order": 1,
+      "priceLabel": "Free"
+    },
+    {
+      "_id": "axisSage-engagement-conversion-diagnostic",
+      "_type": "engagement",
+      "seedKey": "engagement:conversion-diagnostic",
+      "name": "Conversion Diagnostic",
+      "slug": {
+        "_type": "slug",
+        "current": "conversion-diagnostic"
+      },
+      "tier": "core",
+      "recommended": true,
+      "publishedPrice": true,
+      "duration": "10 working days",
+      "bring": "One sentence: we need [who] to [do what] by [when]",
+      "weDo": "Interview the people who need to act, walk the path they take, read your numbers",
+      "youGet": "The baseline, what's in the way, the fixes worth making and a fixed quote",
+      "cta": {
+        "_type": "asCta",
+        "label": "Book a Diagnostic",
+        "href": "/contact?engagement=diagnostic#book"
+      },
+      "order": 2,
+      "publicPrice": 5000,
+      "currency": "USD",
+      "uaePrice": 18500,
+      "creditRule": "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout.",
+      "feeExplainer": "Ten working days of principal time, the interviews, the analysis, the report and a fixed quote for the fix.",
+      "timeline": [
+        {
+          "_key": "d0",
+          "_type": "asTimelineDay",
+          "when": "Day 1",
+          "what": "We agree the sentence and how we'll measure it."
+        },
+        {
+          "_key": "d1",
+          "_type": "asTimelineDay",
+          "when": "Days 2–5",
+          "what": "We interview the people who need to act and the people who own the path."
+        },
+        {
+          "_key": "d2",
+          "_type": "asTimelineDay",
+          "when": "Days 5–7",
+          "what": "We walk the path and read the numbers."
+        },
+        {
+          "_key": "d3",
+          "_type": "asTimelineDay",
+          "when": "Days 8–9",
+          "what": "We tag every blocker (terms, moment or both) and draft the fixes and the quote."
+        },
+        {
+          "_key": "d4",
+          "_type": "asTimelineDay",
+          "when": "Day 10",
+          "what": "Readout with your leadership team."
+        }
+      ]
+    },
+    {
+      "_id": "axisSage-engagement-conversion-programme",
+      "_type": "engagement",
+      "seedKey": "engagement:conversion-programme",
+      "name": "Conversion Programme",
+      "slug": {
+        "_type": "slug",
+        "current": "conversion-programme"
+      },
+      "tier": "core",
+      "recommended": false,
+      "publishedPrice": false,
+      "duration": "4 to 12 weeks",
+      "bring": "The Diagnostic",
+      "weDo": "Fix what's in the way, in the strategy, the product or the brand, with your team",
+      "youGet": "The change built and running, and the new number",
+      "cta": {
+        "_type": "asCta",
+        "label": "Talk to us",
+        "href": "/contact?engagement=programme"
+      },
+      "order": 3,
+      "priceLabel": "Fixed fee, quoted after the Diagnostic"
+    },
+    {
+      "_id": "axisSage-engagement-embedded-leadership",
+      "_type": "engagement",
+      "seedKey": "engagement:embedded-leadership",
+      "name": "Embedded leadership",
+      "slug": {
+        "_type": "slug",
+        "current": "embedded-leadership"
+      },
+      "tier": "core",
+      "recommended": false,
+      "publishedPrice": false,
+      "duration": "3 months minimum",
+      "bring": "A role to fill",
+      "weDo": "A principal takes a named role: COO, head of product or strategy lead",
+      "youGet": "Operating ownership without a permanent hire",
+      "cta": {
+        "_type": "asCta",
+        "label": "How it works",
+        "href": "/engagements/embedded-leadership"
+      },
+      "order": 4,
+      "priceLabel": "Monthly, quoted"
+    },
+    {
+      "_id": "axisSage-engagement-investor-readiness-sprint",
+      "_type": "engagement",
+      "seedKey": "engagement:investor-readiness-sprint",
+      "name": "Investor Readiness Sprint",
+      "slug": {
+        "_type": "slug",
+        "current": "investor-readiness-sprint"
+      },
+      "tier": "specialist",
+      "recommended": false,
+      "publishedPrice": false,
+      "priceLabel": "Quoted on a 30-minute call",
+      "duration": "3 weeks",
+      "intro": "For founders and CEOs raising. We cover both halves:",
+      "points": [
+        "The terms: cap table, share scheme, data room, valuation logic.",
+        "The moment: narrative, deck, investor list and process."
+      ],
+      "cta": {
+        "_type": "asCta",
+        "label": "Talk to us",
+        "href": "/contact?engagement=Investor%20Readiness%20Sprint"
+      },
+      "order": 10
+    },
+    {
+      "_id": "axisSage-engagement-portfolio-review",
+      "_type": "engagement",
+      "seedKey": "engagement:portfolio-review",
+      "name": "Portfolio Review",
+      "slug": {
+        "_type": "slug",
+        "current": "portfolio-review"
+      },
+      "tier": "specialist",
+      "recommended": false,
+      "publishedPrice": false,
+      "priceLabel": "Quoted on a 30-minute call",
+      "duration": "4 weeks",
+      "intro": "For investors and groups. The Diagnostic run across three companies, with one report for the board.",
+      "points": [],
+      "cta": {
+        "_type": "asCta",
+        "label": "Talk to us",
+        "href": "/contact?engagement=Portfolio%20Review"
+      },
+      "order": 11
+    },
+    {
+      "_id": "axisSage-engagement-leadership-working-session",
+      "_type": "engagement",
+      "seedKey": "engagement:leadership-working-session",
+      "name": "Leadership working session",
+      "slug": {
+        "_type": "slug",
+        "current": "leadership-working-session"
+      },
+      "tier": "specialist",
+      "recommended": false,
+      "publishedPrice": false,
+      "priceLabel": "Quoted on a 30-minute call",
+      "duration": "half a day",
+      "intro": "Your leadership team in one room, one sentence each. We leave you with the three actions that matter and what's in the way of each.",
+      "points": [],
+      "cta": {
+        "_type": "asCta",
+        "label": "Talk to us",
+        "href": "/contact?engagement=Leadership%20working%20session"
+      },
+      "order": 12
+    },
+    {
+      "_id": "axisSage-faq-0",
+      "_type": "faqItem",
+      "seedKey": "faq:0",
+      "question": "What does Axis & Sage do?",
+      "answer": "We get the people your business depends on to act: investors, partners, teams and customers. We find what's stopping them in the terms or the moment, and fix it in the strategy, the product or the brand.",
+      "category": "general",
+      "placements": [
+        "conversionDesign",
+        "engagements"
+      ],
+      "order": 1
+    },
+    {
+      "_id": "axisSage-faq-1",
+      "_type": "faqItem",
+      "seedKey": "faq:1",
+      "question": "Is Conversion Design the same as conversion rate optimisation?",
+      "answer": "Conversion rate optimisation improves pages. We start earlier, with the structure, incentives and deal terms that decide whether people want to act. Then we design the product and the message that decide whether they can.",
+      "category": "general",
+      "placements": [
+        "conversionDesign",
+        "engagements"
+      ],
+      "order": 2
+    },
+    {
+      "_id": "axisSage-faq-2",
+      "_type": "faqItem",
+      "seedKey": "faq:2",
+      "question": "Who do you work with?",
+      "answer": "Owners, CEOs and investors of groups and growing businesses; founders raising capital; and institutions running programmes. We work across Africa and the GCC.",
+      "category": "general",
+      "placements": [
+        "conversionDesign",
+        "engagements"
+      ],
+      "order": 3
+    },
+    {
+      "_id": "axisSage-faq-3",
+      "_type": "faqItem",
+      "seedKey": "faq:3",
+      "question": "How does an engagement start?",
+      "answer": "With the Scorecard or a 30-minute call, then a fixed-fee Conversion Diagnostic. You know the price before we start.",
+      "category": "general",
+      "placements": [
+        "engagements"
+      ],
+      "order": 4
+    },
+    {
+      "_id": "axisSage-faq-4",
+      "_type": "faqItem",
+      "seedKey": "faq:4",
+      "question": "Do you raise capital or place investments?",
+      "answer": "No. We prepare businesses, materials and commercial structures for investor conversations. Clients and their licensed advisers manage solicitation, placement and regulated activity.",
+      "category": "general",
+      "placements": [
+        "engagements"
+      ],
+      "order": 5
+    },
+    {
+      "_id": "axisSage-faq-5",
+      "_type": "faqItem",
+      "seedKey": "faq:5",
+      "question": "Who does the work?",
+      "answer": "The founders lead every engagement. Specialists we've worked with join when the fix needs them, and they're named in the proposal.",
+      "category": "general",
+      "placements": [
+        "engagements"
+      ],
+      "order": 6
+    },
+    {
+      "_id": "axisSage-faq-6",
+      "_type": "faqItem",
+      "seedKey": "faq:6",
+      "question": "Where are you based?",
+      "answer": "We're registered in Masdar City Free Zone, Abu Dhabi, and the founders are in Dubai and Lagos. We work across Africa and the GCC, and in person when it helps.",
+      "category": "general",
+      "placements": [
+        "conversionDesign",
+        "engagements"
+      ],
+      "order": 7
+    },
+    {
+      "_id": "axisSage-faq-7",
+      "_type": "faqItem",
+      "seedKey": "faq:7",
+      "question": "How quickly do you reply?",
+      "answer": "Within one working day, with a clear next step.",
+      "category": "general",
+      "placements": [
+        "engagements"
+      ],
+      "order": 8
+    },
+    {
+      "_id": "axisSage-library-what-the-conversion-diagnostic-fee-pays-for",
+      "_type": "libraryItem",
+      "seedKey": "library:what-the-conversion-diagnostic-fee-pays-for",
+      "type": "guide",
+      "title": "What the Conversion Diagnostic fee pays for",
+      "slug": {
+        "_type": "slug",
+        "current": "what-the-conversion-diagnostic-fee-pays-for"
+      },
+      "category": "ENGAGEMENTS",
+      "status": "published",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 1,
+      "excerpt": "Every engagement begins with the action you need and a fixed fee. Nothing starts without both.",
+      "publishedAt": "2026-09-30",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "h1",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "h1s0",
+              "text": "What the fee pays for",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "p1",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "p1s0",
+              "text": "Ten working days of principal time, the interviews, the analysis, the report and a fixed quote for the fix.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "q1",
+          "style": "blockquote",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "q1s0",
+              "text": "“You know the price before we start.”",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "h2",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "h2s0",
+              "text": "The ten working days",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "asEngagementTimeline",
+          "_key": "tl",
+          "engagement": {
+            "_type": "reference",
+            "_ref": "axisSage-engagement-conversion-diagnostic"
+          }
+        },
+        {
+          "_type": "asCallout",
+          "_key": "co",
+          "label": "CALLOUT · YOU BRING",
+          "text": "One sentence: we need [who] to [do what] by [when]."
+        },
+        {
+          "_type": "asToolEmbed",
+          "_key": "te",
+          "tool": {
+            "_type": "reference",
+            "_ref": "axisSage-tool-conversion-scorecard"
+          }
+        },
+        {
+          "_type": "block",
+          "_key": "h3",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "h3s0",
+              "text": "What you get",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "p3",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "p3s0",
+              "text": "We interview the people who need to act, walk the path they take, read your numbers. You get the baseline, what's in the way, the fixes worth making and a fixed quote.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "h4",
+          "style": "h2",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "h4s0",
+              "text": "The credit",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "block",
+          "_key": "p4",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "p4s0",
+              "text": "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout. With the Scorecard or a 30-minute call, then a fixed-fee Conversion Diagnostic. You know the price before we start.",
+              "marks": []
+            }
+          ]
+        },
+        {
+          "_type": "asArticleEnd",
+          "_key": "end",
+          "headline": "Who needs to act?",
+          "cta": {
+            "_type": "asCta",
+            "label": "Book a 30-minute call",
+            "href": "/contact#book"
+          }
+        }
+      ],
+      "relatedTool": {
+        "_type": "reference",
+        "_ref": "axisSage-tool-conversion-scorecard"
+      },
+      "seo": {
+        "_type": "asSeo",
+        "title": "What the Conversion Diagnostic fee pays for | Axis & Sage",
+        "description": "Ten working days of principal time, the interviews, the analysis, the report and a fixed quote for the fix.",
+        "ogTitle": "What the Conversion Diagnostic fee pays for"
+      }
+    },
+    {
+      "_id": "axisSage-library-delegation-of-authority-template",
+      "_type": "libraryItem",
+      "seedKey": "library:delegation-of-authority-template",
+      "type": "guide",
+      "title": "Delegation of authority: a template for growing groups",
+      "slug": {
+        "_type": "slug",
+        "current": "delegation-of-authority-template"
+      },
+      "category": "GOVERNANCE",
+      "status": "comingSoon",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 2
+    },
+    {
+      "_id": "axisSage-library-designing-an-esop-in-nigeria",
+      "_type": "libraryItem",
+      "seedKey": "library:designing-an-esop-in-nigeria",
+      "type": "guide",
+      "title": "Designing an ESOP in Nigeria that keeps the people you need",
+      "slug": {
+        "_type": "slug",
+        "current": "designing-an-esop-in-nigeria"
+      },
+      "category": "INCENTIVES",
+      "status": "comingSoon",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 3
+    },
+    {
+      "_id": "axisSage-library-investor-readiness-checklist",
+      "_type": "libraryItem",
+      "seedKey": "library:investor-readiness-checklist",
+      "type": "guide",
+      "title": "The investor readiness checklist African founders get asked for",
+      "slug": {
+        "_type": "slug",
+        "current": "investor-readiness-checklist"
+      },
+      "category": "RAISING",
+      "status": "comingSoon",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 4
+    },
+    {
+      "_id": "axisSage-library-pitch-deck-guide-africa-gcc",
+      "_type": "libraryItem",
+      "seedKey": "library:pitch-deck-guide-africa-gcc",
+      "type": "guide",
+      "title": "The pitch deck guide for founders raising across Africa and the GCC",
+      "slug": {
+        "_type": "slug",
+        "current": "pitch-deck-guide-africa-gcc"
+      },
+      "category": "RAISING",
+      "status": "comingSoon",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 5
+    },
+    {
+      "_id": "axisSage-library-why-customers-stop-at-the-payment-screen",
+      "_type": "libraryItem",
+      "seedKey": "library:why-customers-stop-at-the-payment-screen",
+      "type": "guide",
+      "title": "Why customers stop at the payment screen",
+      "slug": {
+        "_type": "slug",
+        "current": "why-customers-stop-at-the-payment-screen"
+      },
+      "category": "MOMENTS",
+      "status": "comingSoon",
+      "authors": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "order": 6
+    },
+    {
+      "_id": "axisSage-library-template-delegation-of-authority-matrix",
+      "_type": "libraryItem",
+      "seedKey": "library:template-delegation-of-authority-matrix",
+      "type": "template",
+      "title": "Delegation of authority matrix",
+      "slug": {
+        "_type": "slug",
+        "current": "template-delegation-of-authority-matrix"
+      },
+      "format": ".xlsx",
+      "status": "draft",
+      "order": 100
+    },
+    {
+      "_id": "axisSage-library-template-board-charter",
+      "_type": "libraryItem",
+      "seedKey": "library:template-board-charter",
+      "type": "template",
+      "title": "Board charter",
+      "slug": {
+        "_type": "slug",
+        "current": "template-board-charter"
+      },
+      "format": ".docx",
+      "status": "draft",
+      "order": 101
+    },
+    {
+      "_id": "axisSage-library-template-esop-term-sheet",
+      "_type": "libraryItem",
+      "seedKey": "library:template-esop-term-sheet",
+      "type": "template",
+      "title": "ESOP term sheet",
+      "slug": {
+        "_type": "slug",
+        "current": "template-esop-term-sheet"
+      },
+      "format": ".docx",
+      "status": "draft",
+      "order": 102
+    },
+    {
+      "_id": "axisSage-library-template-investor-data-room-index",
+      "_type": "libraryItem",
+      "seedKey": "library:template-investor-data-room-index",
+      "type": "template",
+      "title": "Investor data room index",
+      "slug": {
+        "_type": "slug",
+        "current": "template-investor-data-room-index"
+      },
+      "format": ".xlsx",
+      "status": "draft",
+      "order": 103
+    },
+    {
+      "_id": "axisSage-library-template-pitch-deck-template",
+      "_type": "libraryItem",
+      "seedKey": "library:template-pitch-deck-template",
+      "type": "template",
+      "title": "Pitch deck template",
+      "slug": {
+        "_type": "slug",
+        "current": "template-pitch-deck-template"
+      },
+      "format": "slides",
+      "status": "draft",
+      "order": 104
+    },
+    {
+      "_id": "axisSage-legal-privacy",
+      "_type": "legalPage",
+      "seedKey": "legal:privacy",
+      "title": "Privacy notice",
+      "slug": {
+        "_type": "slug",
+        "current": "privacy"
+      },
+      "label": "PRIVACY",
+      "effectiveDate": "2026-10-01",
+      "effectiveLabel": "Last updated: October 2026",
+      "sections": [
+        {
+          "_key": "who-we-are",
+          "_type": "asLegalSection",
+          "anchor": "who-we-are",
+          "heading": "Who we are",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "who-we-are0",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "who-we-are0l0",
+                  "href": "mailto:info@axisandsage.com"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-we-are0s0",
+                  "text": "Axis & Sage Advisory Limited (\"Axis & Sage\", \"we\") is registered in Masdar City Free Zone, Abu Dhabi, United Arab Emirates. We decide how personal data collected through axisandsage.com is used, and we handle it in line with applicable data protection law. That includes the UAE's Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data and Nigeria's Data Protection Act 2023. Questions about this notice go to ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "who-we-are0s1",
+                  "text": "info@axisandsage.com",
+                  "marks": [
+                    "who-we-are0l0"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "who-we-are0s2",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "what-we-collect",
+          "_type": "asLegalSection",
+          "anchor": "what-we-collect",
+          "heading": "What we collect",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_0s0",
+                  "text": "Notes, forms and calls.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_0s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_0s2",
+                  "text": "When you send a note, use the \"Who needs to act?\" form or book a call, we collect your name, work email, company, role, the sentence you write, when it needs to happen, how you heard about us, and anything else you choose to tell us.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_1s0",
+                  "text": "Tools.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_1s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_1s2",
+                  "text": "When you finish a tool, we keep your answers and your result without your name or email, so we can see which tools help people. If you ask us to email you the result, we keep it with your email.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_2s0",
+                  "text": "Newsletter.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_2s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_2s2",
+                  "text": "When you subscribe to Terms & Moments, we keep your email address and your confirmation.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_3",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_3s0",
+                  "text": "Bookings.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_3s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_3s2",
+                  "text": "When you book a call, Cal.com passes us the details you give it.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_4",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_4s0",
+                  "text": "How you found us.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_4s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_4s2",
+                  "text": "We note the campaign link, the referring site and the first page you landed on. Your browser keeps this for 90 days and sends it to us only if you submit a form.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect0_5",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_5s0",
+                  "text": "Technical data.",
+                  "marks": [
+                    "strong"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_5s1",
+                  "text": " ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect0_5s2",
+                  "text": "We count page views with Vercel Web Analytics, which doesn't use cookies. To stop our forms being abused, we use a scrambled (hashed) version of your IP address and keep it for a few hours at most.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "what-we-collect1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "what-we-collect1s0",
+                  "text": "We don't ask for sensitive personal data. Please don't send it to us.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "why-we-use-it",
+          "_type": "asLegalSection",
+          "anchor": "why-we-use-it",
+          "heading": "Why we use it",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "why-we-use-it0_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it0_0s0",
+                  "text": "To reply to you and prepare for a conversation you asked for.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it0_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it0_1s0",
+                  "text": "To send you what you asked for, such as a tool result or a spreadsheet.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it0_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it0_2s0",
+                  "text": "To send the newsletter, only after you confirm your subscription.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it0_3",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it0_3s0",
+                  "text": "To see which pages and links help people reach us.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it0_4",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it0_4s0",
+                  "text": "To keep the site and our inboxes free of spam and abuse.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it1",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it1s0",
+                  "text": "We rely on:",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it2_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it2_0s0",
+                  "text": "your consent, for the newsletter",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it2_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it2_1s0",
+                  "text": "the steps you ask us to take before a possible engagement, for enquiries, bookings and tool emails",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it2_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it2_2s0",
+                  "text": "our legitimate interest in running and protecting our business, for analytics and security",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "why-we-use-it3",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "why-we-use-it3s0",
+                  "text": "You can withdraw consent at any time.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "who-else-handles-it",
+          "_type": "asLegalSection",
+          "anchor": "who-else-handles-it",
+          "heading": "Who else handles it",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it0s0",
+                  "text": "A small number of providers process data for us:",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it1_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it1_0s0",
+                  "text": "Vercel hosts the website. It briefly holds a copy of your message if our tracker can't be reached, and deletes it once the message arrives.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it1_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it1_1s0",
+                  "text": "Google Workspace runs our email and the tracker we use to follow up enquiries.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it1_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it1_2s0",
+                  "text": "Resend sends the emails our website sends you, such as our reply to your note and your tool results.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it1_3",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it1_3s0",
+                  "text": "MailerLite sends the newsletter.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it1_4",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it1_4s0",
+                  "text": "Cal.com runs our booking calendar.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "who-else-handles-it2",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "who-else-handles-it2s0",
+                  "text": "If you message us on WhatsApp, WhatsApp's own terms and privacy policy also apply. We don't sell personal data or share it for anyone else's marketing.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "international-transfers",
+          "_type": "asLegalSection",
+          "anchor": "international-transfers",
+          "heading": "International transfers",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "international-transfers0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "international-transfers0s0",
+                  "text": "Our providers may process data outside the UAE and Nigeria, including in the European Union and the United States. We choose providers that protect personal data with contractual and technical safeguards.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "how-long-we-keep-it",
+          "_type": "asLegalSection",
+          "anchor": "how-long-we-keep-it",
+          "heading": "How long we keep it",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "how-long-we-keep-it0_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "how-long-we-keep-it0_0s0",
+                  "text": "Enquiries and bookings: up to 24 months after our last contact. If we work together, we keep them for as long as our contract and the law require.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "how-long-we-keep-it0_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "how-long-we-keep-it0_1s0",
+                  "text": "Tool results without an email: up to 12 months.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "how-long-we-keep-it0_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "how-long-we-keep-it0_2s0",
+                  "text": "Newsletter subscriptions: until you unsubscribe. Every issue has an unsubscribe link.",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "how-long-we-keep-it0_3",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "how-long-we-keep-it0_3s0",
+                  "text": "Hashed IP addresses: a few hours at most.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "your-rights",
+          "_type": "asLegalSection",
+          "anchor": "your-rights",
+          "heading": "Your rights",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "your-rights0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights0s0",
+                  "text": "Depending on where you live, you can ask us to:",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "your-rights1_0",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights1_0s0",
+                  "text": "tell you what we hold about you",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "your-rights1_1",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights1_1s0",
+                  "text": "correct it or delete it",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "your-rights1_2",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights1_2s0",
+                  "text": "restrict how we use it, or object to it",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "your-rights1_3",
+              "style": "normal",
+              "listItem": "bullet",
+              "level": 1,
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights1_3s0",
+                  "text": "give you a copy in a portable form",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "_type": "block",
+              "_key": "your-rights2",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "your-rights2l0",
+                  "href": "mailto:info@axisandsage.com"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "your-rights2s0",
+                  "text": "Write to ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "your-rights2s1",
+                  "text": "info@axisandsage.com",
+                  "marks": [
+                    "your-rights2l0"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "your-rights2s2",
+                  "text": " and we'll reply within 30 days. You can also complain to your data protection authority, such as the UAE Data Office or the Nigeria Data Protection Commission.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "children",
+          "_type": "asLegalSection",
+          "anchor": "children",
+          "heading": "Children",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "children0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "children0s0",
+                  "text": "This site is for businesses. It isn't directed at anyone under 18.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "changes",
+          "_type": "asLegalSection",
+          "anchor": "changes",
+          "heading": "Changes",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "changes0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "changes0s0",
+                  "text": "When we change this notice, we'll update the date at the top.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Privacy notice | Axis & Sage",
+        "description": "How Axis & Sage Advisory collects, uses and protects personal data from axisandsage.com."
+      }
+    },
+    {
+      "_id": "axisSage-legal-terms",
+      "_type": "legalPage",
+      "seedKey": "legal:terms",
+      "title": "Terms of use",
+      "slug": {
+        "_type": "slug",
+        "current": "terms"
+      },
+      "label": "TERMS",
+      "effectiveDate": "2026-10-01",
+      "effectiveLabel": "Last updated: October 2026",
+      "sections": [
+        {
+          "_key": "about-these-terms",
+          "_type": "asLegalSection",
+          "anchor": "about-these-terms",
+          "heading": "1. About these terms",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "about-these-terms0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "about-these-terms0s0",
+                  "text": "These terms apply to your use of axisandsage.com, which is run by Axis & Sage Advisory Limited, Masdar City Free Zone, Abu Dhabi, United Arab Emirates. By using the site, you accept them.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "information-not-advice",
+          "_type": "asLegalSection",
+          "anchor": "information-not-advice",
+          "heading": "2. Information, not advice",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "information-not-advice0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "information-not-advice0s0",
+                  "text": "The site, guides and tools give general information. Tool results are illustrative estimates based on what you enter. They are not financial, legal, tax or investment advice, so don't rely on them without advice for your own situation. Nothing on the site is an offer to raise capital or to arrange investments.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "no-engagement",
+          "_type": "asLegalSection",
+          "anchor": "no-engagement",
+          "heading": "3. No engagement until we sign one",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "no-engagement0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "no-engagement0s0",
+                  "text": "Using the site, sending a note or booking a call doesn't make you our client. We work under a signed engagement letter that sets out the scope, fees and terms.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "our-content",
+          "_type": "asLegalSection",
+          "anchor": "our-content",
+          "heading": "4. Our content",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "our-content0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "our-content0s0",
+                  "text": "We own, or are licensed to use, the content on this site: the text, design, graphics, tools and templates. You may view it, and you may download templates and tool results for your own organisation's internal use. You may not copy, resell or republish our content, tools or templates without our written permission. Client names, logos and quotes belong to those clients.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "using-the-site",
+          "_type": "asLegalSection",
+          "anchor": "using-the-site",
+          "heading": "5. Using the site properly",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "using-the-site0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "using-the-site0s0",
+                  "text": "Don't try to break or overload the site, scrape it, or send spam or harmful material through our forms. We may block access that does.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "other-websites",
+          "_type": "asLegalSection",
+          "anchor": "other-websites",
+          "heading": "6. Other websites",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "other-websites0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "other-websites0s0",
+                  "text": "Links to other sites are there for convenience. We aren't responsible for their content or practices.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "liability",
+          "_type": "asLegalSection",
+          "anchor": "liability",
+          "heading": "7. Liability",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "liability0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "liability0s0",
+                  "text": "We provide the site as it is. We work to keep it accurate and available, but we can't guarantee either. As far as the law allows, we aren't liable for any loss arising from your use of the site or from relying on its content. Nothing in these terms limits any liability that the law doesn't allow to be limited.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "privacy",
+          "_type": "asLegalSection",
+          "anchor": "privacy",
+          "heading": "8. Privacy",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "privacy0",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "privacy0l0",
+                  "href": "/privacy"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "privacy0s0",
+                  "text": "Our ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "privacy0s1",
+                  "text": "privacy notice",
+                  "marks": [
+                    "privacy0l0"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "privacy0s2",
+                  "text": " explains how we handle personal data.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "governing-law",
+          "_type": "asLegalSection",
+          "anchor": "governing-law",
+          "heading": "9. Governing law",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "governing-law0",
+              "style": "normal",
+              "markDefs": [],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "governing-law0s0",
+                  "text": "These terms are governed by the laws of the Emirate of Abu Dhabi and the federal laws of the United Arab Emirates. The courts of Abu Dhabi have jurisdiction.",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "_key": "changes-and-contact",
+          "_type": "asLegalSection",
+          "anchor": "changes-and-contact",
+          "heading": "10. Changes and contact",
+          "body": [
+            {
+              "_type": "block",
+              "_key": "changes-and-contact0",
+              "style": "normal",
+              "markDefs": [
+                {
+                  "_type": "link",
+                  "_key": "changes-and-contact0l0",
+                  "href": "mailto:info@axisandsage.com"
+                }
+              ],
+              "children": [
+                {
+                  "_type": "span",
+                  "_key": "changes-and-contact0s0",
+                  "text": "We may update these terms. When we do, we'll change the date at the top. Questions go to ",
+                  "marks": []
+                },
+                {
+                  "_type": "span",
+                  "_key": "changes-and-contact0s1",
+                  "text": "info@axisandsage.com",
+                  "marks": [
+                    "changes-and-contact0l0"
+                  ]
+                },
+                {
+                  "_type": "span",
+                  "_key": "changes-and-contact0s2",
+                  "text": ".",
+                  "marks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Terms of use | Axis & Sage",
+        "description": "The terms that apply to your use of axisandsage.com."
+      }
+    },
+    {
+      "_id": "axisSagePage-engagements",
+      "_type": "sitePage",
+      "key": "engagements",
+      "hero": {
+        "label": "ENGAGEMENTS AND PRICING",
+        "title": "Start with one sentence. Know the price before we start.",
+        "sub": "Every engagement begins with the action you need and a fixed fee. Nothing starts without both."
+      },
+      "sections": [
+        {
+          "_key": "specialist",
+          "_type": "asSectionIntro",
+          "key": "specialist",
+          "label": "SPECIALIST",
+          "title": "Specialist engagements."
+        },
+        {
+          "_key": "diagnostic",
+          "_type": "asSectionIntro",
+          "key": "diagnostic",
+          "label": "THE DIAGNOSTIC",
+          "title": "What happens in the Diagnostic."
+        },
+        {
+          "_key": "fee",
+          "_type": "asSectionIntro",
+          "key": "fee",
+          "label": "THE FEE",
+          "title": "What the Diagnostic fee pays for."
+        },
+        {
+          "_key": "faq",
+          "_type": "asSectionIntro",
+          "key": "faq",
+          "label": "QUESTIONS",
+          "title": "Frequently asked questions."
+        }
+      ],
+      "strings": [
+        {
+          "_key": "guideLink",
+          "_type": "asTextItem",
+          "key": "guideLink",
+          "value": "Read the guide"
+        },
+        {
+          "_key": "specialistCta",
+          "_type": "asTextItem",
+          "key": "specialistCta",
+          "value": "Talk to us"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Engagements and pricing | Axis & Sage Advisory",
+        "description": "Start with a free Scorecard or a fixed-fee Conversion Diagnostic: ten working days, one action, a price agreed before we start.",
+        "ogTitle": "Engagements and pricing"
+      }
+    },
+    {
+      "_id": "axisSagePage-work",
+      "_type": "sitePage",
+      "key": "work",
+      "hero": {
+        "label": "WORK",
+        "title": "Who needed to act, and what moved.",
+        "sub": "Work by Axis & Sage and its founders. Every case is tagged with our role: founded, ran, built, advised or embedded, and with where it comes from: an Axis & Sage engagement or the principals' track record."
+      },
+      "sections": [],
+      "strings": [],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Work: who needed to act, and what moved | Axis & Sage",
+        "description": "Work by Axis & Sage and its founders: Axis & Sage engagements and the principals' track record, each tagged with our role.",
+        "ogTitle": "Work: who needed to act, and what moved"
+      }
+    },
+    {
+      "_id": "axisSagePage-people",
+      "_type": "sitePage",
+      "key": "people",
+      "hero": {
+        "label": "PEOPLE",
+        "title": "Two founders. Both of them on your work.",
+        "sub": "Ifeanyi designs the terms people act on. Tomiwa designs the moments they act in."
+      },
+      "sections": [
+        {
+          "_key": "specialists",
+          "_type": "asSectionIntro",
+          "key": "specialists",
+          "label": "SPECIALISTS",
+          "title": "Specialists we bring in."
+        }
+      ],
+      "strings": [],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Ifeanyi Monyei and Tomiwa Ogunmodede | Axis & Sage Advisory",
+        "description": "Two founders. Both of them on your work. Ifeanyi designs the terms people act on. Tomiwa designs the moments they act in.",
+        "ogTitle": "Ifeanyi Monyei and Tomiwa Ogunmodede"
+      }
+    },
+    {
+      "_id": "axisSagePage-library",
+      "_type": "sitePage",
+      "key": "library",
+      "hero": {
+        "label": "LIBRARY",
+        "title": "Free tools for the decision in front of you.",
+        "sub": "Built from the frameworks we use with clients. No sign-up to use them. Leave an email only if you want the full model or a copy of your results."
+      },
+      "sections": [
+        {
+          "_key": "tools",
+          "_type": "asSectionIntro",
+          "key": "tools",
+          "label": "TOOLS",
+          "title": "Tools."
+        },
+        {
+          "_key": "guides",
+          "_type": "asSectionIntro",
+          "key": "guides",
+          "label": "GUIDES",
+          "title": "Guides."
+        },
+        {
+          "_key": "templates",
+          "_type": "asSectionIntro",
+          "key": "templates",
+          "label": "TEMPLATES",
+          "title": "Templates.",
+          "intro": "Downloads. Leave your work email and we send you a copy."
+        },
+        {
+          "_key": "newsletter",
+          "_type": "asSectionIntro",
+          "key": "newsletter",
+          "label": "NEWSLETTER",
+          "title": ""
+        }
+      ],
+      "strings": [
+        {
+          "_key": "comingSoon",
+          "_type": "asTextItem",
+          "key": "comingSoon",
+          "value": "Coming soon. Subscribe to get it first."
+        },
+        {
+          "_key": "readGuide",
+          "_type": "asTextItem",
+          "key": "readGuide",
+          "value": "READ THE GUIDE ▸"
+        },
+        {
+          "_key": "archiveLink",
+          "_type": "asTextItem",
+          "key": "archiveLink",
+          "value": "The archive"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Library | Axis & Sage",
+        "description": "Free tools for the decision in front of you. Built from the frameworks we use with clients. No sign-up to use them.",
+        "ogTitle": "Free tools for the decision in front of you."
+      }
+    },
+    {
+      "_id": "axisSagePage-contact",
+      "_type": "sitePage",
+      "key": "contact",
+      "hero": {
+        "label": "CONTACT",
+        "title": "Tell us who needs to act.",
+        "sub": "One sentence is enough. We reply within one working day with a clear next step."
+      },
+      "sections": [],
+      "strings": [
+        {
+          "_key": "callTitle",
+          "_type": "asTextItem",
+          "key": "callTitle",
+          "value": "Book a 30-minute call"
+        },
+        {
+          "_key": "noteTitle",
+          "_type": "asTextItem",
+          "key": "noteTitle",
+          "value": "Send a note"
+        },
+        {
+          "_key": "whatsappTitle",
+          "_type": "asTextItem",
+          "key": "whatsappTitle",
+          "value": "WhatsApp"
+        },
+        {
+          "_key": "whatsappLink",
+          "_type": "asTextItem",
+          "key": "whatsappLink",
+          "value": "Chat with us"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Contact | Axis & Sage",
+        "description": "Tell us who needs to act. One sentence is enough. We reply within one working day with a clear next step.",
+        "ogTitle": "Tell us who needs to act."
+      }
+    },
+    {
+      "_id": "axisSagePage-newsletter",
+      "_type": "sitePage",
+      "key": "newsletter",
+      "hero": {
+        "label": "NEWSLETTER",
+        "title": "Terms & Moments.",
+        "sub": "Each month, one decision that didn't turn into action: why, and what fixed it."
+      },
+      "sections": [],
+      "strings": [
+        {
+          "_key": "archiveLabel",
+          "_type": "asTextItem",
+          "key": "archiveLabel",
+          "value": "ARCHIVE"
+        },
+        {
+          "_key": "emptyTitle",
+          "_type": "asTextItem",
+          "key": "emptyTitle",
+          "value": "No issues yet."
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Terms & Moments | Axis & Sage",
+        "description": "Each month, one decision that didn't turn into action: why, and what fixed it.",
+        "ogTitle": "Terms & Moments."
+      }
+    },
+    {
+      "_id": "axisSagePage-thankYou",
+      "_type": "sitePage",
+      "key": "thankYou",
+      "hero": {
+        "label": "THANK YOU",
+        "title": "Thanks. We'll be in touch within one working day.",
+        "sub": ""
+      },
+      "sections": [],
+      "strings": [
+        {
+          "_key": "scorecardLabel",
+          "_type": "asTextItem",
+          "key": "scorecardLabel",
+          "value": "SCORECARD · 6 MIN"
+        },
+        {
+          "_key": "scorecardTitle",
+          "_type": "asTextItem",
+          "key": "scorecardTitle",
+          "value": "Take the Conversion Scorecard"
+        },
+        {
+          "_key": "scorecardLink",
+          "_type": "asTextItem",
+          "key": "scorecardLink",
+          "value": "Start"
+        },
+        {
+          "_key": "guideLabel",
+          "_type": "asTextItem",
+          "key": "guideLabel",
+          "value": "GUIDE"
+        },
+        {
+          "_key": "guideTitle",
+          "_type": "asTextItem",
+          "key": "guideTitle",
+          "value": "Read “What the Diagnostic fee pays for”"
+        },
+        {
+          "_key": "guideLink",
+          "_type": "asTextItem",
+          "key": "guideLink",
+          "value": "Read"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Thank you | Axis & Sage"
+      }
+    },
+    {
+      "_id": "axisSagePage-notFound",
+      "_type": "sitePage",
+      "key": "notFound",
+      "hero": {
+        "label": "404",
+        "title": "Nothing here.",
+        "sub": "The page moved or never existed."
+      },
+      "sections": [],
+      "strings": [
+        {
+          "_key": "homeLink",
+          "_type": "asTextItem",
+          "key": "homeLink",
+          "value": "Home"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Nothing here | Axis & Sage"
+      }
+    },
+    {
+      "_id": "axisSageSettings",
+      "_type": "companySettings",
+      "companyName": "Axis & Sage Advisory",
+      "shortName": "Axis & Sage",
+      "legalName": "Axis & Sage Advisory Limited",
+      "siteUrl": "https://axisandsage.com",
+      "contactEmail": "info@axisandsage.com",
+      "bookingUrl": "https://cal.com/axisandsage/30min",
+      "registeredAddress": "Masdar City Free Zone, Abu Dhabi, United Arab Emirates",
+      "registeredAddressShort": "Masdar City Free Zone, Abu Dhabi, UAE",
+      "foundersBased": "Founders in Dubai and Lagos",
+      "locations": [
+        "Abu Dhabi",
+        "Dubai",
+        "Lagos"
+      ],
+      "regionTag": "AFRICA · GCC",
+      "navigation": {
+        "whatWeDo": {
+          "_type": "asNavGroup",
+          "label": "What we do",
+          "key": "what-we-do",
+          "eyebrow": "WHAT WE DO",
+          "blurb": "Strategy & Investment fixes terms. Product & Technology fixes moments. Brand & Market fixes the promise and the message.",
+          "items": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "Strategy & Investment",
+              "href": "/what-we-do/strategy-and-investment",
+              "description": "Get the terms right."
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "Product & Technology",
+              "href": "/what-we-do/product-and-technology",
+              "description": "Make the moment clear."
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Brand & Market",
+              "href": "/what-we-do/brand-and-market",
+              "description": "Say it so they act."
+            },
+            {
+              "_key": "l3",
+              "_type": "asLink",
+              "label": "Engagements and pricing",
+              "href": "/engagements",
+              "description": "Start with one sentence. Know the price before we start."
+            }
+          ]
+        },
+        "library": {
+          "_type": "asNavGroup",
+          "label": "Library",
+          "key": "library",
+          "eyebrow": "LIBRARY",
+          "blurb": "Built from the frameworks we use with clients. No sign-up to use them.",
+          "items": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "Tools",
+              "href": "/library#tools",
+              "description": "Free tools for the decision in front of you."
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "Guides",
+              "href": "/library#guides",
+              "description": "Delegation of authority, ESOPs, investor readiness, pitch decks and the payment screen."
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Newsletter",
+              "href": "/newsletter",
+              "description": "Terms & Moments, each month."
+            }
+          ]
+        },
+        "primaryLinks": [
+          {
+            "_key": "l0",
+            "_type": "asLink",
+            "label": "Work",
+            "href": "/work"
+          },
+          {
+            "_key": "l1",
+            "_type": "asLink",
+            "label": "Conversion Design",
+            "href": "/conversion-design"
+          },
+          {
+            "_key": "l2",
+            "_type": "asLink",
+            "label": "People",
+            "href": "/people"
+          }
+        ]
+      },
+      "footerNavigation": [
+        {
+          "_key": "c0",
+          "_type": "asFooterColumn",
+          "title": "What we do",
+          "links": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "Strategy & Investment",
+              "href": "/what-we-do/strategy-and-investment"
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "Product & Technology",
+              "href": "/what-we-do/product-and-technology"
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Brand & Market",
+              "href": "/what-we-do/brand-and-market"
+            },
+            {
+              "_key": "l3",
+              "_type": "asLink",
+              "label": "Engagements and pricing",
+              "href": "/engagements"
+            },
+            {
+              "_key": "l4",
+              "_type": "asLink",
+              "label": "Embedded leadership",
+              "href": "/engagements/embedded-leadership"
+            }
+          ]
+        },
+        {
+          "_key": "c1",
+          "_type": "asFooterColumn",
+          "title": "Work",
+          "links": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "All work",
+              "href": "/work"
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "Investors commit",
+              "href": "/work?action=investors-commit"
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Partners sign",
+              "href": "/work?action=partners-sign"
+            },
+            {
+              "_key": "l3",
+              "_type": "asLink",
+              "label": "Teams execute",
+              "href": "/work?action=teams-execute"
+            },
+            {
+              "_key": "l4",
+              "_type": "asLink",
+              "label": "Customers buy",
+              "href": "/work?action=customers-buy"
+            }
+          ]
+        },
+        {
+          "_key": "c2",
+          "_type": "asFooterColumn",
+          "title": "Library",
+          "links": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "Tools",
+              "href": "/library#tools"
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "Guides",
+              "href": "/library#guides"
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Newsletter",
+              "href": "/newsletter"
+            }
+          ]
+        },
+        {
+          "_key": "c3",
+          "_type": "asFooterColumn",
+          "title": "Company",
+          "links": [
+            {
+              "_key": "l0",
+              "_type": "asLink",
+              "label": "Conversion Design",
+              "href": "/conversion-design"
+            },
+            {
+              "_key": "l1",
+              "_type": "asLink",
+              "label": "People",
+              "href": "/people"
+            },
+            {
+              "_key": "l2",
+              "_type": "asLink",
+              "label": "Contact",
+              "href": "/contact"
+            },
+            {
+              "_key": "l3",
+              "_type": "asLink",
+              "label": "Privacy",
+              "href": "/privacy"
+            },
+            {
+              "_key": "l4",
+              "_type": "asLink",
+              "label": "Terms",
+              "href": "/terms"
+            }
+          ]
+        }
+      ],
+      "socialLinks": [],
+      "legalLine": "© 2026 Axis & Sage Advisory Limited · Masdar City Free Zone, Abu Dhabi, United Arab Emirates",
+      "primaryCta": {
+        "_type": "asCta",
+        "label": "Book a call",
+        "href": "/contact#book"
+      },
+      "scorecardCta": {
+        "_type": "asCta",
+        "label": "Take the Scorecard",
+        "href": "/tools/conversion-scorecard"
+      },
+      "ctaBand": {
+        "headline": "Who needs to act?",
+        "line": "Tell us in one sentence. We reply within one working day with a clear next step."
+      },
+      "newsletter": {
+        "name": "Terms & Moments",
+        "line": "Each month, one decision that didn't turn into action: why, and what fixed it.",
+        "archiveEmpty": "The archive starts with the first issue on Tuesday 3 November 2026. Subscribe above to get it."
+      },
+      "whatsappMessage": "Hi Axis & Sage, we need ___ to ___.",
+      "defaultSeo": {
+        "_type": "asSeo",
+        "title": "Axis & Sage Advisory",
+        "description": "Get the people your business depends on to act. Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design."
+      }
+    },
+    {
+      "_id": "axisSageHome",
+      "_type": "homePageV2",
+      "eyebrow": [
+        "ADVISORY",
+        "AFRICA AND THE GCC",
+        "ABU DHABI",
+        "DUBAI",
+        "LAGOS"
+      ],
+      "headline": "Get the people your business depends on to act.",
+      "supportingCopy": "Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design.",
+      "desktopHeroImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "__HERO_DESKTOP_ASSET__"
+        }
+      },
+      "mobileHeroImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "__HERO_MOBILE_ASSET__"
+        }
+      },
+      "heroImageAlt": "The Lagos skyline across the water at sunset.",
+      "heroImageCredit": "LAGOS AT SUNSET · PHOTO: CHIBUZO NWANERI / UNSPLASH",
+      "heroImageSourceUrl": "https://unsplash.com/photos/gE3ign9Lx1Q",
+      "primaryCTA": {
+        "_type": "asCta",
+        "label": "Book a 30-minute call",
+        "href": "/contact#book"
+      },
+      "secondaryCTA": {
+        "_type": "asCta",
+        "label": "Take the Conversion Scorecard",
+        "href": "/tools/conversion-scorecard"
+      },
+      "practices": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-strategy-and-investment",
+          "_key": "strategy-and-investment-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-product-and-technology",
+          "_key": "product-and-technology-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-practice-brand-and-market",
+          "_key": "brand-and-market-2"
+        }
+      ],
+      "logoStrip": {
+        "label": "WORK BY AXIS & SAGE AND ITS FOUNDERS",
+        "names": [
+          "Venture Garden Group",
+          "GV Solutions",
+          "Farmcrowdy",
+          "Learning Equality · Kolibri",
+          "Mular",
+          "Earlybean",
+          "Nature Roots",
+          "Uganda Investor Summit",
+          "National Social Investment Programme"
+        ]
+      },
+      "sections": [
+        {
+          "_key": "gap",
+          "_type": "asSectionIntro",
+          "key": "gap",
+          "label": "THE GAP",
+          "title": "Growth stalls in the gap between what a business decides, what it builds and what it says.",
+          "intro": "A board approves a new structure and managers keep deciding the old way. A product launches and customers stop at the payment screen. A raise opens and investors take the meeting, then go quiet. The decision was sound. The action never happened."
+        },
+        {
+          "_key": "conversionDesign",
+          "_type": "asSectionIntro",
+          "key": "conversionDesign",
+          "label": "CONVERSION DESIGN",
+          "title": "A conversion is the action your business needs from someone. It isn't always a sale.",
+          "intro": "Conversion Design starts with that action and works backwards. People act when two things are true: the terms are right and the moment is clear. Terms are what's on offer and who decides: the price, the equity, the incentive, the authority. Moments are where the decision happens: the pitch, the screen, the conversation, the form. We design both."
+        },
+        {
+          "_key": "founders",
+          "_type": "asSectionIntro",
+          "key": "founders",
+          "label": "THE FOUNDERS",
+          "title": "Two halves of every decision."
+        },
+        {
+          "_key": "moved",
+          "_type": "asSectionIntro",
+          "key": "moved",
+          "label": "WHAT MOVED",
+          "title": "Founded, ran, built, advised. Here's what moved."
+        },
+        {
+          "_key": "work",
+          "_type": "asSectionIntro",
+          "key": "work",
+          "label": "SELECTED WORK",
+          "title": "Who needed to act, and what changed."
+        },
+        {
+          "_key": "start",
+          "_type": "asSectionIntro",
+          "key": "start",
+          "label": "HOW TO START",
+          "title": "Start with one sentence. Know the price before we start."
+        },
+        {
+          "_key": "library",
+          "_type": "asSectionIntro",
+          "key": "library",
+          "label": "LIBRARY",
+          "title": "Free tools for the decision in front of you."
+        }
+      ],
+      "gapCards": [
+        {
+          "_key": "g0",
+          "_type": "asGlyphCard",
+          "glyph": "investors",
+          "text": "Investors take the meeting and don't commit."
+        },
+        {
+          "_key": "g1",
+          "_type": "asGlyphCard",
+          "glyph": "partners",
+          "text": "Partners agree in principle and don't sign."
+        },
+        {
+          "_key": "g2",
+          "_type": "asGlyphCard",
+          "glyph": "team",
+          "text": "Teams nod at the plan and don't execute it."
+        },
+        {
+          "_key": "g3",
+          "_type": "asGlyphCard",
+          "glyph": "customers",
+          "text": "Customers reach checkout and don't buy."
+        }
+      ],
+      "conversionLinkLabel": "How Conversion Design works",
+      "foundersNote": "Every engagement is led by one of us, and usually both.",
+      "stats": [
+        {
+          "_key": "s0",
+          "_type": "asStat",
+          "numeral": "18% → 60%",
+          "label": "First-time mobile sponsorship conversion",
+          "tag": "FARMCROWDY · BUILT"
+        },
+        {
+          "_key": "s1",
+          "_type": "asStat",
+          "numeral": "$1.86M → $9.14M",
+          "label": "Tracked sponsorship volume during the product and growth period",
+          "tag": "FARMCROWDY · RAN"
+        },
+        {
+          "_key": "s2",
+          "_type": "asStat",
+          "numeral": "$2.1M+",
+          "label": "Processed across 19K+ transactions in live production",
+          "tag": "MULAR · FOUNDED"
+        },
+        {
+          "_key": "s3",
+          "_type": "asStat",
+          "numeral": "60%",
+          "label": "Fewer failed content imports in usability testing",
+          "tag": "KOLIBRI · BUILT"
+        },
+        {
+          "_key": "s4",
+          "_type": "asStat",
+          "numeral": "3,416",
+          "label": "Active users; Techstars '23; Web Summit Qatar PITCH top three",
+          "tag": "EARLYBEAN · FOUNDED"
+        },
+        {
+          "_key": "s5",
+          "_type": "asStat",
+          "numeral": "2 → 1",
+          "label": "iGate Advisory and Garden Ventures merged into GV Solutions",
+          "tag": "GV SOLUTIONS · EMBEDDED"
+        },
+        {
+          "_key": "s6",
+          "_type": "asStat",
+          "numeral": "Group-wide",
+          "label": "Governance, delegation of authority, board pay, CEO reward, employee shares",
+          "tag": "VENTURE GARDEN GROUP · RAN"
+        }
+      ],
+      "statsSource": "SOURCES: COMPANY RECORDS AND REPORTING · FARMCROWDY CONVERSION FROM INTERNAL FUNNEL TRACKING · KOLIBRI FROM USABILITY TESTING",
+      "selectedWork": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-gv-solutions",
+          "_key": "gv-solutions-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-nature-roots",
+          "_key": "nature-roots-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-uganda-investor-summit",
+          "_key": "uganda-investor-summit-2"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-farmcrowdy",
+          "_key": "farmcrowdy-3"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-mular",
+          "_key": "mular-4"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-venture-garden-group",
+          "_key": "venture-garden-group-5"
+        }
+      ],
+      "selectedPeople": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-ifeanyi-monyei",
+          "_key": "ifeanyi-monyei-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-person-tomiwa-ogunmodede",
+          "_key": "tomiwa-ogunmodede-1"
+        }
+      ],
+      "testimonials": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-testimonial-kunmi",
+          "_key": "kunmi"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-testimonial-bunmi",
+          "_key": "bunmi"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-testimonial-temi",
+          "_key": "temi"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Axis & Sage Advisory | Conversion Design for Africa and the GCC",
+        "description": "We get the people your business depends on to act: investors, partners, teams and customers. Strategy, product and brand advisory from Abu Dhabi, Dubai and Lagos.",
+        "ogTitle": "Conversion Design for Africa and the GCC"
+      }
+    },
+    {
+      "_id": "axisSageConversionMethod",
+      "_type": "conversionMethod",
+      "hero": {
+        "label": "THE METHOD",
+        "title": "Start from the action.",
+        "sub": "Conversion Design is how we get investors, partners, teams and customers to act. We name the action, find what's in the way in the terms or the moment, fix it, and measure what moved."
+      },
+      "sections": [
+        {
+          "_key": "counts",
+          "_type": "asSectionIntro",
+          "key": "counts",
+          "label": "WHAT COUNTS",
+          "title": "A conversion is the action your business needs from someone."
+        },
+        {
+          "_key": "halves",
+          "_type": "asSectionIntro",
+          "key": "halves",
+          "label": "TERMS AND MOMENTS",
+          "title": "People act when the terms are right and the moment is clear."
+        },
+        {
+          "_key": "steps",
+          "_type": "asSectionIntro",
+          "key": "steps",
+          "label": "THE FOUR STEPS",
+          "title": "The four steps."
+        },
+        {
+          "_key": "example",
+          "_type": "asSectionIntro",
+          "key": "example",
+          "label": "EXAMPLE · FARMCROWDY",
+          "title": "Decided: grow sponsorship on mobile."
+        },
+        {
+          "_key": "question",
+          "_type": "asSectionIntro",
+          "key": "question",
+          "label": "A COMMON QUESTION",
+          "title": "Is this conversion rate optimisation?"
+        },
+        {
+          "_key": "byType",
+          "_type": "asSectionIntro",
+          "key": "byType",
+          "label": "BY TYPE OF ACTION",
+          "title": "By type of action."
+        },
+        {
+          "_key": "faq",
+          "_type": "asSectionIntro",
+          "key": "faq",
+          "label": "QUESTIONS",
+          "title": "Frequently asked questions."
+        }
+      ],
+      "actors": [
+        {
+          "_key": "a0",
+          "_type": "asActor",
+          "glyph": "investors",
+          "actor": "Investors",
+          "examples": "commit to the round, follow on, move from first meeting to term sheet"
+        },
+        {
+          "_key": "a1",
+          "_type": "asActor",
+          "glyph": "partners",
+          "actor": "Partners",
+          "examples": "sign, renew, commit more volume"
+        },
+        {
+          "_key": "a2",
+          "_type": "asActor",
+          "glyph": "team",
+          "actor": "Teams",
+          "examples": "work to a new structure, follow a new process, hit a new plan"
+        },
+        {
+          "_key": "a3",
+          "_type": "asActor",
+          "glyph": "customers",
+          "actor": "Customers",
+          "examples": "buy, buy again, switch to you, pay on time"
+        },
+        {
+          "_key": "a4",
+          "_type": "asActor",
+          "glyph": "users",
+          "actor": "Users and beneficiaries",
+          "examples": "sign up, finish onboarding, keep using it"
+        }
+      ],
+      "actorsClosing": "It isn't always a sale. It's always a person doing something.",
+      "terms": {
+        "title": "What's on offer and who decides.",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "t0",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "t0a",
+                "text": "Price, equity, incentives, risk, authority, deal structure. Terms decide whether people ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "_key": "t0b",
+                "text": "want",
+                "marks": [
+                  "em"
+                ]
+              },
+              {
+                "_type": "span",
+                "_key": "t0c",
+                "text": " to act.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "moments": {
+        "title": "Where the decision happens.",
+        "body": [
+          {
+            "_type": "block",
+            "_key": "m0",
+            "style": "normal",
+            "markDefs": [],
+            "children": [
+              {
+                "_type": "span",
+                "_key": "m0a",
+                "text": "The pitch, the screen, the form, the conversation, the timing of the ask. Moments decide whether people ",
+                "marks": []
+              },
+              {
+                "_type": "span",
+                "_key": "m0b",
+                "text": "can",
+                "marks": [
+                  "em"
+                ]
+              },
+              {
+                "_type": "span",
+                "_key": "m0c",
+                "text": " act, and whether they're asked at the right time.",
+                "marks": []
+              }
+            ]
+          }
+        ]
+      },
+      "behaviourNote": "This mirrors BJ Fogg's behaviour model: people act when motivation, ability and a prompt meet. Terms supply the motivation. Moments supply the ability and the prompt.",
+      "sentenceRows": [
+        {
+          "_key": "r0",
+          "_type": "asSentenceRow",
+          "who": "Investors",
+          "action": "commit",
+          "stops": "Terms that don't price their risk. A story that changes between the deck and the data room.",
+          "look": "The cap table, the ask and the first ten minutes of the pitch."
+        },
+        {
+          "_key": "r1",
+          "_type": "asSentenceRow",
+          "who": "Partners",
+          "action": "sign",
+          "stops": "Economics that work for one side. No named owner on yours.",
+          "look": "The deal terms and the path from yes-in-principle to signature."
+        },
+        {
+          "_key": "r2",
+          "_type": "asSentenceRow",
+          "who": "Our team",
+          "action": "execute",
+          "stops": "Nobody knows who can approve what. Incentives reward the old way.",
+          "look": "The delegation of authority and the reward scheme."
+        },
+        {
+          "_key": "r3",
+          "_type": "asSentenceRow",
+          "who": "Customers",
+          "action": "buy",
+          "stops": "A price they can't compare. A moment that asks for trust before it earns it.",
+          "look": "The offer and the three screens before payment."
+        },
+        {
+          "_key": "r4",
+          "_type": "asSentenceRow",
+          "who": "Users",
+          "action": "adopt",
+          "stops": "Sign-up assumes they have what they don't. No reason to come back.",
+          "look": "Onboarding and the first week."
+        }
+      ],
+      "methodSteps": [
+        {
+          "_key": "s0",
+          "_type": "asMethodStep",
+          "index": "01",
+          "title": "Name the action.",
+          "body": "We need [who] to [do what] by [when]. One sentence, agreed before any work starts."
+        },
+        {
+          "_key": "s1",
+          "_type": "asMethodStep",
+          "index": "02",
+          "title": "Find what's in the way.",
+          "body": "The terms, the moment, or both. We talk to the people who need to act and walk the path they take."
+        },
+        {
+          "_key": "s2",
+          "_type": "asMethodStep",
+          "index": "03",
+          "title": "Fix it.",
+          "body": "In the strategy, the product or the brand. We build what's needed with your team."
+        },
+        {
+          "_key": "s3",
+          "_type": "asMethodStep",
+          "index": "04",
+          "title": "Measure what moved.",
+          "body": "The baseline goes on the first page of our report. The new number goes on the last."
+        }
+      ],
+      "methodStepsExpanded": [
+        {
+          "_key": "x0",
+          "_type": "asMethodStep",
+          "index": "01",
+          "title": "Name the action.",
+          "body": "One sentence, agreed with the people who own the outcome: we need [who] to [do what] by [when]. We agree how we'll measure it before work starts."
+        },
+        {
+          "_key": "x1",
+          "_type": "asMethodStep",
+          "index": "02",
+          "title": "Find what's in the way.",
+          "body": "We interview the people who need to act and the people who own the path to it. We walk the path ourselves. We read the numbers. Every blocker is tagged: terms, moment, or both."
+        },
+        {
+          "_key": "x2",
+          "_type": "asMethodStep",
+          "index": "03",
+          "title": "Fix it.",
+          "body": "Strategy & Investment fixes terms. Product & Technology fixes moments. Brand & Market fixes the promise and the message, which sit across both. We build with your team, and a principal stays until it runs."
+        },
+        {
+          "_key": "x3",
+          "_type": "asMethodStep",
+          "index": "04",
+          "title": "Measure what moved.",
+          "body": "Baseline on page one, new number on the last page. The number becomes the next decision."
+        }
+      ],
+      "example": {
+        "timelineLabel": "WHAT WAS DECIDED → WHAT PEOPLE DID",
+        "baselineValue": 18,
+        "baselineLabel": "BASELINE 18%",
+        "steps": [
+          {
+            "_key": "before",
+            "when": "BEFORE",
+            "said": "Grow sponsorship on mobile",
+            "value": 18,
+            "valueLabel": "18%",
+            "did": "Baseline: 18% of first-time mobile visitors sponsored.",
+            "action": false
+          },
+          {
+            "_key": "after",
+            "when": "AFTER THE REDESIGN",
+            "said": "Redesign the first-time mobile sponsorship flow",
+            "value": 60,
+            "valueLabel": "60%",
+            "did": "First-time mobile sponsorship conversion: 60%.",
+            "action": true
+          }
+        ],
+        "source": "SOURCE: INTERNAL FUNNEL TRACKING",
+        "caseStudy": {
+          "_type": "reference",
+          "_ref": "axisSage-work-farmcrowdy"
+        },
+        "caseLinkLabel": "Read the Farmcrowdy case"
+      },
+      "question": {
+        "title": "Is this conversion rate optimisation?",
+        "body": "Conversion rate optimisation improves pages. It works on the moment. We start earlier, with the terms: the structure, the incentives and the deal that decide whether people want to act. Then we design the moment."
+      },
+      "actionCards": [
+        {
+          "_key": "c0",
+          "_type": "asActionCard",
+          "key": "investors-commit",
+          "label": "Investors commit",
+          "glyph": "investors",
+          "line": "Terms that don't price their risk. A story that changes between the deck and the data room."
+        },
+        {
+          "_key": "c1",
+          "_type": "asActionCard",
+          "key": "partners-sign",
+          "label": "Partners sign",
+          "glyph": "partners",
+          "line": "Economics that work for one side. No named owner on yours."
+        },
+        {
+          "_key": "c2",
+          "_type": "asActionCard",
+          "key": "teams-execute",
+          "label": "Teams execute",
+          "glyph": "team",
+          "line": "Nobody knows who can approve what. Incentives reward the old way."
+        },
+        {
+          "_key": "c3",
+          "_type": "asActionCard",
+          "key": "customers-buy",
+          "label": "Customers buy",
+          "glyph": "customers",
+          "line": "A price they can't compare. A moment that asks for trust before it earns it."
+        }
+      ],
+      "actionCardLinkLabel": "See the work",
+      "faqs": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-faq-0",
+          "_key": "faq-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-faq-1",
+          "_key": "faq-1"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-faq-2",
+          "_key": "faq-2"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-faq-6",
+          "_key": "faq-6"
+        }
+      ],
+      "seo": {
+        "_type": "asSeo",
+        "title": "Conversion Design: start from the action | Axis & Sage",
+        "description": "How we get investors, partners, teams and customers to act: name the action, find what's in the way in the terms or the moment, fix it, and measure what moved.",
+        "ogTitle": "Conversion Design: start from the action"
+      }
+    }
+  ]
+}
