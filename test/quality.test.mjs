@@ -59,7 +59,8 @@ test("design system rules hold across the public presentation", async () => {
   const tokens = await read("src/styles/tokens.css");
   assert.match(audit, /prohibited/);
   assert.match(tokens, /--orange-500: #E8590C/);
-  assert.match(tokens, /--font-serif: "Source Serif 4"/);
+  assert.match(tokens, /--font-serif: "Platypi"/);
+  assert.match(tokens, /font-family: "Platypi"; font-style: normal; font-weight: 300 800/);
   assert.match(tokens, /prefers-reduced-motion/);
   assert.match(await read("reference/motion-family-revision.md"), /prefers-reduced-motion/);
 });

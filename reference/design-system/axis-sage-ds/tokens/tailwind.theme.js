@@ -15,7 +15,7 @@ module.exports = {
     rule: { DEFAULT: 'var(--rule)', dark: 'var(--rule-dark)' },
   },
   fontFamily: {
-    serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+    serif: ['Platypi', 'Georgia', 'serif'],
     sans: ['Geist', '"Helvetica Neue"', 'Arial', 'sans-serif'],
     mono: ['"Geist Mono"', 'ui-monospace', 'Menlo', 'monospace'],
   },

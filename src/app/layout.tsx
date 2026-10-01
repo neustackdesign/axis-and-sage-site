@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-GB">
       <head>
-        <link rel="preload" href="/fonts/brand/source-serif-4-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/brand/platypi-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/brand/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>{children}<Analytics /><SpeedInsights /></body>

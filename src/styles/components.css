@@ -698,7 +698,7 @@ a.tool-card:hover { background: var(--sage-100); }
     linear-gradient(180deg, rgba(18, 21, 27, 0.55) 0%, rgba(18, 21, 27, 0.08) 16%, rgba(18, 21, 27, 0.18) 32%, rgba(18, 21, 27, 0.8) 54%, rgba(18, 21, 27, 0.92) 100%); }
   /* Top rhythm: a fixed step from the bar to the eyebrow, then the 8px scale down the copy. */
   .cover-body { gap: 32px; padding-top: calc(var(--cover-header) + 32px); padding-bottom: 20px; }
-  .cover-title { margin-top: 16px; font-size: clamp(40px, 11.5vw, 54px); max-width: none; }
+  .cover-title { margin-top: 16px; font-size: clamp(34px, 9.6vw, 54px); max-width: none; } /* three lines in Platypi from 360px up */
   .cover-sub { margin-top: 16px; }
   .cover-actions { margin-top: 24px; }
   .cover-actions .btn { width: 100%; justify-content: center; }

@@ -7,9 +7,9 @@ export const ogContentType = "image/png";
 
 const fonts = async () => {
   const dir = join(process.cwd(), "src/lib/og");
-  const [serif, mono] = await Promise.all([readFile(join(dir, "SourceSerif4-Regular.ttf")), readFile(join(dir, "GeistMono-Regular.ttf"))]);
+  const [serif, mono] = await Promise.all([readFile(join(dir, "Platypi-Regular.ttf")), readFile(join(dir, "GeistMono-Regular.ttf"))]);
   return [
-    { name: "Source Serif 4", data: serif, weight: 400 as const, style: "normal" as const },
+    { name: "Platypi", data: serif, weight: 400 as const, style: "normal" as const },
     { name: "Geist Mono", data: mono, weight: 400 as const, style: "normal" as const },
   ];
 };
@@ -28,7 +28,7 @@ export async function renderOg({ label, title }: { label: string; title: string 
           <img src={mark} width={96} height={42} alt="" />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
-          <div style={{ fontFamily: "Source Serif 4", fontSize: size, lineHeight: 1.06, letterSpacing: -1.2, maxWidth: 1000 }}>{title}</div>
+          <div style={{ fontFamily: "Platypi", fontSize: size, lineHeight: 1.06, letterSpacing: -1.2, maxWidth: 1000 }}>{title}</div>
           <div style={{ width: 160, height: 8, background: "#E8590C" }} />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Geist Mono", fontSize: 20, letterSpacing: 2.4, color: "#5B5A57" }}>
