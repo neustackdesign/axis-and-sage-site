@@ -1,0 +1,30 @@
+/* Axis & Sage · type tokens. Serif speaks, sans explains, mono measures. */
+:root {
+  --font-serif: "Platypi", Georgia, serif;
+  --font-sans: "Geist", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --weight-serif: 400;
+  --weight-sans: 400;
+  --weight-sans-medium: 500;
+  --weight-mono: 450;
+
+  /* Desktop */
+  --type-display-size: 88px; --type-display-lh: 92px; --type-display-track: -0.02em;
+  --type-h1-size: 64px;      --type-h1-lh: 68px;      --type-h1-track: -0.015em;
+  --type-h2-size: 44px;      --type-h2-lh: 50px;      --type-h2-track: -0.01em;
+  --type-h3-size: 28px;      --type-h3-lh: 34px;      --type-h3-track: -0.005em;
+  --type-body-l-size: 20px;  --type-body-l-lh: 30px;
+  --type-body-size: 17px;    --type-body-lh: 27px;
+  --type-small-size: 14px;   --type-small-lh: 20px;
+  --type-label-size: 12px;   --type-label-lh: 16px;   --type-label-track: 0.08em;
+  --type-stat-size: 48px;    --type-stat-lh: 52px;    --type-stat-track: -0.02em;
+
+  /* Mobile */
+  --type-display-size-m: 48px; --type-display-lh-m: 52px;
+  --type-h1-size-m: 40px;      --type-h1-lh-m: 44px;
+  --type-h2-size-m: 32px;      --type-h2-lh-m: 38px;
+  --type-h3-size-m: 24px;      --type-h3-lh-m: 30px;
+  --type-body-size-m: 16px;    --type-body-lh-m: 25px;
+  --type-stat-size-m: 36px;    --type-stat-lh-m: 40px;
+}

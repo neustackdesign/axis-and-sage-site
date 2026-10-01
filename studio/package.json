@@ -1,0 +1,25 @@
+{
+  "name": "axis-and-sage-studio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "packageManager": "pnpm@11.2.2",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "validate": "sanity schema validate",
+    "deploy": "sanity deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/vision": "6.17.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sanity": "6.17.0",
+    "styled-components": "6.5.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "typescript": "5.9.3"
+  }
+}

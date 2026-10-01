@@ -1,11 +1,41 @@
 import Link from "next/link";
-import type { LinkValue, SiteSettings } from "@/types/content";
-import { Apparatus } from "@/components/home/EditorialPrimitives";
+import { OrbitRings } from "@/components/ds/blocks";
+import { Lockup } from "@/components/ds/primitives";
+import { NewsletterForm } from "@/components/forms/NewsletterForm";
+import type { SiteSettings } from "@/lib/content/types";
+import { whatsappLink } from "@/lib/whatsapp";
 
-function FooterLinks({ items }: { items: LinkValue[] }) {
-  return <ul>{items.map((item) => <li key={item.href}><Link href={item.href}>{item.label}</Link></li>)}</ul>;
-}
-
-export function SiteFooter({ settings }: { settings: SiteSettings }) {
-  return <footer className="site-footer"><div className="footer-shell shell"><div className="footer-rule" aria-hidden="true" /><div className="footer-utilities"><Link className="footer-wordmark" href="/" aria-label="Axis & Sage home"><img src="/images/axis-sage/logo-dark.png" alt="Axis & Sage Consulting" /></Link><div className="footer-navigation"><FooterLinks items={settings.footerNavigation} /></div><div className="footer-contact"><a href={`mailto:${settings.contactEmail || "info@axisandsage.com"}`}>{settings.contactEmail || "info@axisandsage.com"}</a>{settings.socialLinks?.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{link.label}</a>)}</div><div className="footer-copyright"><Apparatus>{settings.copyright || "© 2026 Axis & Sage"}</Apparatus><Apparatus>{settings.workingAcross || settings.officeLocations?.[0] || "Dubai, UAE"}</Apparatus></div></div></div></footer>;
+/** Footer: charcoal, newsletter first, four columns, contact and legal lines, dotted orbit rings behind. */
+export function SiteFooter({ settings: s }: { settings: SiteSettings }) {
+  const wa = whatsappLink(s.whatsappMessage);
+  return (
+    <footer className="site-footer">
+      <OrbitRings className="footer-orbits" />
+      <div className="wrap">
+        <div className="footer-news">
+          <div>
+            <p className="t-label muted" style={{ color: "var(--text-muted-dark)", marginBottom: 12 }}>NEWSLETTER</p>
+            <h2>{s.newsletter.name}</h2>
+            <p>{s.newsletter.line}</p>
+          </div>
+          <NewsletterForm dark />
+        </div>
+        <div className="footer-cols">
+          <div className="footer-brand"><Link href="/" aria-label={`${s.companyName}, home`}><Lockup dark /></Link></div>
+          {s.footerColumns.map((col) => (
+            <nav className="footer-col" key={col.title} aria-label={col.title}>
+              <h3>{col.title}</h3>
+              <ul>{col.links.map((l) => <li key={l.href}><Link href={l.href}>{l.label}</Link></li>)}</ul>
+            </nav>
+          ))}
+        </div>
+        <p className="footer-contact">
+          <a href={`mailto:${s.contactEmail}`}>{s.contactEmail}</a>
+          {wa ? <><span aria-hidden="true">·</span><a href={wa.href}>WhatsApp {wa.number}</a></> : null}
+          {s.socialLinks.map((l) => <span key={l.href} style={{ display: "contents" }}><span aria-hidden="true">·</span><a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a></span>)}
+        </p>
+        <p className="footer-legal t-label"><span>{s.legalLine}</span><span>{s.regionTag}</span></p>
+      </div>
+    </footer>
+  );
 }

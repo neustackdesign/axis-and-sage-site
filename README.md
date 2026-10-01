@@ -1,19 +1,36 @@
 # Axis & Sage site
 
-Rebuild of the Axis & Sage consultancy website as a strict TypeScript Next.js App Router application with a controlled Sanity content model, embedded Studio and Vercel-ready deployment configuration.
+This is the Axis & Sage Advisory website. It's a strict TypeScript Next.js App Router application built on the Axis & Sage design system. It deploys on Vercel Hobby. Content is edited in Sanity (the existing project `dltrl1ld`, dataset `production`); there is no other database.
 
 ## Status
 
-The local application, Sanity schema, fallback content, contact endpoint, audit records and responsive QA captures are implemented. Sanity publishing and Vercel deployment require project/account credentials. DNS, AWS infrastructure and the production domain are intentionally untouched.
+**Pages built:** the full sitemap from the Conversion Design brief.
+- Home.
+- `/conversion-design`.
+- The three practice pages.
+- `/engagements` and `/engagements/embedded-leadership`.
+- `/work` with filters, and six case pages.
+- `/people` and both profiles.
+- `/library`, the six tools and the guides.
+- `/newsletter`, `/contact`, `/thank-you`, `/privacy`, `/terms` and the 404.
+
+**Where things live:**
+- **Content:** Sanity. The Studio is in `studio/` (standalone, not embedded in the site). The site's GROQ is in `src/sanity/queries.ts`; `src/sanity/load.ts` shapes it for the components.
+- **Taxonomies and fixed routes:** `src/lib/content/vocab.ts` and `src/lib/routes.ts` (code, mirrored in the Studio; a test keeps them in sync).
+- **Tool logic:** pure functions in `src/lib/tools/`, from Spec A (`reference/briefs/06-tools-spec.md`). Formulas, scoring and calculation copy stay in code; Sanity holds each tool's editorial copy.
+- **Migration inputs:** `migration/` (the frozen content snapshot, the seed builder, the hero crops). Not used by the site at runtime.
+- **Leads:** `src/lib/pipeline/` (pure, tested) and `src/lib/server/` (Vercel wiring).
+- **Emails:** `src/lib/pipeline/emails.ts`, sent through Resend.
+- **Pipeline Sheet script:** `integrations/google-apps-script/`.
+
+The finished site has no AWS runtime dependency. DNS, AWS and the production domain stay untouched until the cutover below is approved.
+
+The component usage map is in `reference/design-system/website-component-map.md`.
 
 ## Requirements
 
-- Node.js 20.9 or newer
-- pnpm 11.2.2 (`corepack enable` is recommended)
-- A Sanity project for editorial content and Studio
-- Optional Resend account for contact delivery
-
-The exact package-manager pin is recorded in `package.json` and `pnpm-lock.yaml`. Use `pnpm install --frozen-lockfile` in the canonical checkout, CI, Codex worktrees and Vercel.
+- Node.js 20.9 or newer.
+- pnpm 11.2.2 (`corepack enable` is recommended). Use `pnpm install --frozen-lockfile`.
 
 ## Local development
 
@@ -23,51 +40,154 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-The site is available at `http://localhost:3000`; the embedded Studio is at `/studio`.
+Content comes from Sanity's published dataset. To work offline, or before the seed is published, run the same queries against the local seed:
 
-With no Sanity project ID, the site renders deterministic, source-verified fallback content. This keeps visual review possible while editorial infrastructure is being provisioned.
+```bash
+SANITY_CONTENT_SOURCE=seed pnpm dev
+```
 
-## Environment variables
+The seed source is refused when `VERCEL_ENV=production`. In seed mode the hero shows without its photograph, because the crops are Sanity assets.
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | yes in deployment | Canonical URL, metadata and sitemap |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | yes for Sanity | Sanity project ID |
-| `NEXT_PUBLIC_SANITY_DATASET` | yes for Sanity | Usually `production` |
-| `SANITY_API_READ_TOKEN` | preview/live editing | Server-side draft reads |
-| `SANITY_API_WRITE_TOKEN` | local seed only | Write token used only by the local bootstrap script; never configure it in Vercel |
-| `NEXT_PUBLIC_SANITY_STUDIO_URL` | preview | Studio/Presentation URL |
-| `SANITY_STUDIO_PREVIEW_ORIGIN` | preview | Presentation origin |
-| `RESEND_API_KEY` | contact delivery | Resend API key |
-| `CONTACT_TO_EMAIL` | contact delivery | Verified inbox receiving enquiries |
-| `CONTACT_FROM_EMAIL` | contact delivery | Verified sender address |
+The site runs with no keys at all:
+- **No Blob token:** forms can't store anything, so they offer the visitor a prefilled email instead.
+- **No Sheet URL:** leads are stored in Blob and wait for the cron.
+- **No Resend key:** emails are parked in Blob and wait for the cron.
+- **No MailerLite key:** sign-ups are parked in Blob and wait for the cron.
 
-Never expose Sanity write tokens or the Resend key with a `NEXT_PUBLIC_` prefix.
+## The stack
 
-## Sanity setup and seed
+| Service | What it does |
+| --- | --- |
+| Vercel | Hosts the site, runs the forms and the daily cron. |
+| Sanity (`dltrl1ld` / `production`) | Every human-editable word and image: settings, pages, people, practices, work, engagements and prices, FAQs, library, tool copy, legal pages. The site reads the published perspective through the CDN and refreshes within 60 seconds of a publish. |
+| Vercel Blob (private store) | Holds every lead until the Sheet confirms it, plus any email or newsletter sign-up that couldn't be sent yet. |
+| Google Workspace | The info@axisandsage.com inbox, where the founders reply. The Sheet "Axis & Sage · Pipeline" and its Apps Script web app keep the record of every lead. |
+| Resend | Sends every website email from `Axis & Sage <info@axisandsage.com>`: the lead alert, the auto-reply and tool results. |
+| MailerLite | The newsletter list. MailerLite sends its own confirmation email. |
+| Cal.com | Booking, as an inline embed on `/contact#book`. |
+| Vercel Web Analytics and Speed Insights | Page views and performance. They need no keys. |
+| GA4 | Off. It switches on only if `NEXT_PUBLIC_GA_ID` is set, and then uses Consent Mode. |
 
-1. Create or select the Axis & Sage project and `production` dataset.
-2. Add the project ID and dataset to `.env.local`.
-3. Add `http://localhost:3000` and the eventual Vercel preview origin to Sanity CORS settings.
-4. Preview the planned operations without writing: `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity:dry-run`.
-5. Run `SANITY_API_WRITE_TOKEN=... pnpm seed:sanity` locally. The script validates the project, dataset and write access before writing draft documents.
-6. Open `/studio` and review the singleton Homepage and Site settings documents.
+The site qualifies. The Sheet tracks. Cal.com schedules. Resend sends. The founders reply from Gmail.
 
-The seed uses the same canonical content module as the fallback renderer, deterministic `drafts.*` IDs, and transaction-level `createIfNotExists` by default. Existing documents are reported as skipped and Studio edits are preserved. Set `SANITY_SEED_FORCE=true` only for a deliberate transaction-level replacement of draft documents; the script prints a warning before replacing anything. Initial service, testimonial and project content remains draft/editorial-review material and is never written to Vercel environment variables.
+## The lead path
 
-The dry run prints the project ID, dataset, document ID, document type and intended operation without committing mutations. `SANITY_API_WRITE_TOKEN` is local bootstrap tooling only and must never be configured in Vercel.
+The contact form, the CTA band, tool emails and Cal.com bookings all take the same path:
 
-## Editorial model
+| Step | What happens |
+| --- | --- |
+| 1 | Validate with `validateLead` (`src/lib/leads.ts`). The honeypot field is kept: if it's filled, the visitor sees the normal success and nothing is stored. |
+| 2 | Minimum fill time. A submission sent less than 3 seconds after the form rendered also gets the normal success, and nothing is stored. |
+| 3 | Store first: JSON in the private Blob store at `pending/leads/<ISO time>-<random id>.json`. The record holds the fields, the sentence, first-touch and last-touch UTMs, the referrer, the landing page and the submission page. It holds no IP data. |
+| 4 | Forward: a signed POST to `SHEET_WEBHOOK_URL`, with an 8-second timeout. The live forward also carries a SHA-256 hash of the IP, salted with `IP_HASH_SALT`, for the Sheet's rate limit; the Sheet doesn't store it. When the Apps Script replies `{ ok: true }`, the Blob file is deleted. |
+| 5 | Email through Resend: the alert to `CONTACT_TO_EMAIL` (info@), copying any `FOUNDER_EMAILS`, with Reply-To set to the visitor, plus the visitor's auto-reply (contact and CTA only, when the email's domain has MX records) or tool result. Nothing is sent if the Sheet replied `limited: true`. If the Sheet can't be reached, the emails still go. An email Resend doesn't accept is parked in `pending/emails/` for the cron. |
+| 6 | Respond with success once the Blob write succeeds, even if the forward failed. The contact form redirects to `/thank-you`. |
+| 7 | The mailto hand-over appears only when the Blob write itself fails. |
 
-The model includes `siteSettings`, `homePage`, `service`, `project`, `testimonial` and `faq` documents, plus reusable CTA, SEO, image-with-alt, navigation, office, social-link, statistic and portable-text objects. Homepage sections are hero, about, services, projects, testimonials, FAQ and contact. Testimonials only render when explicitly marked approved.
+**Signing.** Apps Script can't read request headers, so the signature travels in the body: `{ payload, ts, sig }`, where `sig` is the hex HMAC-SHA256 of `ts + "." + JSON.stringify(payload)` using `SHEET_WEBHOOK_SECRET`. The script checks it with `Utilities.computeHmacSha256Signature` and rejects any `ts` older than 5 minutes. Apps Script answers a POST with a 302 to `script.googleusercontent.com`; the site follows the redirect and reads `{ ok: true }`.
 
-## Visual editing
+**Daily cron.** `vercel.json` runs `/api/cron/retry` once a day, with `Authorization: Bearer CRON_SECRET`. Each run:
+- re-forwards everything in `pending/leads/`, deleting each file once delivered
+- re-sends everything in `pending/subscribers/` to MailerLite
+- re-sends everything in `pending/emails/` through Resend
+- logs a count of anything still pending (`event: "cron_retry"`)
 
-`next-sanity/live` provides server/browser live content wiring. Draft Mode enables Presentation and `next-sanity/visual-editing` overlays when a valid Sanity preview secret and read token are configured. The resolver maps the singleton homepage, settings, services, projects, testimonials and FAQs to their visual locations. Until those credentials exist, `/studio` is a route-ready shell rather than a connected editorial workspace.
+**What the Apps Script does** (details in `integrations/google-apps-script/README.md`). It only records; it sends no email:
+- verifies the signature
+- applies a soft rate limit: 5 per 10 minutes per IP hash, and 3 per hour per email. Over the limit, the row is still added and marked "limited", and it replies `limited: true` so the site sends no email.
+- appends one row per lead, tool email or booking to the "Leads" tab. It never edits existing rows.
+- adds one anonymous row per completed tool to the "Tools" tab: date, tool, answers, result and UTM source
+- deletes Tools rows older than 12 months, daily, as the privacy notice says
 
-## Contact form
+**Email (Resend).**
+- Add the domain `axisandsage.com` in Resend and add the DNS records it gives you. Don't touch Google's MX records: inbound mail stays with Google Workspace.
+- If Resend asks for an SPF record and one already exists for Google, don't add a second SPF TXT record. Merge Resend's mechanism into the existing one, or use the subdomain setup Resend recommends (its default puts the SPF and bounce records on a `send.` subdomain, which avoids the collision).
+- Mail goes out as `Axis & Sage <info@axisandsage.com>`, set by `MAIL_FROM`. Alerts reply to the visitor; everything else replies to info@.
+- MailerLite can use its own sending subdomain later if it needs one.
 
-`POST /api/contact` validates name, email and message length, rejects spam through a honeypot field, and sends through Resend when all delivery variables are present. Without delivery configuration it returns an explicit `503` configuration message; it never claims delivery that did not occur.
+**Newsletter.** Sign-ups go to the MailerLite API, into group `MAILERLITE_GROUP_ID`. In MailerLite, switch on double opt-in for API sign-ups (Subscribers → Settings → Double opt-in, and tick it for API and integrations). MailerLite then sends the confirmation itself. If the API call fails, the sign-up is written to `pending/subscribers/` for the cron. The visitor sees "Check your inbox to confirm your subscription."
+
+**Bookings.** The Cal.com inline embed on `/contact#book` uses the booking link in Sanity Site settings (`https://cal.com/axisandsage/30min`). Point a Cal.com webhook (BOOKING_CREATED) at `/api/cal`, with its secret in `CAL_WEBHOOK_SECRET`. The route verifies the `x-cal-signature-256` signature, then sends the booking down the lead path with source `booking`.
+
+**Tools.** Tool pages need no sign-up. An email is asked for only to send a result, a model or a checklist. The lift model, the DoA matrix, the ESOP model and the readiness checklist download as `.xlsx` files with live formulas, built in the browser with ExcelJS. There are no start, step or click events: a completed tool writes one anonymous row to the Tools tab.
+
+## Setup, in order
+
+Each value below, in the order you'll get it. `NEXT_PUBLIC_*` values are public; everything else is secret. Set the Vercel values in the project's Settings → Environment Variables, for Production and Preview.
+
+Create the Sheet and the Apps Script in the Axis & Sage Google Workspace, signed in as info@axisandsage.com if it's a real user, or as the Workspace user that owns the info@ alias. Not a personal Gmail account. Share the Sheet with both founders as editors. Claude and Vercel never need that Google login: the site needs only the web app URL and the secret.
+
+| # | Name | Where | Where the value comes from |
+| --- | --- | --- | --- |
+| 1 | `SHEET_WEBHOOK_SECRET` | Vercel and Script Property | Make it once, for example with `openssl rand -hex 32`, and use the same value in both places. It's the script's only property. |
+| 2 | `SHEET_WEBHOOK_URL` | Vercel | The web app URL from Apps Script → Deploy → Manage deployments. It ends in `/exec`. |
+| 3 | `BLOB_READ_WRITE_TOKEN` | Vercel | Vercel → Storage → Create → Blob, with **Private** access, then connect it to the project. Vercel adds the token itself. |
+| 4 | `RESEND_API_KEY` | Vercel | Resend → API Keys → Create, with sending access, once `axisandsage.com` shows as verified in Resend → Domains. |
+| 5 | `CRON_SECRET` | Vercel | Any long random string. Vercel sends it to the cron route. |
+| 6 | `IP_HASH_SALT` | Vercel | Any long random string. Changing it later only breaks rate-limit continuity. |
+| 7 | `NEXT_PUBLIC_SITE_URL` | Vercel | `https://axisandsage.com` in Production. Previews fall back to the Vercel URL. |
+| 8 | `CAL_WEBHOOK_SECRET` | Vercel | Cal.com → Settings → Developer → Webhooks: add `https://axisandsage.com/api/cal` for BOOKING_CREATED, and copy its secret. |
+| 9 | `CONTACT_TO_EMAIL` | Vercel, optional | Where every lead alert goes: `info@axisandsage.com`, which is also the default. |
+| 10 | `FOUNDER_EMAILS` | Vercel, optional | Extra addresses to copy on each lead alert, comma-separated. Leave it empty if they all land in the info@ mailbox anyway. Duplicates and `CONTACT_TO_EMAIL` itself are ignored, so an alert never arrives twice. |
+| 11 | `MAIL_FROM` | Vercel, optional | Defaults to `Axis & Sage <info@axisandsage.com>`. |
+| 12 | `MAILERLITE_API_KEY` | Vercel, optional | MailerLite → Integrations → API → Generate new token. Switch on double opt-in for API sign-ups. |
+| 13 | `MAILERLITE_GROUP_ID` | Vercel, optional | MailerLite → Subscribers → Groups → open the group; the ID is in the URL. |
+| 14 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Vercel, optional | International format, for example `+971…`. WhatsApp links stay hidden until it's set. |
+| 15 | `NEXT_PUBLIC_GA_ID` | Vercel, off at launch | A GA4 measurement ID. Leave it unset. |
+
+Numbers 1 to 8 are required in Production: `scripts/check-launch-env.mjs` stops the build without them. The booking link (`https://cal.com/axisandsage/30min`) and the company and founder profile links are edited in Sanity, not set here. In Cal.com, connect both founders' calendars and make one question required: "Who needs to act, and what do you need them to do?"
+
+The Sanity project ID and dataset are public and fixed in code (`src/sanity/env.ts`); the site needs no Sanity token. `SANITY_API_WRITE_TOKEN` is only for running the seeder from a trusted machine: never set it in Vercel and never commit it. Optional values without a default, including `FOUNDER_EMAILS`, print a warning when unset.
+
+Vercel Web Analytics and Speed Insights need no keys. Turn them on in the project's Analytics and Speed Insights tabs.
+
+## Launch inputs and the production gate
+
+A production build (`VERCEL_ENV=production`) runs four gates in order:
+
+1. `scripts/check-launch-env.mjs` fails if a required variable is missing, or if `SANITY_CONTENT_SOURCE=seed` is set.
+2. The full test suite runs. A failing test fails the build.
+3. `next build`, which reads published Sanity content. It fails if Site settings, the Homepage (with both hero crops), Conversion Design, a site page, a legal page or the priced Diagnostic is missing. It never falls back to the legacy v1 documents.
+4. `scripts/check-placeholders.mjs` fails if any rendered page still contains a placeholder, such as `[price]`, `[Title]` or `DRAFT`.
+
+Previews keep any placeholder visible. Run `pnpm check:placeholders` after a local build for the same report.
+
+## Content in Sanity
+
+**Studio.** `studio/` is a standalone Sanity Studio for the existing project. It is never embedded in the site.
+
+```bash
+cd studio
+pnpm install --frozen-lockfile
+pnpm dev          # http://localhost:3333
+pnpm validate     # schema validation
+pnpm build
+pnpm sanity login && pnpm deploy   # publishes https://axis-and-sage.sanity.studio
+```
+
+The desk is grouped as AXIS & SAGE → Site settings, Homepage, Conversion Design, Pages, People, Practices, Work, Testimonials, Engagements, FAQs, Library, Tools, Legal, and Legacy v1. The singletons have fixed ids (`axisSageSettings`, `axisSageHome`, `axisSageConversionMethod`, `axisSagePage-<key>`); everything else uses Sanity ids and is found by slug.
+
+**Legacy v1.** The earlier documents (`homePage`, `siteSettings`, `service`, `project`, `testimonial`, `faq`) stay in the dataset, unchanged and read-only in the Studio under Legacy v1. The site never queries them and the seeder never touches them. Delete them only in a later, separately approved pass.
+
+**CORS.** The site reads through Sanity's CDN without a token, so it needs no CORS origin. The Studio's hosted origin (`https://axis-and-sage.sanity.studio`) is added by `sanity deploy`. Add `http://localhost:3333` (with credentials) for local Studio work only if it isn't already listed in sanity.io/manage → API → CORS origins. Don't add duplicates.
+
+**Seeding.** The canonical content is built by `migration/seed/build.ts` from the frozen snapshot in `migration/content-snapshot/` plus the final commercial decisions.
+
+```bash
+pnpm sanity:seed --offline           # validate the seed only, no network
+pnpm sanity:seed                     # dry run: compare with the dataset and report create / update / unchanged
+pnpm sanity:seed --apply             # write drafts (drafts.<id>) and upload the hero crops
+pnpm sanity:seed --publish           # publish the seeded drafts, then verify the published dataset
+pnpm sanity:verify                   # read-only canonical checks on the published dataset
+```
+
+`--apply` and `--publish` need `SANITY_API_WRITE_TOKEN` (an Editor token for `dltrl1ld`) in the environment. The seeder matches ordinary documents by `seedKey` and singletons by id, so it never duplicates; it stops on invalid references or two documents claiming one key; it refuses to publish while a canonical record or either hero crop is missing; and it never reads, writes or deletes legacy v1 documents.
+
+**Hero crops.** Put the two crops of "Sunset on Lagos skyline" (Chibuzo Nwaneri, Unsplash License) in `migration/assets/hero/` before `--apply`:
+- `lagos-sunset-desktop-3200x1800.jpg`: 3200×1800, landscape, the skyline below the navigation band.
+- `lagos-sunset-mobile-1200x1800.jpg`: 1200×1800, portrait, cut from the original (not the landscape crop stretched).
+
+The seeder checks both sizes. Set each image's hotspot in the Studio; the site uses it as the focus point.
 
 ## Quality checks
 
@@ -75,17 +195,46 @@ The model includes `siteSettings`, `homePage`, `service`, `project`, `testimonia
 pnpm lint
 pnpm typecheck
 pnpm test
-pnpm build
+pnpm build                    # reads Sanity; use SANITY_CONTENT_SOURCE=seed to build offline
+pnpm sanity:seed --offline
+pnpm studio:validate && pnpm studio:build
 ```
-
-`pnpm audit:assets` reports the legacy export's URL graph without modifying files. Screenshots and audit records live under `reference/`.
 
 ## Deployment
 
-Link the canonical repository to the correct existing Vercel scope, set the same environment variables for Preview and Production as appropriate, and deploy with the committed pnpm lockfile. Review the Vercel preview before any production-domain action. Do not attach `axisandsage.com` until the preview is explicitly approved.
+1. Link the repository to the Axis & Sage project on Vercel (Hobby).
+2. Turn on Deployment Protection for previews.
+3. Create the Sheet and deploy the Apps Script (see its README), create the private Blob store, verify the domain in Resend, and set the variables above.
+4. Seed Sanity (see Content in Sanity): add the hero crops, run `pnpm sanity:seed --apply`, review the drafts in the Studio, then `pnpm sanity:seed --publish`. Deploy the Studio.
+5. Review the preview.
 
-The production cutover plan is: review preview, verify forms/SEO/accessibility, lower DNS TTL if needed, attach the domain in the approved Vercel project, verify redirects and certificates, and retain the AWS deployment for rollback. AWS deletion is a separate later action after the cutover and rollback period, requiring a second explicit approval.
+Do not attach `axisandsage.com` until the preview is explicitly approved and every line of the launch gate passes.
+
+## Moving off AWS
+
+Today the old site runs on S3 and CloudFront, and DNS for `axisandsage.com` is in Route 53. Moving the site to Vercel alone doesn't remove AWS: the nameservers have to move too. The end state has no AWS at all. Nothing below happens without explicit approval, and the AWS deletions need a second approval after the rollback period.
+
+**Before the cutover**
+1. Export every Route 53 record, with a screenshot as well: MX, SPF and other TXT, DKIM, DMARC, verification records, the apex, `www` and anything else.
+2. Choose the new DNS host. Vercel DNS is the simplest, since Vercel already hosts the site. Cloudflare's free DNS is the alternative if you want DNS independent of the host.
+3. Recreate every record there. Keep Google's MX, SPF, DKIM and DMARC exactly as they are, and add Resend's records.
+
+**Cutover**
+1. Point the domain's nameservers from Route 53 to the new DNS host.
+2. Attach the apex and `www` to the Vercel project; check redirects and certificates.
+3. Check Google mail both ways.
+4. Check Resend shows the domain as verified, then send a test lead.
+5. Check MailerLite later, once it sends.
+6. Run the full test buyer from the launch gate.
+
+**After the rollback period, with a second approval**
+1. Archive the old static site as a ZIP.
+2. Delete the CloudFront distribution, the S3 website bucket and the Route 53 hosted zone.
+3. If the domain is registered with AWS Registrar, transfer the registration too. It isn't a runtime dependency, so it can wait until after launch.
 
 ## Repository safety
 
-The canonical checkout is `/Users/tomiwao/Code/axis-and-sage-site`. Do not clone it, create a nested repository, modify DNS/AWS records, or treat the legacy Framer export as maintainable code.
+The canonical checkout is `/Users/tomiwao/Code/axis-and-sage-site`.
+- Do not clone it or create a nested repository.
+- Do not modify DNS or AWS records until the cutover above is approved.
+- Do not treat the legacy Framer export as maintainable code.

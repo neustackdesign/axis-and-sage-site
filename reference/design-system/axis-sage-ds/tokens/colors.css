@@ -1,0 +1,68 @@
+/* Axis & Sage · colour tokens. Base values first, then role aliases. */
+:root {
+  /* Paper */
+  --paper-50: #FBFBFA;   /* raised surfaces on paper */
+  --paper-100: #F4F3F1;  /* alternate background */
+  --paper-200: #ECEBE9;  /* default background */
+  /* Stone */
+  --stone-300: #D4D4D2;  /* 1px rules on paper */
+  --stone-400: #BDBCBA;  /* disabled, quiet UI */
+  /* Charcoal */
+  --charcoal-900: #1F1F1F; /* primary text on paper */
+  --charcoal-800: #2B2B2B; /* dark sections */
+  --charcoal-700: #363636; /* raised surfaces on charcoal */
+  --charcoal-600: #4B4B4B; /* 1px rules on charcoal */
+  /* Sage */
+  --sage-100: #EEF1E6;   /* quiet panels */
+  --sage-200: #E5EAD8;   /* sage sections, tool panels */
+  --sage-400: #B6B6A2;   /* sage-stone accents, chart secondary */
+  --sage-700: #5F6B4A;   /* sage text and lines on paper (4.78:1 on paper-200) */
+  /* Orange: sampled from mark #FE5F03, deepened to reach 3:1 on paper-200 */
+  --orange-100: #FBE3D4; /* highlighted rows, selected states */
+  --orange-500: #E8590C; /* the next action */
+  --orange-600: #B84A0E; /* hover */
+  --orange-700: #A8430C; /* pressed */
+  /* Mark: logo only, never UI. Both ribbons at 70% opacity. */
+  --mark-orange: #FE5F03;
+  --mark-pink: #FE94F9;
+  --mark-opacity: 0.7;
+  /* Text */
+  --text-muted-paper: #5B5A57;
+  --text-on-charcoal: #F4F3F1;
+  --text-muted-charcoal: #A9A7A2;
+  /* Status: forms and tools only */
+  --success-600: #2F6B3A;
+  --error-600: #B3261E;
+  --success-300: #8FC79A; /* on charcoal */
+  --error-300: #F28B82;   /* on charcoal */
+
+  /* ---- Role aliases ---- */
+  --bg-default: var(--paper-200);
+  --bg-alt: var(--paper-100);
+  --surface-raised: var(--paper-50);
+  --rule: var(--stone-300);
+  --ui-quiet: var(--stone-400);
+  --text-primary: var(--charcoal-900);
+  --text-muted: var(--text-muted-paper);
+
+  --bg-dark: var(--charcoal-800);
+  --surface-dark-raised: var(--charcoal-700);
+  --rule-dark: var(--charcoal-600);
+  --text-on-dark: var(--text-on-charcoal);
+  --text-muted-dark: var(--text-muted-charcoal);
+
+  --bg-sage: var(--sage-200);
+  --surface-sage-quiet: var(--sage-100);
+  --accent-sage: var(--sage-400);
+  --text-sage: var(--sage-700);
+
+  --action: var(--orange-500);
+  --action-hover: var(--orange-600);
+  --action-pressed: var(--orange-700);
+  --action-tint: var(--orange-100);
+  --on-action: var(--charcoal-900);        /* label on orange at rest: 4.60:1 */
+  --on-action-hover: var(--paper-50);      /* label on orange-600: 5.04:1 */
+
+  --focus-ring-paper: var(--charcoal-900);
+  --focus-ring-charcoal: var(--paper-50);
+}

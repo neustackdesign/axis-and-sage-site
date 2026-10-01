@@ -1,21 +1,22 @@
 import { NextResponse } from "next/server";
-import { isContactFormConfigured } from "@/lib/contact-availability";
+import { validateLead } from "@/lib/leads";
+import { tooFast } from "@/lib/pipeline/core";
+import { deliverLead, ipHashOf, parseLead, readJson, sheetPayload } from "@/lib/server/leadpath";
+import { hasMx } from "@/lib/server/mx";
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const THANKS = "Thanks. One of us will reply within one working day.";
 
+/** Contact form and CTA band: validate, minimum fill time, store in Blob first, forward to the Pipeline Sheet, email. */
 export async function POST(request: Request) {
-  const form = await request.formData();
-  const name = String(form.get("name") || "").trim();
-  const email = String(form.get("email") || "").trim();
-  const organisation = String(form.get("organisation") || "").trim();
-  const timeline = String(form.get("timeline") || "").trim();
-  const needs = form.getAll("needs").map(String).filter(Boolean);
-  const message = String(form.get("message") || "").trim();
-  const company = String(form.get("company") || "").trim();
-  if (company) return NextResponse.json({ message: "Thanks — your message has been received." });
-  if (name.length < 2 || !emailPattern.test(email) || !needs.length || message.length < 10) return NextResponse.json({ message: "Please add your name, a valid work email, at least one need and a little more detail so we can respond." }, { status: 400 });
-  if (!isContactFormConfigured()) return NextResponse.json({ message: "The contact channel is not configured yet. Please email the team directly once a verified address is published." }, { status: 503 });
-  const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: process.env.CONTACT_FROM_EMAIL, to: [process.env.CONTACT_TO_EMAIL], reply_to: email, subject: `Axis & Sage enquiry from ${name}`, text: [`Name: ${name}`, `Email: ${email}`, organisation ? `Organisation: ${organisation}` : "", `Needs: ${needs.join(", ")}`, timeline ? `Timeline: ${timeline}` : "", "", message].filter(Boolean).join("\n") }) });
-  if (!response.ok) return NextResponse.json({ message: "We couldn’t send your message just now. Please try again shortly." }, { status: 502 });
-  return NextResponse.json({ message: "Thanks — your message has been sent. We’ll be in touch soon." });
+  const raw = await readJson(request);
+  const lead = parseLead(raw);
+  if (!lead || (lead.source !== "contact" && lead.source !== "cta")) return NextResponse.json({ message: "We couldn't read that. Please try again." }, { status: 400 });
+  const redirect = lead.source === "contact" ? "/thank-you" : undefined;
+  if (lead.website || tooFast(raw.renderedAt, raw.submittedAt)) return NextResponse.json({ message: THANKS, redirect });
+  const errors = validateLead(lead);
+  if (Object.keys(errors).length) return NextResponse.json({ message: "Please check the highlighted fields.", errors }, { status: 400 });
+  const payload = sheetPayload("lead", lead);
+  const result = await deliverLead(payload, { ipHash: ipHashOf(request), autoreply: await hasMx(lead.email) });
+  if (!result.stored) return NextResponse.json({ message: "We couldn't save your message just now. Your email app can send it instead.", fallback: true }, { status: 503 });
+  return NextResponse.json({ message: THANKS, redirect });
 }
