@@ -8,7 +8,6 @@ const required = [
   ["SHEET_WEBHOOK_SECRET", "signs every post to the Apps Script (same value as its Script Property)"],
   ["BLOB_READ_WRITE_TOKEN", "private Vercel Blob store: leads are stored here before they are forwarded"],
   ["RESEND_API_KEY", "sends every website email: the lead alert, the auto-reply and tool results"],
-  ["FOUNDER_EMAILS", "founders copied on every lead alert"],
   ["CRON_SECRET", "protects the daily retry cron"],
   ["IP_HASH_SALT", "salts the IP hash; the IP itself is never stored"],
   ["NEXT_PUBLIC_BOOKING_URL", "the Cal.com booking embed"],
@@ -16,6 +15,7 @@ const required = [
 ];
 const optional = [
   [["MAILERLITE_API_KEY", "MAILERLITE_GROUP_ID"], "newsletter sign-ups park in Blob until these are set"],
+  [["FOUNDER_EMAILS"], "lead alerts go to CONTACT_TO_EMAIL only"],
   [["NEXT_PUBLIC_WHATSAPP_NUMBER"], "WhatsApp links stay hidden"],
   [["NEXT_PUBLIC_LINKEDIN_URL", "NEXT_PUBLIC_LINKEDIN_IFEANYI", "NEXT_PUBLIC_LINKEDIN_TOMIWA"], "LinkedIn links stay hidden"],
   [["NEXT_PUBLIC_GA_ID"], "GA4 stays off"],

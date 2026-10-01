@@ -16,7 +16,7 @@ export const config = {
   resendKey: env("RESEND_API_KEY"),
   mailFrom: env("MAIL_FROM") || "Axis & Sage <info@axisandsage.com>",
   notifyTo: env("CONTACT_TO_EMAIL") || "info@axisandsage.com",
-  founders: env("FOUNDER_EMAILS").split(",").map((s) => s.trim()).filter(Boolean),
+  founders: env("FOUNDER_EMAILS"), // optional; normalised by alertCc
   mailerLiteKey: env("MAILERLITE_API_KEY"),
   mailerLiteGroup: env("MAILERLITE_GROUP_ID"),
 };

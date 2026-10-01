@@ -20,8 +20,24 @@ export function leadSentence(p: SheetPayload) {
   return p.sentence || (p.type === "tool_email" ? `${p.tool} result` : firstLine(p.message));
 }
 
-/** To info@, copying the founders, with Reply-To set to the visitor so a reply goes straight back to them. */
-export function alertMail(p: SheetPayload, opts: { to: string; cc: string[] }): Mail {
+const emailPattern = /^[^\s@,]+@[^\s@,]+\.[^\s@,]{2,}$/;
+
+/**
+ * Optional copies of the lead alert, from FOUNDER_EMAILS (comma-separated). Trimmed and lower-cased; invalid
+ * addresses, duplicates and the alert's own destination are dropped. Empty when nothing distinct is left.
+ */
+export function alertCc(founders: string | undefined, to: string): string[] {
+  const own = to.trim().toLowerCase();
+  const seen = new Set<string>();
+  for (const raw of (founders || "").split(",")) {
+    const email = raw.trim().toLowerCase();
+    if (email && email !== own && emailPattern.test(email)) seen.add(email);
+  }
+  return [...seen];
+}
+
+/** To CONTACT_TO_EMAIL, copying any distinct FOUNDER_EMAILS, with Reply-To set to the visitor so a reply goes straight back to them. */
+export function alertMail(p: SheetPayload, opts: { to: string; cc?: string[] }): Mail {
   const label = p.source === "booking" ? "Call booked" : p.type === "tool_email" ? `Tool result (${p.tool})` : "New lead";
   const sentence = leadSentence(p);
   const text = lines([
@@ -44,7 +60,8 @@ export function alertMail(p: SheetPayload, opts: { to: string; cc: string[] }): 
     `Landing page: ${p.landingPage || "unknown"}`,
     `Submitted on: ${p.submissionPage || "unknown"}`,
   ]);
-  return { to: [opts.to], cc: opts.cc.filter((c) => c && c !== opts.to), replyTo: p.email || undefined, subject: `${label}: ${sentence || p.name || p.email}`, text };
+  const cc = alertCc((opts.cc || []).join(","), opts.to);
+  return { to: [opts.to], ...(cc.length ? { cc } : {}), replyTo: p.email || undefined, subject: `${label}: ${sentence || p.name || p.email}`, text };
 }
 
 /** Contact and CTA only. Never repeats a link the visitor typed. */

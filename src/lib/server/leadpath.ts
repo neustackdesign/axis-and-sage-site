@@ -2,7 +2,7 @@ import "server-only";
 import { sanitiseAttribution } from "@/lib/attribution";
 import { leadSources, sentenceOf, type LeadPayload } from "@/lib/leads";
 import { deliver, forwardToSheet, randomId, retryPending, sendOrPark, type SheetPayload } from "@/lib/pipeline/core";
-import { alertMail, autoreplyMail, toolResultMail } from "@/lib/pipeline/emails";
+import { alertCc, alertMail, autoreplyMail, toolResultMail } from "@/lib/pipeline/emails";
 import { mailerLiteSubscribe } from "@/lib/pipeline/mailerlite";
 import { resendSend } from "@/lib/pipeline/resend";
 import { hashIp } from "@/lib/pipeline/sign";
@@ -66,7 +66,7 @@ export type VisitorMail = "sent" | "parked" | "none" | "failed";
 
 /**
  * The whole lead path after validation: Blob first, forward to the Sheet, then email through Resend. The alert goes to
- * info@ with the founders copied; the visitor gets the tool result, or the auto-reply when `autoreply` is set.
+ * CONTACT_TO_EMAIL, copying any FOUNDER_EMAILS; the visitor gets the tool result, or the auto-reply when `autoreply` is set.
  * Nothing is emailed when the Sheet marked the lead "limited". If the Sheet can't be reached, the emails still go.
  */
 export async function deliverLead(payload: SheetPayload, opts: { ipHash?: string; autoreply?: boolean } = {}) {
@@ -76,7 +76,7 @@ export async function deliverLead(payload: SheetPayload, opts: { ipHash?: string
   const deps = { store: blobStore, send: sendMail, log: logEvent };
   const visitor = payload.type === "tool_email" ? toolResultMail(payload, config.siteUrl) : opts.autoreply ? autoreplyMail(payload, config.siteUrl) : null;
   const [, v] = await Promise.all([
-    sendOrPark(alertMail(payload, { to: config.notifyTo, cc: config.founders }), deps),
+    sendOrPark(alertMail(payload, { to: config.notifyTo, cc: alertCc(config.founders, config.notifyTo) }), deps),
     visitor ? sendOrPark(visitor, deps) : Promise.resolve(null),
   ]);
   const visitorMail: VisitorMail = !v ? "none" : v.sent ? "sent" : v.parked ? "parked" : "failed";

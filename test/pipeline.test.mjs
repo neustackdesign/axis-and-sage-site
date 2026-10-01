@@ -227,10 +227,29 @@ test("Resend gets the sender, recipients, Reply-To and both bodies", async () =>
   assert.equal(await resend.resendSend({ apiKey: "", from: "x" })({ to: ["a@b.co"], subject: "s", text: "t" }), false);
 });
 
-test("The alert goes to info@, copying the founders, with Reply-To set to the visitor", () => {
-  const m = emails.alertMail({ ...payload(), sentence: "We need investors to commit.", utm: { first: { utm_source: "linkedin" } } }, { to: "info@axisandsage.com", cc: ["ifeanyi@axisandsage.com", "tomiwa@axisandsage.com"] });
-  assert.deepEqual(m.to, ["info@axisandsage.com"]);
-  assert.deepEqual(m.cc, ["ifeanyi@axisandsage.com", "tomiwa@axisandsage.com"]);
+test("Founder copies are optional: absent or empty FOUNDER_EMAILS gives no CC at all", async () => {
+  for (const founders of [undefined, "", "  ", " , ,"]) assert.deepEqual(emails.alertCc(founders, "info@example.com"), [], JSON.stringify(founders));
+  const m = emails.alertMail(payload(), { to: "info@example.com", cc: emails.alertCc("", "info@example.com") });
+  assert.deepEqual(m.to, ["info@example.com"]);
+  assert.equal("cc" in m, false, "no empty cc field");
+  let body;
+  const send = resend.resendSend({ apiKey: "re_x", from: "x", fetchImpl: async (_u, init) => { body = JSON.parse(init.body); return new Response("{}"); } });
+  await send(m);
+  assert.equal("cc" in body, false, "Resend gets no cc field");
+  const env = await read("scripts/check-launch-env.mjs");
+  assert.doesNotMatch(env.slice(env.indexOf("const required"), env.indexOf("const optional")), /FOUNDER_EMAILS/, "not required");
+  assert.match(env.slice(env.indexOf("const optional")), /FOUNDER_EMAILS/, "warned when unset");
+});
+
+test("Founder copies are normalised, de-duplicated, and never repeat the alert's own address", () => {
+  assert.deepEqual(emails.alertCc(" A@Example.com, b@example.com ,a@example.com, INFO@example.com, not-an-email, c@example.org", "info@example.com"), ["a@example.com", "b@example.com", "c@example.org"]);
+  assert.deepEqual(emails.alertCc("info@example.com", " Info@Example.com "), []);
+});
+
+test("The alert goes to CONTACT_TO_EMAIL, copying distinct founders, with Reply-To set to the visitor", () => {
+  const m = emails.alertMail({ ...payload(), sentence: "We need investors to commit.", utm: { first: { utm_source: "linkedin" } } }, { to: "info@example.com", cc: ["one@example.com", "TWO@example.com", "info@example.com", "one@example.com"] });
+  assert.deepEqual(m.to, ["info@example.com"]);
+  assert.deepEqual(m.cc, ["one@example.com", "two@example.com"]);
   assert.equal(m.replyTo, "ada@example.com");
   assert.equal(m.subject, "New lead: We need investors to commit.");
   assert.match(m.text, /First touch: linkedin/);

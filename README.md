@@ -69,7 +69,7 @@ The contact form, the CTA band, tool emails and Cal.com bookings all take the sa
 | 2 | Minimum fill time. A submission sent less than 3 seconds after the form rendered also gets the normal success, and nothing is stored. |
 | 3 | Store first: JSON in the private Blob store at `pending/leads/<ISO time>-<random id>.json`. The record holds the fields, the sentence, first-touch and last-touch UTMs, the referrer, the landing page and the submission page. It holds no IP data. |
 | 4 | Forward: a signed POST to `SHEET_WEBHOOK_URL`, with an 8-second timeout. The live forward also carries a SHA-256 hash of the IP, salted with `IP_HASH_SALT`, for the Sheet's rate limit; the Sheet doesn't store it. When the Apps Script replies `{ ok: true }`, the Blob file is deleted. |
-| 5 | Email through Resend: the alert to info@ with the founders copied and Reply-To set to the visitor, plus the visitor's auto-reply (contact and CTA only, when the email's domain has MX records) or tool result. Nothing is sent if the Sheet replied `limited: true`. If the Sheet can't be reached, the emails still go. An email Resend doesn't accept is parked in `pending/emails/` for the cron. |
+| 5 | Email through Resend: the alert to `CONTACT_TO_EMAIL` (info@), copying any `FOUNDER_EMAILS`, with Reply-To set to the visitor, plus the visitor's auto-reply (contact and CTA only, when the email's domain has MX records) or tool result. Nothing is sent if the Sheet replied `limited: true`. If the Sheet can't be reached, the emails still go. An email Resend doesn't accept is parked in `pending/emails/` for the cron. |
 | 6 | Respond with success once the Blob write succeeds, even if the forward failed. The contact form redirects to `/thank-you`. |
 | 7 | The mailto hand-over appears only when the Blob write itself fails. |
 
@@ -112,20 +112,21 @@ Create the Sheet and the Apps Script in the Axis & Sage Google Workspace, signed
 | 2 | `SHEET_WEBHOOK_URL` | Vercel | The web app URL from Apps Script → Deploy → Manage deployments. It ends in `/exec`. |
 | 3 | `BLOB_READ_WRITE_TOKEN` | Vercel | Vercel → Storage → Create → Blob, with **Private** access, then connect it to the project. Vercel adds the token itself. |
 | 4 | `RESEND_API_KEY` | Vercel | Resend → API Keys → Create, with sending access, once `axisandsage.com` shows as verified in Resend → Domains. |
-| 5 | `FOUNDER_EMAILS` | Vercel | Both founders' addresses, comma-separated. They're copied on every lead alert. |
-| 6 | `CRON_SECRET` | Vercel | Any long random string. Vercel sends it to the cron route. |
-| 7 | `IP_HASH_SALT` | Vercel | Any long random string. Changing it later only breaks rate-limit continuity. |
-| 8 | `NEXT_PUBLIC_SITE_URL` | Vercel | `https://axisandsage.com` in Production. Previews fall back to the Vercel URL. |
-| 9 | `NEXT_PUBLIC_BOOKING_URL` | Vercel | `https://cal.com/axisandsage/30min`. In Cal.com, connect both founders' calendars and make one question required: "Who needs to act, and what do you need them to do?" |
-| 10 | `CAL_WEBHOOK_SECRET` | Vercel | Cal.com → Settings → Developer → Webhooks: add `https://axisandsage.com/api/cal` for BOOKING_CREATED, and copy its secret. |
-| 11 | `MAIL_FROM`, `CONTACT_TO_EMAIL` | Vercel, optional | Default to `Axis & Sage <info@axisandsage.com>` and `info@axisandsage.com`. |
-| 12 | `MAILERLITE_API_KEY` | Vercel, optional | MailerLite → Integrations → API → Generate new token. Switch on double opt-in for API sign-ups. |
-| 13 | `MAILERLITE_GROUP_ID` | Vercel, optional | MailerLite → Subscribers → Groups → open the group; the ID is in the URL. |
-| 14 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Vercel, optional | International format, for example `+971…`. WhatsApp links stay hidden until it's set. |
-| 15 | `NEXT_PUBLIC_LINKEDIN_URL`, `NEXT_PUBLIC_LINKEDIN_IFEANYI`, `NEXT_PUBLIC_LINKEDIN_TOMIWA`, `NEXT_PUBLIC_PORTFOLIO_TOMIWA` | Vercel, optional | Profile URLs. Each link stays hidden until it's set. |
-| 16 | `NEXT_PUBLIC_GA_ID` | Vercel, off at launch | A GA4 measurement ID. Leave it unset. |
+| 5 | `CRON_SECRET` | Vercel | Any long random string. Vercel sends it to the cron route. |
+| 6 | `IP_HASH_SALT` | Vercel | Any long random string. Changing it later only breaks rate-limit continuity. |
+| 7 | `NEXT_PUBLIC_SITE_URL` | Vercel | `https://axisandsage.com` in Production. Previews fall back to the Vercel URL. |
+| 8 | `NEXT_PUBLIC_BOOKING_URL` | Vercel | `https://cal.com/axisandsage/30min`. In Cal.com, connect both founders' calendars and make one question required: "Who needs to act, and what do you need them to do?" |
+| 9 | `CAL_WEBHOOK_SECRET` | Vercel | Cal.com → Settings → Developer → Webhooks: add `https://axisandsage.com/api/cal` for BOOKING_CREATED, and copy its secret. |
+| 10 | `CONTACT_TO_EMAIL` | Vercel, optional | Where every lead alert goes: `info@axisandsage.com`, which is also the default. |
+| 11 | `FOUNDER_EMAILS` | Vercel, optional | Extra addresses to copy on each lead alert, comma-separated. Leave it empty if they all land in the info@ mailbox anyway. Duplicates and `CONTACT_TO_EMAIL` itself are ignored, so an alert never arrives twice. |
+| 12 | `MAIL_FROM` | Vercel, optional | Defaults to `Axis & Sage <info@axisandsage.com>`. |
+| 13 | `MAILERLITE_API_KEY` | Vercel, optional | MailerLite → Integrations → API → Generate new token. Switch on double opt-in for API sign-ups. |
+| 14 | `MAILERLITE_GROUP_ID` | Vercel, optional | MailerLite → Subscribers → Groups → open the group; the ID is in the URL. |
+| 15 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Vercel, optional | International format, for example `+971…`. WhatsApp links stay hidden until it's set. |
+| 16 | `NEXT_PUBLIC_LINKEDIN_URL`, `NEXT_PUBLIC_LINKEDIN_IFEANYI`, `NEXT_PUBLIC_LINKEDIN_TOMIWA`, `NEXT_PUBLIC_PORTFOLIO_TOMIWA` | Vercel, optional | Profile URLs. Each link stays hidden until it's set. |
+| 17 | `NEXT_PUBLIC_GA_ID` | Vercel, off at launch | A GA4 measurement ID. Leave it unset. |
 
-Numbers 1 to 10 are required in Production: `scripts/check-launch-env.mjs` stops the build without them. The optional ones print a warning.
+Numbers 1 to 9 are required in Production: `scripts/check-launch-env.mjs` stops the build without them. Optional values without a default, including `FOUNDER_EMAILS`, print a warning when unset.
 
 Vercel Web Analytics and Speed Insights need no keys. Turn them on in the project's Analytics and Speed Insights tabs.
 
