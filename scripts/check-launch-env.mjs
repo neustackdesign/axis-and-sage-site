@@ -11,6 +11,7 @@ const required = [
   ["CRON_SECRET", "protects the daily retry cron"],
   ["IP_HASH_SALT", "salts the IP hash; the IP itself is never stored"],
   ["CAL_WEBHOOK_SECRET", "verifies the Cal.com booking webhook"],
+  ["SANITY_REVALIDATE_SECRET", "verifies Sanity publish notifications for content-cache invalidation"],
 ];
 const optional = [
   [["MAILERLITE_API_KEY", "MAILERLITE_GROUP_ID"], "newsletter sign-ups park in Blob until these are set"],
