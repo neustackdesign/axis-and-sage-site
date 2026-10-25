@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUFORUM UESTA v2.2 — University Entrepreneurial Systems Transformation Assessment</title>
+<style>
+  :root{
+    --ivory:#F3F6F2; --card:#FFFFFF; --ink:#1E2721; --muted:#5E6B60;
+    --olive:#006838; --olive-soft:#E4EFE6; --copper:#A08050; --gold:#D0C090; --gold-d:#A08050; --blue:#004B8D;
+    --line:#D3DDD2; --dark:#0B2E1E;
+    --p1:#A15C22; --p2:#2E5F8A; --p3:#4A7A2A; --p4:#6B3FA0; --p5:#2F6F7A; --p6:#B98A2F;
+    --ml1:#C9A227; --ml2:#9A5B2B; --ml3:#2E5F8A; --ml4:#4A7A2A; --ml5:#8A6D1F;
+    --ok:#4A7A2A; --warn:#A33B2E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--ivory); color:var(--ink); font:15px/1.55 Calibri,Carlito,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  h1,h2,h3,.serif{font-family:Calibri,Carlito,"Segoe UI",sans-serif; letter-spacing:.1px;}
+  button{font:inherit; cursor:pointer;}
+  input,select,textarea{font:inherit; color:var(--ink);}
+
+  /* ---------- header ---------- */
+  header{background:var(--dark); color:#F2EFE2; padding:18px 26px 0;}
+  .hd-eyebrow{font-size:11px; letter-spacing:.22em; color:var(--gold); font-weight:700; text-transform:uppercase;}
+  .hd-row{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; justify-content:space-between; margin-top:6px;}
+  header h1{font-size:26px; font-weight:700; color:#FFF;}
+  header h1 span{color:var(--gold); font-style:italic; font-weight:400;}
+  .hd-meta{display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding-bottom:4px;}
+  .hd-meta input, .hd-meta select{background:#12402B; border:1px solid #2B5A41; color:#F2EFE2; border-radius:6px; padding:7px 10px; font-size:13px;}
+  .hd-meta input::placeholder{color:#8FAE9B;}
+  .save-state{font-size:12px; color:#8FAE9B; min-width:110px;}
+  .btn{border:none; border-radius:7px; padding:9px 16px; font-weight:700; font-size:13px;}
+  .btn-gold{background:var(--gold); color:#1E2721;}
+  .btn-gold:hover{background:#C3AD75;}
+  .btn-ghost{background:transparent; border:1px solid #3A6A50; color:#E3EEE5;}
+  .btn-ghost:hover{border-color:var(--gold); color:var(--gold);}
+  nav{display:flex; gap:4px; margin-top:16px; overflow-x:auto;}
+  nav button{background:transparent; border:none; color:#A9C3B2; padding:11px 16px; font-size:13px; font-weight:700; border-bottom:3px solid transparent; white-space:nowrap;}
+  nav button:hover{color:#F2EFE2;}
+  nav button.on{color:#FFF; border-bottom-color:var(--gold);}
+  nav button .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:1px;}
+
+  main{max-width:1180px; margin:0 auto; padding:26px 26px 90px;}
+  .page{display:none;}
+  .page.on{display:block;}
+
+  /* ---------- dashboard ---------- */
+  .dash-intro{display:flex; justify-content:space-between; align-items:flex-end; gap:18px; flex-wrap:wrap; margin-bottom:18px;}
+  .dash-intro h2{font-size:22px; color:var(--olive);}
+  .dash-intro p{color:var(--muted); font-size:13.5px; max-width:640px;}
+  .inst-badge{background:var(--dark); color:#F2EFE2; border-radius:12px; padding:16px 22px; text-align:center; min-width:230px;}
+  .inst-badge .lbl{font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:#8FAE9B; font-weight:700;}
+  .inst-badge .lvl{font-family:Calibri,Carlito,"Segoe UI",sans-serif; font-size:34px; font-weight:700; margin-top:2px;}
+  .inst-badge .nm{font-size:13px; font-weight:700;}
+  .inst-badge .why{font-size:11.5px; color:#A9C3B2; margin-top:4px;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;}
+  .pcard{background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(40,38,20,.06);}
+  .pcard .bar{height:7px;}
+  .pcard .in{padding:15px 17px 17px;}
+  .pcard .pn{font-size:11px; letter-spacing:.15em; color:var(--muted); font-weight:700;}
+  .pcard h3{font-size:16.5px; margin:2px 0 9px;}
+  .segs{display:flex; gap:5px; margin-bottom:9px;}
+  .seg{flex:1; height:16px; border-radius:4px; background:#E7E3D2; color:#fff; font-size:10px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  .mlline{display:flex; align-items:baseline; gap:9px;}
+  .mlbig{font-family:Calibri,Carlito,"Segoe UI",sans-serif; font-size:27px; font-weight:700;}
+  .mllabel{font-size:13px; font-weight:700;}
+  .idx{margin-left:auto; font-size:12.5px; color:var(--muted);}
+  .pcard .weak{font-size:12.5px; color:var(--muted); margin-top:7px; border-top:1px dashed var(--line); padding-top:7px;}
+  .pcard .comp{font-size:11.5px; margin-top:5px;}
+  .pcard .comp b{font-weight:700;}
+  .pcard .open-p{margin-top:10px; width:100%; background:var(--olive-soft); border:1px solid var(--line); border-radius:7px; padding:7px; font-weight:700; font-size:12.5px; color:var(--olive);}
+  .pcard .open-p:hover{background:#E4E0CB;}
+  .mlkey{display:flex; gap:16px; flex-wrap:wrap; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:11px 16px; margin-top:18px; font-size:12.5px; align-items:center;}
+  .mlkey .k{display:flex; align-items:center; gap:6px;}
+  .mlkey .sw{width:13px; height:13px; border-radius:3px;}
+  .regbox{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-top:20px;}
+  .regbox h3{color:var(--olive); font-size:16px;}
+  .regbox p{font-size:12.5px; color:var(--muted); margin:4px 0 12px;}
+  .reggrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px 22px;}
+  .reg{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px;}
+  .reg input{width:110px; border:1px solid var(--line); border-radius:6px; padding:6px 9px; background:#FDFCF7;}
+
+  /* ---------- P pages ---------- */
+  .phead{border-radius:12px; color:#fff; padding:20px 24px; margin-bottom:16px;}
+  .phead .pn{font-size:11px; letter-spacing:.18em; font-weight:700; opacity:.85;}
+  .phead h2{font-size:23px; margin:2px 0 6px;}
+  .phead p{font-size:13.5px; opacity:.94; max-width:840px;}
+  .pscore{display:flex; gap:22px; align-items:center; background:rgba(0,0,0,.18); border-radius:9px; padding:10px 16px; margin-top:13px; flex-wrap:wrap; font-size:13px;}
+  .pscore b{font-family:Calibri,Carlito,"Segoe UI",sans-serif; font-size:21px;}
+  .dim{background:var(--card); border:1px solid var(--line); border-radius:11px; margin-bottom:13px; overflow:hidden;}
+  .dim-h{display:flex; align-items:center; gap:12px; padding:13px 17px; cursor:pointer; user-select:none;}
+  .dim-h:hover{background:#FBFAF3;}
+  .dim-h .did{font-size:11px; font-weight:800; color:var(--copper); min-width:52px;}
+  .dim-h .dn{font-weight:700; font-size:14.5px; flex:1;}
+  .dim-h .dw{font-size:11.5px; color:var(--muted);}
+  .chip{min-width:52px; text-align:center; border-radius:6px; padding:4px 8px; font-size:12px; font-weight:800; color:#fff; background:#C9C4B0;}
+  .caret{color:var(--muted); font-size:12px; transition:transform .15s;}
+  .dim.open .caret{transform:rotate(90deg);}
+  .dim-b{display:none; border-top:1px solid var(--line); padding:15px 17px 17px; background:#FDFCF7;}
+  .dim.open .dim-b{display:block;}
+  .lens{font-size:12.5px; color:var(--muted); margin-bottom:4px;}
+  .lens b{color:var(--copper);}
+  .gateline{font-size:12.5px; color:var(--warn); margin-bottom:12px;}
+  .item{border:1px solid var(--line); border-radius:9px; background:#fff; padding:12px 14px; margin-bottom:10px;}
+  .item .qrow{display:flex; gap:10px; align-items:baseline;}
+  .item .iid{font-size:11px; font-weight:800; color:var(--copper); min-width:44px;}
+  .item .q{font-size:13.5px; flex:1;}
+  .item .isc{font-size:11px; font-weight:800; border-radius:5px; padding:2px 7px; color:#fff; background:#C9C4B0; white-space:nowrap;}
+  .ctrl{margin-top:9px; display:flex; gap:9px; flex-wrap:wrap; align-items:center;}
+  .ctrl label{font-size:12px; color:var(--muted);}
+  .ctrl input[type=number]{width:110px; border:1px solid var(--line); border-radius:6px; padding:6px 9px;}
+  .ctrl input[type=text], .ctrl input[type=date]{border:1px solid var(--line); border-radius:6px; padding:6px 9px; min-width:190px; flex:1;}
+  .ctrl select{border:1px solid var(--line); border-radius:6px; padding:6px 9px; max-width:100%; flex:1; min-width:230px; background:#fff;}
+  .pctout{font-size:12px; font-weight:700; color:var(--olive); background:var(--olive-soft); border-radius:5px; padding:3px 8px;}
+  .ynrow{display:flex; gap:8px;}
+  .ynrow button{border:1px solid var(--line); background:#fff; border-radius:6px; padding:6px 14px; font-size:12.5px; font-weight:700; color:var(--muted);}
+  .ynrow button.y.on{background:var(--olive); border-color:var(--olive); color:#fff;}
+  .ynrow button.n.on{background:var(--warn); border-color:var(--warn); color:#fff;}
+  .steps label, .multi label{display:flex; gap:9px; align-items:flex-start; font-size:13px; padding:5px 0; cursor:pointer;}
+  .steps input, .multi input{margin-top:3px;}
+  .evrow{margin-top:8px; display:flex; gap:8px; align-items:center;}
+  .evrow .etag{font-size:10.5px; font-weight:800; letter-spacing:.08em; color:var(--gold-d);}
+  .evrow input{flex:1; border:1px dashed var(--gold-d); border-radius:6px; padding:6px 9px; background:#FFFDF4; font-size:12.5px;}
+  .flag{font-size:11.5px; color:var(--warn); margin-top:6px; font-weight:600;}
+  .rule{font-size:12px; color:var(--muted); border-top:1px dashed var(--line); margin-top:6px; padding-top:9px;}
+  .rule b{color:var(--olive);}
+  .polrow{display:grid; grid-template-columns:1.1fr 1.4fr 1.4fr auto auto; gap:8px; align-items:center; padding:7px 0; border-bottom:1px dashed var(--line); font-size:12.5px;}
+  .polrow:last-child{border-bottom:none;}
+  .polrow select, .polrow input{border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:12.5px; width:100%;}
+  .polrow .cb{display:flex; gap:5px; align-items:center; font-size:11.5px; color:var(--muted); white-space:nowrap;}
+  .pol-head{font-size:10.5px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--line);}
+
+  /* ---------- history ---------- */
+  .hist-top{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:16px;}
+  .hist-top h2{font-size:22px; color:var(--olive);}
+  .fwtag{font-size:10px; color:var(--muted); font-weight:700;}
+  table.hist{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:11px; overflow:hidden; font-size:13px;}
+  table.hist th{background:var(--olive); color:#fff; text-align:left; padding:9px 12px; font-size:11.5px; letter-spacing:.05em;}
+  table.hist td{padding:9px 12px; border-top:1px solid var(--line); vertical-align:middle;}
+  .mlchip{display:inline-flex; align-items:center; gap:4px; color:#fff; font-weight:800; font-size:11px; border-radius:5px; padding:3px 7px;}
+  .delta{font-size:10.5px; font-weight:800;}
+  .delta.up{color:var(--ok);} .delta.dn{color:var(--warn);}
+  .rowbtn{border:1px solid var(--line); background:#fff; border-radius:6px; padding:5px 10px; font-size:11.5px; font-weight:700; color:var(--olive); margin-right:5px;}
+  .rowbtn:hover{background:var(--olive-soft);}
+  .rowbtn.del{color:var(--warn);}
+  .empty{background:var(--card); border:1px dashed var(--line); border-radius:11px; padding:34px; text-align:center; color:var(--muted); font-size:14px;}
+
+  .toast{position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:var(--dark); color:#F2EFE2; border-radius:9px; padding:11px 20px; font-size:13px; font-weight:600; box-shadow:0 6px 22px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:opacity .25s;}
+  .toast.on{opacity:1;}
+  .loading{position:fixed; inset:0; background:var(--ivory); display:flex; align-items:center; justify-content:center; z-index:50; flex-direction:column; gap:10px; color:var(--muted); font-size:14px;}
+  .loading .ring{width:34px; height:34px; border:4px solid var(--line); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion:reduce){ .ring{animation:none;} html{scroll-behavior:auto;} }
+  .tocline{font-size:11px; opacity:.88; margin-top:7px; letter-spacing:.07em; text-transform:uppercase; font-weight:700;}
+  .focusnote{background:#FFF9EA; border:1px solid var(--gold-d); color:#6B5A2E; border-radius:9px; padding:9px 14px; font-size:12.5px; margin-bottom:13px; font-weight:600;}
+  .group-h{font-size:12px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--olive); margin:22px 0 10px; padding-bottom:5px; border-bottom:2px solid var(--line);}
+  .permbox{background:var(--dark); border-radius:12px; padding:16px 18px; margin-top:18px;}
+  .perm-title{font-size:11px; font-weight:800; letter-spacing:.14em; color:var(--gold); margin-bottom:11px;}
+  .permrow{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:9px;}
+  .perm{display:flex; gap:10px; align-items:center; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:9px; padding:9px 12px; color:#E8EFE8; font-size:12.5px;}
+  .perm .pd{font-size:11px; color:#A9C3B2;}
+  .perm .pdot{width:10px; height:10px; border-radius:50%; background:#5E6B60; flex:none;}
+  .perm.ok .pdot{background:#4A7A2A;} .perm.no .pdot{background:#A33B2E;}
+  .perm .pstat{margin-left:auto; font-size:10.5px; font-weight:800; letter-spacing:.06em; color:#8FAE9B;}
+  .perm.ok .pstat{color:#9CCB7E;} .perm.no .pstat{color:#E09A8B;}
+  #corebtn.coreon{border-color:var(--gold); color:var(--gold);}
+  .mcard{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-top:14px;}
+  .mcard .perm-title{color:var(--olive);}
+  .mrow{display:flex; gap:18px; flex-wrap:wrap; align-items:center;}
+  .mbig{font-size:21px; font-weight:800; color:var(--olive); min-width:260px;}
+  .mprov{font-size:11px; color:var(--gold-d); font-weight:700; letter-spacing:.05em;}
+  .mlist{display:flex; gap:8px; flex-wrap:wrap;}
+  .mk{border:1px solid var(--line); border-radius:7px; padding:5px 10px; font-size:12px; background:#FBFCFA;}
+  .mk.unk{opacity:.55;}
+  .mkv{display:inline-block; min-width:16px; text-align:center; font-weight:800; color:#fff; background:var(--olive); border-radius:4px; padding:0 4px; margin-right:4px;}
+  .mk.unk .mkv{background:#9AA79C;}
+  .mkid{color:var(--muted); font-size:10.5px; font-weight:700;}
+  #scope{max-width:180px;}
+  footer{max-width:1180px; margin:0 auto; padding:0 26px 40px; font-size:11.5px; color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="loading" id="loading"><div class="ring"></div><div>Loading saved responses…</div></div>
+
+<header>
+  <div class="hd-eyebrow">RUFORUM · TAGDev 2.0 · BCIJ · EPDx 2.0 · UESTA v2.2</div>
+  <div class="hd-row">
+    <h1>University Entrepreneurial Systems Transformation Assessment <span>— you answer the facts; the tool places you</span></h1>
+    <div class="hd-meta">
+      <input id="inst" type="text" placeholder="Institution name" style="min-width:200px">
+      <select id="scope" title="Assessment scope — declare whether this baseline covers a single hub or the whole university">
+        <option>Whole university</option><option>Single hub / centre</option>
+      </select>
+      <select id="label">
+        <option>Baseline</option><option>Midline</option><option>Endline</option><option>Ad hoc review</option>
+      </select>
+      <span class="save-state" id="savestate">—</span>
+      <button class="btn btn-ghost" id="corebtn">Focused mode: Off</button>
+      <button class="btn btn-gold" id="snapbtn">Save assessment</button>
+      <button class="btn btn-ghost" id="exportbtn">Export JSON</button>
+      <button class="btn btn-ghost" id="importbtn">Import JSON</button>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+</header>
+
+<main id="main"></main>
+<footer>Responses auto-save on this device, in this browser, as you type — nothing is sent to any server. Export JSON regularly: the export is your backup, your transfer between devices (via Import JSON), and your submission file. Saved assessments are timestamped snapshots — run the same questions at baseline, midline, and endline against the same locked registers. Your institutional level is always your weakest P. · Reset all data from the History page. · RUFORUM UESTA · EPDx 2.0 · v2.2 · Framework 2.2 (Oct 2026): dimensions grouped by exist / work / enable; six-permissions read; enterprise vehicle & revenue retention; enterprise-partner (ITP) contracting & portfolio; conversion & counting discipline; inclusion and dignified-work evidence to the funder standard (income floor, >2-year duration); targets & run-rate readiness; focused mode for one-P-per-session delivery; live venture investment ledger (cash + priced in-kind) with day-one agreement and equity clarity; one standard intake instrument with channel learning; capital-unlocking scaffold and readiness passports; endowment & institutional income engine; enterprise-vehicle governance autonomy with the university as investor, never operator; curriculum mainstreaming & universal exposure; asset & service commercialisation of the university shelf; and the derived M1–M5 institutional transformation stage (Academic Entrepreneurship → Entrepreneurial University), read alongside — never instead of — the per-P Maturity Levels. Assessments saved under framework 1.0 remain in History and stay comparable at index level.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* EPDx 2.0 — 6P Baseline Diagnostic engine + data
+   Item types:
+   sl   {opts:[5]}                       select, score = index 0–4
+   ct   {b:[[min,score]…], lbl}          count, bands (>=)
+   num  {b, dir:'le'|'ge', lbl}          number, banded
+   cp   {nl,dl,b}                        numerator/denominator -> % banded (>=)
+   ctr  {reg,b,lbl}                      count vs global register -> % banded
+   ratio{nl,dl,b}                        n/d value banded (>=)
+   lad  {steps:[{q,s}]}                  checkboxes, score = highest checked
+   multi{opts,b}                         checkbox count banded
+   amt  {fields:[…], num:[idx], b, unit} share % = sum(num)/sum(all)
+   yn                                    yes/no (role g = gate {cap}, i = info)
+   tx / dt                               info only
+   Roles: s scored · g gate · i info.  ev:true => evidence ref required to score above 1.
+   Dimension score = floor(mean of answered scored items), capped by failed gates.
+   Special calcs: polset (P1-D1), cpagg (P1-D5). */
+
+const ML = [
+  null,
+  {n:1, label:"Awareness", c:"var(--ml1)", hex:"#C9A227"},
+  {n:2, label:"Building",  c:"var(--ml2)", hex:"#9A5B2B"},
+  {n:3, label:"Operating", c:"var(--ml3)", hex:"#2E5F8A"},
+  {n:4, label:"Scaling",   c:"var(--ml4)", hex:"#4A7A2A"},
+  {n:5, label:"Embedded",  c:"var(--ml5)", hex:"#8A6D1F"}
+];
+const mlOf = idx => idx>=85?5:idx>=70?4:idx>=50?3:idx>=25?2:1;
+const FW = "2.2";
+const GROUPS = {E:"Does it exist?", W:"Does it work?", N:"Does it enable?"};
+
+const REGS = [
+  {k:"staff",      l:"N-staff — staff in innovation-facing roles (BDO, innovation office, TTO, fund, lab)"},
+  {k:"innovators", l:"N-innovators — active student/staff innovators, trailing 12 months"},
+  {k:"faculties",  l:"N-faculties — total faculties / schools"},
+  {k:"ventures",   l:"N-ventures — ventures currently in the pipeline"},
+  {k:"students",   l:"Student body size"},
+  {k:"pipeline",   l:"Ventures entering programmes, trailing 24 months"},
+  {k:"graduated",  l:"Graduated (alumni) ventures — all cohorts"},
+  {k:"trained",    l:"Trained / work-enabled participants to date — all programmes and partners (consolidated register)"}
+];
+
+/* ============================ P1 · POLICY ============================ */
+const P1 = { code:"P1", name:"Policy", color:"var(--p1)", hex:"#A15C22", toc:"System enabler for ToC Pathways 2–4",
+purpose:"The governance backbone — and whether it is actually used. Existence and operationalisation are scored separately: four approved policies nobody references and one policy that governs every decision produce different, honest profiles.",
+dims:[
+{ id:"P1-D1", g:"E", name:"Policy Coverage & Existence", w:.10, calc:"polset",
+  lens:"Which policies exist, at what status — answered per policy, never in aggregate.",
+  gate:"An approval claim without a Senate/Council minute reference is treated as a draft.",
+  items:[], policies:["IP Policy","Entrepreneurship / EBD Policy","Partnership & Investment Policy","Innovation Fund Policy"],
+  rule:"0 none beyond intention · 1 ≥1 in draft · 2 ≥2 core policies approved · 3 all 3 core approved AND accessible · 4 all in statutes + reviewed within 24 months. The per-policy profile is always reported." },
+{ id:"P1-D2", g:"E", name:"Policy Quality & Alignment", w:.10,
+  lens:"Contextual and current — or copied and stale?",
+  gate:"A policy not substantively updated in >5 years caps this dimension at 1.",
+  items:[
+   {i:"P1.2g", r:"g", t:"yn", cap:1, q:"Have all approved policies been substantively updated within the last 5 years?"},
+   {i:"P1.2a", r:"s", t:"lad", ev:true, q:"Quality ladder — tick every statement you can evidence", steps:[
+     {q:"Policies are contextualised to this institution (not copied/generic)", s:1},
+     {q:"Documented alignment mapping to national HE / STI frameworks", s:2},
+     {q:"RUFORUM / TAGDev standards embedded in the policy text", s:3},
+     {q:"At least one policy externally peer-reviewed", s:4}]},
+   {i:"P1.2b", r:"i", t:"tx", q:"Reviewer / alignment document references"}],
+  rule:"Score = highest evidenced ladder step, capped at 1 if any approved policy is stale (>5 yrs)." },
+{ id:"P1-D3", g:"W", name:"Policy Implementation Structures", w:.15,
+  lens:"A live governance organ — a committee that meets, decides, and executes.",
+  gate:"No committee with Terms of Reference = dimension scores 0. Meetings without minutes did not happen.",
+  items:[
+   {i:"P1.3a", r:"g", t:"yn", cap:0, ev:true, q:"Does an innovation/entrepreneurship committee (or equivalent) exist, with Terms of Reference?"},
+   {i:"P1.3b", r:"s", t:"ct", lbl:"Meetings", b:[[10,4],[4,3],[2,2],[1,1]], ev:true, q:"Meetings held in the trailing 12 months (cite minute references)"},
+   {i:"P1.3c", r:"s", t:"cp", nl:"Members attending (last 4 meetings)", dl:"Members invited", b:[[85,4],[70,3],[50,2],[25,1]], q:"Attendance across the last four meetings"},
+   {i:"P1.3d", r:"s", t:"cp", nl:"Executed within 30 days", dl:"Decisions taken (12 months)", b:[[90,4],[75,3],[50,2],[25,1]], q:"Decision execution within 30 days"},
+   {i:"P1.3e", r:"i", t:"yn", q:"Is committee reporting automated (dashboard / tracked register)?"}],
+  rule:"Floor of the mean of meetings cadence, attendance, and execution — gated on the committee existing." },
+{ id:"P1-D4", g:"W", name:"Awareness & Accessibility", w:.10,
+  lens:"Do the governed know the policies exist — measured, not assumed.",
+  gate:"If awareness has never been measured, this dimension is capped at 1.",
+  items:[
+   {i:"P1.4a", r:"g", t:"yn", cap:1, ev:true, q:"Has policy awareness been measured (survey / LMS analytics)? Cite method and date."},
+   {i:"P1.4b", r:"s", t:"cp", nl:"Staff aware", dl:"Staff sampled", b:[[80,4],[61,3],[31,2],[10,1]], q:"Measured staff awareness of the core policies"},
+   {i:"P1.4c", r:"s", t:"ct", lbl:"Workshops", b:[[4,4],[2,3],[1,2]], q:"Sensitisation workshops held in the trailing 12 months"},
+   {i:"P1.4d", r:"i", t:"yn", q:"Are policies digitised and posted to the intranet / LMS?"},
+   {i:"P1.4e", r:"i", t:"yn", q:"Are policies embedded in staff onboarding / LMS induction?"}],
+  rule:"Band on measured awareness and workshop cadence; unmeasured awareness scores as unknown, not high." },
+{ id:"P1-D5", g:"W", name:"Policy Integration into Operations", w:.15, calc:"cpagg",
+  lens:"THE operationalisation test: of the decisions actually taken this year, how many ran through policy? This is where “4 policies exist, 1 is used” becomes visible.",
+  gate:"Compliance ≥80% only reaches level 4 with a workflow that forces policy reference.",
+  items:[
+   {i:"P1.5a", t:"cp", nl:"Cleared through policy", dl:"MoUs signed (12 mo)", q:"MoUs signed vs cleared through the Partnership & Investment policy"},
+   {i:"P1.5b", t:"cp", nl:"Made under fund policy", dl:"Fund/grant decisions (12 mo)", q:"Fund and grant decisions made under the fund instrument"},
+   {i:"P1.5c", t:"cp", nl:"Processed under IP policy", dl:"Spinout & IP decisions (12 mo)", q:"Spinout and IP decisions processed under the IP policy"},
+   {i:"P1.5w", t:"yn", q:"Is there a workflow that FORCES policy reference (form / checklist / system step)?"},
+   {i:"P1.5d", t:"tx", q:"Which policies were cited at least once in an operational decision this year?"}],
+  rule:"Tool computes overall compliance across the three decision types: ≤25%→1 · 26–50→2 · 51–75→3 · ≥80 + forced workflow→4." },
+{ id:"P1-D6", g:"N", name:"Legal & IP Governance Clarity", w:.10,
+  lens:"Can an inventor navigate ownership without a lawyer — and how fast does the system move?",
+  gate:"No documented ownership & revenue-share model = 0.",
+  items:[
+   {i:"P1.6a", r:"g", t:"yn", cap:0, ev:true, q:"Is there a documented IP ownership and revenue-share model?"},
+   {i:"P1.6b", r:"s", t:"cp", nl:"Onboarded under framework", dl:"IP cases opened (12 mo)", b:[[100,4],[75,3],[50,2],[10,1]], q:"IP cases onboarded under the framework"},
+   {i:"P1.6c", r:"s", t:"num", dir:"le", lbl:"Days", b:[[45,4],[60,3],[90,2],[180,1]], q:"Average processing days, disclosure → decision"},
+   {i:"P1.6d", r:"s", t:"ct", lbl:"Partners", b:[[5,4],[3,3],[1,2]], q:"Commercial / co-investing partners engaged through the IP framework"},
+   {i:"P1.6e", r:"s", t:"sl", q:"Digital IP registry status", opts:["None","In design, <25% of assets logged","≥50% of assets logged","≥75% logged, audited","100% digitally verifiable"]}],
+  rule:"All conditions of a band must hold — round down. Gated on the ownership model existing." },
+{ id:"P1-D7", g:"N", name:"Entrepreneurship Curriculum & Incentive Framework", w:.10,
+  lens:"Is venture supervision rewarded — or treated as a favour?",
+  gate:"Incentive claims must name the instrument (policy clause, HR circular) in evidence.",
+  items:[
+   {i:"P1.7a", r:"s", t:"ctr", reg:"faculties", lbl:"Faculties integrated", b:[[80,4],[51,3],[21,2],[5,1]], q:"Faculties with entrepreneurship formally integrated under policy"},
+   {i:"P1.7b", r:"s", t:"cp", nl:"Receiving formal incentives", dl:"Entrepreneurship-active faculty", b:[[75,4],[50,3],[25,2],[5,1]], ev:true, q:"Faculty formally incentivised for venture supervision"},
+   {i:"P1.7c", r:"i", t:"multi", q:"Incentive instruments in force", opts:["Revenue-share","Equity participation","Bonus","Promotion criteria","Workload credit"]},
+   {i:"P1.7d", r:"i", t:"yn", q:"Are venture outcomes tracked back to the supervising faculty member?"}],
+  rule:"Both the integration share and the incentive share must reach a band to claim it." },
+{ id:"P1-D8", g:"N", name:"Partnership & Investment Governance", w:.10,
+  lens:"Are partnerships and the fund governed instruments — or handshakes?",
+  gate:"MoUs not in the registry count in the denominator, not out of it.",
+  items:[
+   {i:"P1.8a", r:"s", t:"cp", nl:"MoUs registered", dl:"Known MoUs", b:[[80,4],[75,3],[50,2],[10,1]], q:"Share of known MoUs captured in the partnership registry"},
+   {i:"P1.8b", r:"s", t:"sl", q:"Fund governance status", opts:["No instrument","Conceptual model drafted","Approved instrument","Approved + committee operating under it","Integrated with digital registry & due diligence"]},
+   {i:"P1.8c", r:"s", t:"cp", nl:"Externally sourced", dl:"Innovation fund capital", b:[[70,4],[50,3],[25,2],[5,1]], q:"External share of innovation fund capital"},
+   {i:"P1.8d", r:"s", t:"ct", lbl:"Partners", b:[[6,4],[2,3],[1,2]], q:"Co-investing partners under governed instruments"},
+   {i:"P1.8e", r:"i", t:"cp", nl:"Legally reviewed", dl:"MoUs in force", q:"MoUs legally reviewed"},
+   {i:"P1.8f", r:"i", t:"yn", q:"Is the fund instrument designed as non-lending — an enterprise-stimulating fund (grants, first-loss or guarantees through partner banks) rather than direct loans?"}],
+  rule:"Round down across registry coverage, fund governance, capital source, and co-investors." },
+{ id:"P1-D9", g:"W", name:"Monitoring & Review Mechanism", w:.05,
+  lens:"Reviewed on a cycle — and does anything change?",
+  gate:"A review with no recorded change counts as ad hoc.",
+  items:[
+   {i:"P1.9a", r:"g", t:"yn", cap:1, q:"Did the last review produce a documented change to any policy?"},
+   {i:"P1.9b", r:"s", t:"sl", q:"Review cadence in force", opts:["None","Ad hoc, after incidents","Annual, by the innovation office","Semi-annual with stakeholder input + compliance tracking","Quarterly with dashboard-linked analytics"]},
+   {i:"P1.9c", r:"i", t:"tx", q:"Last review: date, reviewer, and what changed"}],
+  rule:"Score = ladder position, subject to the substance gate." },
+{ id:"P1-D10", g:"N", name:"Impact Evidence & Institutional Learning", w:.05,
+  lens:"Can outcomes be traced to policy — ventures, licences, funding unlocked?",
+  gate:"Each claimed outcome needs a file reference.",
+  items:[
+   {i:"P1.10a", r:"s", t:"lad", ev:true, q:"Impact ladder — tick every statement you can evidence", steps:[
+     {q:"Some policy-linked outputs recorded (anecdotal)", s:1},
+     {q:"Policy-linked outcomes measured (e.g. ventures, IP licences, spinouts with refs)", s:2},
+     {q:"Annual Policy Impact Report published; >50% of initiatives traceable to policy", s:3},
+     {q:"Impact linked to funding mobilisation and external recognition (award / benchmark)", s:4}]},
+   {i:"P1.10b", r:"i", t:"tx", q:"Counts + references: ventures / licences / spinouts traceable to policy (12 mo)"}],
+  rule:"Score = highest evidenced ladder step." }
+]};
+
+/* ======================== P2 · PEOPLE CAPACITY ======================== */
+const P2 = { code:"P2", name:"People Capacity", color:"var(--p2)", hex:"#2E5F8A", toc:"System enabler for ToC Pathways 2–4",
+purpose:"Who builds the system — trained, in role, backed up, using the tools, producing outcomes. All ratios compute from raw counts against the locked registers: size is never an excuse or a hiding place.",
+dims:[
+{ id:"P2-D1", g:"E", name:"Core Skills & Certification", w:.12,
+  lens:"“Trained” = completed a named programme with a completion record — one workshop does not count.",
+  gate:"Counts come from the training log, not memory.",
+  items:[
+   {i:"P2.1a", r:"s", t:"ctr", reg:"staff", lbl:"Staff trained", b:[[75,4],[51,3],[26,2],[10,1]], ev:true, q:"Staff who completed formal training in entrepreneurship / venture building / innovation management"},
+   {i:"P2.1b", r:"s", t:"ctr", reg:"staff", lbl:"Staff certified", b:[[60,4],[40,3],[20,2],[5,1]], q:"Staff holding a recognised certification (current)"},
+   {i:"P2.1c", r:"s", t:"cp", nl:"Inducted within 3 months", dl:"New hires (12 mo)", b:[[100,4],[75,3],[50,2],[10,1]], q:"New hires completing induction within 3 months"},
+   {i:"P2.1d", r:"i", t:"tx", q:"Disciplines / units represented among the trained"}],
+  rule:"Band on trained %, certified %, and induction speed — floor of the mean." },
+{ id:"P2-D2", g:"E", name:"Role Clarity & Coverage", w:.08,
+  lens:"Staffed by design — with backups — or held together by one heroic officer?",
+  gate:"A role without a written JD/ToR counts as undefined even if someone performs it.",
+  items:[
+   {i:"P2.2a", r:"s", t:"cp", nl:"Positions filled", dl:"Positions in approved structure", b:[[100,4],[75,3],[50,2],[25,1]], q:"Positions currently filled"},
+   {i:"P2.2b", r:"s", t:"cp", nl:"With formal JD/ToR", dl:"Positions in structure", b:[[100,4],[75,3],[50,2],[25,1]], q:"Positions with a written JD / ToR"},
+   {i:"P2.2c", r:"s", t:"cp", nl:"With a named, trained backup", dl:"Key roles", b:[[100,4],[75,3],[50,2],[10,1]], q:"Key roles with succession cover"},
+   {i:"P2.2d", r:"i", t:"num", dir:"le", lbl:"Days", q:"Average time-to-fill for vacancies"},
+   {i:"P2.2e", r:"s", t:"cp", nl:"Dedicated hires", dl:"Innovation-facing staff", b:[[75,4],[50,3],[25,2],[5,1]], q:"Dedicated (not seconded, double-hatted) staff in innovation roles — secondment is the root cause of thin delivery and reporting"}],
+  rule:"Floor of the mean of coverage, documentation, and backup." },
+{ id:"P2-D3", g:"E", name:"Mentor & Expert Network Strength", w:.10,
+  lens:"Showing up — not signed up. “Active” = at least one logged session in the past month.",
+  gate:"Mentors with no logged session in 90 days are excluded from the active count.",
+  items:[
+   {i:"P2.3a", r:"s", t:"ctr", reg:"innovators", lbl:"ACTIVE mentors", b:[[8,4],[5,3],[3,2],[1,1]], ev:true, q:"Active mentors as a share of innovators (reference: at least 1:33 by Level 2)"},
+   {i:"P2.3b", r:"s", t:"ct", lbl:"Sessions / month", b:[[4,4],[2,3],[1,2]], q:"Mentoring sessions per month (average, trailing 6 months)"},
+   {i:"P2.3c", r:"s", t:"cp", nl:"Attended", dl:"Invited (last quarter)", b:[[90,4],[80,3],[70,2],[50,1]], q:"Session attendance"},
+   {i:"P2.3d", r:"s", t:"num", dir:"ge", lbl:"%", b:[[90,4],[80,3],[70,2],[50,1]], q:"Latest founder satisfaction / NPS with mentoring"}],
+  rule:"Band on active-mentor ratio; cadence, attendance, and satisfaction qualify — floor of the mean." },
+{ id:"P2-D4", g:"W", name:"Faculty Integration & Engagement", w:.10,
+  lens:"Counted from syllabi, not claimed.",
+  gate:"No curriculum audit on file caps this dimension at 1.",
+  items:[
+   {i:"P2.4a", r:"g", t:"yn", cap:1, ev:true, q:"Has a curriculum audit been completed? Cite date and reference."},
+   {i:"P2.4b", r:"s", t:"ctr", reg:"faculties", lbl:"Faculties w/ embedded course", b:[[80,4],[51,3],[26,2],[10,1]], q:"Faculties with ≥1 formally embedded entrepreneurship course"},
+   {i:"P2.4c", r:"s", t:"cp", nl:"Project / venture-linked", dl:"Courses audited", b:[[30,4],[20,3],[10,2],[2,1]], q:"Courses with project- or venture-linked delivery"}],
+  rule:"Both faculty spread and coursework linkage must hold their band — round down." },
+{ id:"P2-D5", g:"W", name:"Leadership & Governance Fluency", w:.08,
+  lens:"Does leadership count the right things?",
+  gate:"KPIs defined but never tracked caps at 1. No KPIs = 0.",
+  items:[
+   {i:"P2.5a", r:"g", t:"yn", cap:0, ev:true, q:"Are innovation KPIs formally defined? List them in evidence."},
+   {i:"P2.5b", r:"s", t:"sl", q:"Leadership engagement with those KPIs", opts:["Never reviewed","Defined but untracked","Reviewed quarterly by leadership","Linked to management appraisals; decisions tracked","Embedded in all leadership contracts; SLA ≤5 days; >90% compliance"]},
+   {i:"P2.5c", r:"s", t:"cp", nl:"With innovation KPIs in appraisal", dl:"Managers", b:[[50,4],[20,3],[10,2],[2,1]], q:"Managers with innovation KPIs in their appraisal"},
+   {i:"P2.5d", r:"i", t:"num", dir:"le", lbl:"Days", q:"Governance decision SLA on innovation matters"}],
+  rule:"Ladder position and appraisal linkage — floor of the mean, gated on KPIs existing." },
+{ id:"P2-D6", g:"W", name:"IP / TTO Competency (People)", w:.10,
+  lens:"Measured on cases, not credentials alone.",
+  gate:"Case-processing claims require the case log.",
+  items:[
+   {i:"P2.6a", r:"s", t:"cp", nl:"Trained in IP / commercialisation", dl:"TTO / IP staff", b:[[80,4],[51,3],[26,2],[10,1]], q:"TTO staff trained"},
+   {i:"P2.6b", r:"s", t:"cp", nl:"Processed within 45 days", dl:"Disclosures (12 mo)", b:[[75,4],[50,3],[25,2],[5,1]], ev:true, q:"Disclosures processed within 45 days"},
+   {i:"P2.6c", r:"s", t:"cp", nl:"Monetised or licensed", dl:"Disclosures (12 mo)", b:[[25,4],[10,3],[5,2],[1,1]], q:"Disclosures monetised or licensed"},
+   {i:"P2.6d", r:"i", t:"ct", lbl:"Cases", q:"Digital IP or software cases actively managed"}],
+  rule:"Band on trained share, processing speed, and monetisation — floor of the mean." },
+{ id:"P2-D7", g:"W", name:"Founder Support Quality", w:.10,
+  lens:"Structured support with milestones — not an open door and encouragement.",
+  gate:"“Structured” = a written milestone plan exists for the venture.",
+  items:[
+   {i:"P2.7a", r:"s", t:"ctr", reg:"ventures", lbl:"Ventures w/ milestone plan", b:[[80,4],[51,3],[26,2],[5,1]], ev:true, q:"Ventures with a written milestone plan receiving regular support"},
+   {i:"P2.7b", r:"s", t:"sl", q:"Support cadence", opts:["None","Ad hoc","Monthly check-ins","Milestone reviews + operational & wellbeing support","End-to-end, milestone tracking system live"]},
+   {i:"P2.7c", r:"s", t:"num", dir:"ge", lbl:"%", b:[[90,4],[85,3],[70,2],[50,1]], q:"Latest founder satisfaction score"},
+   {i:"P2.7d", r:"s", t:"cp", nl:"Still engaged today", dl:"Founders active 12 months ago", b:[[90,4],[75,3],[50,2],[25,1]], q:"Founder retention"}],
+  rule:"Band on supported share, cadence, satisfaction, and retention — floor of the mean." },
+{ id:"P2-D8", g:"W", name:"Digital Tools & Data Literacy", w:.10,
+  lens:"Active accounts and data accuracy — not licences owned.",
+  gate:"“Active use” = login/activity within the past 30 days, from system analytics.",
+  items:[
+   {i:"P2.8a", r:"s", t:"cp", nl:"Active in past 30 days", dl:"Staff with LMS/CRM accounts", b:[[90,4],[51,3],[26,2],[10,1]], ev:true, q:"Active tool use"},
+   {i:"P2.8b", r:"s", t:"sl", q:"Dashboard production cadence", opts:["None","Ad hoc / manual","Quarterly","Monthly, used in decisions","Auto-synced with HR / TTO systems"]},
+   {i:"P2.8c", r:"s", t:"num", dir:"ge", lbl:"%", b:[[98,4],[95,3],[85,2],[70,1]], q:"Most recent data accuracy audit result"}],
+  rule:"Band on active use, cadence, and accuracy — floor of the mean." },
+{ id:"P2-D9", g:"N", name:"Inclusion & Diversity of Talent", w:.07,
+  lens:"Who gets in — from registration records, not estimates.",
+  gate:"Counts come from disaggregated participation registers.",
+  items:[
+   {i:"P2.9a", r:"s", t:"cp", nl:"Women + non-STEM (unique)", dl:"Participants (12 mo)", b:[[70,4],[51,3],[36,2],[20,1]], q:"Inclusive participation"},
+   {i:"P2.9b", r:"s", t:"ct", lbl:"Faculties", b:[[8,4],[6,3],[4,2],[2,1]], q:"Faculties represented among participants"},
+   {i:"P2.9c", r:"s", t:"cp", nl:"Diverse", dl:"Mentors + founders", b:[[40,4],[25,3],[10,2],[2,1]], q:"Mentors and founders from diverse backgrounds"}],
+  rule:"Band on inclusive share, spread, and mentor diversity — floor of the mean." },
+{ id:"P2-D10", g:"N", name:"Outcomes from People Investment", w:.15,
+  lens:"The proof: do trained people and supported founders produce ventures that move?",
+  gate:"Each milestone (MVP, market, revenue) needs a dated record in the venture register.",
+  items:[
+   {i:"P2.10a", r:"s", t:"cp", nl:"Reached MVP", dl:"Ventures incubated (24 mo)", b:[[50,4],[26,3],[11,2],[2,1]], ev:true, q:"MVP conversion"},
+   {i:"P2.10b", r:"s", t:"cp", nl:"Revenue-positive", dl:"Ventures that reached market", b:[[40,4],[25,3],[10,2],[2,1]], q:"Revenue-positive share"},
+   {i:"P2.10c", r:"s", t:"cp", nl:"Into employment / founder pathway", dl:"Programme graduates (last cohort)", b:[[50,4],[30,3],[15,2],[5,1]], q:"Graduate destination link"}],
+  rule:"Band on the conversion pipeline — all claims trace to the venture register." }
+]};
+
+/* ========================= P3 · PROGRAMMING ========================= */
+const P3 = { code:"P3", name:"Programming", color:"var(--p3)", hex:"#4A7A2A", toc:"Pathway 2 — entrepreneurship support → enterprise → jobs (Pathway 3 via curriculum–research integration)",
+purpose:"Is the venture programme a product in demand — structured, on the calendar, competitive to enter, market-linked, and increasingly self-financing — or an event that resets every year?",
+dims:[
+{ id:"P3-D1", g:"E", name:"Programme Structure & Cadence", w:.18,
+  lens:"Designed cycles on the academic calendar — or activity that switches on when funding arrives?",
+  gate:"A cohort with no documented stage-gates/curriculum counts as an event, not a programme.",
+  items:[
+   {i:"P3.1g", r:"g", t:"yn", cap:1, ev:true, q:"Is a documented methodology in place per programme (stage-gates / 24-Step DE / CBC / market validation)?"},
+   {i:"P3.1a", r:"s", t:"sl", q:"Programme portfolio status", opts:["Isolated events only","First structured programme designed, ≤2 inconsistent runs","Methodology adopted; ≥1 reliable cohort per year","Multi-programme, semester-integrated pipeline","Institutionalised portfolio, ≥3 structured cycles/yr, funder-independent"]},
+   {i:"P3.1b", r:"s", t:"cp", nl:"Completed on schedule", dl:"Cohorts planned (24 mo)", b:[[100,4],[75,3],[50,2],[10,1]], q:"Cohorts delivered on schedule"},
+   {i:"P3.1c", r:"s", t:"ct", lbl:"Cycles / yr", b:[[3,4],[2,3],[1,2]], q:"Structured programme cycles run per year"},
+   {i:"P3.1d", r:"i", t:"tx", q:"Named venture programmes in the register (with owner per programme)"}],
+  rule:"Ladder position verified by schedule reliability and cycle count — floor of the mean, gated on documented methodology." },
+{ id:"P3-D2", g:"E", name:"Selection Pressure & Demand", w:.18,
+  lens:"Is there a queue? Demand is the market's verdict on the programme.",
+  gate:"No documented selection criteria caps this dimension at 1 — a programme anyone can walk into is not selective.",
+  items:[
+   {i:"P3.2g", r:"g", t:"yn", cap:1, ev:true, q:"Are selection criteria documented and applied by panel / scoring?"},
+   {i:"P3.2a", r:"s", t:"ratio", nl:"Applications received", dl:"Places offered", b:[[4,4],[2.5,3],[1.5,2],[1,1]], q:"Most recent cohort — applications per place"},
+   {i:"P3.2b", r:"s", t:"ct", lbl:"External applicants", b:[[20,4],[5,3],[1,2]], q:"Applications from OUTSIDE the university"},
+   {i:"P3.2c", r:"i", t:"yn", q:"Is a waitlist maintained?"},
+   {i:"P3.2d", r:"s", t:"yn", yes:3, no:1, ev:true, q:"Is ONE standard intake instrument used across every entry route (Spark and Source alike) — capturing the first signal read and the channel that brought each applicant in?"},
+   {i:"P3.2f", r:"i", t:"yn", q:"Is channel data reviewed to learn which routes bring the strongest applicants?"}],
+  rule:"Band on the application ratio, qualified by external demand — gated on documented selection." },
+{ id:"P3-D3", g:"W", name:"Participation & Inclusion", w:.13,
+  lens:"Reach across the university — share of students, spread of faculties, women, alumni, community.",
+  gate:"All counts from enrolment records with disaggregation.",
+  items:[
+   {i:"P3.3a", r:"s", t:"ctr", reg:"students", lbl:"Participants (12 mo)", b:[[40,4],[30,3],[16,2],[5,1]], q:"Participants as a share of the student body"},
+   {i:"P3.3b", r:"s", t:"ctr", reg:"faculties", lbl:"Faculties represented", b:[[70,4],[50,3],[30,2],[10,1]], q:"Faculty coverage among participants"},
+   {i:"P3.3c", r:"s", t:"cp", nl:"Women", dl:"Participants", b:[[50,4],[40,3],[30,2],[15,1]], q:"Women's participation"},
+   {i:"P3.3d", r:"i", t:"ct", lbl:"People", q:"Alumni and community entrepreneurs participating"},
+   {i:"P3.3e", r:"s", t:"multi", ev:true, q:"Deliberate Source routes run through access partners who hold trust and registers for each segment", opts:["Out-of-school youth","Differently abled persons","Refugees / displaced persons","Women-focused channels","Community / alumni channels"], b:[[4,4],[3,3],[2,2],[1,1]]}],
+  rule:"Band on participation, spread, and inclusion — floor of the mean." },
+{ id:"P3-D4", g:"W", name:"Curriculum & Research Integration", w:.13,
+  lens:"Connected to credit and to research — or floating beside the academic core?",
+  gate:"Credit-bearing claims require the curriculum / Senate reference.",
+  items:[
+   {i:"P3.4a", r:"s", t:"cp", nl:"With venture-linked assessment", dl:"Courses audited", b:[[30,4],[20,3],[10,2],[2,1]], q:"Courses with venture-linked assessment"},
+   {i:"P3.4b", r:"s", t:"ct", lbl:"Projects", b:[[10,4],[5,3],[1,2]], q:"Research projects entering a commercialisation pathway (12 mo)"},
+   {i:"P3.4c", r:"i", t:"yn", ev:true, q:"Is a credit-bearing venture pathway approved (students earn credit for venture work)?"}],
+  rule:"Band on coursework linkage and research pipeline — floor of the mean." },
+{ id:"P3-D5", g:"N", name:"Market Linkage of Programmes", w:.13,
+  lens:"Who sets the problems? Partner-designed challenges keep the pipeline honest before P6 ever measures conversion.",
+  gate:"“Co-designed” = the partner authored or signed off the brief; sponsorship alone does not count.",
+  items:[
+   {i:"P3.5a", r:"s", t:"cp", nl:"Co-designed by industry", dl:"Challenges / briefs (current cycle)", b:[[85,4],[51,3],[15,2],[1,1]], ev:true, q:"Partner-co-designed challenge share"},
+   {i:"P3.5b", r:"s", t:"ct", lbl:"Partners", b:[[8,4],[5,3],[3,2],[1,1]], q:"Partners providing mentors or judges inside programmes"},
+   {i:"P3.5c", r:"i", t:"yn", q:"Do programmes include a market-validation stage gated by external validators?"},
+   {i:"P3.5d", r:"s", t:"ct", lbl:"Agreements", b:[[5,4],[3,3],[1,2]], ev:true, q:"Demand anchors / offtake agreements contracted BEFORE cohort start (market-first, walk-backwards)"}],
+  rule:"Band on the co-design share and partner presence inside delivery." },
+{ id:"P3-D6", g:"N", name:"Programme Economics & Recognition", w:.12,
+  lens:"Fee income, sponsorship, recognition — is the programme becoming an asset rather than a cost?",
+  gate:"Income claims require finance records; recognition claims require the citation.",
+  items:[
+   {i:"P3.6a", r:"s", t:"amt", fields:["Fee income (12 mo)","Sponsorship income (12 mo)","Total programme cost (12 mo)"], num:[0,1], den:[2], b:[[75,4],[50,3],[25,2],[5,1]], ev:true, q:"External cost coverage — fees + sponsorship as a share of programme cost"},
+   {i:"P3.6b", r:"s", t:"ct", lbl:"Institutions", b:[[2,4],[1,3]], q:"Other institutions requesting or replicating the programme model"},
+   {i:"P3.6c", r:"i", t:"tx", q:"National / regional recognition: awards, rankings, press, formal citations"}],
+  rule:"Band on computed external cost coverage, qualified by replication demand." },
+{ id:"P3-D7", g:"N", name:"Curriculum Mainstreaming & Universal Exposure", w:.13,
+  lens:"The M5 test on the teaching side: entrepreneurship stops being a programme some students join and becomes how the university teaches — every student exposed, credit earned for venture work, venture-based assessment normal, and educators trained for it.",
+  gate:"Exposure counts come from enrolment records; a mandatory course that exists on paper but is not delivered does not count.",
+  items:[
+   {i:"P3.7a", r:"s", t:"sl", ev:true, q:"Curriculum mainstreaming ladder", opts:["Entrepreneurship absent from the curriculum, or elective pockets in one or two faculties","Elective entrepreneurship courses exist in several faculties","A mandatory entrepreneurship course reaches all undergraduates","Credit-bearing venture pathway live — students earn credit for building businesses; venture-based assessment running in multiple faculties","Mainstreamed as pedagogy: entrepreneurship in programme learning outcomes and graduate attributes across all faculties; venture-based assessment normal; curriculum co-designed with market actors"]},
+   {i:"P3.7b", r:"s", t:"ctr", reg:"students", lbl:"Students exposed (12 mo)", b:[[90,4],[60,3],[30,2],[10,1]], q:"Students passing through entrepreneurship learning in the year — universal exposure, measured against the whole student body, not programme enrolment"},
+   {i:"P3.7c", r:"s", t:"cp", nl:"Trained in entrepreneurial / experiential pedagogy", dl:"Faculty teaching entrepreneurship", b:[[75,4],[50,3],[25,2],[5,1]], q:"Educator capability — teaching entrepreneurship is a skill in its own right"},
+   {i:"P3.7d", r:"i", t:"yn", q:"Can the mandatory course be adapted and delivered flexibly (workload dispensation, practical formats) without a full Senate cycle?"}],
+  rule:"Ladder position verified by measured exposure share and educator capability — floor of the mean." }
+]};
+/* ========================== P4 · PROCESS ========================== */
+const P4 = { code:"P4", name:"Process", color:"var(--p4)", hex:"#6B3FA0", toc:"Pathway 2 delivery engine — the operating systems behind enterprise creation",
+purpose:"Do the operational systems — lab/studio, TTO, fund, capacity-building, data — run on rhythm, survive staff departure, and get co-run by expert partners under KPIs with the university governing? Maturity is proven by capability transfer, not control.",
+dims:[
+{ id:"P4-D1", g:"E", name:"Innovation Lab / Venture Studio Operations", w:.10,
+  lens:"Space is not a system. Is there a repeatable scouting → sprint → pilot cycle — and does the university hold participation rights in what emerges?",
+  gate:"Cycle claims require cohort / sprint records with dates.",
+  items:[
+   {i:"P4.1a", r:"s", t:"sl", q:"Operating status", opts:["Physical space only — no rhythm","Structured activities begin; limited follow-up","Repeatable cycle active; ≥1 partner co-manages delivery","Studio model formalised; ≥50% of programmes co-delivered with experienced partners","Partner-driven engine; ≥75% of venture teams co-built / co-supported"]},
+   {i:"P4.1b", r:"s", t:"ct", lbl:"Cycles (12 mo)", b:[[4,4],[2,3],[1,2]], ev:true, q:"Full cycles (scouting → sprint → pilot) completed"},
+   {i:"P4.1c", r:"s", t:"cp", nl:"With university participation rights", dl:"Ventures reaching commercial stage", b:[[60,4],[30,3],[10,2],[1,1]], q:"Participation rights (equity, royalty, IP share)"}],
+  rule:"Ladder position verified by cycle counts and participation-rights records." },
+{ id:"P4-D2", g:"E", name:"Technology Transfer Office (TTO) Processes", w:.10,
+  lens:"A TTO is its throughput: cases processed, days to decision, auditability.",
+  gate:"No case log = maximum 1.",
+  items:[
+   {i:"P4.2g", r:"g", t:"yn", cap:1, ev:true, q:"Is an IP case log with dates maintained?"},
+   {i:"P4.2a", r:"s", t:"cp", nl:"Via standard workflow", dl:"IP cases (12 mo)", b:[[100,4],[75,3],[50,2],[10,1]], q:"Cases processed through the standard workflow"},
+   {i:"P4.2b", r:"s", t:"num", dir:"le", lbl:"Days", b:[[45,4],[60,3],[90,2],[180,1]], q:"Average turnaround, disclosure → decision"},
+   {i:"P4.2c", r:"s", t:"sl", q:"Digital IP tracking status", opts:["None","Templates only","Tracking live","Full digital, audited","Ledger-based, externally verifiable"]},
+   {i:"P4.2d", r:"i", t:"yn", ev:true, q:"Is the TTO supported by specialist partners (legal / IP advisors, tech firms)?"}],
+  rule:"Band on workflow coverage and turnaround; digital status qualifies — gated on the case log." },
+{ id:"P4-D3", g:"E", name:"Fund Management Processes", w:.10,
+  lens:"A governed fund that moves at commercial speed — not a discretionary grant pool.",
+  gate:"Transactions not in the log are treated as ungoverned.",
+  items:[
+   {i:"P4.3a", r:"s", t:"sl", q:"Fund status", opts:["No fund — donor grants managed informally","Governance templates drafted; setup underway","Committee operational; ≥30% of transactions tracked via approved workflow","Co-managed with an experienced financial partner; ≥60% digital; monthly reviews","Professionalised platform with licensed partner; ≥80% digital flows; performance-based reinvestment"]},
+   {i:"P4.3b", r:"s", t:"cp", nl:"Processed digitally via workflow", dl:"Transactions (12 mo)", b:[[80,4],[60,3],[30,2],[5,1]], ev:true, q:"Digitally governed transactions"},
+   {i:"P4.3c", r:"s", t:"num", dir:"le", lbl:"Days", b:[[45,4],[60,3],[90,2],[180,1]], q:"Average deployment time, approval → disbursement"},
+   {i:"P4.3d", r:"i", t:"yn", q:"Is a reinvestment mechanism active (returns recycled in the last 12 months)?"}],
+  rule:"Ladder position verified against the transaction log and deployment speed." },
+{ id:"P4-D4", g:"W", name:"Continuous Capacity-Building System", w:.06,
+  lens:"Structured upskilling on an annual plan — co-delivered, completed, counted.",
+  gate:"No approved annual training plan caps this dimension at 1.",
+  items:[
+   {i:"P4.4g", r:"g", t:"yn", cap:1, ev:true, q:"Is an annual training plan approved for innovation staff / faculty?"},
+   {i:"P4.4a", r:"s", t:"cp", nl:"Completed structured upskilling", dl:"Innovation staff", b:[[80,4],[75,3],[50,2],[20,1]], q:"Completion this year"},
+   {i:"P4.4b", r:"s", t:"yn", yes:3, no:1, q:"Is training co-delivered by external partners (local / global)?"}],
+  rule:"Band on completion, lifted by partner co-delivery — gated on the plan." },
+{ id:"P4-D5", g:"W", name:"Data, Technology & Process Automation", w:.06,
+  lens:"From spreadsheets to live dashboards: what share of mapped processes is digitised?",
+  gate:"“Digitised” = the process runs in a system — not that a spreadsheet exists somewhere.",
+  items:[
+   {i:"P4.5a", r:"s", t:"cp", nl:"Running in digital systems", dl:"Mapped core processes", b:[[90,4],[75,3],[50,2],[10,1]], q:"Digitised process share"},
+   {i:"P4.5b", r:"s", t:"sl", q:"Dashboard cadence", opts:["None","Manual / ad hoc","Quarterly","Live, used in decision-making","Real-time with predictive analytics"]},
+   {i:"P4.5c", r:"i", t:"tx", q:"Cite two decisions and the dashboards behind them"}],
+  rule:"Band on digitised share and dashboard use in real decisions." },
+{ id:"P4-D6", g:"N", name:"Partner Engagement in Daily Operations", w:.10,
+  lens:"Which functions are co-run by expert partners under KPI-bearing MoUs — with the university governing, not firefighting?",
+  gate:"“Co-run” requires an MoU with KPIs; informal help does not count.",
+  items:[
+   {i:"P4.6g", r:"g", t:"yn", cap:1, ev:true, q:"Are KPI-bearing MoUs on file for each claimed co-run function?"},
+   {i:"P4.6a", r:"s", t:"ct", lbl:"Functions (of 5)", b:[[4,4],[3,3],[2,2],[1,1]], q:"Core functions (lab, TTO, fund, capacity-building, data) co-run by a skilled partner under a KPI-bearing MoU"},
+   {i:"P4.6b", r:"s", t:"num", dir:"ge", lbl:"%", b:[[90,4],[80,3],[60,2],[30,1]], q:"Partner SLA compliance last quarter"},
+   {i:"P4.6c", r:"i", t:"tx", q:"Per co-run function: partner name, MoU reference, KPI schedule reference"},
+   {i:"P4.6d", r:"s", t:"sl", q:"Operator partnership model — a university cannot leapfrog into venture building; an experienced operator entering the environment is the realistic route", opts:["No external operator — the university runs everything itself","Operator identified; terms under negotiation","Operator active in one function; university hosts and co-governs","Operator leads delivery across functions; university hosts and governs without administering; operator not paid from university core funds","Operator-run engine with its own private-sector bench; capability-transfer plan active"]}],
+  rule:"Band on co-run coverage and partner performance — gated on real MoUs." },
+{ id:"P4-D7", g:"W", name:"SOPs & Documentation", w:.07,
+  lens:"The bus test: if the BDO left tomorrow, could a successor run the office from what is written down?",
+  gate:"An SOP not reviewed in 24 months is stale.",
+  items:[
+   {i:"P4.7a", r:"s", t:"cp", nl:"With a current SOP", dl:"Critical processes mapped", b:[[100,4],[75,3],[60,2],[20,1]], ev:true, q:"SOP coverage of critical processes"},
+   {i:"P4.7b", r:"s", t:"yn", yes:3, no:1, q:"Bus-test evidence: has anyone been inducted or covered a role using SOPs alone? Cite the case in evidence.", ev:true},
+   {i:"P4.7c", r:"i", t:"dt", q:"Most recent SOP review date"}],
+  rule:"Band on coverage with the bus-test case as the qualifier." },
+{ id:"P4-D8", g:"W", name:"Quality Assurance & Performance Monitoring", w:.07,
+  lens:"KPIs tracked, reviews on cadence, actions actually implemented.",
+  gate:"“Reviewed” requires minutes and an action log.",
+  items:[
+   {i:"P4.8a", r:"s", t:"sl", q:"QA status", opts:["No KPIs","KPIs defined, inconsistently tracked","Quarterly reviews + functional dashboard","Partner SLAs integrated; ≥80% compliance digitally tracked","Real-time system; ≥90% SLA; insights drive incentives & renewals"]},
+   {i:"P4.8b", r:"s", t:"ct", lbl:"Actions / quarter", b:[[5,4],[3,3],[1,2]], ev:true, q:"Improvement actions implemented last quarter (cite the log)"}],
+  rule:"Ladder position verified by the action log." },
+{ id:"P4-D9", g:"N", name:"Enterprise Vehicle, Governance & Autonomy", w:.11,
+  lens:"The public-finance wall: revenue that passes through the university central account is lost and cannot be recycled. A separate vehicle that earns, retains and reinvests is the structural fix — and governance is what makes it financially and operationally autonomous, with the university as an investor holding its position through shares and board seats, never through administrative control.",
+  gate:"Claims of a vehicle require the registration or instrument reference.",
+  items:[
+   {i:"P4.9a", r:"s", t:"sl", ev:true, q:"Enterprise vehicle status", opts:["None — all commercial activity runs through central accounts","Concept / approvals in progress","Vehicle registered; first commercial activity","Vehicle operating: earns, retains and reinvests revenue; can hold participation positions","Vehicle at scale: multiple revenue lines, private co-ownership or co-investment, audited accounts"]},
+   {i:"P4.9b", r:"s", t:"cp", nl:"Retained & reinvestable in the vehicle", dl:"Innovation / enterprise revenue (12 mo)", b:[[80,4],[50,3],[25,2],[5,1]], q:"Revenue kept out of the central account and available for recycling"},
+   {i:"P4.9c", r:"s", t:"amt", fields:["Commercial / enterprise revenue (12 mo)","Tuition & student income (12 mo)","Other income (12 mo)"], num:[0], den:"all", b:[[25,4],[10,3],[5,2],[1,1]], ev:true, q:"Non-tuition commercial share of university revenue (ambition: 25–50% from beyond tuition and student income)"},
+   {i:"P4.9d", r:"i", t:"yn", q:"Does the vehicle hold participation rights (equity, royalty, IP share) in ventures created in the environment?"},
+   {i:"P4.9e", r:"s", t:"sl", ev:true, q:"Governance & autonomy of the enterprise vehicle", opts:["University departments run commercial activity directly","Vehicle governed by a university committee; administration controls operations","Vehicle has its own management; university administration still approves operations","Independent board and management; university is a shareholder with board representation, not the operator; annual audited accounts","Fully autonomous: independent board, audited accounts, returns flow to the university as an investor, external investors can join the register"]},
+   {i:"P4.9f", r:"i", t:"yn", q:"Does the university hold its position as an investor (shares held, returns received) rather than through administrative control of the vehicle?"}],
+  rule:"Ladder position verified by retained-revenue evidence and the governance ladder; the non-tuition share is the long-horizon marker." },
+{ id:"P4-D10", g:"W", name:"Venture Investment Ledger & Day-One Agreements", w:.08,
+  lens:"Every unit the hub, studio, vehicle or university puts into an idea and its entrepreneur — cash and priced in-kind (space, labs, equipment time, staff hours, services) — is recorded live, per venture, per entrepreneur. Terms are clear from day one: the standard agreement stating equity, IP, royalty and support terms is signed at intake, before any support flows.",
+  gate:"No reading and no support before the standard participation agreement is signed.",
+  items:[
+   {i:"P4.10g", r:"g", t:"yn", cap:1, ev:true, q:"Is the rule enforced that no reading or support begins before the standard participation agreement is signed?"},
+   {i:"P4.10a", r:"s", t:"sl", ev:true, q:"Investment ledger status", opts:["No record of what the university or hub puts into ventures","Cash grants recorded only","Cash and in-kind recorded, but not per venture","Live ledger per venture and entrepreneur: cash plus priced in-kind, updated monthly","Full position per venture — cash, in-kind and terms held — used in quarterly reviews and investment decisions"]},
+   {i:"P4.10b", r:"s", t:"cp", nl:"With a current ledger entry (≤30 days)", dl:"Active ventures", b:[[90,4],[70,3],[40,2],[10,1]], q:"Ledger currency across the active portfolio"},
+   {i:"P4.10c", r:"s", t:"yn", yes:3, no:1, ev:true, q:"Is in-kind support priced on a published rate card (fair-market or cost-based: space, labs, equipment time, staff hours, services)?"},
+   {i:"P4.10d", r:"s", t:"cp", nl:"With a signed day-one agreement (equity / IP / royalty / support terms stated)", dl:"Active ventures", b:[[95,4],[75,3],[40,2],[10,1]], ev:true, q:"Agreement and equity clarity from day one"},
+   {i:"P4.10e", r:"i", t:"yn", q:"Are extraordinary in-kind contributions converted to equity only through a formal valuation and an investment-committee decision — never by the staff providing the support?"}],
+  rule:"Ladder position verified by ledger currency; agreement coverage and rate-card pricing qualify the band. The gate holds everything to 1 if support flows before signature." },
+{ id:"P4-D11", g:"N", name:"Endowment & Institutional Income Engine", w:.07,
+  lens:"A corpus that earns so the university does not have to beg: an endowment or evergreen fund, grown by alumni and partners under an investment policy, whose income flows to university and innovation budgets year after year.",
+  gate:"Corpus and income claims require the fund instrument and the financial record.",
+  items:[
+   {i:"P4.11a", r:"s", t:"sl", ev:true, q:"Endowment / income-engine status", opts:["No endowment or income engine beyond fees and grants","Concept and approvals in progress","Endowment or evergreen fund established with a founding corpus","Corpus growing — alumni and partner contributions under an investment policy","Income flows annually to university and innovation budgets; returns recycled indefinitely"]},
+   {i:"P4.11b", r:"s", t:"ratio", nl:"Endowment / investment income applied (12 mo)", dl:"Innovation & enterprise budget (12 mo)", b:[[0.5,4],[0.25,3],[0.1,2],[0.02,1]], q:"How much of the innovation and enterprise budget the corpus now carries"},
+   {i:"P4.11c", r:"i", t:"ct", lbl:"Alumni", q:"Alumni contributing to the endowment in the trailing 12 months"},
+   {i:"P4.11d", r:"i", t:"yn", q:"Is there a managed venture fund holding the university's interests in its enterprise entity and investing in student- and faculty-originated ventures beyond it?"}],
+  rule:"Ladder position verified by the income-to-budget ratio; the managed-fund question records the holding structure." },
+{ id:"P4-D12", g:"N", name:"Asset & Service Commercialisation (The Shelf)", w:.08,
+  lens:"The M5 test on the institutional side: the university's asset base and expertise earn. Land, labs, facilities, digital learning, production arms, consultancy, executive education and contract research run as commercial lines — usually with an operator, with the university holding its return.",
+  gate:"No asset register (commercialisable assets catalogued with their commercial status) caps this dimension at 1.",
+  items:[
+   {i:"P4.12g", r:"g", t:"yn", cap:1, ev:true, q:"Is an asset register maintained — commercialisable assets catalogued with their commercial status?"},
+   {i:"P4.12a", r:"s", t:"sl", ev:true, q:"Shelf commercialisation ladder", opts:["Assets idle or internal-use only","Ad hoc rentals and one-off income","Register live; first assets under commercial operation (direct or operator model)","Multiple asset lines earning under operator or JV models; service lines (consultancy, executive education, contract research) sold","The shelf runs as a portfolio: every major asset has a commercial thesis and an operating model, with income material to the university budget"]},
+   {i:"P4.12b", r:"s", t:"cp", nl:"Under active commercial operation", dl:"Major commercialisable assets catalogued", b:[[70,4],[40,3],[15,2],[5,1]], q:"Share of the shelf that earns"},
+   {i:"P4.12c", r:"i", t:"yn", q:"Is an operator model in use — an external operator runs the asset while the university holds a revenue share or equity position?"},
+   {i:"P4.12d", r:"i", t:"tx", q:"Income lines live this year: asset income / consultancy & executive education / contract research (amounts and references)"}],
+  rule:"Ladder position verified by the earning share of the catalogued shelf — gated on the register existing." }
+]};
+
+/* ======================== P5 · PARTNERSHIPS ======================== */
+const P5 = { code:"P5", name:"Partnerships", color:"var(--p5)", hex:"#2F6F7A", toc:"Pathway 4 — university–industry engagement → employment (and the partner bench for Pathway 2)",
+purpose:"From one-off engagements to structured, co-investing, value-recycling relationships. Maturity is measured not by how many MoUs are signed but by how much value they recycle — capital in, ventures out, partners returning. “Active” = activity logged in the trailing 12 months.",
+dims:[
+{ id:"P5-D1", g:"E", name:"Partnership Strategy & Portfolio Design", w:.08,
+  lens:"Designed against the innovation value chain — or accumulated opportunistically?",
+  gate:"“Active partner” requires a logged activity in 12 months.",
+  items:[
+   {i:"P5.1a", r:"s", t:"sl", q:"Strategy status", opts:["None — opportunistic / donor-driven","Draft plan; ≤3 partners; no segmentation","Formalised with segmentation; ≥5 active partners","Portfolio mapped to the value chain; ≥10 active across ≥3 categories","Annually reviewed portfolio; ≥15 active; ≥80% outcome-linked"]},
+   {i:"P5.1b", r:"s", t:"ct", lbl:"Partners", b:[[15,4],[10,3],[5,2],[1,1]], ev:true, q:"Active partners (from the register)"},
+   {i:"P5.1c", r:"s", t:"cp", nl:"Linked to a specific outcome", dl:"Active partners", b:[[80,4],[60,3],[40,2],[10,1]], q:"Outcome linkage"}],
+  rule:"Ladder position verified against the register and outcome linkage." },
+{ id:"P5-D2", g:"E", name:"Partnership Governance & Coordination", w:.08,
+  lens:"Who owns partnerships, on what cadence, in what system?",
+  gate:"Review meetings require minutes.",
+  items:[
+   {i:"P5.2a", r:"s", t:"sl", q:"Governance status", opts:["None — MoUs managed individually","Committee / focal point appointed; low activity","Partnership Office operational; quarterly reviews; tracking sheet live","Digital CRM live; standard MoU templates; quarterly performance tracking","Integrated framework; automated CRM; real-time dashboards; ≥90% renewal compliance"]},
+   {i:"P5.2b", r:"s", t:"cp", nl:"Renewed / compliance-cleared", dl:"MoUs due for renewal", b:[[90,4],[75,3],[50,2],[25,1]], q:"Renewal performance"},
+   {i:"P5.2c", r:"i", t:"ct", lbl:"Meetings", q:"Partnership review meetings (12 mo, with minute refs)"}],
+  rule:"Ladder verified by minutes and renewal data." },
+{ id:"P5-D3", g:"E", name:"Partner Diversity & Ecosystem Reach", w:.10,
+  lens:"Categories and geography — a portfolio of NGOs is not an ecosystem.",
+  gate:"Category counts from the register.",
+  items:[
+   {i:"P5.3a", r:"s", t:"multi", q:"Partner categories with at least one ACTIVE partner", opts:["Academia","Corporate","Government","DFI","NGO","Startup hub","Investor / VC"], b:[[6,4],[5,3],[3,2],[1,1]]},
+   {i:"P5.3b", r:"s", t:"cp", nl:"Cross-border", dl:"Active partnerships", b:[[40,4],[25,3],[10,2],[2,1]], q:"Cross-border share"},
+   {i:"P5.3c", r:"i", t:"ct", lbl:"Alliances", q:"Global innovation alliances (names in evidence)"}],
+  rule:"Band on category spread, qualified by geography." },
+{ id:"P5-D4", g:"W", name:"Value Co-Creation (Innovation & R&D)", w:.13,
+  lens:"Designing and building — or attending demo days? “Co-creation” requires a joint project record.",
+  gate:"Event attendance does not count as co-creation.",
+  items:[
+   {i:"P5.4a", r:"s", t:"cp", nl:"In joint projects or pilots", dl:"Active partners", b:[[75,4],[50,3],[25,2],[5,1]], ev:true, q:"Co-creating partner share"},
+   {i:"P5.4b", r:"s", t:"ct", lbl:"Innovations", b:[[5,4],[3,3],[1,2]], q:"Market-facing innovations from co-creation (12 mo)"},
+   {i:"P5.4c", r:"i", t:"tx", q:"Outcomes attributable to co-creation: patents / ventures / revenue events (counts + refs)"}],
+  rule:"Band on the co-creating share, verified by outcome attribution." },
+{ id:"P5-D5", g:"N", name:"Funding & Investment Leverage", w:.13,
+  lens:"Follow the money: what share of innovation funding is non-donor, and who anchors? Percentages are computed from ledger amounts — never self-declared.",
+  gate:"Amounts come from the funding ledger.",
+  items:[
+   {i:"P5.5a", r:"s", t:"amt", fields:["Donor funding (12 mo)","Partner funding (12 mo)","Internal funding (12 mo)","Investment returns (12 mo)"], num:[1], den:"all", b:[[70,4],[50,3],[25,2],[3,1]], ev:true, q:"Partner-sourced share of innovation funding"},
+   {i:"P5.5b", r:"s", t:"ct", lbl:"Anchors", b:[[2,4],[1,3]], q:"Anchor investors or challenge-fund sponsors (names + instrument refs in evidence)"},
+   {i:"P5.5c", r:"i", t:"num", dir:"ge", lbl:"Amount", q:"In-kind partner contributions (valued)"}],
+  rule:"Band on the computed partner-funding share, qualified by anchor presence." },
+{ id:"P5-D6", g:"W", name:"Partner Engagement & Continuity", w:.09,
+  lens:"Do partners come back? Retention is the trust metric money can't fake.",
+  gate:"Retention computed from the register year-on-year.",
+  items:[
+   {i:"P5.6a", r:"s", t:"cp", nl:"Still active this year", dl:"Partners active last year", b:[[90,4],[75,3],[30,2],[10,1]], q:"Partner retention"},
+   {i:"P5.6b", r:"s", t:"ct", lbl:"Partnerships", b:[[3,4],[1,3]], q:"Strategic partnerships ≥3 years with joint KPIs"},
+   {i:"P5.6c", r:"i", t:"yn", q:"Is an annual engagement calendar live?"}],
+  rule:"Band on retention, qualified by long-horizon partnerships." },
+{ id:"P5-D7", g:"W", name:"Communication & Visibility", w:.04,
+  lens:"Does the partnership story generate inbound interest?",
+  gate:"Inbound enquiries require a record (email / CRM).",
+  items:[
+   {i:"P5.7a", r:"s", t:"sl", q:"Visibility status", opts:["None","Occasional media / newsletter mentions","Featured in university reports; success stories documented","Dedicated communication stream; partners featured quarterly","Real-time public dashboard; brand recognition drives new partner interest"]},
+   {i:"P5.7b", r:"i", t:"ct", lbl:"Enquiries", q:"Inbound partner enquiries (12 mo, log ref)"}],
+  rule:"Ladder verified by the enquiry log." },
+{ id:"P5-D8", g:"W", name:"Legal, Compliance & Trust Infrastructure", w:.09,
+  lens:"Standard templates, legal review, embedded IP/data clauses, zero breaches.",
+  gate:"Any compliance breach in the trailing 12 months caps this dimension at 3.",
+  items:[
+   {i:"P5.8g", r:"g", t:"yn", cap:3, q:"Zero compliance breaches in the trailing 12 months?"},
+   {i:"P5.8a", r:"s", t:"cp", nl:"On the standard legal template", dl:"MoUs in force", b:[[90,4],[75,3],[50,2],[10,1]], q:"Template coverage"},
+   {i:"P5.8b", r:"s", t:"cp", nl:"With IP & data-protection clauses", dl:"MoUs in force", b:[[95,4],[80,3],[50,2],[10,1]], q:"Clause coverage"},
+   {i:"P5.8c", r:"s", t:"num", dir:"ge", lbl:"%", b:[[90,4],[75,3],[50,2],[25,1]], q:"Latest partner trust score (survey ref in evidence)", ev:true}],
+  rule:"Progressive bands; the breach register caps the top." },
+{ id:"P5-D9", g:"N", name:"Impact & Value Recycling", w:.13,
+  lens:"The systemic test: collaboration into capital, capital into ventures — with a published, validated ROI story.",
+  gate:"Linkage claims require the outcome register.",
+  items:[
+   {i:"P5.9a", r:"s", t:"cp", nl:"Linked to ventures, jobs, or revenue inflows", dl:"Active partnerships", b:[[80,4],[60,3],[30,2],[5,1]], ev:true, q:"Partnership-outcome linkage"},
+   {i:"P5.9b", r:"s", t:"yn", yes:4, no:1, ev:true, q:"Is an annual partnership ROI / impact report published and externally validated? Cite it."},
+   {i:"P5.9c", r:"i", t:"num", dir:"ge", lbl:"Amount", q:"Value recycled in 12 months: partner capital reinvested / returns recycled"}],
+  rule:"Band on outcome linkage, closed by recycling evidence and the published report." },
+{ id:"P5-D10", g:"N", name:"Enterprise Partner (ITP) Contracting & Portfolio", w:.13,
+  lens:"Most verified jobs in the network arrive through enterprise partners — Innovation and Technology Partners — rather than university-run delivery. The university's leverage is contracting discipline: outcomes as the yardstick, tranches gated on verified results, enterprises reporting like investees.",
+  gate:"An agreement without outcome-based deliverables and a tranche schedule counts as a grant letter, not an enterprise-partner contract.",
+  items:[
+   {i:"P5.10a", r:"s", t:"ct", lbl:"Partners", b:[[5,4],[3,3],[1,2]], ev:true, q:"Enterprise partners (ITPs) under active contract"},
+   {i:"P5.10b", r:"s", t:"yn", yes:3, no:1, ev:true, q:"Is a standard outcome-based agreement template in use (deliverables as outcomes, use-of-funds targeting constraints, a mandatory co-design session, quarterly reviews)?"},
+   {i:"P5.10c", r:"s", t:"cp", nl:"With outcome-gated tranche releases", dl:"Active enterprise-partner contracts", b:[[90,4],[70,3],[40,2],[10,1]], q:"Tranches released against verified outcomes, never activity reports"},
+   {i:"P5.10d", r:"s", t:"cp", nl:"Submitting management accounts at least annually", dl:"Enterprise partners funded", b:[[90,4],[70,3],[40,2],[10,1]], q:"Reporting discipline — any capital provided obliges management accounts for at least five years"},
+   {i:"P5.10e", r:"s", t:"ratio", nl:"External / commercial financing unlocked by portfolio enterprises (12 mo)", dl:"Programme capital deployed to those enterprises (12 mo)", b:[[3,4],[2,3],[1,2],[0.5,1]], ev:true, q:"Capital leverage — additional financing the portfolio attracts per unit of programme capital"},
+   {i:"P5.10f", r:"s", t:"multi", ev:true, q:"Capital-unlocking scaffold stages operating for portfolio enterprises", opts:["Business registration support","Bookkeeping / records discipline","Bank account with transaction history","Trade credit / offtake-backed finance","Guarantee or first-loss arrangement with a partner bank","Introductions to external commercial capital"], b:[[5,4],[4,3],[2,2],[1,1]]},
+   {i:"P5.10g", r:"s", t:"cp", nl:"With a current readiness record (passport)", dl:"Portfolio enterprises", b:[[80,4],[60,3],[30,2],[10,1]], q:"Readiness passports grading each enterprise on registration, records, banking and credit history — so partners meet graded, screened candidates"}],
+  rule:"Band on portfolio size and contracting discipline; the leverage ratio is the success measure leadership set." }
+]};
+
+/* ============== P6 · PERFORMANCE & POST-GRADUATION ============== */
+const P6 = { code:"P6", name:"Performance & Post-graduation", color:"var(--p6)", hex:"#B98A2F", toc:"Outcome layer for Pathways 2, 3 and 4 — Reach · Jobs · Enterprise",
+purpose:"What happens after the programme: do ventures convert, survive, attract capital, and create dignified jobs — and does the institution learn from every cycle? This is the BCIJ outcome layer. Jobs claims are the most audited numbers in the entire diagnostic. The funder's three ultimate outcomes — Reach, Jobs and Enterprise — are read from this P.",
+dims:[
+{ id:"P6-D1", g:"W", name:"Pilot-to-Market Conversion", w:.12,
+  lens:"Of what enters, what reaches MVP, customers, revenue, spinout — stage by stage from the register.",
+  gate:"Each stage transition requires a dated record in the venture register.",
+  items:[
+   {i:"P6.1a", r:"s", t:"ctr", reg:"pipeline", lbl:"Reached MVP", b:[[50,4],[26,3],[11,2],[2,1]], ev:true, q:"Ventures reaching MVP (of pipeline entrants, 24 mo)"},
+   {i:"P6.1b", r:"s", t:"ctr", reg:"pipeline", lbl:"Validated / revenue", b:[[35,4],[25,3],[10,2],[1,1]], q:"Ventures reaching customer validation or first revenue"},
+   {i:"P6.1c", r:"s", t:"ctr", reg:"pipeline", lbl:"Spun out", b:[[10,4],[5,3],[1,2]], q:"Ventures fully spun out / incorporated"}],
+  rule:"Band on MVP conversion, qualified by validation and spinout rates." },
+{ id:"P6-D2", g:"E", name:"Post-Programme Tracking & Alumni Data", w:.10,
+  lens:"Does the university know what happened to its ventures — survival, revenue, jobs — or do they vanish at demo day?",
+  gate:"A tracker with >30% missing current-year data counts as partial.",
+  items:[
+   {i:"P6.2a", r:"s", t:"sl", q:"Tracking status", opts:["None — outcomes anecdotal","First dataset, incomplete","Complete tracker covering survival, revenue, jobs","Tracker + referral pathways logged and working","Full alumni-flow tracking: capital, hiring, mentoring flow back"]},
+   {i:"P6.2b", r:"s", t:"ctr", reg:"graduated", lbl:"With current-year data", b:[[90,4],[70,3],[50,2],[10,1]], q:"Data currency across graduated ventures"},
+   {i:"P6.2c", r:"i", t:"cp", nl:"Alive at 24 months", dl:"Cohort size", q:"Venture survival at 24 months"},
+   {i:"P6.2d", r:"i", t:"cp", nl:"Alive at 36 months", dl:"Cohort size", q:"Venture survival at 36 months (M&E standard: three-year survival)"}],
+  rule:"Ladder position verified by data currency; survival reported alongside." },
+{ id:"P6-D3", g:"W", name:"Post-Pilot Continuation & Capital Pathways", w:.12,
+  lens:"Structured continuation after graduation: incubation, co-funding, investor introductions that convert.",
+  gate:"An introduction counts only if logged; “producing results” = a term sheet, investment, or formal follow-on.",
+  items:[
+   {i:"P6.3a", r:"s", t:"ctr", reg:"graduated", lbl:"With structured continuation", b:[[50,4],[30,3],[10,2],[2,1]], ev:true, q:"Graduated ventures receiving structured continuation support"},
+   {i:"P6.3b", r:"s", t:"cp", nl:"Resulting in investment / term sheet", dl:"Investor introductions made", b:[[50,4],[25,3],[10,2],[2,1]], q:"Introduction conversion (the EPDx ML4 marker)"},
+   {i:"P6.3c", r:"s", t:"ct", lbl:"Partners", b:[[8,4],[5,3],[3,2],[1,1]], q:"Partners engaged in post-pilot continuation annually (corporate / DFI / VC / studio)"}],
+  rule:"Band on continuation share, verified by the introduction log and partner instruments." },
+{ id:"P6-D4", g:"N", name:"Jobs & Dignified Work Evidence", w:.18,
+  lens:"The BCIJ core: jobs created by pipeline and alumni ventures — counted, verified, quality-assessed against the programme-set income floor and the more-than-two-year duration standard. This number cascades to the 180,000-jobs programme target.",
+  gate:"HARD GATE: a jobs count without verification evidence (payroll, contract, or verified survey) is capped at 1. No exceptions.",
+  items:[
+   {i:"P6.4g", r:"g", t:"yn", cap:1, ev:true, q:"Is verification evidence attached for the jobs claims (payroll records / contracts / verified survey)?"},
+   {i:"P6.4a", r:"s", t:"lad", ev:true, q:"Jobs measurement ladder — tick every statement you can evidence", steps:[
+     {q:"Jobs created by pipeline + alumni ventures are counted (by venture)", s:1},
+     {q:"A verified counting system is live (payroll / contract / verified-survey based)", s:2},
+     {q:"Dignified-work criteria are measured with targets set", s:3},
+     {q:">65% of verified jobs meet dignified-work criteria, disaggregated, feeding institutional reporting", s:4}]},
+   {i:"P6.4b", r:"s", t:"cp", nl:"Meeting dignified-work criteria", dl:"Verified jobs", b:[[65,4],[40,3],[10,2],[1,1]], q:"Dignified-work share"},
+   {i:"P6.4w", r:"s", t:"cp", nl:"Held by women", dl:"Verified jobs", b:[[70,4],[50,3],[30,2],[10,1]], q:"Women's share of verified jobs (programme inclusion target: 70%)"},
+   {i:"P6.4f", r:"s", t:"cp", nl:"Sustained beyond 24 months", dl:"Verified jobs old enough to test", b:[[80,4],[60,3],[30,2],[5,1]], ev:true, q:"Job durability — the funder standard counts dignified jobs lasting more than two years"},
+   {i:"P6.4e", r:"s", t:"multi", ev:true, q:"Segments disaggregated and reported on every jobs claim", opts:["Women","Youth (18–35)","Out-of-school youth","Differently abled persons","Refugees / displaced persons","Rural / urban location"], b:[[6,4],[4,3],[2,2],[1,1]]},
+   {i:"P6.4c", r:"i", t:"tx", q:"Verified jobs (12 mo): full-time / part-time / seasonal (counts by venture)"},
+   {i:"P6.4h", r:"i", t:"yn", q:"Does the jobs register hold founder AND employee contact details for verification callbacks?"},
+   {i:"P6.4i", r:"i", t:"yn", q:"Is partner attribution recorded per job (which consortium partner enabled it), with non-programme money excluded from claims?"}],
+  rule:"0 never counted · 1 counted, unverified · 2 verified system live · 3 + dignified-work measurement with targets · 4 verified, >65% dignified, disaggregated. Dignified = meets the programme-set income floor and lasts beyond two years." },
+{ id:"P6-D5", g:"W", name:"Learning, M&E & Adaptation", w:.10,
+  lens:"Does each cycle change the next one — reviews held, recommendations actioned, policy and curriculum updated?",
+  gate:"“Actioned” requires the change record, not the recommendation list.",
+  items:[
+   {i:"P6.5a", r:"s", t:"cp", nl:"Followed by a formal review", dl:"Programme cycles completed", b:[[100,4],[80,3],[50,2],[10,1]], q:"Review discipline"},
+   {i:"P6.5b", r:"s", t:"cp", nl:"Actioned", dl:"Recommendations issued (12 mo)", b:[[90,4],[80,3],[50,2],[10,1]], ev:true, q:"Recommendation action rate"},
+   {i:"P6.5c", r:"s", t:"ct", lbl:"Updates", b:[[4,4],[2,3],[1,2]], q:"Policy or curriculum updates traceable to pilot learning"},
+   {i:"P6.5d", r:"i", t:"yn", q:"Is an annual Learning Report published?"}],
+  rule:"Band on review discipline and action rate; the published report closes the top." },
+{ id:"P6-D6", g:"N", name:"Financial Performance & Sustainability", w:.18,
+  lens:"Converging toward self-financing — co-funded pilots, revenue-positive ventures, a replenishing fund. All percentages computed from ledger amounts.",
+  gate:"Amounts come from the funding ledger.",
+  items:[
+   {i:"P6.6a", r:"s", t:"amt", fields:["Donor funding (12 mo)","Private / partner funding (12 mo)","Institutional funding (12 mo)","Returns (12 mo)"], num:[1,2,3], den:"all", b:[[75,4],[50,3],[25,2],[5,1]], ev:true, q:"Non-donor share of pilot / programme funding"},
+   {i:"P6.6b", r:"s", t:"cp", nl:"Revenue-positive", dl:"Pipeline + alumni ventures", b:[[40,4],[25,3],[10,2],[2,1]], q:"Revenue-positive ventures"},
+   {i:"P6.6c", r:"s", t:"cp", nl:"Replenished from returns / sponsorship / equity", dl:"Fund deployments (12 mo)", b:[[20,4],[10,3],[2,2]], q:"Fund replenishment rate"},
+   {i:"P6.6d", r:"s", t:"cp", nl:"Trading at 3+ years, covering costs without grants", dl:"Alumni enterprises at least 3 years old", b:[[50,4],[30,3],[15,2],[5,1]], ev:true, q:"Camel Standard — enterprises that endure: trading at three years, costs covered without grants, verified jobs beyond the founders"}],
+  rule:"Band on the computed non-donor share, qualified by venture revenue and replenishment." },
+{ id:"P6-D7", g:"E", name:"Conversion & Counting Discipline", w:.12,
+  lens:"Enabling activities — training, sessions, curriculum — are not outcomes; conversion is consistent, stable income from a job or business revenue. Network evidence puts typical training-to-income conversion near 10%. This dimension makes the rate visible and the counting honest.",
+  gate:"Conversion claims require the consolidated graduate register; estimates do not score.",
+  items:[
+   {i:"P6.7a", r:"s", t:"ctr", reg:"trained", lbl:"Earning consistently", b:[[40,4],[25,3],[15,2],[5,1]], ev:true, q:"Participants converted to consistent income (job or business revenue) — of all trained / work-enabled participants"},
+   {i:"P6.7b", r:"s", t:"yn", yes:2, no:0, ev:true, q:"Is there ONE consolidated register / community of all trained participants across all partners (not scattered per-partner lists)?"},
+   {i:"P6.7c", r:"s", t:"yn", yes:3, no:1, ev:true, q:"Are counting-floor definitions documented and applied — what counts as a job, an enterprise, a conversion, with an income floor and a duration attached?"},
+   {i:"P6.7d", r:"i", t:"cp", nl:"Outcomes captured in official reporting", dl:"Outcomes actually achieved (best evidence)", q:"Under-reporting check — uncaptured results are lost results"}],
+  rule:"Band on the measured conversion rate, qualified by register consolidation and counting-floor discipline." },
+{ id:"P6-D8", g:"W", name:"Targets, Run-Rate & Acceleration Readiness", w:.08,
+  lens:"Acceleration demands bring targets forward. An institution that cannot state its target, its required monthly run-rate and the credible plan behind them cannot steer — the discipline is monthly, with targets set by capability and country.",
+  gate:"A target without a written plan behind it is an aspiration.",
+  items:[
+   {i:"P6.8a", r:"s", t:"lad", ev:true, q:"Target discipline ladder — tick every statement you can evidence", steps:[
+     {q:"Jobs and enterprise targets are stated for the current period", s:1},
+     {q:"A written, credible delivery plan stands behind the targets", s:2},
+     {q:"The required monthly run-rate is computed and tracked against actual pace", s:3},
+     {q:"Monthly run-rate reviews drive course-correction with partners; pace meets or exceeds requirement", s:4}]},
+   {i:"P6.8b", r:"i", t:"ct", lbl:"Jobs / month", q:"Required monthly jobs run-rate to hit the target date"},
+   {i:"P6.8c", r:"i", t:"ct", lbl:"Jobs / month", q:"Actual monthly jobs run-rate (trailing 3 months)"}],
+  rule:"Score = highest evidenced ladder step." }
+]};
+
+const PS = [P1,P2,P3,P4,P5,P6];
+/* ===================== state & storage ===================== */
+let ANS = {};            // itemId -> answer object
+let REGV = {};           // register key -> number
+let META = { inst:"", label:"Baseline" };
+let SNAPS = [];
+let saveTimer = null;
+
+/* Storage backend: Claude artifact storage when the page runs as a published
+   artifact; the browser's own localStorage on any ordinary web host. Either
+   way, data stays on the respondent's side — nothing is sent to a server. */
+const HAS_WS = (typeof window !== "undefined") && !!window.storage;
+async function sGet(k){
+  if(HAS_WS){ try{ const r = await window.storage.get(k); if(r) return JSON.parse(r.value); }catch(e){} }
+  try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; }catch(e){ return null; }
+}
+async function sSet(k,v){
+  const s = JSON.stringify(v);
+  if(HAS_WS){ try{ await window.storage.set(k, s); return true; }catch(e){} }
+  try{ localStorage.setItem(k, s); return true; }catch(e){ console.error("storage",e); return false; }
+}
+async function sDel(k){
+  if(HAS_WS){ try{ await window.storage.delete(k); }catch(e){} }
+  try{ localStorage.removeItem(k); }catch(e){}
+}
+
+function queueSave(){
+  document.getElementById("savestate").textContent = "Saving…";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    const ok = await sSet("epdx6p-draft", {ans:ANS, regs:REGV, meta:META, updated:new Date().toISOString()});
+    document.getElementById("savestate").textContent = ok ? "Saved ✓" : "Save failed — retry by editing";
+  }, 700);
+}
+
+/* ===================== scoring engine ===================== */
+function band(val, bands){ if(val==null||isNaN(val)) return null; for(const [th,sc] of bands){ if(val>=th) return sc; } return 0; }
+function bandLE(val, bands){ if(val==null||isNaN(val)) return null; for(const [th,sc] of bands){ if(val<=th) return sc; } return 0; }
+const num = v => (v===""||v==null||isNaN(parseFloat(v))) ? null : parseFloat(v);
+
+function itemScore(item){
+  const a = ANS[item.i] || {};
+  let s = null, answered = false, note = null;
+  switch(item.t){
+    case "sl": if(a.v!=null && a.v!==""){ s = parseInt(a.v); answered = true; } break;
+    case "ct": { const n = num(a.n); if(n!=null){ answered = true; s = band(n, item.b||[[1,1]]); } break; }
+    case "num": { const n = num(a.n); if(n!=null){ answered = true; s = item.b ? (item.dir==="le"?bandLE(n,item.b):band(n,item.b)) : null; } break; }
+    case "cp": { const n = num(a.n), d = num(a.d); if(n!=null && d!=null && d>0){ answered = true; if(item.b) s = band(n/d*100, item.b); } else if(n!=null&&d===0){ answered=true; s=0; } break; }
+    case "ctr": { const n = num(a.n), d = num(REGV[item.reg]); if(n!=null && d!=null && d>0){ answered = true; s = band(n/d*100, item.b); } break; }
+    case "ratio": { const n = num(a.n), d = num(a.d); if(n!=null && d!=null && d>0){ answered = true; s = band(n/d, item.b); } break; }
+    case "lad": { if(a.steps && a.steps.some(x=>x)){ answered = true; s = 0; item.steps.forEach((st,ix)=>{ if(a.steps[ix]) s = Math.max(s, st.s); }); } break; }
+    case "multi": { if(a.sel && a.sel.some(x=>x)){ answered = true; s = band(a.sel.filter(x=>x).length, item.b); } break; }
+    case "amt": { const f = (a.f||[]).map(num); if(f.some(x=>x!=null)){ answered = true;
+        const denIdx = item.den==="all" ? f.map((_,ix)=>ix) : item.den;
+        const nsum = item.num.reduce((t,ix)=>t+(f[ix]||0),0);
+        const dsum = denIdx.reduce((t,ix)=>t+(f[ix]||0),0);
+        if(dsum>0) s = band(nsum/dsum*100, item.b); else s = 0; } break; }
+    case "yn": { if(a.yn){ answered = true; if(item.yes!=null) s = a.yn==="y" ? item.yes : (item.no!=null?item.no:0); } break; }
+    default: break; // tx, dt info
+  }
+  // evidence enforcement
+  if(item.ev && s!=null && s>1 && !(a.ev && a.ev.trim())){ s = 1; note = "capped at 1 — evidence reference missing"; }
+  return {s, answered, note};
+}
+
+function dimScore(dim){
+  const flags = [];
+  // special calcs
+  if(dim.calc==="polset") return polsetScore(dim);
+  if(dim.calc==="cpagg") return cpaggScore(dim);
+  let cap = 4, gatesAnswered = true;
+  for(const it of dim.items){ if(it.r==="g"){ const a = ANS[it.i]||{};
+      if(!a.yn){ gatesAnswered = false; }
+      else if(a.yn==="n"){ cap = Math.min(cap, it.cap); flags.push(it.i+" gate failed — capped at "+it.cap); }
+      else if(it.ev && !(a.ev&&a.ev.trim())){ cap = Math.min(cap, 1); flags.push(it.i+" gate unevidenced — capped at 1"); }
+  }}
+  const scored = dim.items.filter(it=>it.r==="s");
+  let vals = [], ansCount = 0;
+  for(const it of scored){ const r = itemScore(it); if(r.answered) ansCount++; if(r.s!=null) vals.push(r.s); if(r.note) flags.push(it.i+" "+r.note); }
+  const totalTrack = scored.length + dim.items.filter(it=>it.r==="g").length;
+  const done = ansCount + dim.items.filter(it=>it.r==="g" && (ANS[it.i]||{}).yn).length;
+  if(!vals.length) return {score:null, done, total:totalTrack, flags};
+  let sc = Math.floor(vals.reduce((a,b)=>a+b,0)/vals.length);
+  sc = Math.min(sc, cap);
+  return {score:sc, done, total:totalTrack, flags};
+}
+
+function polStatusEff(px){
+  const a = ANS["P1.1-"+px] || {};
+  let st = a.st!=null && a.st!=="" ? parseInt(a.st) : null;
+  if(st!=null && st>=3 && !(a.ref && a.ref.trim())) st = 2; // downgrade without minute ref
+  return {st, acc:!!a.acc, rev:!!a.rev};
+}
+function polsetScore(dim){
+  const flags = [];
+  const eff = dim.policies.map((_,ix)=>polStatusEff(ix));
+  const done = eff.filter(e=>e.st!=null).length;
+  if(!done) return {score:null, done:0, total:dim.policies.length, flags};
+  const core = eff.slice(0,3);
+  const approved = e => e.st!=null && e.st>=3;
+  let sc = 0;
+  if(eff.some(e=>e.st!=null && e.st>=1)) sc = 1;
+  if(eff.filter(approved).length>=2) sc = 2;
+  if(core.every(e=>approved(e) && e.acc)) sc = 3;
+  if(core.every(e=>e.st===4 && e.acc && e.rev)) sc = 4;
+  eff.forEach((e,ix)=>{ const a=ANS["P1.1-"+ix]||{}; if(a.st>=3 && !(a.ref&&a.ref.trim())) flags.push(dim.policies[ix]+": approval downgraded to draft — minute reference missing"); });
+  return {score:sc, done, total:dim.policies.length, flags};
+}
+function cpaggScore(dim){
+  const flags = [];
+  const cps = dim.items.filter(it=>it.t==="cp");
+  let N=0, D=0, done=0;
+  for(const it of cps){ const a=ANS[it.i]||{}; const n=num(a.n), d=num(a.d); if(n!=null&&d!=null){ done++; N+=n; D+=d; } }
+  if(!done) return {score:null, done:0, total:cps.length+1, flags};
+  const pct = D>0 ? N/D*100 : 0;
+  let sc = pct>=80?4:pct>=51?3:pct>=26?2:pct>0?1:0;
+  const wf = (ANS["P1.5w"]||{}).yn;
+  if(wf) done++;
+  if(sc===4 && wf!=="y"){ sc = 3; flags.push("compliance ≥80% but no forced workflow — held at 3"); }
+  flags.push("computed overall compliance: "+Math.round(pct)+"%");
+  return {score:sc, done, total:cps.length+1, flags};
+}
+
+function computeAll(){
+  const out = {};
+  for(const P of PS){
+    const dims = P.dims.map(d=>({id:d.id, name:d.name, w:d.w, ...dimScore(d)}));
+    let idx = 0, done=0, total=0, anyNull=false;
+    dims.forEach(d=>{ idx += d.w * (d.score==null?0:d.score) * 25; done+=d.done; total+=d.total; if(d.score==null) anyNull=true; });
+    idx = Math.round(idx);
+    const answeredAny = dims.some(d=>d.score!=null);
+    const weakest = dims.filter(d=>d.score!=null).sort((a,b)=>a.score-b.score)[0] || null;
+    out[P.code] = {index:idx, ml: answeredAny?mlOf(idx):null, dims, weakest, complete: total? Math.round(done/total*100):0, provisional:anyNull};
+  }
+  const mls = PS.map(P=>out[P.code].ml);
+  let instML = null, why = "";
+  if(mls.every(m=>m!=null)){ instML = Math.min(...mls); const wp = PS[mls.indexOf(instML)]; why = "set by "+wp.code+" · "+wp.name; }
+  else { const have = mls.filter(m=>m!=null); if(have.length){ instML = Math.min(...have); why = "provisional — "+(6-have.length)+" P"+(6-have.length>1?"s":"")+" not yet assessed"; } }
+  return {ps:out, instML, why};
+}
+
+/* ===================== rendering ===================== */
+const $ = s => document.querySelector(s);
+const el = (tag, cls, html) => { const e = document.createElement(tag); if(cls) e.className = cls; if(html!=null) e.innerHTML = html; return e; };
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+const PAGES = ["dash", ...PS.map(P=>P.code), "hist"];
+let CUR = "dash";
+
+function buildNav(){
+  const nav = $("#nav"); nav.innerHTML = "";
+  const items = [["dash","Dashboard",null], ...PS.map(P=>[P.code, P.code+" "+P.name, P.hex]), ["hist","History","null"]];
+  items.forEach(([id,label,dot])=>{
+    const b = el("button", id===CUR?"on":"", (dot&&dot!=="null"?`<span class="dot" style="background:${dot}"></span>`:"")+esc(label));
+    b.onclick = ()=>{ CUR=id; render(); window.scrollTo({top:0}); };
+    nav.appendChild(b);
+  });
+}
+
+function segRow(ml, hex){
+  let h = '<div class="segs">';
+  for(let i=1;i<=5;i++) h += `<div class="seg" style="${ml!=null&&i<=ml?`background:${hex}`:""}">${i}</div>`;
+  return h+"</div>";
+}
+
+function renderDash(res){
+  const m = el("div");
+  const intro = el("div","dash-intro");
+  const left = el("div");
+  left.appendChild(el("h2","serif","Institutional placement — computed, never chosen"));
+  left.appendChild(el("p",null,"Answer the facts in each P; scores, indices, and Maturity Levels update live. Your institutional level is always your weakest P — the ceiling rule."));
+  intro.appendChild(left);
+  const badge = el("div","inst-badge");
+  const iml = res.instML;
+  badge.innerHTML = `<div class="lbl">Institutional Maturity Level</div>
+    <div class="lvl" style="color:${iml?ML[iml].hex:"#9A9784"}">${iml?("ML "+iml):"—"}</div>
+    <div class="nm" style="color:${iml?ML[iml].hex:"#9A9784"}">${iml?ML[iml].label:"Not yet assessed"}</div>
+    <div class="why">${esc(res.why||"Answer at least one dimension per P")}</div>`;
+  intro.appendChild(badge);
+  m.appendChild(intro);
+
+  const cards = el("div","cards");
+  PS.forEach((P,ix)=>{
+    const r = res.ps[P.code];
+    const c = el("div","pcard");
+    const weakTxt = r.weakest ? `Weakest: <b>${esc(r.weakest.name)}</b> (score ${r.weakest.score})` : "No dimensions assessed yet";
+    c.innerHTML = `<div class="bar" style="background:${P.hex}"></div><div class="in">
+      <div class="pn">P${ix+1}</div><h3 class="serif">${esc(P.name)}</h3>
+      ${segRow(r.ml, ML[r.ml||1]?.hex||"#ccc")}
+      <div class="mlline"><span class="mlbig" style="color:${r.ml?ML[r.ml].hex:"#C9C4B0"}">${r.ml?("ML "+r.ml):"—"}</span>
+        <span class="mllabel" style="color:${r.ml?ML[r.ml].hex:"#9A9784"}">${r.ml?ML[r.ml].label:"Unassessed"}</span>
+        <span class="idx">${r.index}/100${r.provisional&&r.ml?" · provisional":""}</span></div>
+      <div class="weak">${weakTxt}</div>
+      <div class="comp" style="color:${r.complete>=100?"var(--ok)":"var(--muted)"}"><b>${r.complete}%</b> of scored items answered</div>
+      <button class="open-p">Open ${P.code} questions →</button></div>`;
+    c.querySelector(".open-p").onclick = ()=>{ CUR = P.code; render(); window.scrollTo({top:0}); };
+    cards.appendChild(c);
+  });
+  m.appendChild(cards);
+
+  const key = el("div","mlkey");
+  key.appendChild(el("span",null,"<b>ML KEY</b>"));
+  for(let i=1;i<=5;i++) key.appendChild(el("span","k",`<span class="sw" style="background:${ML[i].hex}"></span><b>ML ${i}</b>&nbsp;${ML[i].label}`));
+  key.appendChild(el("span",null,'<span style="color:var(--muted)">Index bands: 0–24 · 25–49 · 50–69 · 70–84 · 85–100</span>'));
+  m.appendChild(key);
+  m.appendChild(renderPerms());
+  m.appendChild(renderMStage());
+
+  const rb = el("div","regbox");
+  rb.appendChild(el("h3","serif","Locked registers — declare once, reuse at midline and endline"));
+  rb.appendChild(el("p",null,"These denominators anchor every ratio in the diagnostic. Enter them from your registers before answering; the tool computes all percentages from raw counts."));
+  const grid = el("div","reggrid");
+  REGS.forEach(rg=>{
+    const row = el("div","reg");
+    row.appendChild(el("span",null,esc(rg.l)));
+    const inp = el("input"); inp.type="number"; inp.min="0"; inp.value = REGV[rg.k] ?? "";
+    inp.oninput = ()=>{ REGV[rg.k] = inp.value; queueSave(); };
+    inp.onchange = ()=>{ refreshLive(); };
+    row.appendChild(inp);
+    grid.appendChild(row);
+  });
+  rb.appendChild(grid);
+  m.appendChild(rb);
+  return m;
+}
+
+/* ---------- controls per item ---------- */
+function evRow(item){
+  const a = ANS[item.i] || (ANS[item.i]={});
+  const r = el("div","evrow");
+  r.appendChild(el("span","etag","EVIDENCE"));
+  const inp = el("input"); inp.type="text"; inp.placeholder = "Reference: document / minute / system / log…"; inp.value = a.ev||"";
+  inp.oninput = ()=>{ a.ev = inp.value; queueSave(); refreshLive(); };
+  r.appendChild(inp);
+  return r;
+}
+function ynButtons(a, onset){
+  const r = el("div","ynrow");
+  const y = el("button","y"+(a.yn==="y"?" on":""),"Yes"), n = el("button","n"+(a.yn==="n"?" on":""),"No");
+  const set = v => { a.yn=v; y.classList.toggle("on", v==="y"); n.classList.toggle("on", v==="n"); onset(); };
+  y.onclick = ()=>set("y"); n.onclick = ()=>set("n");
+  r.append(y,n); return r;
+}
+function numInput(a, key, ph){
+  const inp = el("input"); inp.type="number"; inp.min="0"; inp.step="any"; inp.placeholder = ph||""; inp.value = a[key]??"";
+  inp.oninput = ()=>{ a[key]=inp.value; queueSave(); refreshLive(); };
+  return inp;
+}
+
+function renderItem(P, dim, item){
+  const a = ANS[item.i] || (ANS[item.i]={});
+  const w = el("div","item"); w.dataset.item = item.i;
+  const roleTag = item.r==="g" ? " · GATE" : item.r==="i" ? " · context" : "";
+  const q = el("div","qrow");
+  q.appendChild(el("span","iid",esc(item.i)));
+  q.appendChild(el("span","q",esc(item.q)+`<span style="color:var(--muted);font-size:11px">${roleTag}</span>`));
+  const sc = el("span","isc","—"); sc.dataset.sc = item.i; q.appendChild(sc);
+  w.appendChild(q);
+  const c = el("div","ctrl");
+
+  if(item.t==="sl"){
+    const s = el("select"); s.appendChild(el("option","", "Select status…"));
+    item.opts.forEach((o,ix)=>{ const op = el("option",null,`(${ix}) `+esc(o)); op.value = ix; s.appendChild(op); });
+    s.value = a.v ?? ""; s.onchange = ()=>{ a.v = s.value; queueSave(); refreshLive(); };
+    c.appendChild(s);
+  } else if(item.t==="ct"||item.t==="num"){
+    c.appendChild(el("label",null,esc(item.lbl||"Value")));
+    c.appendChild(numInput(a,"n"));
+  } else if(item.t==="cp"||item.t==="ratio"){
+    c.appendChild(el("label",null,esc(item.nl)));
+    c.appendChild(numInput(a,"n"));
+    c.appendChild(el("label",null,"of "+esc(item.dl)));
+    c.appendChild(numInput(a,"d"));
+    const out = el("span","pctout","—"); out.dataset.pct = item.i; c.appendChild(out);
+  } else if(item.t==="ctr"){
+    const rg = REGS.find(r=>r.k===item.reg);
+    c.appendChild(el("label",null,esc(item.lbl)));
+    c.appendChild(numInput(a,"n"));
+    c.appendChild(el("label",null,"vs register: "+esc(rg? rg.l.split("—")[0].trim() : item.reg)));
+    const out = el("span","pctout","—"); out.dataset.pct = item.i; c.appendChild(out);
+  } else if(item.t==="lad"){
+    const box = el("div","steps");
+    a.steps = a.steps || item.steps.map(()=>false);
+    item.steps.forEach((st,ix)=>{
+      const lb = el("label");
+      const cb = el("input"); cb.type="checkbox"; cb.checked = !!a.steps[ix];
+      cb.onchange = ()=>{ a.steps[ix]=cb.checked; queueSave(); refreshLive(); };
+      lb.appendChild(cb); lb.appendChild(el("span",null,`<b style="color:var(--copper)">→ ${st.s}</b>&nbsp; ${esc(st.q)}`));
+      box.appendChild(lb);
+    });
+    c.appendChild(box);
+  } else if(item.t==="multi"){
+    const box = el("div","multi");
+    a.sel = a.sel || item.opts.map(()=>false);
+    item.opts.forEach((o,ix)=>{
+      const lb = el("label");
+      const cb = el("input"); cb.type="checkbox"; cb.checked = !!a.sel[ix];
+      cb.onchange = ()=>{ a.sel[ix]=cb.checked; queueSave(); refreshLive(); };
+      lb.appendChild(cb); lb.appendChild(el("span",null,esc(o)));
+      box.appendChild(lb);
+    });
+    c.appendChild(box);
+  } else if(item.t==="amt"){
+    a.f = a.f || item.fields.map(()=>"");
+    const wrap = el("div"); wrap.style.width = "100%";
+    item.fields.forEach((f,ix)=>{
+      const row = el("div","ctrl"); row.style.marginTop = ix?"6px":"0";
+      row.appendChild(el("label",null,esc(f)));
+      const inp = el("input"); inp.type="number"; inp.min="0"; inp.step="any"; inp.value = a.f[ix]??"";
+      inp.oninput = ()=>{ a.f[ix]=inp.value; queueSave(); refreshLive(); };
+      row.appendChild(inp);
+      wrap.appendChild(row);
+    });
+    const out = el("span","pctout","—"); out.dataset.pct = item.i; wrap.appendChild(out);
+    c.appendChild(wrap);
+  } else if(item.t==="yn"){
+    c.appendChild(ynButtons(a, ()=>{ queueSave(); refreshLive(); }));
+  } else if(item.t==="dt"){
+    const inp = el("input"); inp.type="date"; inp.value = a.n||"";
+    inp.oninput = ()=>{ a.n = inp.value; queueSave(); }; c.appendChild(inp);
+  } else { // tx
+    const inp = el("input"); inp.type="text"; inp.placeholder = "Record here…"; inp.value = a.n||"";
+    inp.oninput = ()=>{ a.n = inp.value; queueSave(); }; c.appendChild(inp);
+  }
+  w.appendChild(c);
+  if(item.ev) w.appendChild(evRow(item));
+  const fl = el("div","flag"); fl.dataset.flag = item.i; fl.style.display = "none"; w.appendChild(fl);
+  return w;
+}
+
+function renderPolset(P, dim){
+  const box = el("div","item");
+  box.appendChild(el("div","qrow",`<span class="iid">P1.1</span><span class="q">Per-policy status — the tool derives the dimension score and reports the profile.</span>`));
+  const head = el("div","polrow pol-head");
+  ["Policy","Status","Approval minute / reference","Accessible","Reviewed ≤24 mo"].forEach(h=>head.appendChild(el("div",null,h)));
+  box.appendChild(head);
+  dim.policies.forEach((pol,ix)=>{
+    const key = "P1.1-"+ix;
+    const a = ANS[key] || (ANS[key]={});
+    const row = el("div","polrow");
+    row.appendChild(el("div",null,"<b>"+esc(pol)+"</b>"+(ix<3?' <span style="color:var(--muted);font-size:10.5px">core</span>':"")));
+    const s = el("select");
+    ["Does not exist","Draft in progress","Draft complete, awaiting approval","Approved by Senate/Council","Approved & in statutes"].forEach((o,i2)=>{ const op=el("option",null,o); op.value=i2; s.appendChild(op); });
+    const blank = el("option",null,"Select…"); blank.value=""; s.insertBefore(blank, s.firstChild);
+    s.value = a.st ?? ""; s.onchange = ()=>{ a.st = s.value; queueSave(); refreshLive(); };
+    row.appendChild(s);
+    const ref = el("input"); ref.type="text"; ref.placeholder="e.g. SEN/2024/14"; ref.value = a.ref||"";
+    ref.oninput = ()=>{ a.ref = ref.value; queueSave(); refreshLive(); };
+    row.appendChild(ref);
+    const mk = (prop,lbl)=>{ const d = el("div","cb"); const cb = el("input"); cb.type="checkbox"; cb.checked=!!a[prop];
+      cb.onchange=()=>{ a[prop]=cb.checked; queueSave(); refreshLive(); }; d.append(cb, el("span",null,lbl)); return d; };
+    row.appendChild(mk("acc","Yes"));
+    row.appendChild(mk("rev","Yes"));
+    box.appendChild(row);
+  });
+  return box;
+}
+
+function AA(id){ return ANS[id]||{}; }
+const PERMS = [
+  {n:"IP & revenue share", d:"An inventor can see ownership and their share without a lawyer", t:()=>{const a=AA("P1.6a"); return a.yn?a.yn==="y":null;}},
+  {n:"Participation rights", d:"The university side can hold equity, royalty or IP positions", t:()=>{const a=AA("P4.1c"), b=AA("P4.9d"); if(b.yn==="y") return true; if(a.n!=null&&a.n!=="") return num(a.n)>0; if(b.yn==="n") return false; return null;}},
+  {n:"Keep & recycle earnings", d:"Revenue is retained outside the central account and reinvested", t:()=>{const a=AA("P4.9a"), b=AA("P4.9b"); if(a.v!=null&&a.v!=="") return parseInt(a.v)>=2; if(b.n!=null&&b.n!=="") return num(b.n)>0; return null;}},
+  {n:"Partner co-running", d:"Skilled partners co-run daily functions under KPI-bearing MoUs", t:()=>{const a=AA("P4.6a"), b=AA("P4.6d"); if(a.n!=null&&a.n!=="") return num(a.n)>=1; if(b.v!=null&&b.v!=="") return parseInt(b.v)>=2; return null;}},
+  {n:"Staff reward", d:"Venture supervision is formally rewarded, never a favour", t:()=>{const a=AA("P1.7b"), c=AA("P1.7c"); if((c.sel||[]).some(x=>x)) return true; if(a.n!=null&&a.n!=="") return num(a.n)>0; return null;}},
+  {n:"Coursework that trades", d:"Students earn credit for venture work; courses connect to the market", t:()=>{const a=AA("P3.4c"), b=AA("P3.4a"); if(a.yn) return a.yn==="y"; if(b.n!=null&&b.n!=="") return num(b.n)>0; return null;}}
+];
+function renderPerms(){
+  const box = el("div","permbox");
+  box.appendChild(el("div","perm-title","THE SIX PERMISSIONS — the policy-to-practice unlocks behind a partner-operator model, read live from your answers"));
+  const row = el("div","permrow");
+  PERMS.forEach(p=>{
+    const st = p.t();
+    const chip = el("div","perm "+(st===true?"ok":st===false?"no":"unk"));
+    chip.innerHTML = `<span class="pdot"></span><div><b>${esc(p.n)}</b><div class="pd">${esc(p.d)}</div></div><span class="pstat">${st===true?"Unlocked":st===false?"Locked":"—"}</span>`;
+    row.appendChild(chip);
+  });
+  box.appendChild(row);
+  return box;
+}
+
+const MSTAGES = [null,"M1 · Academic Entrepreneurship","M2 · Entrepreneurial Pockets","M3 · Structured Enterprise","M4 · Commercialising University","M5 · Entrepreneurial University"];
+const MMARKERS = [
+  {k:"Curriculum mainstreaming", id:"P3.7a"},
+  {k:"Asset & service commercialisation", id:"P4.12a"},
+  {k:"Enterprise vehicle status", id:"P4.9a"},
+  {k:"Vehicle governance & autonomy", id:"P4.9e"},
+  {k:"Endowment & income engine", id:"P4.11a"}
+];
+function mStage(){
+  const vals = MMARKERS.map(m=>{ const a = ANS[m.id]||{}; return (a.v!=null&&a.v!=="") ? parseInt(a.v) : null; });
+  const have = vals.filter(v=>v!=null);
+  if(!have.length) return {stage:null, vals, provisional:true};
+  const stage = Math.min(5, Math.max(1, Math.floor(have.reduce((a,b)=>a+b,0)/have.length)+1));
+  return {stage, vals, provisional: have.length < MMARKERS.length};
+}
+function renderMStage(){
+  const s = mStage();
+  const box = el("div","mcard");
+  box.appendChild(el("div","perm-title","INSTITUTIONAL TRANSFORMATION STAGE — M1 Academic Entrepreneurship → M5 Entrepreneurial University. A different axis from the per-P ML: ML reads how mature each operating system is; M reads what the institution is becoming."));
+  const row = el("div","mrow");
+  row.appendChild(el("div","mbig", s.stage ? esc(MSTAGES[s.stage]) + (s.provisional?' <span class="mprov">provisional</span>':"") : "— answer the five markers to read the stage"));
+  const list = el("div","mlist");
+  MMARKERS.forEach((m,ix)=>{
+    const v = s.vals[ix];
+    list.appendChild(el("div","mk"+(v==null?" unk":""), `<span class="mkv">${v==null?"—":v}</span> ${esc(m.k)} <span class="mkid">${esc(m.id)}</span>`));
+  });
+  row.appendChild(list);
+  box.appendChild(row);
+  return box;
+}
+
+function renderPPage(P){
+  const m = el("div");
+  const idx = PS.indexOf(P);
+  const head = el("div","phead"); head.style.background = P.hex;
+  head.innerHTML = `<div class="pn">P${idx+1} · OPERATING SYSTEM</div><h2 class="serif">${esc(P.name)}</h2><p>${esc(P.purpose)}</p>${P.toc?`<div class="tocline">TAGDev 2.0 theory of change · ${esc(P.toc)}</div>`:""}
+    <div class="pscore"><span>Index <b data-pidx>0</b>/100</span><span>Level <b data-pml>—</b></span><span data-pweak>—</span><span data-pcomp style="margin-left:auto"></span></div>`;
+  m.appendChild(head);
+  if(META.core) m.appendChild(el("div","focusnote","Focused mode is on — gates plus one key question per dimension, built for one-P-per-session delivery. Switch it off in the header for the full instrument; scores compute from whatever is answered."));
+
+  const dimCard = dim=>{
+    const d = el("div","dim"); d.dataset.dim = dim.id;
+    const h = el("div","dim-h");
+    h.innerHTML = `<span class="did">${esc(dim.id)}</span><span class="dn serif">${esc(dim.name)}</span>
+      <span class="dw">weight ${(dim.w*100).toFixed(0)}%</span><span class="chip" data-dchip="${dim.id}">—</span><span class="caret">▶</span>`;
+    h.onclick = ()=> d.classList.toggle("open");
+    d.appendChild(h);
+    const b = el("div","dim-b");
+    b.appendChild(el("div","lens","<b>Lens</b> — "+esc(dim.lens)));
+    b.appendChild(el("div","gateline","⚑ "+esc(dim.gate)));
+    if(dim.calc==="polset") b.appendChild(renderPolset(P,dim));
+    let showItems = dim.items;
+    if(META.core && !dim.calc){ const first = dim.items.find(x=>x.r==="s"); showItems = dim.items.filter(x=>x.r==="g" || x===first); }
+    showItems.forEach(it=> b.appendChild(renderItem(P,dim,it)));
+    b.appendChild(el("div","rule","<b>Scoring rule:</b> "+esc(dim.rule)));
+    const df = el("div","flag"); df.dataset.dflag = dim.id; df.style.display="none"; b.appendChild(df);
+    d.appendChild(b);
+    m.appendChild(d);
+  };
+  const groups = ["E","W","N"].filter(g=>P.dims.some(x=>x.g===g));
+  if(groups.length){
+    groups.forEach(g=>{ m.appendChild(el("div","group-h",esc(GROUPS[g]))); P.dims.filter(x=>x.g===g).forEach(dimCard); });
+    P.dims.filter(x=>!x.g).forEach(dimCard);
+  } else P.dims.forEach(dimCard);
+  return m;
+}
+
+function renderHist(){
+  const m = el("div");
+  const top = el("div","hist-top");
+  top.appendChild(el("h2","serif","Saved assessments — the institution's maturity record over time"));
+  const btns = el("div");
+  const reset = el("button","btn btn-ghost","Reset all data"); reset.style.borderColor="var(--warn)"; reset.style.color="var(--warn)";
+  reset.onclick = async ()=>{
+    if(!confirm("Delete the working draft AND all saved assessments? This cannot be undone.")) return;
+    ANS={}; REGV={}; SNAPS=[]; await sDel("epdx6p-draft"); await sSet("epdx6p-snapshots", []);
+    toast("All data cleared"); render();
+  };
+  btns.appendChild(reset);
+  top.appendChild(btns);
+  m.appendChild(top);
+
+  if(!SNAPS.length){
+    m.appendChild(el("div","empty","No assessments saved yet. Answer the questions, then press <b>Save assessment</b> to record a timestamped snapshot — the baseline your midline and endline will be measured against."));
+    return m;
+  }
+  const tb = el("table","hist");
+  const thead = el("thead"); const hr = el("tr");
+  ["Date","Label","Institution", ...PS.map(P=>P.code), "Institutional ML",""].forEach(h=>hr.appendChild(el("th",null,h)));
+  thead.appendChild(hr); tb.appendChild(thead);
+  const body = el("tbody");
+  SNAPS.slice().reverse().forEach((s,rix)=>{
+    const chron = SNAPS.length-1-rix;
+    const prev = chron>0 ? SNAPS[chron-1] : null;
+    const tr = el("tr");
+    tr.appendChild(el("td",null,new Date(s.ts).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+"<br><span style='color:var(--muted);font-size:11px'>"+new Date(s.ts).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+"</span>"));
+    tr.appendChild(el("td",null,"<b>"+esc(s.label)+"</b><br><span class='fwtag'>framework "+esc(s.fw||"1.0")+(s.scope?" · "+esc(s.scope):"")+(s.mstage?" · M"+s.mstage:"")+"</span>"));
+    tr.appendChild(el("td",null,esc(s.inst||"—")));
+    PS.forEach(P=>{
+      const r = s.results[P.code]; const td = el("td");
+      if(r && r.ml){
+        let delta = "";
+        if(prev && prev.results[P.code] && prev.results[P.code].ml){
+          const d = r.index - prev.results[P.code].index;
+          if(d>0) delta = ` <span class="delta up">▲${d}</span>`; else if(d<0) delta = ` <span class="delta dn">▼${-d}</span>`;
+        }
+        td.innerHTML = `<span class="mlchip" style="background:${ML[r.ml].hex}">ML ${r.ml}</span><br><span style="font-size:11px;color:var(--muted)">${r.index}/100${delta}</span>`;
+      } else td.textContent = "—";
+      tr.appendChild(td);
+    });
+    const iml = s.instML;
+    tr.appendChild(el("td",null, iml?`<span class="mlchip" style="background:${ML[iml].hex}">ML ${iml} · ${ML[iml].label}</span>`:"—"));
+    const act = el("td");
+    const load = el("button","rowbtn","Load"); load.onclick = ()=>{
+      if(!confirm("Load this assessment's answers into the working draft? Current unsaved edits will be replaced.")) return;
+      ANS = JSON.parse(JSON.stringify(s.answers||{})); REGV = JSON.parse(JSON.stringify(s.regs||{}));
+      META.inst = s.inst; queueSave(); toast("Assessment loaded into working draft"); CUR="dash"; render();
+    };
+    const del = el("button","rowbtn del","Delete"); del.onclick = async ()=>{
+      if(!confirm("Delete this saved assessment?")) return;
+      SNAPS = SNAPS.filter(x=>x.id!==s.id); await sSet("epdx6p-snapshots", SNAPS); render();
+    };
+    act.append(load, del); tr.appendChild(act);
+    body.appendChild(tr);
+  });
+  tb.appendChild(body);
+  m.appendChild(tb);
+  return m;
+}
+
+/* ---------- live refresh (scores without full re-render) ---------- */
+function refreshLive(){
+  const res = computeAll();
+  // dashboard is fully re-rendered on nav; when on dash, re-render to update cards
+  if(CUR==="dash"){ renderInto(res); return; }
+  if(CUR==="hist") return;
+  const P = PS.find(x=>x.code===CUR); if(!P) return;
+  const r = res.ps[P.code];
+  const root = $("#main");
+  root.querySelector("[data-pidx]").textContent = r.index;
+  root.querySelector("[data-pml]").textContent = r.ml ? ("ML "+r.ml+" · "+ML[r.ml].label) : "—";
+  root.querySelector("[data-pweak]").textContent = r.weakest ? ("Weakest dimension: "+r.weakest.name+" ("+r.weakest.score+")") : "No dimensions assessed yet";
+  root.querySelector("[data-pcomp]").textContent = r.complete+"% answered";
+  r.dims.forEach(d=>{
+    const chip = root.querySelector(`[data-dchip="${d.id}"]`);
+    if(chip){ chip.textContent = d.score==null ? "—" : d.score+" / 4";
+      chip.style.background = d.score==null ? "#C9C4B0" : ["#A33B2E","#C9A227","#9A5B2B","#2E5F8A","#4A7A2A"][d.score]; }
+    const df = root.querySelector(`[data-dflag="${d.id}"]`);
+    if(df){ if(d.flags.length){ df.style.display="block"; df.textContent = "⚑ "+d.flags.join(" · "); } else df.style.display="none"; }
+  });
+  // item chips & pct outputs
+  P.dims.forEach(dim=> dim.items.forEach(it=>{
+    const chip = root.querySelector(`[data-sc="${it.i}"]`);
+    if(chip){
+      if(it.r==="i"){ chip.textContent = "context"; chip.style.background = "#C9C4B0"; }
+      else if(it.r==="g"){ const a = ANS[it.i]||{}; chip.textContent = a.yn ? (a.yn==="y"?"pass":"cap "+it.cap) : "gate";
+        chip.style.background = a.yn==="y" ? "var(--ok)" : a.yn==="n" ? "var(--warn)" : "#C9C4B0"; }
+      else { const s = itemScore(it); chip.textContent = s.s==null ? "—" : s.s+" / 4";
+        chip.style.background = s.s==null ? "#C9C4B0" : ["#A33B2E","#C9A227","#9A5B2B","#2E5F8A","#4A7A2A"][s.s]; }
+    }
+    const out = root.querySelector(`[data-pct="${it.i}"]`);
+    if(out){
+      const a = ANS[it.i]||{};
+      if(it.t==="cp"){ const n=num(a.n), d=num(a.d); out.textContent = (n!=null&&d>0) ? Math.round(n/d*100)+"%" : "—"; }
+      if(it.t==="ratio"){ const n=num(a.n), d=num(a.d); out.textContent = (n!=null&&d>0) ? (n/d).toFixed(1)+" : 1" : "—"; }
+      if(it.t==="ctr"){ const n=num(a.n), d=num(REGV[it.reg]); out.textContent = (n!=null&&d>0) ? Math.round(n/d*100)+"%" : "set register on Dashboard"; }
+      if(it.t==="amt"){ const f=(a.f||[]).map(num); const den = it.den==="all"? f.map((_,ix)=>ix):it.den;
+        const ns = it.num.reduce((t,ix)=>t+(f[ix]||0),0), ds = den.reduce((t,ix)=>t+(f[ix]||0),0);
+        out.textContent = ds>0 ? "computed share: "+Math.round(ns/ds*100)+"%" : "—"; }
+    }
+    const fl = root.querySelector(`[data-flag="${it.i}"]`);
+    if(fl && it.r!=="g"){ const s = itemScore(it); if(s.note){ fl.style.display="block"; fl.textContent = "⚑ "+s.note; } else fl.style.display="none"; }
+  }));
+}
+
+function renderInto(res){
+  const main = $("#main"); main.innerHTML = "";
+  const pg = el("div","page on");
+  if(CUR==="dash") pg.appendChild(renderDash(res||computeAll()));
+  else if(CUR==="hist") pg.appendChild(renderHist());
+  else pg.appendChild(renderPPage(PS.find(x=>x.code===CUR)));
+  main.appendChild(pg);
+  if(CUR!=="dash" && CUR!=="hist") refreshLive();
+}
+function render(){ buildNav(); renderInto(); }
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+  setTimeout(()=>t.classList.remove("on"), 2400);
+}
+
+/* ---------- snapshot / export ---------- */
+async function saveSnapshot(){
+  const res = computeAll();
+  const anyData = PS.some(P=>res.ps[P.code].ml!=null);
+  if(!anyData){ toast("Answer some questions first — nothing to save yet"); return; }
+  const results = {}; PS.forEach(P=>{ const r = res.ps[P.code];
+    results[P.code] = {index:r.index, ml:r.ml, complete:r.complete, dims:r.dims.map(d=>({id:d.id, score:d.score}))}; });
+  const snap = { id: Date.now()+"-"+Math.random().toString(36).slice(2,7), ts: new Date().toISOString(),
+    label: META.label, inst: META.inst, scope: META.scope||"Whole university", fw: FW, mstage: mStage().stage, instML: res.instML,
+    results, answers: JSON.parse(JSON.stringify(ANS)), regs: JSON.parse(JSON.stringify(REGV)) };
+  SNAPS.push(snap);
+  const ok = await sSet("epdx6p-snapshots", SNAPS);
+  toast(ok ? `Saved: ${META.label} · ${new Date().toLocaleDateString("en-GB")} — institutional ML ${res.instML??"—"}` : "Could not save — storage error");
+  if(CUR==="hist") render();
+}
+function exportJSON(){
+  const res = computeAll();
+  const blob = new Blob([JSON.stringify({meta:META, regs:REGV, answers:ANS, computed:res, snapshots:SNAPS}, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  const slug = (META.inst||"institution").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40) || "institution";
+  a.download = "uesta-"+slug+"-"+(META.label||"assessment").toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+new Date().toISOString().slice(0,10)+".json";
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function importJSON(file){
+  const fr = new FileReader();
+  fr.onload = async ()=>{
+    try{
+      const o = JSON.parse(fr.result);
+      if(!o || typeof o !== "object") throw 0;
+      const hasDraft = !!(o.answers || o.regs || o.meta);
+      const snaps = Array.isArray(o.snapshots) ? o.snapshots : [];
+      if(!hasDraft && !snaps.length){ toast("No UESTA data found in that file"); return; }
+      let draftLoaded = false;
+      if(hasDraft && confirm("Load the draft answers from this file into the working draft? Current unsaved edits will be replaced. (Saved assessments are merged either way.)")){
+        ANS = o.answers||{}; REGV = o.regs||{}; META = Object.assign({}, META, o.meta||{});
+        $("#inst").value = META.inst||""; $("#label").value = META.label||"Baseline"; $("#scope").value = META.scope||"Whole university";
+        draftLoaded = true; queueSave();
+      }
+      let added = 0;
+      if(snaps.length){
+        const ids = new Set(SNAPS.map(s=>s&&s.id));
+        snaps.forEach(s=>{ if(s && s.id && s.results && !ids.has(s.id)){ SNAPS.push(s); ids.add(s.id); added++; } });
+        if(added) await sSet("epdx6p-snapshots", SNAPS);
+      }
+      toast("Imported"+(draftLoaded?": working draft":"")+(added?(draftLoaded?" + ":": ")+added+" saved assessment"+(added>1?"s":""):draftLoaded?"":" — nothing new"));
+      render();
+    }catch(e){ toast("Could not read that file — is it a UESTA JSON export?"); }
+  };
+  fr.readAsText(file);
+}
+
+/* ---------- init ---------- */
+async function init(){
+  const draft = await sGet("epdx6p-draft");
+  if(draft){ ANS = draft.ans||{}; REGV = draft.regs||{}; META = draft.meta||META; }
+  const snaps = await sGet("epdx6p-snapshots");
+  if(Array.isArray(snaps)) SNAPS = snaps;
+  $("#inst").value = META.inst||"";
+  $("#label").value = META.label||"Baseline";
+  $("#inst").oninput = e=>{ META.inst = e.target.value; queueSave(); };
+  $("#label").onchange = e=>{ META.label = e.target.value; queueSave(); };
+  $("#scope").value = META.scope||"Whole university";
+  $("#scope").onchange = e=>{ META.scope = e.target.value; queueSave(); };
+  const cb = $("#corebtn");
+  const setCoreBtn = ()=>{ cb.textContent = "Focused mode: "+(META.core?"On":"Off"); cb.classList.toggle("coreon", !!META.core); };
+  setCoreBtn();
+  cb.onclick = ()=>{ META.core = !META.core; setCoreBtn(); queueSave(); render(); };
+  $("#snapbtn").onclick = saveSnapshot;
+  $("#exportbtn").onclick = exportJSON;
+  const fin = document.createElement("input"); fin.type = "file"; fin.accept = ".json,application/json"; fin.style.display = "none";
+  document.body.appendChild(fin);
+  fin.onchange = ()=>{ if(fin.files && fin.files[0]) importJSON(fin.files[0]); fin.value = ""; };
+  $("#importbtn").onclick = ()=> fin.click();
+  $("#savestate").textContent = draft ? "Loaded ✓" : "New";
+  $("#loading").style.display = "none";
+  render();
+}
+init();
+
+</script>
+</body>
+</html>
