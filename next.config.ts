@@ -5,6 +5,21 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Sanity's image CDN, for the existing project only. The hero uses a Sanity loader (Sanity resizes, not Vercel).
   images: { remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io", pathname: "/images/dltrl1ld/production/**" }] },
+  // Keep the RUFORUM assessment isolated on its Axis & Sage subdomain.
+  // The root homepage on axisandsage.com continues to use normal routing.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/",
+          has: [{ type: "host" as const, value: "uesta.axisandsage.com" }],
+          destination: "/uesta/index.html",
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
   async redirects() {
     // Embedded leadership moved under Engagements: a permanent 301, as the brief asks (Next's `permanent` sends 308).
     return [{ source: "/what-we-do/embedded-leadership", destination: "/engagements/embedded-leadership", statusCode: 301 }];
