@@ -19,7 +19,7 @@ const personProjection = `{
   "relatedWork": coalesce(relatedWork[]->${workProjection}, []), ${seo}, _updatedAt
 }`;
 const engagementProjection = `{
-  "slug": slug.current, name, tier, recommended, publishedPrice, publicPrice, currency, uaePrice, priceLabel, duration,
+  "slug": slug.current, name, path, tier, recommended, publishedPrice, publicPrice, currency, uaePrice, priceLabel, duration,
   bring, weDo, youGet, intro, points, "cta": cta${cta}, creditRule, feeExplainer, "timeline": coalesce(timeline[]{when, what}, [])
 }`;
 const faqProjection = `{"q": question, "a": answer}`;
@@ -48,6 +48,7 @@ export const homeQuery = `*[_type == "homePageV2" && _id == $id][0]{
   "gapCards": coalesce(gapCards[]{glyph, text}, []), conversionLinkLabel, foundersNote,
   "stats": coalesce(stats[]{numeral, label, tag, source}, []), statsSource,
   "selectedWork": coalesce(selectedWork[]->${caseCardProjection}, []),
+  "featuredToolSlugs": coalesce(featuredTools[]->slug.current, []),
   "selectedPeople": coalesce(selectedPeople[]->${personProjection}, []),
   "testimonials": coalesce(testimonials[]->${testimonialProjection}, []),
   ${seo}, _updatedAt

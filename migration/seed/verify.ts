@@ -9,9 +9,10 @@ export const V2_TYPES = Object.keys(EXPECTED_COUNTS);
 export const LEGACY_TYPES = ["homePage", "siteSettings", "service", "project", "testimonial", "faq"] as const;
 const SITE_PAGE_KEYS = ["engagements", "work", "people", "library", "contact", "newsletter", "thankYou", "notFound"];
 
-/** Phrases that must not appear anywhere in v2 content: stale pricing and service copy, unsupported claims, placeholders. */
+/** Phrases that must not appear anywhere in v2 content: stale pricing and service copy, unsupported claims, placeholders.
+    The one "from" price allowed is the Conversion Programme floor, US$15,000 (the Diagnostic credit applies to every Programme). */
 export const FORBIDDEN = [
-  /\bFrom US\$/i, /\bStarting at\b/i, /investment advisory/i, /waterfall/i, /structuring executive/i, /\bjoint[- ]venture structuring\b/i,
+  /\bFrom US\$(?!15,000\b)/i, /\bStarting at\b/i, /investment advisory/i, /waterfall/i, /structuring executive/i, /\bjoint[- ]venture structuring\b/i,
   /we run the raise/i, /\[price\]/, /\[Agency name\]/,
 ];
 /** Regulated activities Axis & Sage never describes as a service. The legal pages may disclaim them ("not ... investment advice"). */

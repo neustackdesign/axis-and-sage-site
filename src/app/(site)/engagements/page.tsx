@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CTABand } from "@/components/ds/CTABand";
-import { DayTimeline, EngagementTable, Faq, SpecialistCard } from "@/components/ds/blocks";
+import { DayTimeline, Faq, PathGrid } from "@/components/ds/blocks";
 import { PageHero } from "@/components/ds/PageHero";
 import { RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
 import { pageMetadata } from "@/lib/metadata";
@@ -27,9 +27,10 @@ export default async function EngagementsPage() {
       <JsonLd data={faqLd(faqs)} />
       <PageHero label={p.hero.label} title={p.hero.title} sub={p.hero.sub} />
 
-      <Section tight labelledBy="table-title">
-        <h2 id="table-title" className="sr-only">Engagements</h2>
-        <EngagementTable columns={e.columns} />
+      {/* Three paths: Diagnose, Deliver, Partner. Specialist offers sit inside their path as variants. */}
+      <Section tight labelledBy="paths-title">
+        <h2 id="paths-title" className="sr-only">Three ways to work with us</h2>
+        <PathGrid paths={e.paths.map((x) => ({ ...s[x.key], ...x }))} detail />
       </Section>
 
       {/* The recommended rung in full: days, fee and credit, said once. */}
@@ -42,15 +43,8 @@ export default async function EngagementsPage() {
         <RailBody><p><TextLink href={diagnosticGuideHref}>{p.strings.guideLink ?? "Read the guide"}</TextLink></p></RailBody>
       </Section>
 
-      <Section labelledBy="spec-title">
-        <SectionHeader id="spec-title" label={label(2, s.specialist?.label)} title={s.specialist?.title} />
-        <div className="specialist-grid" style={{ ["--cols" as string]: 3 }}>
-          {e.specialists.map((sp) => <SpecialistCard key={sp.name} s={sp} cta={{ label: sp.cta?.label ?? p.strings.specialistCta ?? "Talk to us", href: sp.cta?.href ?? `/contact?engagement=${encodeURIComponent(sp.name)}` }} />)}
-        </div>
-      </Section>
-
       <Section labelledBy="faq-title">
-        <SectionHeader id="faq-title" label={label(3, s.faq?.label)} title={s.faq?.title} />
+        <SectionHeader id="faq-title" label={label(2, s.faq?.label)} title={s.faq?.title} />
         <RailBody><Faq items={faqs} /></RailBody>
       </Section>
 

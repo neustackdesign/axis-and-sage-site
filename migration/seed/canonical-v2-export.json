@@ -18,8 +18,8 @@
       "toolContent": 6,
       "legalPage": 2
     },
-    "generatedFromCommit": "a618820718d97fc4f6307c5a6f62307679e04701",
-    "contentChecksum": "sha256:92819c38ff57f99a8ff29a450ae3b3ccfbc2fbf122dd3e47b5a033f73188433f",
+    "generatedFromCommit": "3c1b444145b8eea1c618d9463be8aab992577d7b-dirty",
+    "contentChecksum": "sha256:3806c1ac0eb48d4f924d718a52c872665806b0884854a09d67a20e1b18235127",
     "assets": [
       {
         "ref": "image-a185f2e2010886c9d656a1c7c03b265d35a5f09d-900x683-jpg",
@@ -1462,6 +1462,7 @@
         "href": "/tools/conversion-scorecard"
       },
       "order": 1,
+      "path": "diagnose",
       "priceLabel": "Free"
     },
     {
@@ -1486,10 +1487,11 @@
         "href": "/contact?engagement=diagnostic#book"
       },
       "order": 2,
+      "path": "diagnose",
       "publicPrice": 5000,
       "currency": "USD",
       "uaePrice": 18500,
-      "creditRule": "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout.",
+      "creditRule": "100% of the Diagnostic fee is credited against a Conversion Programme contracted within 30 days of the Diagnostic readout.",
       "feeExplainer": "Ten working days of principal time, the interviews, the analysis, the report and a fixed quote for the fix.",
       "timeline": [
         {
@@ -1546,7 +1548,8 @@
         "href": "/contact?engagement=programme"
       },
       "order": 3,
-      "priceLabel": "Fixed fee, quoted after the Diagnostic"
+      "path": "deliver",
+      "priceLabel": "From US$15,000, fixed and quoted after the Diagnostic"
     },
     {
       "_id": "axisSage-engagement-embedded-leadership",
@@ -1570,7 +1573,8 @@
         "href": "/engagements/embedded-leadership"
       },
       "order": 4,
-      "priceLabel": "Monthly, quoted"
+      "path": "partner",
+      "priceLabel": "Fixed monthly fee, quoted on a 30-minute call"
     },
     {
       "_id": "axisSage-engagement-investor-readiness-sprint",
@@ -1581,10 +1585,11 @@
         "_type": "slug",
         "current": "investor-readiness-sprint"
       },
+      "path": "deliver",
       "tier": "specialist",
       "recommended": false,
       "publishedPrice": false,
-      "priceLabel": "Quoted on a 30-minute call",
+      "priceLabel": "Fixed fee, quoted on a 30-minute call",
       "duration": "3 weeks",
       "intro": "For founders and CEOs raising. We cover both halves:",
       "points": [
@@ -1607,10 +1612,11 @@
         "_type": "slug",
         "current": "portfolio-review"
       },
+      "path": "deliver",
       "tier": "specialist",
       "recommended": false,
       "publishedPrice": false,
-      "priceLabel": "Quoted on a 30-minute call",
+      "priceLabel": "Fixed fee, quoted on a 30-minute call",
       "duration": "4 weeks",
       "intro": "For investors and groups. The Diagnostic run across three companies, with one report for the board.",
       "points": [],
@@ -1630,10 +1636,11 @@
         "_type": "slug",
         "current": "leadership-working-session"
       },
+      "path": "diagnose",
       "tier": "specialist",
       "recommended": false,
       "publishedPrice": false,
-      "priceLabel": "Quoted on a 30-minute call",
+      "priceLabel": "Fixed fee, quoted on a 30-minute call",
       "duration": "half a day",
       "intro": "Your leadership team in one room, one sentence each. We leave you with the three actions that matter and what's in the way of each.",
       "points": [],
@@ -1901,7 +1908,7 @@
             {
               "_type": "span",
               "_key": "p4s0",
-              "text": "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout. With the Scorecard or a 30-minute call, then a fixed-fee Conversion Diagnostic. You know the price before we start.",
+              "text": "100% of the Diagnostic fee is credited against a Conversion Programme contracted within 30 days of the Diagnostic readout. Programmes start from US$15,000, and you know the price before we start.",
               "marks": []
             }
           ]
@@ -3221,11 +3228,28 @@
       },
       "sections": [
         {
-          "_key": "specialist",
+          "_key": "diagnose",
           "_type": "asSectionIntro",
-          "key": "specialist",
-          "label": "SPECIALIST",
-          "title": "Specialist engagements."
+          "key": "diagnose",
+          "label": "DIAGNOSE",
+          "title": "Find what's in the way.",
+          "intro": "Start free with the Scorecard. The Diagnostic gives you the baseline, the fixes worth making and a fixed quote."
+        },
+        {
+          "_key": "deliver",
+          "_type": "asSectionIntro",
+          "key": "deliver",
+          "label": "DELIVER",
+          "title": "Fix it with your team.",
+          "intro": "We build the change in the strategy, the product or the brand, and measure what moved. Raising, or reviewing a portfolio? Same method, scoped to that job."
+        },
+        {
+          "_key": "partner",
+          "_type": "asSectionIntro",
+          "key": "partner",
+          "label": "PARTNER",
+          "title": "One of us in the seat.",
+          "intro": "A principal takes a named role, such as COO, head of product or strategy lead, for three months or more."
         },
         {
           "_key": "diagnostic",

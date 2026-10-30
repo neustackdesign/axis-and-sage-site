@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const [p, contact, e] = await Promise.all([getSitePage("contact"), getSettings(), getEngagements()]);
-  const engagementNames = [...e.columns, ...e.specialists].map((x) => x.name);
+  const engagementNames = e.paths.flatMap((x) => x.offers).map((x) => x.name);
   const wa = whatsappLink(contact.whatsappMessage);
   const booking = !!contact.bookingUrl;
   const routes = [booking, true, !!wa].filter(Boolean).length;

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CTABand } from "@/components/ds/CTABand";
-import { CaseCard, LogoStrip, SpecialistCard, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
+import { CaseCard, LogoStrip, PathGrid, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
 import { PlaneStack } from "@/components/ds/method";
 import { HomepageHero } from "@/components/sections/HomepageHero";
 import { Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
@@ -8,7 +8,7 @@ import { FounderCards } from "@/components/sections/FounderCards";
 import { MethodSentencePanel } from "@/components/sections/MethodSentencePanel";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
-import { getEngagements, getHome, getMethod, getTools } from "@/sanity/load";
+import { getEngagements, getHome, getMethod, getSitePage, getTools } from "@/sanity/load";
 
 export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
@@ -21,7 +21,9 @@ export async function generateMetadata(): Promise<Metadata> {
 const label = (n: number, text?: string) => `${String(n).padStart(2, "0")} · ${text ?? ""}`;
 
 export default async function HomePage() {
-  const [home, method, engagements, tools] = await Promise.all([getHome(), getMethod(), getEngagements(), getTools()]);
+  const [home, method, engagements, enPage, tools] = await Promise.all([getHome(), getMethod(), getEngagements(), getSitePage("engagements"), getTools()]);
+  // Featured tools are chosen in Sanity; until they are, the first three in Library order.
+  const featured = home.featuredToolSlugs.length ? home.featuredToolSlugs.flatMap((slug) => tools.filter((t) => t.slug === slug)) : tools.slice(0, 3);
   const s = home.sections;
   return (
     <>
@@ -104,10 +106,8 @@ export default async function HomePage() {
       <Section labelledBy="start-title">
         <SectionHeader id="start-title" label={label(6, s.start?.label)} title={s.start?.title} />
         <RailBody full>
-          {/* The ladder, compact: name, price, time, what you get. The full table, specialist work and the credit rule live on /engagements. */}
-          <div className="specialist-grid" style={{ ["--cols" as string]: engagements.columns.length }}>
-            {engagements.columns.map((c) => <SpecialistCard key={c.name} s={{ slug: c.slug, name: c.name, price: c.price, time: c.time, intro: c.youGet }} cta={c.cta} />)}
-          </div>
+          {/* The same three paths as /engagements, without the per-offer detail. */}
+          <PathGrid paths={engagements.paths.map((x) => ({ ...enPage.sectionMap[x.key], ...x }))} />
           <p style={{ marginTop: 32 }}><TextLink href="/engagements">Engagements and pricing</TextLink></p>
         </RailBody>
       </Section>
@@ -116,8 +116,7 @@ export default async function HomePage() {
       <Section tone="sage" labelledBy="library-title">
         <SectionHeader id="library-title" label={label(7, s.library?.label)} title={s.library?.title} />
         <RailBody full>
-          {/* Three tools here; the Library has all of them. */}
-          <div className="tool-grid">{tools.slice(0, 3).map((t) => <ToolCard key={t.slug} tool={t} />)}</div>
+          <div className="tool-grid">{featured.map((t) => <ToolCard key={t.slug} tool={t} />)}</div>
           <p style={{ marginTop: 32 }}><TextLink href="/library">All tools</TextLink></p>
         </RailBody>
       </Section>

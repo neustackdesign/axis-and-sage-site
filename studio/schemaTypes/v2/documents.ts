@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { glyphField } from "./objects";
-import { actions, caseArtifacts, engagementTiers, faqPlacements, libraryStatuses, libraryTypes, practiceSections, provenances, roles, sitePageKeys } from "./vocab";
+import { actions, caseArtifacts, engagementPaths, engagementTiers, faqPlacements, libraryStatuses, libraryTypes, practiceSections, provenances, roles, sitePageKeys } from "./vocab";
 
 // The v2 content model. Content, not presentation: the site decides how each field looks.
 // Singletons have fixed IDs (see SINGLETONS); everything else gets Sanity's own IDs and is found by slug or seedKey.
@@ -84,6 +84,8 @@ export const homePageV2 = defineType({
     defineField({ name: "statsSource", title: "What moved · sources line", type: "string", group: "content" }),
     refs("selectedWork", "Selected work", "workItem", { group: "content", description: "Exactly six: three Axis & Sage engagements, then three from the principals' track record.", // eslint-disable-next-line @typescript-eslint/no-explicit-any
       validation: (r: any) => r.required().length(6).unique() }),
+    refs("featuredTools", "Library · featured tools", "toolContent", { group: "content", description: "Up to three, in order. The Library page lists every tool.", // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      validation: (r: any) => r.max(3).unique() }),
     refs("selectedPeople", "Founders", "person", { group: "content" }),
     refs("testimonials", "Testimonials", "testimonialQuote", { group: "content" }),
     seo,
@@ -248,7 +250,8 @@ export const engagement = defineType({
   fields: [
     defineField({ name: "name", title: "Name", type: "string", group: "content", ...req }),
     slug("name"),
-    defineField({ name: "tier", title: "Shown as", type: "string", group: "content", options: list(engagementTiers), description: "core: a column in the engagement table. specialist: a specialist card.", ...req }),
+    defineField({ name: "path", title: "Path", type: "string", group: "content", options: list(engagementPaths), description: "diagnose, deliver or partner. The path's copy is on the Engagements page (sections with the same keys).", ...req }),
+    defineField({ name: "tier", title: "Shown as", type: "string", group: "content", options: list(engagementTiers), description: "core: a main offer in its path. specialist: a variant listed under it.", ...req }),
     defineField({ name: "recommended", title: "Recommended", type: "boolean", group: "content", initialValue: false }),
     defineField({ name: "publishedPrice", title: "Publish a fixed price", type: "boolean", group: "content", initialValue: false, description: "Only the Conversion Diagnostic has a published price." }),
     defineField({ name: "publicPrice", title: "Price", type: "number", group: "content", hidden: ({ parent }) => !parent?.publishedPrice }),

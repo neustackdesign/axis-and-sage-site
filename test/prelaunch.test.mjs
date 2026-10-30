@@ -130,9 +130,10 @@ test("No unverified fund-waterfall, JV-economics or beneficiary-total claims", a
 });
 
 test("The Diagnostic shows its fixed fee; the lift tool's break-even uses it in USD and AED only", async () => {
-  const { columns, diagnostic } = await load.getEngagements();
-  assert.equal(columns.find((e) => e.name === "Conversion Diagnostic").price, "US$5,000 fixed · AED 18,500 for UAE engagements");
-  assert.doesNotMatch(JSON.stringify(columns), /From US\$|Starting at|\[price\]/);
+  const { paths, diagnostic } = await load.getEngagements();
+  const offers = paths.flatMap((p) => p.offers);
+  assert.equal(offers.find((e) => e.name === "Conversion Diagnostic").price, "US$5,000 fixed · AED 18,500 for UAE engagements");
+  assert.doesNotMatch(JSON.stringify(offers), /Starting at|\[price\]/);
   assert.equal(lift.paybackActions(100, diagnostic.price, "USD"), 50);
   assert.equal(lift.paybackActions(100, diagnostic.uaePrice, "AED"), 185);
   assert.equal(lift.paybackActions(100, { amount: null, currency: "NGN" }, "NGN"), null, "no break-even in a currency without a published fee");
