@@ -23,6 +23,7 @@ export function DotField({ before, after, toggle, labels, className = "df", cont
   useEffect(() => {
     const node = ref.current;
     if (!node || typeof IntersectionObserver === "undefined" || touched || show !== undefined) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // rest on the result
     setShowAfter(false);
     let timer = 0;
     const io = new IntersectionObserver((es) => {
