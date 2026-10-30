@@ -2,7 +2,7 @@ import { client } from "./client";
 import { contentSource, REVALIDATE_SECONDS } from "./env";
 
 /**
- * Every content read goes through here. Production: the published perspective from Sanity's CDN, cached for
+ * Every content read goes through here. Production: the published perspective from the Sanity API origin, cached by Next.js for
  * REVALIDATE_SECONDS. Development and tests may set SANITY_CONTENT_SOURCE=seed to run the same query on the local seed.
  */
 export async function sanityFetch<T>(query: string, params: Record<string, unknown> = {}): Promise<T> {

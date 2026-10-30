@@ -59,7 +59,7 @@ The site runs with no keys at all:
 | Service | What it does |
 | --- | --- |
 | Vercel | Hosts the site, runs the forms and the daily cron. |
-| Sanity (`dltrl1ld` / `production`) | Every human-editable word and image: settings, pages, people, practices, work, engagements and prices, FAQs, library, tool copy, legal pages. The site reads the published perspective through the CDN and refreshes within 60 seconds of a publish. |
+| Sanity (`dltrl1ld` / `production`) | Every human-editable word and image: settings, pages, people, practices, work, engagements and prices, FAQs, library, tool copy, legal pages. The site reads published content from Sanity's API origin. A signed Sanity webhook invalidates cached content when published; 60-second time-based revalidation remains as a recovery fallback. |
 | Vercel Blob (private store) | Holds every lead until the Sheet confirms it, plus any email or newsletter sign-up that couldn't be sent yet. |
 | Google Workspace | The info@axisandsage.com inbox, where the founders reply. The Sheet "Axis & Sage · Pipeline" and its Apps Script web app keep the record of every lead. |
 | Resend | Sends every website email from `Axis & Sage <info@axisandsage.com>`: the lead alert, the auto-reply and tool results. |
@@ -167,9 +167,9 @@ pnpm sanity login && pnpm deploy   # publishes https://axis-and-sage.sanity.stud
 
 The desk is grouped as AXIS & SAGE → Site settings, Homepage, Conversion Design, Pages, People, Practices, Work, Testimonials, Engagements, FAQs, Library, Tools, Legal, and Legacy v1. The singletons have fixed ids (`axisSageSettings`, `axisSageHome`, `axisSageConversionMethod`, `axisSagePage-<key>`); everything else uses Sanity ids and is found by slug.
 
-**Legacy v1.** The earlier documents (`homePage`, `siteSettings`, `service`, `project`, `testimonial`, `faq`) stay in the dataset, unchanged and read-only in the Studio under Legacy v1. The site never queries them and the seeder never touches them. Delete them only in a later, separately approved pass.
+**Legacy v1.** The earlier documents (`homePage`, `siteSettings`, `service`, `project`, `testimonial`, `faq`) remain in the dataset but are excluded from the Studio's active schema and desk. They cannot be edited through the current Studio. The website never queries them and the seeder never touches them. This is a non-destructive archive; do not delete them without separate approval.
 
-**CORS.** The site reads through Sanity's CDN without a token, so it needs no CORS origin. The Studio's hosted origin (`https://axis-and-sage.sanity.studio`) is added by `sanity deploy`. Add `http://localhost:3333` (with credentials) for local Studio work only if it isn't already listed in sanity.io/manage → API → CORS origins. Don't add duplicates.
+**CORS.** The site reads Sanity's public published API without a token, so it needs no CORS origin. The Studio's hosted origin (`https://axis-and-sage.sanity.studio`) is added by `sanity deploy`. Add `http://localhost:3333` (with credentials) for local Studio work only if it isn't already listed in sanity.io/manage → API → CORS origins. Don't add duplicates.
 
 **Seeding.** The canonical content is built by `migration/seed/build.ts` from the frozen snapshot in `migration/content-snapshot/` plus the final commercial decisions.
 
@@ -238,3 +238,22 @@ The canonical checkout is `/Users/tomiwao/Code/axis-and-sage-site`.
 - Do not clone it or create a nested repository.
 - Do not modify DNS or AWS records until the cutover above is approved.
 - Do not treat the legacy Framer export as maintainable code.
+
+
+## Reliable Sanity publishing (production)
+
+Content writes **do not require a Vercel deployment**. Published edits in `dltrl1ld/production` notify the signed `POST https://axisandsage.com/api/sanity/revalidate` route. The route validates the `sanity-webhook-signature`, project and dataset, waits for Content Lake propagation, expires all tagged Sanity queries immediately, and invalidates the root layout including page metadata and OG images. This deliberately invalidates all pages for a publish, because shared settings, referenced documents and changed slugs may affect multiple routes. A subsequent visit refetches from the Sanity API origin, not its CDN. The existing 60-second ISR still recovers missed webhook deliveries as pages are requested; it is not a proactive background refresh.
+
+**Required configuration:** `SANITY_REVALIDATE_SECRET` is an encrypted/sensitive Vercel variable for Production and Preview. Use the *same secret* in the Sanity project webhook. Never commit it, put it in a webhook URL, or log it. It is now part of the production launch environment gate. Changes to Vercel environment variables take effect on subsequent deployments.
+
+**Sanity webhook settings:** project `dltrl1ld`, dataset `production`; name `Axis & Sage — published content revalidation`; destination `https://axisandsage.com/api/sanity/revalidate`; POST; events **create/update/delete**; drafts **off**; versions **off**; enabled. Use the exact filter and projection exported by `src/sanity/revalidation.ts` (`WEBHOOK_FILTER`, `WEBHOOK_PROJECTION`). For deletes/unpublishes, they inspect `before()` if `after()` is empty. The route rejects changes from old v1 document types. Keep the production webhook pointing to the verified public domain, not a protected preview URL.
+
+**Verification and troubleshooting:**
+1. Confirm the production deployment containing the webhook is READY and `SANITY_REVALIDATE_SECRET` is present.
+2. Publish a reversible, harmless edit to an active v2 document; check the webhook's *Attempts* log in Sanity Manage → API → Webhooks for HTTP 200, and search Vercel runtime logs for `[sanity-revalidate] published content invalidated` with its document ID.
+3. Reload the affected public route, plus a page that references the same document (and metadata/OG where applicable). Check its **rendered** content against the published document, not just Studio preview.
+4. Test unpublishing/deleting a temporary v2 document: the delete event should return 200 and remove stale listing/detail output on a fresh visit. Restore the document if applicable.
+5. Test rejection with an unsigned POST: HTTP 401, no invalidation; try an invalid correctly signed event from another dataset: HTTP 400. Do not expose webhook payload secrets.
+6. If Sanity shows delivery failures, compare the webhook signature secret at both ends, deployment environment, filter/projection and Vercel logs. Sanity retries 5xx briefly; the 60-second ISR fallback limits persistent staleness on visited pages even after retries fail. Sanity's attempts log is the delivery audit trail; route logs are the invalidation audit trail.
+
+**Studio deployment:** The standalone Studio under `studio/` must be deployed after changes to its structure or schema (`pnpm --dir studio build && pnpm --dir studio deploy`). Deploying the website alone does *not* publish the Studio's editor changes. The hidden legacy v1 documents remain in Content Lake.
