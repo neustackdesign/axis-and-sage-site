@@ -1,0 +1,18 @@
+/* Shared frame for specimen cards. Not part of the global stylesheet. */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{padding:48px;background:var(--bg-default);color:var(--text-primary);font-family:var(--font-sans);font-size:15px;line-height:22px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3,h4,.bal{text-wrap:balance}
+p,li,dd,.cap{text-wrap:balance}
+.k{font-family:var(--font-mono);font-size:11px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.v{font-family:var(--font-mono);font-size:12px;line-height:16px}
+.cap{font-size:13px;line-height:19px;color:var(--text-muted)}
+.stack{display:flex;flex-direction:column}
+.row{display:flex;align-items:center}
+.dark{background:var(--midnight-900);color:var(--cloud-100)}
+.dark .k,.dark .cap{color:var(--midnight-300)}
+.photo{position:relative;overflow:hidden;background:var(--cloud-200)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.88) contrast(.95) brightness(.96)}
+.photo .tag{position:absolute;right:16px;bottom:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cloud-50)}
+.serif{font-family:var(--font-serif);font-weight:400}

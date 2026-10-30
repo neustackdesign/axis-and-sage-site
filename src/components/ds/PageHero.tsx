@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { Eyebrow } from "./primitives";
 
-/** Page hero on paper, no painting: mono label in the rail, serif H1 and sub in the content column. */
+/** Page hero on Cloud, no painting: mono label in the rail, serif H1 and sub in the content column. */
 export function PageHero({ label, title, sub, children, display }: { label: string; title: ReactNode; sub?: ReactNode; children?: ReactNode; display?: boolean }) {
   return (
-    <section className="tone-paper" aria-labelledby="page-title">
+    <section className="tone-cloud" aria-labelledby="page-title">
       <div className="wrap page-hero">
         <div className="page-hero-grid">
           <Eyebrow strong>{label}</Eyebrow>

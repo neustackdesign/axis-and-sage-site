@@ -29,7 +29,7 @@ export default async function PersonPage({ params }: Props) {
     <>
       <Breadcrumbs trail={[{ name: "People", path: "/people" }, { name: p.name, path: `/people/${p.slug}` }]} />
       <JsonLd data={personLd(p)} />
-      <section className="tone-paper" aria-labelledby="page-title">
+      <section className="tone-cloud" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="profile-hero">
             <Portrait alt={p.name} initials={p.initials} dark={moments} src={p.portrait} />

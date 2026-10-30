@@ -1,0 +1,15 @@
+<!-- @dsCard group="Components" viewport="900x520" name="Feedback" -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../../styles.css">
+<style>body{background:var(--cloud-100);padding:24px}.lab{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}.grp{margin-bottom:20px}</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script><script src="../../ui_kits/site/data.js"></script>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const DS = window.AxisSageDesignSystem_72f554; const D = window.AS_DATA; const A = "../../assets/brand"; const IMG = "../../assets/images/";
+function App(){ const {Faq,ResultPanel,Quadrant,Blockers}=DS; return <div>
+<div className="grp"><Faq items={[{q:"What does the Diagnostic fee pay for?",a:"Ten working days of interviews, path walks and numbers, ending in a baseline, the blockers and a fixed quote."},{q:"Is the Diagnostic credited?",a:D.creditRule}]}/></div>
+<ResultPanel scores={[{label:"TERMS",value:62},{label:"MOMENTS",value:41}]}><div><Quadrant x={41} y={62} you={0} labels={["FIX THE MOMENT","READY","FIX BOTH","FIX THE TERMS"]}/></div><div><span className="t-label">FIX FIRST</span><Blockers items={[{text:"Nobody knows who can approve what.",check:"Write the delegation of authority."},{text:"A price they can't compare."}]}/></div></ResultPanel></div>; }
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

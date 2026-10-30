@@ -135,7 +135,7 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
   );
 }
 
-/** EngagementTable: plan table. The recommended column is inverted to charcoal and carries the only orange button. */
+/** EngagementTable: plan table. The recommended column is inverted to Midnight and carries the only Sunset button. */
 export function EngagementTable({ columns }: { columns: EngagementColumn[] }) {
   const ordered = [...columns].sort((a, b) => Number(!!b.recommended) - Number(!!a.recommended));
   return (
@@ -209,7 +209,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
   );
 }
 
-/** Timeline: what was decided, then what people did. Baseline dotted; the new number is orange where the action happened. */
+/** Timeline: what was decided, then what people did. Baseline dotted; the new number is Sunset where the action happened. */
 export function Timeline({ label, steps, baseline, source }: { label: string; baseline: { value: number; label: string }; steps: { when: string; said: string; value: number; valueLabel: string; did: string; action?: boolean }[]; source?: string }) {
   const max = Math.max(...steps.map((s) => s.value), baseline.value) * 1.15;
   const baseBottom = (baseline.value / max) * 100;
@@ -243,13 +243,21 @@ export function DayTimeline({ days }: { days: { when: string; what: string }[] }
   return <ol className="day-timeline">{days.map((d) => <li key={d.when}><span className="t-label">{d.when}</span><p>{d.what}</p></li>)}</ol>;
 }
 
-/** Dotted orbit rings: four audiences, the action point in orange. */
-export function OrbitRings({ className = "" }: { className?: string }) {
+const RIBBON = "M 1289.492 569.581 L 1093.421 569.581 C 944.346 569.581 791.006 619.881 664.511 710.277 L 496.552 830.304 C 370.056 920.7 216.717 971 67.642 971 L 0 971 L 111.508 401.419 L 179.15 401.419 C 328.224 401.419 481.564 351.119 608.059 260.723 L 776.019 140.696 C 902.514 50.3 1055.854 0 1204.928 0 L 1401 0 L 1289.492 569.581 Z";
+
+/** Ribbons: the mark's two waves, full crop. Colour on Midnight, `outline` (dotted) behind the footer, `quiet` on light grounds. Fills its positioned parent. */
+export function Ribbons({ tone = "color", className = "" }: { tone?: "color" | "outline" | "quiet"; className?: string }) {
+  const [a, b] = tone === "quiet" ? ["var(--haze-400)", "var(--haze-300)"] : ["var(--mark-orange)", "var(--mark-pink)"];
+  const paint = (fill: string) => tone === "outline"
+    ? { fill: "none", stroke: fill, strokeWidth: 1.75, strokeDasharray: "0 7", strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const }
+    : { fill, opacity: 0.7 };
   return (
-    <svg className={className} width="560" height="280" viewBox="0 0 560 280" aria-hidden="true" focusable="false">
-      {[120, 240, 360, 480].map((cx) => <circle key={cx} cx={cx} cy="170" r="90" fill="none" stroke="#A9A7A2" strokeWidth="1.5" strokeDasharray="0.5 7" strokeLinecap="round" />)}
-      <circle cx="480" cy="80" r="5" fill="#E8590C" />
-    </svg>
+    <div className={className} aria-hidden="true">
+      <svg viewBox="0 0 2221 971" width="100%" height="100%" focusable="false" style={{ display: "block", overflow: "visible" }}>
+        <path d={RIBBON} transform="translate(820 0)" {...paint(b)} />
+        <path d={RIBBON} {...paint(a)} />
+      </svg>
+    </div>
   );
 }
 

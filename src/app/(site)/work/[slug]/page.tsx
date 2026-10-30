@@ -78,7 +78,7 @@ export default async function CasePageRoute({ params }: Props) {
     <>
       <Breadcrumbs trail={[{ name: "Work", path: "/work" }, { name: c.name, path: `/work/${c.slug}` }]} />
       <JsonLd data={articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: (c.updatedAt ?? "").slice(0, 10), authors: lead ? [{ name: lead.name, path: `/people/${lead.slug}` }] : undefined })} />
-      <section className="tone-paper" aria-labelledby="page-title">
+      <section className="tone-cloud" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="page-hero-grid">
             <div className="stack-8">

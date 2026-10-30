@@ -16,7 +16,7 @@ export function CtaBandForm() {
 
   if (state === "success") {
     return (
-      <div className="form-success-panel" style={{ borderTopColor: "var(--charcoal-900)" }} role="status">
+      <div className="form-success-panel" style={{ borderTopColor: "var(--midnight-900)" }} role="status">
         <p className="t-h3">Thanks. One of us will reply within one working day.</p>
         <p className="t-label">WE NEED {who} TO {what}{when ? ` BY ${when}` : ""}</p>
       </div>

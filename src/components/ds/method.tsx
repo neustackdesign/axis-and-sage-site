@@ -10,7 +10,7 @@ const planes = [
   { index: "04", name: "THE ACTION", kind: "action" },
 ] as const;
 
-/** PlaneStack: the method in four layers. The action plane is orange. Steps sit in a spec column to the right. */
+/** PlaneStack: the method in four layers. The action plane is Sunset. Steps sit in a spec column to the right. */
 export function PlaneStack({ steps }: { steps: { index: string; title: string; body: ReactNode }[] }) {
   return (
     <InView className="plane-stack">
@@ -36,7 +36,7 @@ export function PlaneStack({ steps }: { steps: { index: string; title: string; b
 
 export type FrameImage = { src: string; alt: string; credit: string };
 
-/** PaintingFrame.Hero: the image above, paper panel below, with the credit label on the image. One per page. */
+/** PaintingFrame.Hero: the image above, Cloud panel below, with the credit label on the image. One per page. */
 export function PaintingFrame({ image, children, aside, hero }: { image: FrameImage; children: ReactNode; aside?: ReactNode; hero?: boolean }) {
   return (
     <div className={`painting-frame${hero ? " is-hero" : ""}`}>
@@ -46,13 +46,13 @@ export function PaintingFrame({ image, children, aside, hero }: { image: FrameIm
       </div>
       <div className="painting-panel">
         <div>{children}</div>
-        <div className="painting-panel-mark">{aside}<img src="/brand/mark-charcoal.svg" alt="" width={44} height={19} /></div>
+        <div className="painting-panel-mark">{aside}<img src="/brand/mark-midnight.svg" alt="" width={44} height={19} /></div>
       </div>
     </div>
   );
 }
 
-/** Artifact.Screen: a plain device outline with the confirm action in orange. */
+/** Artifact.Screen: a plain device outline with the confirm action in Sunset. */
 export function ArtifactScreen({ kicker, title, rows, media, action }: { kicker: string; title: string; rows?: [string, string][]; media?: string; action: string }) {
   return (
     <div className="artifact-screen" aria-hidden="true">
@@ -65,7 +65,7 @@ export function ArtifactScreen({ kicker, title, rows, media, action }: { kicker:
   );
 }
 
-/** Artifact.Paper: an A4 sheet; the signature line is the orange action point. */
+/** Artifact.Paper: an A4 sheet; the signature line is the Sunset action point. */
 export function ArtifactDoc({ kicker, title, lines = 5, sign }: { kicker: string; title: string; lines?: number; sign: string }) {
   const widths = [92, 78, 86, 60, 88, 70, 82];
   return (

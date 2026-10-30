@@ -27,7 +27,7 @@ export default async function NewsletterPage() {
           {issues.length ? (
             <ol className="spec-list">{issues.map((i, k) => <li key={i.title}><span className="t-label">{String(issues.length - k).padStart(2, "0")}</span><span><TextLink href={i.href}>{i.title}</TextLink> <span className="t-label muted">· {i.publishedAt}</span></span></li>)}</ol>
           ) : (
-            <div className="work-empty" style={{ borderTop: "1px solid var(--charcoal-900)", paddingTop: 24 }}>
+            <div className="work-empty" style={{ borderTop: "1px solid var(--midnight-900)", paddingTop: 24 }}>
               <p className="t-h3">{p.strings.emptyTitle}</p>
               <p className="muted">{settings.newsletter.archiveEmpty}</p>
             </div>

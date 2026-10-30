@@ -1,13 +1,19 @@
 /* Axis & Sage · motion. Runs once, rests on a designed final frame. Nothing loops. */
 :root {
-  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1);
-  --ease-in-out: cubic-bezier(0.6, 0, 0.2, 1);
-  --dur-quick: 160ms;  /* hover: underline, rule, tint */
-  --dur-base: 240ms;   /* state changes */
-  --dur-enter: 600ms;  /* first-view reveal */
-  --dur-draw: 1600ms;  /* dotted path, decision to action */
-  --dur-fill: 400ms;   /* orange mark fills after the draw */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.1, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.6, 0, 0.2, 1); /* @kind other */
+  --dur-quick: 160ms; /* @kind other */
+  --dur-base: 240ms; /* @kind other */
+  --dur-enter: 600ms; /* @kind other */
+  --dur-draw: 1600ms; /* @kind other */
+  --dur-fill: 400ms; /* @kind other */
 }
 @media (prefers-reduced-motion: reduce) {
-  :root { --dur-quick: 0ms; --dur-base: 0ms; --dur-enter: 0ms; --dur-draw: 0ms; --dur-fill: 0ms; }
+  :root {
+    --dur-quick: 0ms; /* @kind other */
+    --dur-base: 0ms; /* @kind other */
+    --dur-enter: 0ms; /* @kind other */
+    --dur-draw: 0ms; /* @kind other */
+    --dur-fill: 0ms; /* @kind other */
+  }
 }

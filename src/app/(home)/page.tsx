@@ -72,8 +72,8 @@ export default async function HomePage() {
         </RailBody>
       </Section>
 
-      {/* 6 · What moved (charcoal) */}
-      <Section tone="charcoal" labelledBy="moved-title">
+      {/* 6 · What moved (Midnight) */}
+      <Section tone="midnight" labelledBy="moved-title">
         <SectionHeader id="moved-title" label={label(4, s.moved?.label)} title={s.moved?.title} />
         <RailBody full>
           <StatGrid cols={4}>

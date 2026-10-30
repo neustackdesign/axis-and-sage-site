@@ -155,7 +155,7 @@ export function Scorecard({ preset, cases = [] }: { preset?: { who?: string; wha
             {statementScreens[screen - 2].map((st) => {
               const text = fill(st.text, forms, actionLabel);
               return (
-                <fieldset key={st.id} className="statement" style={{ border: 0, borderTop: "1px solid var(--charcoal-900)", margin: 0, padding: "20px 0 0" }}>
+                <fieldset key={st.id} className="statement" style={{ border: 0, borderTop: "1px solid var(--midnight-900)", margin: 0, padding: "20px 0 0" }}>
                   <p className="statement-tag t-label">{st.half === "terms" ? "TERMS" : "MOMENT"}</p>
                   <legend className="sr-only">{text}</legend>
                   <p className="statement-text" aria-hidden="true">{text}</p>

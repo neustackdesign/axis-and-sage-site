@@ -73,7 +73,7 @@ export default async function ConversionDesignPage() {
         </RailBody>
       </Section>
 
-      <Section tone="charcoal" labelledBy="timeline-title">
+      <Section tone="midnight" labelledBy="timeline-title">
         <SectionHeader id="timeline-title" label={label(4, s.example?.label)} title={s.example?.title} />
         <RailBody full>
           <Timeline

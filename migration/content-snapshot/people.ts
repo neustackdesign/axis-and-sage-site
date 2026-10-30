@@ -15,7 +15,7 @@ export type Person = {
   education: string;
   basedIn: string;
   links: { label: string; href: string }[];
-  /** Shown on the initials tile while there is no portrait: paper for Terms, charcoal for Moments. */
+  /** Shown on the initials tile while there is no portrait: Cloud for Terms, Midnight for Moments. */
   initials: string;
   portrait?: string;
 };

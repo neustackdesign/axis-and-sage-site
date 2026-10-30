@@ -1,7 +1,7 @@
 import type { Person } from "@/lib/content/types";
 import { Portrait, TextLink } from "@/components/ds/primitives";
 
-/** Split founders block: paper card for Terms, charcoal card for Moments. */
+/** Split founders block: Cloud card for Terms, Midnight card for Moments. */
 export function FounderCards({ people }: { people: Person[] }) {
   return (
     <div className="founder-grid">

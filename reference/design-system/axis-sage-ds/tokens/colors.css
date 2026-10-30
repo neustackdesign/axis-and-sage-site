@@ -1,68 +1,35 @@
-/* Axis & Sage · colour tokens. Base values first, then role aliases. */
+/* Axis & Sage · colour.
+   Four brand colours: Midnight (ink, dark), Cloud (ground), Sunset (action, mark), Bloom (mark, accent on dark).
+   Sage stays for tools and the library. Lilac and Creme set editorial and people sections. */
 :root {
-  /* Paper */
-  --paper-50: #FBFBFA;   /* raised surfaces on paper */
-  --paper-100: #F4F3F1;  /* alternate background */
-  --paper-200: #ECEBE9;  /* default background */
-  /* Stone */
-  --stone-300: #D4D4D2;  /* 1px rules on paper */
-  --stone-400: #BDBCBA;  /* disabled, quiet UI */
-  /* Charcoal */
-  --charcoal-900: #1F1F1F; /* primary text on paper */
-  --charcoal-800: #2B2B2B; /* dark sections */
-  --charcoal-700: #363636; /* raised surfaces on charcoal */
-  --charcoal-600: #4B4B4B; /* 1px rules on charcoal */
-  /* Sage */
-  --sage-100: #EEF1E6;   /* quiet panels */
-  --sage-200: #E5EAD8;   /* sage sections, tool panels */
-  --sage-400: #B6B6A2;   /* sage-stone accents, chart secondary */
-  --sage-700: #5F6B4A;   /* sage text and lines on paper (4.78:1 on paper-200) */
-  /* Orange: sampled from mark #FE5F03, deepened to reach 3:1 on paper-200 */
-  --orange-100: #FBE3D4; /* highlighted rows, selected states */
-  --orange-500: #E8590C; /* the next action */
-  --orange-600: #B84A0E; /* hover */
-  --orange-700: #A8430C; /* pressed */
-  /* Mark: logo only, never UI. Both ribbons at 70% opacity. */
-  --mark-orange: #FE5F03;
-  --mark-pink: #FE94F9;
-  --mark-opacity: 0.7;
-  /* Text */
-  --text-muted-paper: #5B5A57;
-  --text-on-charcoal: #F4F3F1;
-  --text-muted-charcoal: #A9A7A2;
-  /* Status: forms and tools only */
-  --success-600: #2F6B3A;
-  --error-600: #B3261E;
-  --success-300: #8FC79A; /* on charcoal */
-  --error-300: #F28B82;   /* on charcoal */
+  /* Midnight Axis */
+  --midnight-900: #0B0626; --midnight-800: #16113A; --midnight-700: #221C4A; --midnight-600: #3A3463; --midnight-300: #A9A3C4;
+  /* Cloud White: page grounds */
+  --cloud-50: #FCFBFF; --cloud-100: #F3F0FF; --cloud-200: #EBE7FA;
+  --haze-300: #D8D3EA; --haze-400: #B8B2D1;
+  --ink-muted: #56516F;
+  /* Masdar Sunset. 500 is the mark, ribbons and large display. 600 is the action fill: the 70% ribbon over Midnight, Cloud labels at 5.4:1 / APCA Lc 80. */
+  --sunset-100: #FFE6D6; --sunset-500: #FE5F03; --sunset-600: #B5440D; --sunset-700: #9A390B; --sunset-800: #7F2F09;
+  /* Bloom: the mark's second ribbon */
+  --bloom-100: #FDE6FC; --bloom-500: #FE94F9;
+  /* Supporting */
+  --lilac-200: #DED3F5; --sky-200: #DFEAFF;
+  --creme-100: #FFF0F0; --creme-200: #FFD4C4; --brown-800: #4B2E24;
+  --sage-100: #EEF1E6; --sage-200: #E5EAD8; --sage-400: #B6B6A2; --sage-700: #5F6B4A;
+  /* Status: forms and tools */
+  --success-600: #2F6B3A; --error-600: #B3261E; --success-300: #8FC79A; --error-300: #F28B82;
+  /* Mark */
+  --mark-orange: var(--sunset-500); --mark-pink: var(--bloom-500); --mark-opacity: 0.7; /* @kind other */
 
-  /* ---- Role aliases ---- */
-  --bg-default: var(--paper-200);
-  --bg-alt: var(--paper-100);
-  --surface-raised: var(--paper-50);
-  --rule: var(--stone-300);
-  --ui-quiet: var(--stone-400);
-  --text-primary: var(--charcoal-900);
-  --text-muted: var(--text-muted-paper);
-
-  --bg-dark: var(--charcoal-800);
-  --surface-dark-raised: var(--charcoal-700);
-  --rule-dark: var(--charcoal-600);
-  --text-on-dark: var(--text-on-charcoal);
-  --text-muted-dark: var(--text-muted-charcoal);
-
-  --bg-sage: var(--sage-200);
-  --surface-sage-quiet: var(--sage-100);
-  --accent-sage: var(--sage-400);
-  --text-sage: var(--sage-700);
-
-  --action: var(--orange-500);
-  --action-hover: var(--orange-600);
-  --action-pressed: var(--orange-700);
-  --action-tint: var(--orange-100);
-  --on-action: var(--charcoal-900);        /* label on orange at rest: 4.60:1 */
-  --on-action-hover: var(--paper-50);      /* label on orange-600: 5.04:1 */
-
-  --focus-ring-paper: var(--charcoal-900);
-  --focus-ring-charcoal: var(--paper-50);
+  --bg-default: var(--cloud-100); --bg-alt: var(--cloud-200); --surface-raised: var(--cloud-50);
+  --rule: var(--haze-300); --ui-quiet: var(--haze-400);
+  --text-primary: var(--midnight-900); --text-muted: var(--ink-muted);
+  --bg-dark: var(--midnight-900); --surface-dark-raised: var(--midnight-800); --rule-dark: var(--midnight-600);
+  --text-on-dark: var(--cloud-100); --text-muted-dark: var(--midnight-300); --accent-on-dark: var(--bloom-500);
+  --bg-sage: var(--sage-200); --surface-sage-quiet: var(--sage-100); --accent-sage: var(--sage-400); --text-sage: var(--sage-700);
+  --bg-lilac: var(--lilac-200);
+  --bg-creme: var(--creme-100); --surface-creme: var(--creme-200); --text-creme: var(--brown-800);
+  --action: var(--sunset-600); --action-hover: var(--sunset-700); --action-pressed: var(--sunset-800); --action-tint: var(--sunset-100);
+  --on-action: var(--cloud-50); --on-action-hover: var(--cloud-50); --on-action-pressed: var(--cloud-50);
+  --focus-ring-light: var(--midnight-900); --focus-ring-dark: var(--cloud-100);
 }
