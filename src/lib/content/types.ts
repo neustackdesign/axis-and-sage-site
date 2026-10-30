@@ -77,7 +77,6 @@ export type Person = {
   half: "terms" | "moments";
   line: string;
   cardBody: string;
-  cardProof: string[];
   bio: string;
   bioParagraphs: string[];
   selectedWork: string[];

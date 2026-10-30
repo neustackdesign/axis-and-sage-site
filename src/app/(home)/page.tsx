@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CTABand } from "@/components/ds/CTABand";
-import { CaseCard, EngagementTable, LogoStrip, SpecialistCard, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
+import { CaseCard, LogoStrip, SpecialistCard, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
 import { PlaneStack } from "@/components/ds/method";
 import { HomepageHero } from "@/components/sections/HomepageHero";
 import { Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
@@ -72,7 +72,7 @@ export default async function HomePage() {
         </RailBody>
       </Section>
 
-      {/* 6 · What moved (Midnight) */}
+      {/* 6 · What moved (Midnight): the proof lives here, once */}
       <Section tone="midnight" labelledBy="moved-title">
         <SectionHeader id="moved-title" label={label(4, s.moved?.label)} title={s.moved?.title} />
         <RailBody full>
@@ -104,10 +104,10 @@ export default async function HomePage() {
       <Section labelledBy="start-title">
         <SectionHeader id="start-title" label={label(6, s.start?.label)} title={s.start?.title} />
         <RailBody full>
-          <EngagementTable columns={engagements.columns} />
-          <p className="engagement-note">{engagements.diagnostic.creditRule}</p>
-          {/* The homepage shows the first two specialist engagements; the Engagements page lists them all. */}
-          <div className="specialist-grid">{engagements.specialists.slice(0, 2).map((sp) => <SpecialistCard key={sp.name} s={sp} />)}</div>
+          {/* The ladder, compact: name, price, time, what you get. The full table, specialist work and the credit rule live on /engagements. */}
+          <div className="specialist-grid" style={{ ["--cols" as string]: engagements.columns.length }}>
+            {engagements.columns.map((c) => <SpecialistCard key={c.name} s={{ slug: c.slug, name: c.name, price: c.price, time: c.time, intro: c.youGet }} cta={c.cta} />)}
+          </div>
           <p style={{ marginTop: 32 }}><TextLink href="/engagements">Engagements and pricing</TextLink></p>
         </RailBody>
       </Section>
@@ -116,7 +116,9 @@ export default async function HomePage() {
       <Section tone="sage" labelledBy="library-title">
         <SectionHeader id="library-title" label={label(7, s.library?.label)} title={s.library?.title} />
         <RailBody full>
-          <div className="tool-grid">{tools.map((t) => <ToolCard key={t.slug} tool={t} />)}</div>
+          {/* Three tools here; the Library has all of them. */}
+          <div className="tool-grid">{tools.slice(0, 3).map((t) => <ToolCard key={t.slug} tool={t} />)}</div>
+          <p style={{ marginTop: 32 }}><TextLink href="/library">All tools</TextLink></p>
         </RailBody>
       </Section>
 

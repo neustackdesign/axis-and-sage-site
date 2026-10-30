@@ -34,7 +34,7 @@ export default async function PeoplePage() {
                 <p className="t-label muted" style={{ marginTop: 6 }}>{p.practice.toUpperCase()}</p>
               </div>
               <p className="founder-line">{p.line}</p>
-              <div className="prose stack-16">{p.bioParagraphs.map((para) => <p key={para}>{para}</p>)}</div>
+              <p className="t-body-l">{p.cardBody}</p>
               <TextLink href={`/people/${p.slug}`}>{p.name.split(" ")[0]}&apos;s profile</TextLink>
             </div>
           </div>

@@ -49,7 +49,6 @@ const personOf = (p: RawPerson): Person => ({
   half: p.focus,
   line: p.principleLine,
   cardBody: p.shortBio,
-  cardProof: p.proofPoints ?? [],
   bio: p.longBio,
   bioParagraphs: (p.longBio || "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean),
   selectedWork: p.selectedWork ?? [],
