@@ -289,7 +289,8 @@ export const getEngagements = cache(async (): Promise<EngagementsData> => {
       .sort((a, b) => Number(a.tier === "specialist") - Number(b.tier === "specialist"))
       .map((e) => ({
         slug: e.slug, name: e.name, main: e.tier === "core", recommended: !!e.recommended, price: priceText(e), time: e.duration,
-        line: (e.tier === "core" ? e.youGet : e.intro) ?? "",
+        // A variant's intro may end by introducing its points ("We cover both halves:"); the path shows the intro without that lead-in.
+        line: (e.tier === "core" ? e.youGet : e.intro?.replace(/\s*[^.]*:\s*$/, "")) ?? "",
         cta: e.cta ?? { label: "Talk to us", href: `/contact?engagement=${encodeURIComponent(e.name)}` },
       })),
   }));

@@ -13,7 +13,7 @@ The one product surface is the marketing website **axisandsage.com** (Next.js Ap
 - `styles.css` — entry point (imports only). `tokens/` (fonts, colors, typography, spacing, motion) + `css/` (base, chrome, components, tools — the site's own class CSS, copied verbatim).
 - `fonts/` — Geist, Geist Mono, Platypi woff2 (+ OFL licence).
 - `assets/brand/` — mark (colour, midnight, cloud), wordmarks (midnight, cloud), app icons, favicon. `assets/images/` — brand-book photography (`brand-*`), portraits and case photography.
-- `guidelines/` — specimen cards (Colors, Type, Spacing, Brand, Voice, Applications), sharing `card.css`.
+- (Specimen cards, the UI kit and non-brand components are in the source zip, not this repo.) `guidelines/` — specimen cards (Colors, Type, Spacing, Brand, Voice, Applications), sharing `card.css`.
 - `components/` — React primitives (below). Each has `.jsx`, `.d.ts`, `.prompt.md`; one `*.card.html` per folder.
 - `ui_kits/site/` — click-through recreation of the website (Home, Work, Engagements, Contact). `data.js` holds verbatim site copy.
 - `SKILL.md` — Agent Skill entry point.
