@@ -24,13 +24,14 @@ export function DotField({ before, after, toggle, labels, className = "df", cont
     const node = ref.current;
     if (!node || typeof IntersectionObserver === "undefined" || touched || show !== undefined) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // rest on the result
-    setShowAfter(false);
+    // Server HTML shows the result; once script runs, drop to the baseline and fill the gain on screen.
+    const frame = window.requestAnimationFrame(() => setShowAfter(false));
     let timer = 0;
     const io = new IntersectionObserver((es) => {
       if (es.some((e) => e.isIntersecting)) { timer = window.setTimeout(() => setShowAfter(true), 600); io.disconnect(); }
     }, { threshold: 0.3 });
     io.observe(node);
-    return () => { io.disconnect(); window.clearTimeout(timer); };
+    return () => { window.cancelAnimationFrame(frame); io.disconnect(); window.clearTimeout(timer); };
   }, [touched, show]);
   const pick = (v: boolean) => { setTouched(true); setShowAfter(v); };
   const [b, a] = labels ?? [`Before · ${before}`, `After · ${after}`];
