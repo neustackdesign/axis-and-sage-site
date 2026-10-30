@@ -60,31 +60,47 @@ Revalidation is unchanged: the signed webhook on `/api/sanity/revalidate` expire
 - Ifeanyi Monyei's credentials use the published wording ("Chief of Staff to Group Strategy & Growth"), not the canvas's "Group Head, Strategy & Growth".
 - The Farmcrowdy "Observed" evidence and the measurement window stay out until confirmed.
 
-## Missing assets and pending decisions
+## Outstanding items, classified (31 October)
 
-| Item | Treatment now | Needed before production |
+**Release blockers: none open.** Fixed during release preparation: unsourced copy (the AI note now follows the brief; stage 3's measure comes from the method; Farmcrowdy's place reads Nigeria, as published), footer `/work?action=` links (filter restored), and contact links for offers without a starting point (the offer's name is kept in the form and the lead).
+
+| Item | Decision | Treatment |
 | --- | --- | --- |
-| Client and venture logos (VGG, NSIP, Farmcrowdy, Kolibri, Mular, Earlybean) | Tiles show the organisation name; each tile takes a logo in Sanity (`proofBand` → Logo) | Logo files and permission to use them |
-| Founder portraits | Initials in the 4:5 Creme field (existing approved fallback) | Commissioned portraits |
-| Governance and AI Assessment pages (R6, R7) | Not built; practice pages keep their layout | Content architecture decision |
-| Services index (R5) | Not built; mega menu and practice pages cover it | Decision |
-| Brand & Growth proof | No set piece; listed in the index only | Confirmed proof |
-| Unconfirmed case pages | n/a: provenance is confirmed in the repo | None |
-| Studio deploy | Drafts carry fields the hosted Studio does not know yet | Run `pnpm --dir studio deploy` at release |
-| `SANITY_PREVIEW_SECRET` | Unset; production draft mode is off (fails closed) | Add in Vercel Production if editors want draft preview there |
-| Seed drift | Seed now matches published for the fields above; Settings still differs in two Studio-only edits | Fold them into the seed when convenient |
+| Client and venture logos | Accepted, post-launch | Tiles show the organisation name; add logos in Sanity (Homepage → Proof band) |
+| Founder portraits | Accepted, post-launch | Initials in the 4:5 field |
+| Governance, AI Assessment and Services index pages | Accepted, post-launch decision | Practice pages keep their layout, under the new names |
+| Brand & Growth proof | Accepted, post-launch | No proof shown; the family is listed without a claim |
+| Sanity publish webhook | Accepted, post-launch (pre-existing gap) | `sanity hook list` shows none registered: the signed route exists but nothing calls it. Published edits appear through the 60-second refresh. Create it with the existing `SANITY_REVALIDATE_SECRET` |
+| Studio schema manifest | Accepted, post-launch | The hosted Studio bundle carries the new fields, but the CLI's manifest extract and `documents validate` load an empty workspace, so server-side schema tools see no types. The schema itself validates (42 types, 0 problems) |
+| `SANITY_PREVIEW_SECRET` | Accepted, post-launch | Draft mode on production stays off (fails closed); Vercel previews already show drafts |
+| Real lead and Cal booking end to end | Release check | Server path verified without storing; one deliberate, labelled test lead after launch if wanted |
 
-## Release steps (after approval)
+## Release runbook (needs approval)
 
-1. Merge `redesign-phase-1` into `main` (Vercel promotes to production).
-2. Deploy the Studio (`pnpm --dir studio deploy`).
-3. Publish the 13 drafts (Studio, or `pnpm sanity:seed --publish`), then confirm the webhook delivery in Sanity and a fresh read on the live pages.
-4. Check axisandsage.com, uesta.axisandsage.com, the contact and sentence forms end to end, the Cal booking, analytics and the sitemap.
+Build: branch `redesign-phase-1`, commit `55a60d7` (preview `axis-and-sage-site-2t22cqyyp`, READY). Current production: deployment `dpl_G2yW1ADF3w8mJ6XgJD8DFtpRPUgy` (`axis-and-sage-site-on4z7h0tc`, commit `bcfcd67`). Studio: already deployed with the new fields (additive).
+
+Order matters. The new code on today's published content renders sparse pages (homepage: hero, start, founders and call to action only), while the live code on the new content renders every route without errors (checked locally: `main` against the new seed). So content goes first, then the build is made from it:
+
+1. **Pre-flight.** Confirm the backup exists: `reference/release-2026/published-before-release.ndjson` (the 13 documents as published, with their revisions) plus a full dataset export taken 31 October.
+2. **Publish the 13 drafts** (Studio, or `publish_documents` with the IDs below). The live site keeps its layout and shows the new copy within about a minute; expect "Library" twice in the old header until step 5.
+3. **Stage the production build** from `55a60d7`: `vercel deploy --prod --skip-domain`. It builds with production settings and the newly published content, and takes no domain.
+4. **Validate the staged URL:** every route and sitemap URL returns 200, the homepage shows all nine sections, `/work` shows three set pieces, the Farmcrowdy case uses the 2026 layout, forms reject invalid input, and `uesta` serves its page.
+5. **Promote:** `vercel promote <staged deployment>`. axisandsage.com and uesta.axisandsage.com move together.
+6. **Merge** `redesign-phase-1` into `main`, so the next git deploy builds the same code.
+7. **Verify live:** the step 4 checks on axisandsage.com, plus the Cal booking link, the analytics script, the header across 1440, 1024 and 390, and Safari for the sentence form.
+
+Drafts to publish: `axisSageSettings`, `axisSageHome`, `axisSageConversionMethod`, `axisSagePage-work`, `axisSagePage-contact`, `axisSage-practice-strategy-and-investment`, `axisSage-practice-product-and-technology`, `axisSage-practice-brand-and-market`, `axisSage-person-ifeanyi-monyei`, `axisSage-person-tomiwa-ogunmodede`, `axisSage-work-farmcrowdy`, `axisSage-work-gv-solutions`, `axisSage-work-nature-roots`.
+
+## Rollback
+
+- **Code (instant):** `vercel rollback dpl_G2yW1ADF3w8mJ6XgJD8DFtpRPUgy` (or promote it in the dashboard). The previous code renders the new content correctly, so this alone is safe. If `main` was merged, revert the merge commit before the next deploy.
+- **Content:** roll back code first (the new code on old content is sparse), then restore the 13 documents: `sanity dataset import reference/release-2026/published-before-release.ndjson production --replace` from `studio/`, or "Restore" to the recorded revision of each document in the Studio history. The ISR refresh picks it up within about a minute.
+- **Studio:** no rollback needed; the new fields are optional. To remove them, deploy the Studio from `main`.
 
 ## Verification (30 October 2026)
 
 - Tests: 120 of 120 pass (`pnpm test`), including the content rules, provenance, founder titles, webhook and export checks. Type-check passes; lint has warnings only (`<img>` usage, as elsewhere in the codebase).
-- Build: `next build` passes against today's published content (code-first safe) and on Vercel Preview against the drafts.
+- Build: `next build` passes against today's published content and on Vercel Preview against the drafts. With today's published content the new pages are sparse, hence the content-first order above.
 - Preview: every route returns 200 (404 page returns 404). The preview renders the Sanity drafts (set pieces, the Nature Roots image from Sanity's CDN, the 2026 Farmcrowdy case, contact starting points). A draft edit appeared on the preview without a deployment and was reverted.
 - Production: unchanged (axisandsage.com still serves "What we do"; uesta.axisandsage.com returns 200).
 - Browser: desktop 1440, tablet 800 and mobile 375/390, checked in the in-app browser and Playwright. No horizontal overflow at 375. Services menu opens, staggers, closes on Escape and outside click. The decision path, proof tiles, readout tabs, before/after controls, work filters, scroll stages and contact starting points respond. Contact validation reports every field at once; `?engagement=diagnostic` preselects the Diagnostic. One `h1` per page, every control named, every image has alt text, no console errors (the only warning seen is Playwright's own caret style on inputs).
