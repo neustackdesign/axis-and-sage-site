@@ -1,5 +1,6 @@
 import { client } from "./client";
 import { contentSource, REVALIDATE_SECONDS } from "./env";
+import { draftsClient, readsDrafts } from "./preview-client";
 
 /**
  * Every content read goes through here. Production: the published perspective from the Sanity API origin, cached by Next.js for
@@ -10,6 +11,8 @@ export async function sanityFetch<T>(query: string, params: Record<string, unkno
     const { querySeed } = await import("./seed-dataset");
     return querySeed<T>(query, params);
   }
+  // Review only: drafts are never cached, so an edit shows on the next load.
+  if (await readsDrafts()) return draftsClient().fetch<T>(query, params, { cache: "no-store" });
   return client.fetch<T>(query, params, { next: { revalidate: REVALIDATE_SECONDS, tags: ["sanity"] } });
 }
 

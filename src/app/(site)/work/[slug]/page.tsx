@@ -9,7 +9,8 @@ import { provenanceLabel } from "@/lib/content/vocab";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { articleLd } from "@/lib/seo";
-import { getCase, getCaseList } from "@/sanity/load";
+import { CaseV26 } from "@/components/v26/CasePage";
+import { getCase, getCaseList, getSettings } from "@/sanity/load";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -64,8 +65,19 @@ function Visuals({ c }: { c: CasePage }) {
 }
 
 export default async function CasePageRoute({ params }: Props) {
-  const [c, cases] = await Promise.all([getCase((await params).slug), getCaseList()]);
+  const [c, cases, settings] = await Promise.all([getCase((await params).slug), getCaseList(), getSettings()]);
   if (!c) notFound();
+  const ld = articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: (c.updatedAt ?? "").slice(0, 10), authors: c.ledBy ? [{ name: c.ledBy.name, path: `/people/${c.ledBy.slug}` }] : undefined });
+  // A case with the 2026 fields filled in uses the 2026 layout; the others keep theirs until they are redesigned.
+  if (c.design) {
+    return (
+      <>
+        <Breadcrumbs trail={[{ name: "Work", path: "/work" }, { name: c.name, path: `/work/${c.slug}` }]} />
+        <JsonLd data={ld} />
+        <CaseV26 c={c} cta={settings.primaryCta} />
+      </>
+    );
+  }
   const i = cases.findIndex((x) => x.slug === c.slug);
   const next = cases[(i + 1) % cases.length];
   const lead = c.ledBy;
@@ -77,7 +89,7 @@ export default async function CasePageRoute({ params }: Props) {
   return (
     <>
       <Breadcrumbs trail={[{ name: "Work", path: "/work" }, { name: c.name, path: `/work/${c.slug}` }]} />
-      <JsonLd data={articleLd({ headline: c.name, description: c.intro || `${c.name}: ${c.moved}`, path: `/work/${c.slug}`, date: (c.updatedAt ?? "").slice(0, 10), authors: lead ? [{ name: lead.name, path: `/people/${lead.slug}` }] : undefined })} />
+      <JsonLd data={ld} />
       <section className="tone-cloud" aria-labelledby="page-title">
         <div className="wrap page-hero">
           <div className="page-hero-grid">

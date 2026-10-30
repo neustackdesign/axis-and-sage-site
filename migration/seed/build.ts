@@ -40,7 +40,7 @@ const link = (l: { label: string; href: string; description?: string }, i: numbe
 /* ---------------------------------------------------------------- Canonical decisions (locked) */
 
 export const CANONICAL = {
-  titles: { "ifeanyi-monyei": { publicTitle: "Co-founder", practiceTitle: "Strategy & Investment" }, "tomiwa-ogunmodede": { publicTitle: "Co-founder", practiceTitle: "Product & Technology" } },
+  titles: { "ifeanyi-monyei": { publicTitle: "Co-founder", practiceTitle: "Strategy & Operations" }, "tomiwa-ogunmodede": { publicTitle: "Co-founder", practiceTitle: "Technology & AI" } },
   diagnostic: { price: 5000, currency: "USD", uaePrice: 18500, duration: "10 working days" },
   creditRule: "100% of the Diagnostic fee is credited against a Conversion Programme contracted within 30 days of the Diagnostic readout.",
   provenance: {
@@ -70,13 +70,13 @@ export const CANONICAL = {
       "She has spent more than a decade across Venture Garden Group and its portfolio, progressing through consulting leadership and Chief of Staff to Group Strategy & Growth. Her work includes governance and delegation of authority, executive reward, employee equity, operating models, business integration and partnership structures.",
       "She designed and led the merger that created GV Solutions and now serves as its fractional COO through Axis & Sage.",
       "Earlier work includes consulting leadership across programmes within Nigeria's National Social Investment Programme and public-sector transformation through Galaxy Backbone.",
-      "At Axis & Sage, she leads Strategy & Investment.",
+      "At Axis & Sage, she leads Strategy & Operations.",
     ].join("\n\n"),
     "tomiwa-ogunmodede": [
       "Tomiwa works on the moments where people act: products, interfaces, services and systems.",
       "He has more than ten years across product design, technology, growth and venture building in fintech, education, hospitality and operational software.",
       "He was the first design hire at Farmcrowdy, where internal funnel tracking recorded first-time mobile sponsorship conversion moving from 18% to 60%. He spent nearly four years as Senior Product Designer on Learning Equality's Kolibri platform, co-founded Mular and Earlybean, and currently leads Product & Technology for Lion Hospitality Partners.",
-      "At Axis & Sage, he leads Product & Technology.",
+      "At Axis & Sage, he leads Technology & AI.",
     ].join("\n\n"),
   },
 } as const;
@@ -514,8 +514,204 @@ function legal(): SeedDoc[] {
 
 /** Every canonical v2 document, in dependency-friendly order (referenced documents first). */
 export function buildSeed(): SeedDoc[] {
-  return [...tools(), ...testimonials(), ...people(), ...work(), ...practices(), ...engagements(), ...faqs(), ...library(), ...legal(), ...sitePages(), settings(), home(), method()];
+  const docs = [...tools(), ...testimonials(), ...people(), ...work(), ...practices(), ...engagements(), ...faqs(), ...library(), ...legal(), ...sitePages(), settings(), home(), method()];
+  return docs.map((d) => renameFamilies({ ...d, ...(REDESIGN[d._id ?? d.seedKey ?? ""] ?? {}) }) as SeedDoc);
 }
+
+/* ---------------------------------------------------------------- 2026 redesign (canvas approved 30 Oct 2026) */
+
+/** The three service families take the names the redesign uses everywhere. Slugs stay, so no URL changes.
+    Biographies are canonical text (CANONICAL.bios) and are edited there: "leads Product & Technology for Lion Hospitality
+    Partners" is a role at a client, not the Axis & Sage family. */
+export const FAMILY_NAMES: [string, string][] = [["Strategy & Investment", "Strategy & Operations"], ["Product & Technology", "Technology & AI"], ["Brand & Market", "Brand & Growth"]];
+function renameFamilies(value: unknown): unknown {
+  if (typeof value === "string") return FAMILY_NAMES.reduce((v, [a, b]) => v.split(a).join(b).split(a.toUpperCase()).join(b.toUpperCase()), value);
+  if (Array.isArray(value)) return value.map(renameFamilies);
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k === "slug" || k === "_ref" || k === "_upload" || k === "longBio" ? v : renameFamilies(v)]));
+  return value;
+}
+
+const stat = (numeral: string, label: string, i: number, source?: string) => ({ _key: `p${i}`, _type: "asStat", numeral, label, ...(source ? { source } : {}) });
+const proofStat = (label: string, numeral: string, line: string, href: string | undefined, i: number) => ({ _key: `ps${i}`, _type: "asProofStat", label, numeral, line, ...(href ? { href } : {}) });
+const logo = (name: string, line: string, i: number) => ({ _key: `lg${i}`, _type: "asLogoItem", name, line });
+const FAMILY_HREF = { so: "/what-we-do/strategy-and-investment", ta: "/what-we-do/product-and-technology", bg: "/what-we-do/brand-and-market" };
+
+/** Fields added or changed by the redesign, merged over the documents built above (by _id or seedKey). */
+const REDESIGN: Record<string, Record<string, unknown>> = {
+  [SINGLETON_IDS.settings]: {
+    navigation: {
+      whatWeDo: {
+        _type: "asNavGroup", label: "Services", key: "what-we-do", eyebrow: "SERVICES",
+        blurb: "Start with a Conversion Diagnostic, or the six-minute Scorecard.",
+        items: [
+          { label: "Strategy & Operations", href: FAMILY_HREF.so, description: "Get the terms and the operating model right." },
+          { label: "Technology & AI", href: FAMILY_HREF.ta, description: "Make the systems people use work." },
+          { label: "Brand & Growth", href: FAMILY_HREF.bg, description: "Say it so they act." },
+          { label: "Engagements and pricing", href: "/engagements", description: "Start with one sentence. Know the price before we start." },
+        ].map(link),
+      },
+      library: { _type: "asNavGroup", ...siteSrc.navGroups.library, items: siteSrc.navGroups.library.items.map(link) },
+      primaryLinks: [{ label: "Work", href: "/work" }, { label: "Approach", href: "/conversion-design" }, { label: "About", href: "/people" }, { label: "Library", href: "/library" }].map(link),
+    },
+    primaryCta: { _type: "asCta", label: "Book a 30-minute call", href: siteSrc.bookCallHref },
+  },
+  [SINGLETON_IDS.home]: {
+    supportingCopy: "Axis & Sage is an advisory for businesses across Africa and the GCC. We fix what stops investors, partners, teams and customers acting, in the strategy, the operations, the technology or the brand.",
+    secondaryCTA: { _type: "asCta", label: "See the work", href: "/work" },
+    conversionLinkLabel: "Owners, artefacts and measures ▸",
+    sections: [
+      section("situations", "SOUND FAMILIAR", "Four situations we're called in for.", "Each one is a decision that was sound and an action that never happened."),
+      section("work", "SELECTED WORK", "What moved, and why."),
+      section("method", "HOW WE WORK", "One sentence to start. One number to finish.", "Shown with the Farmcrowdy case."),
+      section("start", "THREE WAYS IN, ONE WAY TO START", "Start with ten working days."),
+      section("founders", "WHO YOU WORK WITH", "Two halves of every decision."),
+      section("cta", "START", "Who needs to act?"),
+      // As published (edited in the Studio after the 1 October seed).
+      section("gap", "THE GAP", "Growth stalls in the gap between what a business decides, what it builds and what it says.", "The decision was sound. The action never happened."),
+      section("conversionDesign", "CONVERSION DESIGN", "A conversion is the action your business needs from someone. It isn't always a sale.", "Conversion Design starts with that action and works backwards. People act when two things are true: the terms are right and the moment is clear. Terms are what's on offer and who decides: the price, the equity, the incentive, the authority. Moments are where the decision happens: the pitch, the screen, the conversation, the form. We design both."),
+      section("moved", "WHAT MOVED", "Founded, ran, built, advised. Here's what moved."),
+      section("library", "LIBRARY", "Free tools for the decision in front of you."),
+    ],
+    decisionPath: {
+      label: "Who needs to act?",
+      actors: [
+        { label: "Investors", who: "investors", act: "commit", stops: "Terms that don't price their risk. A story that changes between the deck and the data room.", look: "The cap table, the ask and the first ten minutes of the pitch.", done: "Investors commit." },
+        { label: "Partners", who: "partners", act: "sign", stops: "Economics that work for one side. No named owner on yours.", look: "The deal terms and the path from yes-in-principle to signature.", done: "Partners sign." },
+        { label: "Our team", who: "our team", act: "execute", stops: "Nobody knows who can approve what. Incentives reward the old way.", look: "The delegation of authority and the reward scheme.", done: "The team executes." },
+        { label: "Customers", who: "customers", act: "buy", stops: "A price they can't compare. A moment that asks for trust before it earns it.", look: "The offer and the three screens before payment.", done: "Customers buy." },
+        { label: "AI in the work", who: "the team", act: "use AI in the workflow", stops: "No one owns the output. The work around the tool hasn't changed.", look: "The workflow, the review step and the cost of each task.", done: "The workflow runs, reviewed." },
+      ].map((a, i) => ({ _key: `a${i}`, _type: "asDecisionActor", ...a })),
+    },
+    situations: [
+      { glyph: "investors", text: "Investors take the meeting and don't commit.", family: "Strategy & Operations", href: FAMILY_HREF.so },
+      { glyph: "team", text: "Two companies merged on paper. They still work as two.", family: "Strategy & Operations", href: FAMILY_HREF.so },
+      { glyph: "customers", text: "Customers reach checkout and don't buy.", family: "Technology & AI", href: "/work/farmcrowdy" },
+      { glyph: "moment", text: "You want AI in a workflow without losing control of the output.", family: "Technology & AI", href: FAMILY_HREF.ta },
+    ].map((x, i) => ({ _key: `sit${i}`, _type: "asSituation", ...x })),
+    proofBand: {
+      leadLabel: "AXIS & SAGE ENGAGEMENT",
+      leadName: "GV Solutions",
+      leadLine: "Embedded. Ifeanyi Monyei has been fractional COO since August 2026.",
+      groups: [
+        { _key: "roles", _type: "asLogoGroup", label: "THE FOUNDERS' EARLIER ROLES", items: [
+          logo("Venture Garden Group", "Venture Garden Group · Ifeanyi Monyei, more than a decade, through consulting leadership and Chief of Staff to Group Strategy & Growth.", 0),
+          logo("National Social Investment Programme", "National Social Investment Programme · Ifeanyi Monyei, consulting lead within the group.", 1),
+          logo("Farmcrowdy", "Farmcrowdy · Tomiwa Ogunmodede, first design hire, then Head of Products.", 2),
+          logo("Kolibri · Learning Equality", "Kolibri, Learning Equality · Tomiwa Ogunmodede, Senior Product Designer.", 3),
+        ] },
+        { _key: "founded", _type: "asLogoGroup", label: "VENTURES THEY STARTED", items: [
+          logo("Mular", "Mular · co-founded by Tomiwa Ogunmodede.", 0),
+          logo("Earlybean", "Earlybean · co-founded by Tomiwa Ogunmodede. Techstars '23.", 1),
+        ] },
+      ],
+      hint: "Hover or tab to a logo to see who did what. Work awaiting confirmed provenance is withheld.",
+    },
+    featuredCases: refs("work", ["farmcrowdy", "gv-solutions"]),
+    testimony: {
+      quote: ref("testimonial:bunmi"),
+      stats: [
+        proofStat("MULAR · FOUNDED", "$2.1M+", "Processed across 19K+ transactions", "/work/mular", 0),
+        proofStat("KOLIBRI · EARLIER ROLE", "60%", "Fewer failed content imports in usability testing", undefined, 1),
+        proofStat("EARLYBEAN · FOUNDED", "3,416", "Active users; Techstars '23", undefined, 2),
+      ],
+    },
+    methodCase: ref("work:farmcrowdy"),
+    aiNote: "AI-native: we use AI in how we work, with a principal reviewing every output.",
+    startLabels: ["Day 1 · the sentence", "Days 2–9 · interviews, path, numbers", "Day 10 · readout"],
+  },
+  [SINGLETON_IDS.method]: {
+    hero: { label: "APPROACH", title: "One sentence to start. One number to finish.", sub: "We call the method Conversion Design. A conversion is the action your business needs from someone, and it isn't always a sale." },
+    halves: { label: "PEOPLE ACT WHEN BOTH ARE TRUE", terms: { title: "The price, the equity, the incentive, the authority.", line: "Decide whether people want to act." }, moments: { title: "The pitch, the screen, the conversation, the form.", line: "Decide whether people can." } },
+    stagesLabel: "FOUR STAGES · FARMCROWDY",
+    methodStepsExpanded: [
+      { index: "01", title: "Name the action.", body: "One sentence, agreed with the people who own the outcome.", owner: "Your leadership and one of us", artefact: "The sentence and its measure", measure: "How the baseline is counted" },
+      { index: "02", title: "Find what's in the way.", body: "Interviews, the path walked, the numbers read. Every blocker tagged terms, moment or both.", owner: "Us", artefact: "The blocker list and a fixed quote", measure: "The baseline, page one" },
+      { index: "03", title: "Fix it.", body: "In the strategy, the operations, the technology or the brand, with your team.", owner: "Your team, led by a principal", artefact: "The change, built and running", measure: "Leading signs agreed in the quote" },
+      { index: "04", title: "Measure what moved.", body: "The same number, counted the same way.", owner: "You, with us", artefact: "The last page", measure: "The new number" },
+    ].map((x, i) => ({ _key: `x${i}`, _type: "asMethodStep", ...x })),
+    why: { label: "WHY US", title: "Two operators. Each leads one half of every decision." },
+    closingLine: "The baseline goes on the first page of our report; the new number on the last. Know the price before we start.",
+  },
+  [sitePageId("work")]: {
+    hero: { label: "SELECTED WORK", title: "What moved, and why.", sub: "Three stories in full, then everything else, each labelled with whose work it was." },
+    sections: [
+      section("index", "EVERYTHING ELSE", "Everything else, labelled."),
+      section("diagnose", "DIAGNOSE", "Conversion Diagnostic", "Ten working days, a fixed fee and a fixed quote for the fix."),
+      section("scorecard", "NOT SURE YET", "Conversion Scorecard", "Six minutes, no sign-up. Your terms and moments scores."),
+    ],
+    strings: [text("filterAll", "All"), text("filterEngagement", "Engagements"), text("filterRole", "Earlier roles"), text("filterFounded", "Founded"), text("tagEngagement", "Engagement"), text("tagRole", "Earlier role"), text("tagFounded", "Founded"), text("readCase", "Read the case"), text("diagnoseLink", "Book a Diagnostic"), text("scorecardLink", "Take the Scorecard")],
+  },
+  [sitePageId("contact")]: {
+    hero: { label: "CONTACT", title: "Who needs to act?", sub: "Pick what fits. The form changes to suit it. We reply within one working day with a clear next step." },
+    strings: [text("callTitle", "Book a 30-minute call"), text("noteTitle", "Send a note"), text("whatsappTitle", "WhatsApp"), text("whatsappLink", "Chat with us"), text("formNote", "No newsletter sign-up. We use this only to reply."), text("bookLabel", "OR PICK A TIME NOW")],
+    paths: [
+      { key: "call", title: "A 30-minute call", line: "Not sure yet. Start with the sentence.", label: "General enquiry", who: "investors", what: "commit to the round" },
+      { key: "diagnostic", title: "A Conversion Diagnostic", line: "Fixed fee, ten working days.", label: "Diagnostic", who: "managers", what: "decide within their limits" },
+      { key: "ai", title: "AI in a workflow", line: "Where it pays, and where it doesn't.", label: "Technology & AI", who: "the order desk", what: "use AI with review" },
+      { key: "embedded", title: "A principal in the seat", line: "Embedded leadership, three months minimum.", label: "Embedded leadership", who: "the group", what: "run as one company" },
+      { key: "investor", title: "Investor readiness", line: "Three-week sprint before a raise.", label: "Investor Readiness Sprint", who: "investors", what: "move to a term sheet" },
+    ].map((x, i) => ({ _key: `path${i}`, _type: "asContactPath", ...x })),
+  },
+  "practice:strategy-and-investment": { summary: "Terms and operating models: governance, incentives, mergers, investment readiness." },
+  "practice:product-and-technology": { summary: "Products, operational software and workflows; AI where it pays, with human review." },
+  "practice:brand-and-market": { summary: "Positioning, identity, investor narrative, go-to-market." },
+  "person:ifeanyi-monyei": {
+    homeLine: "Designs the terms people act on: governance, incentives, deal structures and mergers.",
+    credentialLine: "More than a decade across Venture Garden Group and its portfolio, through consulting leadership and Chief of Staff to Group Strategy & Growth. Fractional COO of GV Solutions.",
+  },
+  "person:tomiwa-ogunmodede": {
+    homeLine: "Designs the moments people act in: products, services and systems where money, access and trust meet.",
+    credentialLine: "First design hire at Farmcrowdy; nearly four years on Kolibri; co-founded Mular and Earlybean.",
+  },
+  "work:farmcrowdy": {
+    setPiece: {
+      eyebrow: "FARMCROWDY · EARLIER ROLE · TOMIWA OGUNMODEDE",
+      headline: "City professionals sponsoring farms they would never visit.",
+      body: "The first-time mobile flow asked for commitment before it built trust. The redesign showed the farm first, then asked.",
+      proof: [stat("18% → 60%", "First-time mobile sponsorship conversion", 0), stat("$9.14M", "Tracked sponsorship volume, from $1.86M, wider period", 1), stat("45,000+", "Customers · company records", 2)],
+      visual: "dotField",
+      caption: "Shown per 100 · first-time mobile sponsorship conversion · internal funnel tracking · Farmcrowdy, 2017–2020",
+      tone: "light",
+    },
+    sentence: "We need first-time visitors to sponsor a farm on their phone.",
+    caseHeadline: "Getting city professionals to sponsor farms they would never visit.",
+    intro: "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest. Sponsors stopped in the first-time mobile flow.",
+    place: "AGRICULTURE INVESTMENT · LAGOS · 2017–2020",
+    roleLine: "Built, then ran product and growth",
+    wayHeadline: "The flow asked for trust it had not yet earned.",
+    flow: { before: ["Create an account", "Choose units and pay", "Then see the farm"], after: ["See the farm", "Planting to harvest", "Sponsor this farm"], caption: "What changed · redrawn from the case description, not the shipped screens" },
+    result: { before: 18, after: 60, numeral: "18% → 60%", label: "First-time mobile sponsorship conversion.", source: "Internal funnel tracking. Shown per 100." },
+    evidence: {
+      measured: "18% → 60% first-time mobile sponsorship conversion, internal funnel tracking. $1.86M → $9.14M tracked sponsorship volume during the wider product and growth period. 45,000+ customers, company records.",
+      notClaimed: "That the flow alone caused the volume growth. Other product and growth work ran in the same period.",
+    },
+    nextCase: ref("work:gv-solutions"),
+    closing: { headline: "Customers trust you until the payment screen?", line: "That is a Technology & AI problem. Tell us in one sentence." },
+  },
+  "work:gv-solutions": {
+    setPiece: {
+      eyebrow: "GV SOLUTIONS · AXIS & SAGE ENGAGEMENT · IFEANYI MONYEI",
+      headline: "Two firms, run as one company.",
+      body: "Merger design, the operating model, and the group's interfaces across finance, legal, brand, technology and data. Then the COO seat.",
+      proof: [stat("2 → 1", "iGate Advisory and Garden Ventures merged", 0), stat("Aug 2026", "Fractional COO since", 1), stat("Embedded", "Operations, delivery and team performance", 2)],
+      visual: "merger",
+      caption: "Structure redrawn from the engagement description · names as recorded",
+      tone: "dark",
+    },
+  },
+  "work:nature-roots": {
+    setPiece: {
+      eyebrow: "NATURE ROOTS · AXIS & SAGE ENGAGEMENT · ADVISED",
+      headline: "A young organic brand that retail buyers would trust.",
+      body: "Brand strategy, a packaging system and a digital identity for a young organic-commodities brand.",
+      proof: [stat("Retail", "Entry into retail channels", 0), stat("Founder", "Credits the work with investor confidence and new partnerships", 1)],
+      visual: "image",
+      image: { ...upload("public/images/axis-sage/nature-roots-live.jpg"), alt: "The Nature Roots range of oils in dropper bottles: coconut, baobab, black castor, sesame seed, black seed and shea butter." },
+      caption: "Nature Roots range · client photograph",
+      tone: "light",
+    },
+  },
+};
 
 /** The counts the seeder must find before it will publish. */
 export const EXPECTED_COUNTS: Record<string, number> = {

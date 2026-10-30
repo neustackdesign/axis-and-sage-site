@@ -16,6 +16,11 @@ const order = defineField({ name: "order", title: "Order", type: "number", descr
 /** Set by the seeder so a re-run updates instead of duplicating. Hidden from editors. */
 const seedKey = defineField({ name: "seedKey", title: "Seed key", type: "string", hidden: true, readOnly: true });
 const groups = [{ name: "content", title: "Content", default: true }, { name: "seo", title: "SEO" }];
+/** The 2026 redesign's fields. Optional: published pages without them keep working. */
+const designGroup = { name: "design", title: "Design 2026" };
+const obj = (name: string, title: string, fields: ReturnType<typeof defineField>[], extra: object = {}) => defineField({ name, title, type: "object", fields, ...extra });
+const str = (name: string, title: string, extra: object = {}) => defineField({ name, title, type: "string", ...extra });
+const txt = (name: string, title: string, extra: object = {}) => defineField({ name, title, type: "text", rows: 2, ...extra });
 const image = (name: string, title: string, extra: object = {}) => defineField({ name, title, type: "image", options: { hotspot: true }, fields: [defineField({ name: "alt", title: "Alt text", type: "string" })], ...extra });
 
 export const SINGLETONS = {
@@ -62,7 +67,7 @@ export const companySettings = defineType({
 });
 
 export const homePageV2 = defineType({
-  name: "homePageV2", title: "Homepage", type: "document", groups,
+  name: "homePageV2", title: "Homepage", type: "document", groups: [...groups, designGroup],
   fields: [
     strings("eyebrow", "Eyebrow labels", { group: "content" }),
     defineField({ name: "headline", title: "Headline", type: "string", group: "content", ...req }),
@@ -88,13 +93,22 @@ export const homePageV2 = defineType({
       validation: (r: any) => r.max(3).unique() }),
     refs("selectedPeople", "Founders", "person", { group: "content" }),
     refs("testimonials", "Testimonials", "testimonialQuote", { group: "content" }),
+    obj("decisionPath", "Hero · decision path", [str("label", "Label"), defineField({ name: "actors", title: "Who needs to act", type: "array", of: [defineArrayMember({ type: "asDecisionActor" })] })], { group: "design" }),
+    defineField({ name: "situations", title: "Situations we're called in for", type: "array", group: "design", of: [defineArrayMember({ type: "asSituation" })], validation: (r: any) => r.max(4) }), // eslint-disable-line @typescript-eslint/no-explicit-any
+    obj("proofBand", "Proof band", [str("leadLabel", "Lead · label"), str("leadName", "Lead · name"), txt("leadLine", "Lead · line"), defineField({ name: "groups", title: "Supporting organisations", type: "array", of: [defineArrayMember({ type: "asLogoGroup" })] }), str("hint", "Hint")], { group: "design" }),
+    refs("featuredCases", "Set pieces", "workItem", { group: "design", description: "Up to two, each with a set piece filled in.", // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      validation: (r: any) => r.max(2).unique() }),
+    obj("testimony", "Testimony", [defineField({ name: "quote", title: "Lead quotation", type: "reference", to: [{ type: "testimonialQuote" }] }), defineField({ name: "stats", title: "Supporting figures", type: "array", of: [defineArrayMember({ type: "asProofStat" })] })], { group: "design" }),
+    defineField({ name: "methodCase", title: "How we work · case shown", type: "reference", to: [{ type: "workItem" }], group: "design" }),
+    str("aiNote", "Where to start · AI note", { group: "design" }),
+    strings("startLabels", "Where to start · the ten days, three labels", { group: "design", validation: (r: any) => r.max(3) }), // eslint-disable-line @typescript-eslint/no-explicit-any
     seo,
   ],
   preview: { prepare: () => ({ title: "Homepage" }) },
 });
 
 export const conversionMethod = defineType({
-  name: "conversionMethod", title: "Conversion Design", type: "document", groups,
+  name: "conversionMethod", title: "Conversion Design", type: "document", groups: [...groups, designGroup],
   fields: [
     defineField({ name: "hero", title: "Hero", type: "object", group: "content", fields: [defineField({ name: "label", type: "string", title: "Label" }), defineField({ name: "title", type: "string", title: "Title" }), defineField({ name: "sub", type: "text", rows: 3, title: "Definition" })] }),
     defineField({ name: "sections", title: "Section intros", type: "array", group: "content", of: [defineArrayMember({ type: "asSectionIntro" })] }),
@@ -126,6 +140,10 @@ export const conversionMethod = defineType({
     defineField({ name: "actionCards", title: "By type of action", type: "array", group: "content", hidden: true, description: "No longer shown on the site.", of: [defineArrayMember({ type: "asActionCard" })] }),
     defineField({ name: "actionCardLinkLabel", title: "Work link label", description: "Link to the work index under \"What counts\".", type: "string", group: "content" }),
     refs("faqs", "FAQs on this page", "faqItem", { group: "content" }),
+    obj("halves", "Terms and moments", [str("label", "Label"), obj("terms", "Terms", [str("title", "Title"), str("line", "Line")]), obj("moments", "Moments", [str("title", "Title"), str("line", "Line")])], { group: "design" }),
+    str("stagesLabel", "Stages · label", { group: "design" }),
+    obj("why", "Why us", [str("label", "Label"), str("title", "Title")], { group: "design" }),
+    txt("closingLine", "Founders · closing line", { group: "design" }),
     seo,
   ],
   preview: { prepare: () => ({ title: "Conversion Design" }) },
@@ -138,6 +156,7 @@ export const sitePage = defineType({
     defineField({ name: "hero", title: "Hero", type: "object", group: "content", fields: [defineField({ name: "label", type: "string", title: "Label" }), defineField({ name: "title", type: "string", title: "Title" }), defineField({ name: "sub", type: "text", rows: 3, title: "Sub" })] }),
     defineField({ name: "sections", title: "Section intros", type: "array", group: "content", of: [defineArrayMember({ type: "asSectionIntro" })] }),
     defineField({ name: "strings", title: "Other text on the page", type: "array", group: "content", of: [defineArrayMember({ type: "asTextItem" })] }),
+    defineField({ name: "paths", title: "Starting points", type: "array", group: "content", of: [defineArrayMember({ type: "asContactPath" })], hidden: ({ document }) => document?.key !== "contact", description: "Contact page: the form relabels to suit the one chosen." }),
     seo,
   ],
   preview: { select: { title: "hero.title", subtitle: "key" } },
@@ -161,6 +180,8 @@ export const person = defineType({
     defineField({ name: "education", title: "Education", type: "string", group: "content" }),
     defineField({ name: "basedIn", title: "Based in", type: "string", group: "content" }),
     image("portrait", "Portrait", { group: "content" }),
+    defineField({ name: "homeLine", title: "Homepage line", type: "string", group: "content", description: "One line of expertise under the name on the homepage." }),
+    defineField({ name: "credentialLine", title: "Credentials line", type: "text", rows: 2, group: "content", description: "Short and factual; shown smaller than the homepage line." }),
     defineField({ name: "email", title: "Public email", type: "email", group: "content" }),
     defineField({ name: "links", title: "Links", type: "array", group: "content", of: [defineArrayMember({ type: "asLink" })] }),
     refs("relatedWork", "Related work", "workItem", { group: "content" }),
@@ -198,7 +219,7 @@ export const practice = defineType({
 
 export const workItem = defineType({
   name: "workItem", title: "Work", type: "document",
-  groups: [{ name: "content", title: "Content", default: true }, { name: "case", title: "Case study" }, { name: "seo", title: "SEO" }],
+  groups: [{ name: "content", title: "Content", default: true }, { name: "case", title: "Case study" }, designGroup, { name: "seo", title: "SEO" }],
   fields: [
     defineField({ name: "title", title: "Title", type: "string", group: "content", ...req }),
     slug(),
@@ -226,6 +247,17 @@ export const workItem = defineType({
     defineField({ name: "artifact", title: "Redrawn artifact", type: "string", group: "case", options: list(caseArtifacts) }),
     refs("relatedTools", "Related tools", "toolContent", { group: "case" }),
     image("image", "Image", { group: "case" }),
+    defineField({ name: "setPiece", title: "Set piece", type: "asSetPiece", group: "design" }),
+    str("sentence", "The sentence", { group: "design", description: "We need [who] to [do what]. Shown in the readouts." }),
+    str("caseHeadline", "Case page · headline", { group: "design", description: "Filled in: the case page uses the 2026 layout." }),
+    str("place", "Case page · place and years", { group: "design" }),
+    str("roleLine", "Case page · role", { group: "design" }),
+    str("wayHeadline", "Case page · what was in the way", { group: "design" }),
+    obj("flow", "Case page · the flow, redrawn", [strings("before", "Before · screens"), strings("after", "After · screens"), str("caption", "Label")], { group: "design" }),
+    obj("result", "Case page · the result", [defineField({ name: "before", title: "Before (per 100)", type: "number" }), defineField({ name: "after", title: "After (per 100)", type: "number" }), str("numeral", "Figure"), str("label", "Label"), str("source", "Source")], { group: "design" }),
+    obj("evidence", "Case page · evidence, kept apart", [txt("measured", "Measured"), txt("observed", "Observed", { description: "Leave empty until it is confirmed." }), txt("notClaimed", "Not claimed")], { group: "design" }),
+    defineField({ name: "nextCase", title: "Case page · next", type: "reference", to: [{ type: "workItem" }], group: "design" }),
+    obj("closing", "Case page · closing call to action", [str("headline", "Headline"), str("line", "Line")], { group: "design" }),
     order, seo, seedKey,
   ],
   orderings: [{ title: "Order", name: "order", by: [{ field: "order", direction: "asc" }] }],

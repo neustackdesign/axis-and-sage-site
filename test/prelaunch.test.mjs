@@ -112,7 +112,10 @@ test("Provenance renders on work cards, case cards and case pages", async () => 
   const blocks = await read("src/components/ds/blocks.tsx");
   assert.match(blocks, /provenanceLabel\(item\.provenance\)/);
   assert.match(await read("src/app/(site)/work/[slug]/page.tsx"), /provenanceLabel\(c\.provenance\)/);
-  assert.match(await read("src/app/(home)/page.tsx"), /home\.selectedWork\.map/);
+  assert.match(await read("src/components/v26/CasePage.tsx"), /provenanceLabel\(c\.provenance\)/);
+  // 2026: set pieces name whose work it was in their eyebrow; the work index tags every row by relationship.
+  assert.match(await read("src/app/(home)/page.tsx"), /home\.featuredCases\.map/);
+  assert.match(await read("src/components/v26/WorkIndex.tsx"), /w\.provenance === "axisAndSage"/);
 });
 
 /* ---------- Founder decisions ---------- */

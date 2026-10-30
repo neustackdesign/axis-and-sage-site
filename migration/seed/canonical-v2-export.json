@@ -18,9 +18,13 @@
       "toolContent": 6,
       "legalPage": 2
     },
-    "generatedFromCommit": "a63f1ba3f462d63c0e54e1fba100da6d1c92ef50",
-    "contentChecksum": "sha256:3806c1ac0eb48d4f924d718a52c872665806b0884854a09d67a20e1b18235127",
+    "generatedFromCommit": "a63f1ba3f462d63c0e54e1fba100da6d1c92ef50-dirty",
+    "contentChecksum": "sha256:b0256bde7fd0c715daf96f5695a16904bb9a9b81f4dc6b1844b4f6ced8f68858",
     "assets": [
+      {
+        "ref": "image-1daac82e3a094855c85d5881de44c91a0fd7d11b-2048x1536-jpg",
+        "file": "public/images/axis-sage/nature-roots-live.jpg"
+      },
       {
         "ref": "image-a185f2e2010886c9d656a1c7c03b265d35a5f09d-900x683-jpg",
         "file": "public/images/axis-sage/portraits/portrait-1.jpg"
@@ -243,12 +247,12 @@
         "current": "ifeanyi-monyei"
       },
       "publicTitle": "Co-founder",
-      "practiceTitle": "Strategy & Investment",
+      "practiceTitle": "Strategy & Operations",
       "initials": "IM",
       "focus": "terms",
       "principleLine": "Designs the terms people act on.",
       "shortBio": "Governance, delegation of authority, executive and employee incentives, operating structure, partnerships and business integration. More than a decade across Venture Garden Group and its portfolio, through consulting leadership and Chief of Staff to Group Strategy & Growth.",
-      "longBio": "Ifeanyi works on the terms behind action: governance, operating structure, incentives, partnerships and commercial decision-making.\n\nShe has spent more than a decade across Venture Garden Group and its portfolio, progressing through consulting leadership and Chief of Staff to Group Strategy & Growth. Her work includes governance and delegation of authority, executive reward, employee equity, operating models, business integration and partnership structures.\n\nShe designed and led the merger that created GV Solutions and now serves as its fractional COO through Axis & Sage.\n\nEarlier work includes consulting leadership across programmes within Nigeria's National Social Investment Programme and public-sector transformation through Galaxy Backbone.\n\nAt Axis & Sage, she leads Strategy & Investment.",
+      "longBio": "Ifeanyi works on the terms behind action: governance, operating structure, incentives, partnerships and commercial decision-making.\n\nShe has spent more than a decade across Venture Garden Group and its portfolio, progressing through consulting leadership and Chief of Staff to Group Strategy & Growth. Her work includes governance and delegation of authority, executive reward, employee equity, operating models, business integration and partnership structures.\n\nShe designed and led the merger that created GV Solutions and now serves as its fractional COO through Axis & Sage.\n\nEarlier work includes consulting leadership across programmes within Nigeria's National Social Investment Programme and public-sector transformation through Galaxy Backbone.\n\nAt Axis & Sage, she leads Strategy & Operations.",
       "proofPoints": [
         "Governance framework, delegation of authority, board pay policy, executive reward and employee share scheme redesign across Venture Garden Group.",
         "Designed and led the merger that created GV Solutions, where she now serves as fractional COO through Axis & Sage.",
@@ -295,8 +299,10 @@
       "seo": {
         "_type": "asSeo",
         "title": "Ifeanyi Monyei | Axis & Sage",
-        "description": "Ifeanyi Monyei, Co-founder, Strategy & Investment. Designs the terms people act on."
-      }
+        "description": "Ifeanyi Monyei, Co-founder, Strategy & Operations. Designs the terms people act on."
+      },
+      "homeLine": "Designs the terms people act on: governance, incentives, deal structures and mergers.",
+      "credentialLine": "More than a decade across Venture Garden Group and its portfolio, through consulting leadership and Chief of Staff to Group Strategy & Growth. Fractional COO of GV Solutions."
     },
     {
       "_id": "axisSage-person-tomiwa-ogunmodede",
@@ -308,12 +314,12 @@
         "current": "tomiwa-ogunmodede"
       },
       "publicTitle": "Co-founder",
-      "practiceTitle": "Product & Technology",
+      "practiceTitle": "Technology & AI",
       "initials": "TO",
       "focus": "moments",
       "principleLine": "Designs the moments people act in.",
       "shortBio": "Products, services and brands where money, access and trust meet. More than ten years across fintech, education, hospitality and AI-assisted products, from first design hire to co-founder.",
-      "longBio": "Tomiwa works on the moments where people act: products, interfaces, services and systems.\n\nHe has more than ten years across product design, technology, growth and venture building in fintech, education, hospitality and operational software.\n\nHe was the first design hire at Farmcrowdy, where internal funnel tracking recorded first-time mobile sponsorship conversion moving from 18% to 60%. He spent nearly four years as Senior Product Designer on Learning Equality's Kolibri platform, co-founded Mular and Earlybean, and currently leads Product & Technology for Lion Hospitality Partners.\n\nAt Axis & Sage, he leads Product & Technology.",
+      "longBio": "Tomiwa works on the moments where people act: products, interfaces, services and systems.\n\nHe has more than ten years across product design, technology, growth and venture building in fintech, education, hospitality and operational software.\n\nHe was the first design hire at Farmcrowdy, where internal funnel tracking recorded first-time mobile sponsorship conversion moving from 18% to 60%. He spent nearly four years as Senior Product Designer on Learning Equality's Kolibri platform, co-founded Mular and Earlybean, and currently leads Product & Technology for Lion Hospitality Partners.\n\nAt Axis & Sage, he leads Technology & AI.",
       "proofPoints": [
         "Farmcrowdy: first-time mobile sponsorship conversion from 18% to 60%, recorded by internal funnel tracking.",
         "Co-founded Mular: $2.1M+ processed across 19K+ transactions.",
@@ -370,8 +376,10 @@
       "seo": {
         "_type": "asSeo",
         "title": "Tomiwa Ogunmodede | Axis & Sage",
-        "description": "Tomiwa Ogunmodede, Co-founder, Product & Technology. Designs the moments people act in."
-      }
+        "description": "Tomiwa Ogunmodede, Co-founder, Technology & AI. Designs the moments people act in."
+      },
+      "homeLine": "Designs the moments people act in: products, services and systems where money, access and trust meet.",
+      "credentialLine": "First design hire at Farmcrowdy; nearly four years on Kolibri; co-founded Mular and Earlybean."
     },
     {
       "_id": "axisSage-work-gv-solutions",
@@ -447,6 +455,34 @@
         "_type": "asSeo",
         "title": "GV Solutions · Work | Axis & Sage",
         "description": "GV Solutions: GV Solutions formed. Axis & Sage holds the COO seat."
+      },
+      "setPiece": {
+        "eyebrow": "GV SOLUTIONS · AXIS & SAGE ENGAGEMENT · IFEANYI MONYEI",
+        "headline": "Two firms, run as one company.",
+        "body": "Merger design, the operating model, and the group's interfaces across finance, legal, brand, technology and data. Then the COO seat.",
+        "proof": [
+          {
+            "_key": "p0",
+            "_type": "asStat",
+            "numeral": "2 → 1",
+            "label": "iGate Advisory and Garden Ventures merged"
+          },
+          {
+            "_key": "p1",
+            "_type": "asStat",
+            "numeral": "Aug 2026",
+            "label": "Fractional COO since"
+          },
+          {
+            "_key": "p2",
+            "_type": "asStat",
+            "numeral": "Embedded",
+            "label": "Operations, delivery and team performance"
+          }
+        ],
+        "visual": "merger",
+        "caption": "Structure redrawn from the engagement description · names as recorded",
+        "tone": "dark"
       }
     },
     {
@@ -654,7 +690,7 @@
       ],
       "caseStudy": true,
       "years": "2017–2020",
-      "intro": "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest.",
+      "intro": "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest. Sponsors stopped in the first-time mobile flow.",
       "caseNeeded": "FIRST-TIME VISITORS TO SPONSOR A FARM ON THEIR PHONE.",
       "inTheWay": [
         "Sponsors would never see the farm.",
@@ -705,6 +741,71 @@
         "_type": "asSeo",
         "title": "Farmcrowdy · Work | Axis & Sage",
         "description": "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest."
+      },
+      "setPiece": {
+        "eyebrow": "FARMCROWDY · EARLIER ROLE · TOMIWA OGUNMODEDE",
+        "headline": "City professionals sponsoring farms they would never visit.",
+        "body": "The first-time mobile flow asked for commitment before it built trust. The redesign showed the farm first, then asked.",
+        "proof": [
+          {
+            "_key": "p0",
+            "_type": "asStat",
+            "numeral": "18% → 60%",
+            "label": "First-time mobile sponsorship conversion"
+          },
+          {
+            "_key": "p1",
+            "_type": "asStat",
+            "numeral": "$9.14M",
+            "label": "Tracked sponsorship volume, from $1.86M, wider period"
+          },
+          {
+            "_key": "p2",
+            "_type": "asStat",
+            "numeral": "45,000+",
+            "label": "Customers · company records"
+          }
+        ],
+        "visual": "dotField",
+        "caption": "Shown per 100 · first-time mobile sponsorship conversion · internal funnel tracking · Farmcrowdy, 2017–2020",
+        "tone": "light"
+      },
+      "sentence": "We need first-time visitors to sponsor a farm on their phone.",
+      "caseHeadline": "Getting city professionals to sponsor farms they would never visit.",
+      "place": "AGRICULTURE INVESTMENT · LAGOS · 2017–2020",
+      "roleLine": "Built, then ran product and growth",
+      "wayHeadline": "The flow asked for trust it had not yet earned.",
+      "flow": {
+        "before": [
+          "Create an account",
+          "Choose units and pay",
+          "Then see the farm"
+        ],
+        "after": [
+          "See the farm",
+          "Planting to harvest",
+          "Sponsor this farm"
+        ],
+        "caption": "What changed · redrawn from the case description, not the shipped screens"
+      },
+      "result": {
+        "before": 18,
+        "after": 60,
+        "numeral": "18% → 60%",
+        "label": "First-time mobile sponsorship conversion.",
+        "source": "Internal funnel tracking. Shown per 100."
+      },
+      "evidence": {
+        "measured": "18% → 60% first-time mobile sponsorship conversion, internal funnel tracking. $1.86M → $9.14M tracked sponsorship volume during the wider product and growth period. 45,000+ customers, company records.",
+        "notClaimed": "That the flow alone caused the volume growth. Other product and growth work ran in the same period."
+      },
+      "nextCase": {
+        "_type": "reference",
+        "_ref": "axisSage-work-gv-solutions"
+      },
+      "closing": {
+        "headline": "Customers trust you until the payment screen?",
+        "line": "That is a Technology & AI problem. Tell us in one sentence."
       }
     },
     {
@@ -971,6 +1072,36 @@
         "_type": "asSeo",
         "title": "Nature Roots · Work | Axis & Sage",
         "description": "Nature Roots: Entry into retail channels; the founder credits the work with investor confidence and new partnerships."
+      },
+      "setPiece": {
+        "eyebrow": "NATURE ROOTS · AXIS & SAGE ENGAGEMENT · ADVISED",
+        "headline": "A young organic brand that retail buyers would trust.",
+        "body": "Brand strategy, a packaging system and a digital identity for a young organic-commodities brand.",
+        "proof": [
+          {
+            "_key": "p0",
+            "_type": "asStat",
+            "numeral": "Retail",
+            "label": "Entry into retail channels"
+          },
+          {
+            "_key": "p1",
+            "_type": "asStat",
+            "numeral": "Founder",
+            "label": "Credits the work with investor confidence and new partnerships"
+          }
+        ],
+        "visual": "image",
+        "image": {
+          "_type": "image",
+          "alt": "The Nature Roots range of oils in dropper bottles: coconut, baobab, black castor, sesame seed, black seed and shea butter.",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-1daac82e3a094855c85d5881de44c91a0fd7d11b-2048x1536-jpg"
+          }
+        },
+        "caption": "Nature Roots range · client photograph",
+        "tone": "light"
       }
     },
     {
@@ -1164,15 +1295,15 @@
       "_id": "axisSage-practice-strategy-and-investment",
       "_type": "practice",
       "seedKey": "practice:strategy-and-investment",
-      "title": "Strategy & Investment",
+      "title": "Strategy & Operations",
       "slug": {
         "_type": "slug",
         "current": "strategy-and-investment"
       },
       "section": "whatWeDo",
-      "eyebrow": "WHAT WE DO · STRATEGY & INVESTMENT",
+      "eyebrow": "WHAT WE DO · STRATEGY & OPERATIONS",
       "headline": "Get the terms right.",
-      "summary": "The structure, incentives and deals that decide whether investors, partners and teams want to act.",
+      "summary": "Terms and operating models: governance, incentives, mergers, investment readiness.",
       "navDescription": "Get the terms right.",
       "ledBy": [
         {
@@ -1200,7 +1331,7 @@
         "Partnership and joint-venture commercial terms"
       ],
       "howItWorks": [],
-      "connectsCopy": "Terms decide whether people want to act. Product & Technology and Brand & Market make sure they can.",
+      "connectsCopy": "Terms decide whether people want to act. Technology & AI and Brand & Growth make sure they can.",
       "proof": [
         {
           "_type": "reference",
@@ -1238,24 +1369,24 @@
       "order": 1,
       "seo": {
         "_type": "asSeo",
-        "title": "Strategy & Investment for Africa and the GCC | Axis & Sage",
+        "title": "Strategy & Operations for Africa and the GCC | Axis & Sage",
         "description": "Governance, delegation of authority, incentives and share schemes, investment readiness, mergers and market entry.",
-        "ogTitle": "Strategy & Investment for Africa and the GCC"
+        "ogTitle": "Strategy & Operations for Africa and the GCC"
       }
     },
     {
       "_id": "axisSage-practice-product-and-technology",
       "_type": "practice",
       "seedKey": "practice:product-and-technology",
-      "title": "Product & Technology",
+      "title": "Technology & AI",
       "slug": {
         "_type": "slug",
         "current": "product-and-technology"
       },
       "section": "whatWeDo",
-      "eyebrow": "WHAT WE DO · PRODUCT & TECHNOLOGY",
+      "eyebrow": "WHAT WE DO · TECHNOLOGY & AI",
       "headline": "Make the moment clear.",
-      "summary": "The products, flows and systems where customers pay, users sign up and teams do the work.",
+      "summary": "Products, operational software and workflows; AI where it pays, with human review.",
       "navDescription": "Make the moment clear.",
       "ledBy": [
         {
@@ -1323,15 +1454,15 @@
       "_id": "axisSage-practice-brand-and-market",
       "_type": "practice",
       "seedKey": "practice:brand-and-market",
-      "title": "Brand & Market",
+      "title": "Brand & Growth",
       "slug": {
         "_type": "slug",
         "current": "brand-and-market"
       },
       "section": "whatWeDo",
-      "eyebrow": "WHAT WE DO · BRAND & MARKET",
+      "eyebrow": "WHAT WE DO · BRAND & GROWTH",
       "headline": "Say it so they act.",
-      "summary": "The positioning, identity and go-to-market that tell customers, partners and investors why to act, and why now.",
+      "summary": "Positioning, identity, investor narrative, go-to-market.",
       "navDescription": "Say it so they act.",
       "ledByLabel": "both founders",
       "ledBy": [
@@ -3299,12 +3430,97 @@
       "_type": "sitePage",
       "key": "work",
       "hero": {
-        "label": "WORK",
-        "title": "Who needed to act, and what moved.",
-        "sub": "Work by Axis & Sage and its founders. Every case is tagged with our role: founded, ran, built, advised or embedded, and with where it comes from: an Axis & Sage engagement or the principals' track record."
+        "label": "SELECTED WORK",
+        "title": "What moved, and why.",
+        "sub": "Three stories in full, then everything else, each labelled with whose work it was."
       },
-      "sections": [],
-      "strings": [],
+      "sections": [
+        {
+          "_key": "index",
+          "_type": "asSectionIntro",
+          "key": "index",
+          "label": "EVERYTHING ELSE",
+          "title": "Everything else, labelled."
+        },
+        {
+          "_key": "diagnose",
+          "_type": "asSectionIntro",
+          "key": "diagnose",
+          "label": "DIAGNOSE",
+          "title": "Conversion Diagnostic",
+          "intro": "Ten working days, a fixed fee and a fixed quote for the fix."
+        },
+        {
+          "_key": "scorecard",
+          "_type": "asSectionIntro",
+          "key": "scorecard",
+          "label": "NOT SURE YET",
+          "title": "Conversion Scorecard",
+          "intro": "Six minutes, no sign-up. Your terms and moments scores."
+        }
+      ],
+      "strings": [
+        {
+          "_key": "filterAll",
+          "_type": "asTextItem",
+          "key": "filterAll",
+          "value": "All"
+        },
+        {
+          "_key": "filterEngagement",
+          "_type": "asTextItem",
+          "key": "filterEngagement",
+          "value": "Engagements"
+        },
+        {
+          "_key": "filterRole",
+          "_type": "asTextItem",
+          "key": "filterRole",
+          "value": "Earlier roles"
+        },
+        {
+          "_key": "filterFounded",
+          "_type": "asTextItem",
+          "key": "filterFounded",
+          "value": "Founded"
+        },
+        {
+          "_key": "tagEngagement",
+          "_type": "asTextItem",
+          "key": "tagEngagement",
+          "value": "Engagement"
+        },
+        {
+          "_key": "tagRole",
+          "_type": "asTextItem",
+          "key": "tagRole",
+          "value": "Earlier role"
+        },
+        {
+          "_key": "tagFounded",
+          "_type": "asTextItem",
+          "key": "tagFounded",
+          "value": "Founded"
+        },
+        {
+          "_key": "readCase",
+          "_type": "asTextItem",
+          "key": "readCase",
+          "value": "Read the case"
+        },
+        {
+          "_key": "diagnoseLink",
+          "_type": "asTextItem",
+          "key": "diagnoseLink",
+          "value": "Book a Diagnostic"
+        },
+        {
+          "_key": "scorecardLink",
+          "_type": "asTextItem",
+          "key": "scorecardLink",
+          "value": "Take the Scorecard"
+        }
+      ],
       "seo": {
         "_type": "asSeo",
         "title": "Work: who needed to act, and what moved | Axis & Sage",
@@ -3411,8 +3627,8 @@
       "key": "contact",
       "hero": {
         "label": "CONTACT",
-        "title": "Tell us who needs to act.",
-        "sub": "One sentence is enough. We reply within one working day with a clear next step."
+        "title": "Who needs to act?",
+        "sub": "Pick what fits. The form changes to suit it. We reply within one working day with a clear next step."
       },
       "sections": [],
       "strings": [
@@ -3439,6 +3655,18 @@
           "_type": "asTextItem",
           "key": "whatsappLink",
           "value": "Chat with us"
+        },
+        {
+          "_key": "formNote",
+          "_type": "asTextItem",
+          "key": "formNote",
+          "value": "No newsletter sign-up. We use this only to reply."
+        },
+        {
+          "_key": "bookLabel",
+          "_type": "asTextItem",
+          "key": "bookLabel",
+          "value": "OR PICK A TIME NOW"
         }
       ],
       "seo": {
@@ -3446,7 +3674,59 @@
         "title": "Contact | Axis & Sage",
         "description": "Tell us who needs to act. One sentence is enough. We reply within one working day with a clear next step.",
         "ogTitle": "Tell us who needs to act."
-      }
+      },
+      "paths": [
+        {
+          "_key": "path0",
+          "_type": "asContactPath",
+          "key": "call",
+          "title": "A 30-minute call",
+          "line": "Not sure yet. Start with the sentence.",
+          "label": "General enquiry",
+          "who": "investors",
+          "what": "commit to the round"
+        },
+        {
+          "_key": "path1",
+          "_type": "asContactPath",
+          "key": "diagnostic",
+          "title": "A Conversion Diagnostic",
+          "line": "Fixed fee, ten working days.",
+          "label": "Diagnostic",
+          "who": "managers",
+          "what": "decide within their limits"
+        },
+        {
+          "_key": "path2",
+          "_type": "asContactPath",
+          "key": "ai",
+          "title": "AI in a workflow",
+          "line": "Where it pays, and where it doesn't.",
+          "label": "Technology & AI",
+          "who": "the order desk",
+          "what": "use AI with review"
+        },
+        {
+          "_key": "path3",
+          "_type": "asContactPath",
+          "key": "embedded",
+          "title": "A principal in the seat",
+          "line": "Embedded leadership, three months minimum.",
+          "label": "Embedded leadership",
+          "who": "the group",
+          "what": "run as one company"
+        },
+        {
+          "_key": "path4",
+          "_type": "asContactPath",
+          "key": "investor",
+          "title": "Investor readiness",
+          "line": "Three-week sprint before a raise.",
+          "label": "Investor Readiness Sprint",
+          "who": "investors",
+          "what": "move to a term sheet"
+        }
+      ]
     },
     {
       "_id": "axisSagePage-newsletter",
@@ -3576,29 +3856,29 @@
       "navigation": {
         "whatWeDo": {
           "_type": "asNavGroup",
-          "label": "What we do",
+          "label": "Services",
           "key": "what-we-do",
-          "eyebrow": "WHAT WE DO",
-          "blurb": "Strategy & Investment fixes terms. Product & Technology fixes moments. Brand & Market fixes the promise and the message.",
+          "eyebrow": "SERVICES",
+          "blurb": "Start with a Conversion Diagnostic, or the six-minute Scorecard.",
           "items": [
             {
               "_key": "l0",
               "_type": "asLink",
-              "label": "Strategy & Investment",
+              "label": "Strategy & Operations",
               "href": "/what-we-do/strategy-and-investment",
-              "description": "Get the terms right."
+              "description": "Get the terms and the operating model right."
             },
             {
               "_key": "l1",
               "_type": "asLink",
-              "label": "Product & Technology",
+              "label": "Technology & AI",
               "href": "/what-we-do/product-and-technology",
-              "description": "Make the moment clear."
+              "description": "Make the systems people use work."
             },
             {
               "_key": "l2",
               "_type": "asLink",
-              "label": "Brand & Market",
+              "label": "Brand & Growth",
               "href": "/what-we-do/brand-and-market",
               "description": "Say it so they act."
             },
@@ -3651,14 +3931,20 @@
           {
             "_key": "l1",
             "_type": "asLink",
-            "label": "Conversion Design",
+            "label": "Approach",
             "href": "/conversion-design"
           },
           {
             "_key": "l2",
             "_type": "asLink",
-            "label": "People",
+            "label": "About",
             "href": "/people"
+          },
+          {
+            "_key": "l3",
+            "_type": "asLink",
+            "label": "Library",
+            "href": "/library"
           }
         ]
       },
@@ -3671,19 +3957,19 @@
             {
               "_key": "l0",
               "_type": "asLink",
-              "label": "Strategy & Investment",
+              "label": "Strategy & Operations",
               "href": "/what-we-do/strategy-and-investment"
             },
             {
               "_key": "l1",
               "_type": "asLink",
-              "label": "Product & Technology",
+              "label": "Technology & AI",
               "href": "/what-we-do/product-and-technology"
             },
             {
               "_key": "l2",
               "_type": "asLink",
-              "label": "Brand & Market",
+              "label": "Brand & Growth",
               "href": "/what-we-do/brand-and-market"
             },
             {
@@ -3804,7 +4090,7 @@
       "legalLine": "© 2026 Axis & Sage Advisory Limited · Masdar City Free Zone, Abu Dhabi, United Arab Emirates",
       "primaryCta": {
         "_type": "asCta",
-        "label": "Book a call",
+        "label": "Book a 30-minute call",
         "href": "/contact#book"
       },
       "scorecardCta": {
@@ -3839,7 +4125,7 @@
         "LAGOS"
       ],
       "headline": "Get the people your business depends on to act.",
-      "supportingCopy": "Investors commit, partners sign, teams execute and customers buy when the terms are right and the moment is clear. We design both. We call it Conversion Design.",
+      "supportingCopy": "Axis & Sage is an advisory for businesses across Africa and the GCC. We fix what stops investors, partners, teams and customers acting, in the strategy, the operations, the technology or the brand.",
       "desktopHeroImage": {
         "_type": "image",
         "asset": {
@@ -3864,8 +4150,8 @@
       },
       "secondaryCTA": {
         "_type": "asCta",
-        "label": "Take the Conversion Scorecard",
-        "href": "/tools/conversion-scorecard"
+        "label": "See the work",
+        "href": "/work"
       },
       "practices": [
         {
@@ -3900,12 +4186,56 @@
       },
       "sections": [
         {
+          "_key": "situations",
+          "_type": "asSectionIntro",
+          "key": "situations",
+          "label": "SOUND FAMILIAR",
+          "title": "Four situations we're called in for.",
+          "intro": "Each one is a decision that was sound and an action that never happened."
+        },
+        {
+          "_key": "work",
+          "_type": "asSectionIntro",
+          "key": "work",
+          "label": "SELECTED WORK",
+          "title": "What moved, and why."
+        },
+        {
+          "_key": "method",
+          "_type": "asSectionIntro",
+          "key": "method",
+          "label": "HOW WE WORK",
+          "title": "One sentence to start. One number to finish.",
+          "intro": "Shown with the Farmcrowdy case."
+        },
+        {
+          "_key": "start",
+          "_type": "asSectionIntro",
+          "key": "start",
+          "label": "THREE WAYS IN, ONE WAY TO START",
+          "title": "Start with ten working days."
+        },
+        {
+          "_key": "founders",
+          "_type": "asSectionIntro",
+          "key": "founders",
+          "label": "WHO YOU WORK WITH",
+          "title": "Two halves of every decision."
+        },
+        {
+          "_key": "cta",
+          "_type": "asSectionIntro",
+          "key": "cta",
+          "label": "START",
+          "title": "Who needs to act?"
+        },
+        {
           "_key": "gap",
           "_type": "asSectionIntro",
           "key": "gap",
           "label": "THE GAP",
           "title": "Growth stalls in the gap between what a business decides, what it builds and what it says.",
-          "intro": "A board approves a new structure and managers keep deciding the old way. A product launches and customers stop at the payment screen. A raise opens and investors take the meeting, then go quiet. The decision was sound. The action never happened."
+          "intro": "The decision was sound. The action never happened."
         },
         {
           "_key": "conversionDesign",
@@ -3916,32 +4246,11 @@
           "intro": "Conversion Design starts with that action and works backwards. People act when two things are true: the terms are right and the moment is clear. Terms are what's on offer and who decides: the price, the equity, the incentive, the authority. Moments are where the decision happens: the pitch, the screen, the conversation, the form. We design both."
         },
         {
-          "_key": "founders",
-          "_type": "asSectionIntro",
-          "key": "founders",
-          "label": "THE FOUNDERS",
-          "title": "Two halves of every decision."
-        },
-        {
           "_key": "moved",
           "_type": "asSectionIntro",
           "key": "moved",
           "label": "WHAT MOVED",
           "title": "Founded, ran, built, advised. Here's what moved."
-        },
-        {
-          "_key": "work",
-          "_type": "asSectionIntro",
-          "key": "work",
-          "label": "SELECTED WORK",
-          "title": "Who needed to act, and what changed."
-        },
-        {
-          "_key": "start",
-          "_type": "asSectionIntro",
-          "key": "start",
-          "label": "HOW TO START",
-          "title": "Start with one sentence. Know the price before we start."
         },
         {
           "_key": "library",
@@ -3977,7 +4286,7 @@
           "text": "Customers reach checkout and don't buy."
         }
       ],
-      "conversionLinkLabel": "How Conversion Design works",
+      "conversionLinkLabel": "Owners, artefacts and measures ▸",
       "foundersNote": "Every engagement is led by one of us, and usually both.",
       "stats": [
         {
@@ -4097,15 +4406,214 @@
         "title": "Axis & Sage Advisory | Conversion Design for Africa and the GCC",
         "description": "We get the people your business depends on to act: investors, partners, teams and customers. Strategy, product and brand advisory from Abu Dhabi, Dubai and Lagos.",
         "ogTitle": "Conversion Design for Africa and the GCC"
-      }
+      },
+      "decisionPath": {
+        "label": "Who needs to act?",
+        "actors": [
+          {
+            "_key": "a0",
+            "_type": "asDecisionActor",
+            "label": "Investors",
+            "who": "investors",
+            "act": "commit",
+            "stops": "Terms that don't price their risk. A story that changes between the deck and the data room.",
+            "look": "The cap table, the ask and the first ten minutes of the pitch.",
+            "done": "Investors commit."
+          },
+          {
+            "_key": "a1",
+            "_type": "asDecisionActor",
+            "label": "Partners",
+            "who": "partners",
+            "act": "sign",
+            "stops": "Economics that work for one side. No named owner on yours.",
+            "look": "The deal terms and the path from yes-in-principle to signature.",
+            "done": "Partners sign."
+          },
+          {
+            "_key": "a2",
+            "_type": "asDecisionActor",
+            "label": "Our team",
+            "who": "our team",
+            "act": "execute",
+            "stops": "Nobody knows who can approve what. Incentives reward the old way.",
+            "look": "The delegation of authority and the reward scheme.",
+            "done": "The team executes."
+          },
+          {
+            "_key": "a3",
+            "_type": "asDecisionActor",
+            "label": "Customers",
+            "who": "customers",
+            "act": "buy",
+            "stops": "A price they can't compare. A moment that asks for trust before it earns it.",
+            "look": "The offer and the three screens before payment.",
+            "done": "Customers buy."
+          },
+          {
+            "_key": "a4",
+            "_type": "asDecisionActor",
+            "label": "AI in the work",
+            "who": "the team",
+            "act": "use AI in the workflow",
+            "stops": "No one owns the output. The work around the tool hasn't changed.",
+            "look": "The workflow, the review step and the cost of each task.",
+            "done": "The workflow runs, reviewed."
+          }
+        ]
+      },
+      "situations": [
+        {
+          "_key": "sit0",
+          "_type": "asSituation",
+          "glyph": "investors",
+          "text": "Investors take the meeting and don't commit.",
+          "family": "Strategy & Operations",
+          "href": "/what-we-do/strategy-and-investment"
+        },
+        {
+          "_key": "sit1",
+          "_type": "asSituation",
+          "glyph": "team",
+          "text": "Two companies merged on paper. They still work as two.",
+          "family": "Strategy & Operations",
+          "href": "/what-we-do/strategy-and-investment"
+        },
+        {
+          "_key": "sit2",
+          "_type": "asSituation",
+          "glyph": "customers",
+          "text": "Customers reach checkout and don't buy.",
+          "family": "Technology & AI",
+          "href": "/work/farmcrowdy"
+        },
+        {
+          "_key": "sit3",
+          "_type": "asSituation",
+          "glyph": "moment",
+          "text": "You want AI in a workflow without losing control of the output.",
+          "family": "Technology & AI",
+          "href": "/what-we-do/product-and-technology"
+        }
+      ],
+      "proofBand": {
+        "leadLabel": "AXIS & SAGE ENGAGEMENT",
+        "leadName": "GV Solutions",
+        "leadLine": "Embedded. Ifeanyi Monyei has been fractional COO since August 2026.",
+        "groups": [
+          {
+            "_key": "roles",
+            "_type": "asLogoGroup",
+            "label": "THE FOUNDERS' EARLIER ROLES",
+            "items": [
+              {
+                "_key": "lg0",
+                "_type": "asLogoItem",
+                "name": "Venture Garden Group",
+                "line": "Venture Garden Group · Ifeanyi Monyei, more than a decade, through consulting leadership and Chief of Staff to Group Strategy & Growth."
+              },
+              {
+                "_key": "lg1",
+                "_type": "asLogoItem",
+                "name": "National Social Investment Programme",
+                "line": "National Social Investment Programme · Ifeanyi Monyei, consulting lead within the group."
+              },
+              {
+                "_key": "lg2",
+                "_type": "asLogoItem",
+                "name": "Farmcrowdy",
+                "line": "Farmcrowdy · Tomiwa Ogunmodede, first design hire, then Head of Products."
+              },
+              {
+                "_key": "lg3",
+                "_type": "asLogoItem",
+                "name": "Kolibri · Learning Equality",
+                "line": "Kolibri, Learning Equality · Tomiwa Ogunmodede, Senior Product Designer."
+              }
+            ]
+          },
+          {
+            "_key": "founded",
+            "_type": "asLogoGroup",
+            "label": "VENTURES THEY STARTED",
+            "items": [
+              {
+                "_key": "lg0",
+                "_type": "asLogoItem",
+                "name": "Mular",
+                "line": "Mular · co-founded by Tomiwa Ogunmodede."
+              },
+              {
+                "_key": "lg1",
+                "_type": "asLogoItem",
+                "name": "Earlybean",
+                "line": "Earlybean · co-founded by Tomiwa Ogunmodede. Techstars '23."
+              }
+            ]
+          }
+        ],
+        "hint": "Hover or tab to a logo to see who did what. Work awaiting confirmed provenance is withheld."
+      },
+      "featuredCases": [
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-farmcrowdy",
+          "_key": "farmcrowdy-0"
+        },
+        {
+          "_type": "reference",
+          "_ref": "axisSage-work-gv-solutions",
+          "_key": "gv-solutions-1"
+        }
+      ],
+      "testimony": {
+        "quote": {
+          "_type": "reference",
+          "_ref": "axisSage-testimonial-bunmi"
+        },
+        "stats": [
+          {
+            "_key": "ps0",
+            "_type": "asProofStat",
+            "label": "MULAR · FOUNDED",
+            "numeral": "$2.1M+",
+            "line": "Processed across 19K+ transactions",
+            "href": "/work/mular"
+          },
+          {
+            "_key": "ps1",
+            "_type": "asProofStat",
+            "label": "KOLIBRI · EARLIER ROLE",
+            "numeral": "60%",
+            "line": "Fewer failed content imports in usability testing"
+          },
+          {
+            "_key": "ps2",
+            "_type": "asProofStat",
+            "label": "EARLYBEAN · FOUNDED",
+            "numeral": "3,416",
+            "line": "Active users; Techstars '23"
+          }
+        ]
+      },
+      "methodCase": {
+        "_type": "reference",
+        "_ref": "axisSage-work-farmcrowdy"
+      },
+      "aiNote": "AI-native: we use AI in how we work, with a principal reviewing every output.",
+      "startLabels": [
+        "Day 1 · the sentence",
+        "Days 2–9 · interviews, path, numbers",
+        "Day 10 · readout"
+      ]
     },
     {
       "_id": "axisSageConversionMethod",
       "_type": "conversionMethod",
       "hero": {
-        "label": "THE METHOD",
-        "title": "Start from the action.",
-        "sub": "Conversion Design is how we get investors, partners, teams and customers to act. We name the action, find what's in the way in the terms or the moment, fix it, and measure what moved."
+        "label": "APPROACH",
+        "title": "One sentence to start. One number to finish.",
+        "sub": "We call the method Conversion Design. A conversion is the action your business needs from someone, and it isn't always a sale."
       },
       "sections": [
         {
@@ -4341,28 +4849,40 @@
           "_type": "asMethodStep",
           "index": "01",
           "title": "Name the action.",
-          "body": "One sentence, agreed with the people who own the outcome: we need [who] to [do what] by [when]. We agree how we'll measure it before work starts."
+          "body": "One sentence, agreed with the people who own the outcome.",
+          "owner": "Your leadership and one of us",
+          "artefact": "The sentence and its measure",
+          "measure": "How the baseline is counted"
         },
         {
           "_key": "x1",
           "_type": "asMethodStep",
           "index": "02",
           "title": "Find what's in the way.",
-          "body": "We interview the people who need to act and the people who own the path to it. We walk the path ourselves. We read the numbers. Every blocker is tagged: terms, moment, or both."
+          "body": "Interviews, the path walked, the numbers read. Every blocker tagged terms, moment or both.",
+          "owner": "Us",
+          "artefact": "The blocker list and a fixed quote",
+          "measure": "The baseline, page one"
         },
         {
           "_key": "x2",
           "_type": "asMethodStep",
           "index": "03",
           "title": "Fix it.",
-          "body": "Strategy & Investment fixes terms. Product & Technology fixes moments. Brand & Market fixes the promise and the message, which sit across both. We build with your team, and a principal stays until it runs."
+          "body": "In the strategy, the operations, the technology or the brand, with your team.",
+          "owner": "Your team, led by a principal",
+          "artefact": "The change, built and running",
+          "measure": "Leading signs agreed in the quote"
         },
         {
           "_key": "x3",
           "_type": "asMethodStep",
           "index": "04",
           "title": "Measure what moved.",
-          "body": "Baseline on page one, new number on the last page. The number becomes the next decision."
+          "body": "The same number, counted the same way.",
+          "owner": "You, with us",
+          "artefact": "The last page",
+          "measure": "The new number"
         }
       ],
       "example": {
@@ -4462,7 +4982,24 @@
         "title": "Conversion Design: start from the action | Axis & Sage",
         "description": "How we get investors, partners, teams and customers to act: name the action, find what's in the way in the terms or the moment, fix it, and measure what moved.",
         "ogTitle": "Conversion Design: start from the action"
-      }
+      },
+      "halves": {
+        "label": "PEOPLE ACT WHEN BOTH ARE TRUE",
+        "terms": {
+          "title": "The price, the equity, the incentive, the authority.",
+          "line": "Decide whether people want to act."
+        },
+        "moments": {
+          "title": "The pitch, the screen, the conversation, the form.",
+          "line": "Decide whether people can."
+        }
+      },
+      "stagesLabel": "FOUR STAGES · FARMCROWDY",
+      "why": {
+        "label": "WHY US",
+        "title": "Two operators. Each leads one half of every decision."
+      },
+      "closingLine": "The baseline goes on the first page of our report; the new number on the last. Know the price before we start."
     }
   ]
 }

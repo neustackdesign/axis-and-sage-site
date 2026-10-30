@@ -65,9 +65,46 @@ export type CasePage = {
   quote?: Testimonial;
   tools: ToolMeta[];
   artifact?: "farmcrowdy" | "mular" | "governance" | "merger";
+  /** 2026 layout: present when caseHeadline is filled in. */
+  design?: CaseDesign;
   seo: PageSeo;
   updatedAt?: string;
 };
+
+export type CaseDesign = {
+  headline: string;
+  place?: string;
+  roleLine?: string;
+  wayHeadline?: string;
+  flow?: { before: string[]; after: string[]; caption?: string };
+  result?: CaseResult;
+  evidence?: { measured?: string; observed?: string; notClaimed?: string };
+  next?: { slug: string; name: string; provenance?: Provenance; actions: ActionKey[]; line: string };
+  closing?: { headline: string; line?: string };
+};
+export type CaseResult = { before: number; after: number; numeral: string; label: string; source?: string };
+
+/** The 2026 set piece: a text panel beside a media field. */
+export type SetPiece = {
+  slug: string;
+  name: string;
+  hasCase: boolean;
+  provenance?: Provenance;
+  eyebrow: string;
+  headline: string;
+  body: string;
+  status?: string;
+  caption?: string;
+  visual: "dotField" | "merger" | "image";
+  tone: "light" | "dark";
+  proof: { numeral: string; label: string }[];
+  image?: SanityImageView;
+};
+
+/** A case told as the four-stage readout. */
+export type Readout = { slug: string; name: string; sentence?: string; inTheWay: string[]; changes: CaseChange[]; result?: CaseResult };
+export type ProofStat = { label: string; numeral: string; line: string; href?: string };
+export type ContactPath = { key: string; title: string; line: string; label: string; who: string; what: string };
 
 export type Person = {
   slug: string;
@@ -80,6 +117,8 @@ export type Person = {
   bio: string;
   bioParagraphs: string[];
   selectedWork: string[];
+  homeLine?: string;
+  credentialLine?: string;
   extra?: { label: string; value: string };
   education?: string;
   basedIn?: string;
@@ -142,4 +181,4 @@ export type Guide = GuideCard & { excerpt: string; authors: Person[]; body: Arti
 export type LegalSection = { id: string; heading: string; body: PortableTextBlock[] };
 export type LegalDoc = { label: string; title: string; updated: string; sections: LegalSection[]; seo: PageSeo; updatedAt?: string };
 
-export type SitePage = { key: string; hero: { label: string; title: string; sub?: string }; sections: SectionIntro[]; strings: Record<string, string>; seo: PageSeo };
+export type SitePage = { key: string; hero: { label: string; title: string; sub?: string }; sections: SectionIntro[]; strings: Record<string, string>; paths: ContactPath[]; seo: PageSeo };

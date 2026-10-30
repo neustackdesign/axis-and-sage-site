@@ -108,7 +108,12 @@ export const asSentenceRow = defineType({
 
 export const asMethodStep = defineType({
   name: "asMethodStep", title: "Step", type: "object",
-  fields: [defineField({ name: "index", title: "Number", type: "string", ...req }), defineField({ name: "title", title: "Title", type: "string", ...req }), defineField({ name: "body", title: "Body", type: "text", rows: 3, ...req })],
+  fields: [
+    defineField({ name: "index", title: "Number", type: "string", ...req }), defineField({ name: "title", title: "Title", type: "string", ...req }), defineField({ name: "body", title: "Body", type: "text", rows: 3, ...req }),
+    defineField({ name: "owner", title: "Owner", type: "string", description: "Approach page: who owns this stage." }),
+    defineField({ name: "artefact", title: "You get", type: "string", description: "Approach page: what the stage produces." }),
+    defineField({ name: "measure", title: "Measured", type: "string", description: "Approach page: what is counted." }),
+  ],
   preview: { select: { title: "title", subtitle: "index" } },
 });
 
@@ -193,8 +198,92 @@ export const asArticleBody = defineType({
   ],
 });
 
+/* ---------------------------------------------------------------- 2026 redesign (all optional) */
+
+export const asDecisionActor = defineType({
+  name: "asDecisionActor", title: "Who needs to act", type: "object",
+  description: "One choice in the homepage decision path: the sentence, what stops them, where we look, the action.",
+  fields: [
+    defineField({ name: "label", title: "Chip label", type: "string", ...req }),
+    defineField({ name: "who", title: "Who", type: "string", ...req }),
+    defineField({ name: "act", title: "To do what", type: "string", ...req }),
+    defineField({ name: "stops", title: "What usually stops them", type: "text", rows: 2, ...req }),
+    defineField({ name: "look", title: "Where we look", type: "text", rows: 2, ...req }),
+    defineField({ name: "done", title: "The action, done", type: "string", ...req }),
+  ],
+  preview: { select: { title: "label", subtitle: "done" } },
+});
+
+export const asSituation = defineType({
+  name: "asSituation", title: "Situation", type: "object",
+  fields: [
+    glyphField(),
+    defineField({ name: "text", title: "Text", type: "text", rows: 2, ...req }),
+    defineField({ name: "family", title: "Service family", type: "string", ...req }),
+    defineField({ name: "href", title: "Link", type: "string", description: "An internal path.", ...req }),
+  ],
+  preview: { select: { title: "text", subtitle: "family" } },
+});
+
+export const asLogoItem = defineType({
+  name: "asLogoItem", title: "Organisation", type: "object",
+  fields: [
+    defineField({ name: "name", title: "Name", type: "string", ...req }),
+    defineField({ name: "line", title: "Who did what", type: "string", description: "Shown when the tile is hovered or focused.", ...req }),
+    defineField({ name: "logo", title: "Logo", type: "image", description: "SVG or a PNG on a transparent background. It is shown in one colour. Until a file is added, the tile shows the name.", fields: [defineField({ name: "alt", title: "Alt text", type: "string" })] }),
+  ],
+  preview: { select: { title: "name", subtitle: "line", media: "logo" } },
+});
+
+export const asLogoGroup = defineType({
+  name: "asLogoGroup", title: "Organisation group", type: "object",
+  fields: [defineField({ name: "label", title: "Relationship", type: "string", ...req }), defineField({ name: "items", title: "Organisations", type: "array", of: [defineArrayMember({ type: "asLogoItem" })] })],
+  preview: { select: { title: "label" } },
+});
+
+export const asProofStat = defineType({
+  name: "asProofStat", title: "Proof figure", type: "object",
+  fields: [
+    defineField({ name: "label", title: "Label", type: "string", description: "For example MULAR · FOUNDED.", ...req }),
+    defineField({ name: "numeral", title: "Figure", type: "string", ...req }),
+    defineField({ name: "line", title: "Line", type: "string", ...req }),
+    defineField({ name: "href", title: "Link", type: "string" }),
+  ],
+  preview: { select: { title: "numeral", subtitle: "label" } },
+});
+
+export const asContactPath = defineType({
+  name: "asContactPath", title: "Starting point", type: "object",
+  fields: [
+    defineField({ name: "title", title: "Title", type: "string", ...req }),
+    defineField({ name: "line", title: "Line", type: "string", ...req }),
+    defineField({ name: "label", title: "Form label", type: "string", description: "Shown above the form and sent with the enquiry.", ...req }),
+    defineField({ name: "who", title: "Example: who", type: "string", ...req }),
+    defineField({ name: "what", title: "Example: to do what", type: "string", ...req }),
+    defineField({ name: "key", title: "Link key", type: "string", description: "Matches ?engagement= on links to /contact, for example diagnostic.", ...req }),
+  ],
+  preview: { select: { title: "title", subtitle: "label" } },
+});
+
+export const asSetPiece = defineType({
+  name: "asSetPiece", title: "Set piece", type: "object",
+  description: "The large two-field treatment on the homepage and the work page. Leave empty to keep this work in the index only.",
+  fields: [
+    defineField({ name: "eyebrow", title: "Eyebrow", type: "string", ...req }),
+    defineField({ name: "headline", title: "Headline", type: "string", ...req }),
+    defineField({ name: "body", title: "Body", type: "text", rows: 2, ...req }),
+    defineField({ name: "status", title: "Status line", type: "string", description: "Shown instead of a case link, for example Full case in preparation." }),
+    defineField({ name: "proof", title: "Figures", type: "array", of: [defineArrayMember({ type: "asStat" })], validation: (r: any) => r.max(3) }), // eslint-disable-line @typescript-eslint/no-explicit-any
+    defineField({ name: "visual", title: "Visual", type: "string", options: { list: ["dotField", "merger", "image"] }, ...req }),
+    defineField({ name: "image", title: "Image (visual: image)", type: "image", options: { hotspot: true }, fields: [defineField({ name: "alt", title: "Alt text", type: "string" })] }),
+    defineField({ name: "caption", title: "Caption", type: "string" }),
+    defineField({ name: "tone", title: "Section", type: "string", options: { list: ["light", "dark"] }, initialValue: "light" }),
+  ],
+});
+
 export const objectTypes = [
   asLink, asCta, asNavGroup, asFooterColumn, asSeo, asSectionIntro, asTextItem, asStat, asTimelineDay, asGlyphCard, asActor,
   asSentenceRow, asMethodStep, asActionCard, asCaseChange, asSimpleText, asLegalSection, asCallout, asToolEmbed,
   asEngagementTimeline, asArticleEnd, asArticleBody,
+  asDecisionActor, asSituation, asLogoItem, asLogoGroup, asProofStat, asContactPath, asSetPiece,
 ];

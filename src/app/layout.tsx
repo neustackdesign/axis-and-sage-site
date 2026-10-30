@@ -8,6 +8,7 @@ import "../styles/base.css";
 import "../styles/components.css";
 import "../styles/chrome.css";
 import "../styles/tools.css";
+import "../styles/compose.css";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -32,10 +33,12 @@ export const viewport: Viewport = { themeColor: "#F3F0FF", width: "device-width"
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" suppressHydrationWarning>
       <head>
         <link rel="preload" href="/fonts/brand/platypi-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/brand/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Reveals hide content only once script is known to run, before first paint, with a fallback if hydration stalls. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('mo');setTimeout(function(){document.querySelectorAll('[data-sec]').forEach(function(e){e.classList.add('in')})},4500)" }} />
       </head>
       <body>{children}<Analytics /><SpeedInsights /></body>
     </html>

@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { CTABand } from "@/components/ds/CTABand";
-import { Faq, Timeline } from "@/components/ds/blocks";
-import { PlaneStack } from "@/components/ds/method";
-import { PageHero } from "@/components/ds/PageHero";
-import { Eyebrow, Glyph, RailBody, Section, SectionHeader, SmartLink, TextLink } from "@/components/ds/primitives";
-import { RichText } from "@/components/ds/RichText";
+import Link from "next/link";
+import { RIBBON } from "@/components/ds/blocks";
+import { Stages, TermsMoments } from "@/components/v26/Approach";
+import { Opening } from "@/components/v26/blocks";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { faqLd } from "@/lib/seo";
-import { getMethod } from "@/sanity/load";
+import { getHome, getMethod, getPeople, getPractices, getSettings } from "@/sanity/load";
 
 export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
@@ -17,84 +15,89 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ title: m.seo.title, absoluteTitle: true, path: "/conversion-design", description: m.seo.description });
 }
 
-const label = (n: number, text?: string) => `${String(n).padStart(2, "0")} · ${text ?? ""}`;
-const para = { block: { normal: ({ children }: { children?: React.ReactNode }) => <p>{children}</p> } };
-
 export default async function ConversionDesignPage() {
-  const m = await getMethod();
-  const s = m.sections;
+  const [m, people, practices, settings, home] = await Promise.all([getMethod(), getPeople(), getPractices(), getSettings(), getHome()]);
+  const readout = m.example.readout;
+  const families = practices.filter((p) => p.section === "whatWeDo");
+  const leads = (practice: (typeof families)[number], slug: string) =>
+    practice.ledByPeople.length > 1 ? "Both" : practice.ledByPeople.some((x) => x.slug === slug) ? "Leads" : "";
+
   return (
-    <>
+    <div className="v26">
       <Breadcrumbs trail={[{ name: "Conversion Design", path: "/conversion-design" }]} />
       <JsonLd data={faqLd(m.faqs)} />
-      <PageHero label={m.hero.label} title={m.hero.title} display sub={m.hero.sub} />
+      <Opening label={m.hero.label} title={m.hero.title} sub={m.hero.sub} />
 
-      <Section labelledBy="counts-title">
-        <SectionHeader id="counts-title" label={label(1, s.counts?.label)} title={s.counts?.title} />
-        <RailBody>
-          <ul className="actor-list">
-            {m.actors.map((a) => (
-              <li key={a.actor}>
-                <Glyph name={a.glyph} size="sm" />
-                <span className="actor-name">{a.actor}</span>
-                <span className="actor-examples">{a.examples}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="t-h3" style={{ marginTop: 32 }}>{m.actorsClosing}</p>
-          <p style={{ marginTop: 24 }}><TextLink href="/work">{m.actionCardLinkLabel}</TextLink></p>
-        </RailBody>
-      </Section>
+      {m.halves ? (
+        <section className="sec" data-sec="halves" aria-label={m.halves.label}>
+          <div className="wrap"><TermsMoments halves={m.halves} ribbon={RIBBON} /></div>
+        </section>
+      ) : null}
 
-      <Section labelledBy="halves-title">
-        <SectionHeader id="halves-title" label={label(2, s.halves?.label)} title={s.halves?.title} />
-        <RailBody full>
-          <div className="halves">
-            <div className="half half-paper">
-              <Eyebrow strong>TERMS</Eyebrow>
-              <Glyph name="terms" />
-              <p className="t-h3">{m.terms.title}</p>
-              <RichText value={m.terms.body} components={para} />
-            </div>
-            <div className="half half-dark on-dark">
-              <Eyebrow>MOMENTS</Eyebrow>
-              <Glyph name="moment" />
-              <p className="t-h3">{m.moments.title}</p>
-              <RichText value={m.moments.body} components={para} />
-            </div>
+      {readout ? (
+        <section className="sec t-mid" data-sec="stages" aria-label="How we work">
+          <div className="wrap">
+            <Stages steps={m.methodStepsExpanded} r={readout} label={m.stagesLabel}>
+              <Link href={`/work/${readout.slug}`} className="inset lite">
+                <span className="stack" style={{ gap: 4 }}><span className="lbl">Inspect the proof</span><span className="h3" style={{ fontSize: 22 }}>{m.example.caseLinkLabel ?? readout.name}</span></span>
+                <span className="stat s" aria-hidden="true">→</span>
+              </Link>
+            </Stages>
           </div>
-          <p className="t-small muted" style={{ marginTop: 20, maxWidth: 720 }}>{m.behaviourNote}</p>
-        </RailBody>
-      </Section>
+        </section>
+      ) : null}
 
-      <Section labelledBy="steps-title">
-        <SectionHeader id="steps-title" label={label(3, s.steps?.label)} title={s.steps?.title} />
-        <RailBody>
-          <PlaneStack steps={m.methodStepsExpanded} />
-        </RailBody>
-      </Section>
+      {m.why ? (
+        <section className="sec t-lilac" data-sec="why" id="why" aria-labelledby="why-title">
+          <div className="wrap"><p className="lbl ink rv">{m.why.label}</p><h2 id="why-title" className="disp rv d1" style={{ marginTop: 20, maxWidth: "13em" }}>{m.why.title}</h2></div>
+        </section>
+      ) : null}
 
-      <Section tone="midnight" labelledBy="timeline-title">
-        <SectionHeader id="timeline-title" label={label(4, s.example?.label)} title={s.example?.title} />
-        <RailBody full>
-          <Timeline
-            label={m.example.timelineLabel}
-            baseline={{ value: m.example.baselineValue, label: m.example.baselineLabel }}
-            steps={m.example.steps.map((x) => ({ ...x, action: !!x.action }))}
-            source={m.example.source}
-          />
-          {m.example.caseSlug ? <p style={{ marginTop: 24 }}><SmartLink className="text-link" href={`/work/${m.example.caseSlug}`}>{m.example.caseLinkLabel}<span className="text-link-arrow" aria-hidden="true">▸</span></SmartLink></p> : null}
-        </RailBody>
-      </Section>
+      <section className="sec t-creme" data-sec="people" aria-label="The founders">
+        <div className="wrap g12" style={{ rowGap: 40 }}>
+          {people.map((p, i) => (
+            <div key={p.slug} className={`s4 stack rv d${i + 1}`} style={{ gap: 12 }}>
+              <div className="pf">{p.portrait ? <img src={p.portrait} alt={`Portrait of ${p.name}`} loading="lazy" /> : <span className="mono" role="img" aria-label={`${p.name}, initials`}>{p.initials}</span>}</div>
+              <h3 className="h3"><Link href={`/people/${p.slug}`}>{p.name}</Link></h3>
+              <p className="small">{p.line}</p>
+            </div>
+          ))}
+          <div className="s4 rv d3" style={{ alignSelf: "end" }}>
+            <table className="resp">
+              <thead><tr><th scope="col">Family</th>{people.map((p) => <th key={p.slug} scope="col">{p.name.split(" ")[0]}</th>)}</tr></thead>
+              <tbody>
+                {families.map((f) => (
+                  <tr key={f.slug}><th scope="row" style={{ fontFamily: "var(--font-sans)", fontSize: 15, letterSpacing: 0, textTransform: "none", fontWeight: 400 }}>{f.label}</th>
+                    {people.map((p) => { const v = leads(f, p.slug); return <td key={p.slug} className={v ? "on" : ""}>{v || "–"}</td>; })}</tr>
+                ))}
+              </tbody>
+            </table>
+            {home.foundersNote ? <p className="small" style={{ marginTop: 16 }}>{home.foundersNote}</p> : null}
+          </div>
+          <div className="s12 g12" style={{ paddingTop: 20, borderTop: "1px solid var(--brown-800)" }}>
+            {people.map((p) => <p key={p.slug} className="s4 small">{[p.credentialLine, p.education].filter(Boolean).join(" ")}</p>)}
+            {m.closingLine ? <p className="s4 small">{m.closingLine}</p> : null}
+          </div>
+        </div>
+      </section>
 
-      <Section labelledBy="faq-title">
-        <SectionHeader id="faq-title" label={label(5, s.faq?.label)} title={s.faq?.title} />
-        <RailBody>
-          <Faq items={m.faqs} />
-        </RailBody>
-      </Section>
+      {m.faqs.length ? (
+        <section className="sec" data-sec="faq" aria-labelledby="faq-title">
+          <div className="wrap g12">
+            <div className="s4"><h2 id="faq-title" className="h2 xs rv">{m.sections.faq?.title}</h2></div>
+            <ul className="s8 faq-list rv d1">
+              {m.faqs.map((f) => <li key={f.q}><details><summary>{f.q}</summary><p>{f.a}</p></details></li>)}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
-      <CTABand />
-    </>
+      <section className="t-sun" data-sec="cta" aria-labelledby="cta-title">
+        <div className="wrap close">
+          <div className="stack" style={{ gap: 12 }}><h2 id="cta-title" className="disp rv" style={{ fontSize: "clamp(44px, 5vw, 72px)", lineHeight: 1.05 }}>{settings.ctaBand.headline}</h2><p className="rv d1">{settings.ctaBand.line}</p></div>
+          <div className="rv d2"><Link className="btn btn-primary" href={settings.primaryCta.href}>{settings.primaryCta.label}</Link></div>
+        </div>
+      </section>
+    </div>
   );
 }

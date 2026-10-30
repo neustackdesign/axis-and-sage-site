@@ -1,6 +1,6 @@
 import { SiteShell } from "@/components/layout/SiteShell";
 
-/** The homepage: the header is part of the hero cover (SiteHeader variant "hero"). */
+/** The homepage uses the standard sticky bar: the 2026 hero is a split field, not a full-bleed cover. */
 export default function HomeLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <SiteShell header="hero">{children}</SiteShell>;
+  return <SiteShell>{children}</SiteShell>;
 }

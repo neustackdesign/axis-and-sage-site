@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { CTABand } from "@/components/ds/CTABand";
-import { CaseCard, LogoStrip, PathGrid, StatGrid, StatTile, Testimonial, ToolCard } from "@/components/ds/blocks";
-import { PlaneStack } from "@/components/ds/method";
-import { HomepageHero } from "@/components/sections/HomepageHero";
-import { Eyebrow, Glyph, RailBody, Section, SectionHeader, TextLink } from "@/components/ds/primitives";
-import { FounderCards } from "@/components/sections/FounderCards";
-import { MethodSentencePanel } from "@/components/sections/MethodSentencePanel";
+import Link from "next/link";
+import { Glyph } from "@/components/ds/primitives";
+import { DecisionPath } from "@/components/v26/DecisionPath";
+import { ProofBand } from "@/components/v26/ProofBand";
+import { Readout } from "@/components/v26/Readout";
+import { SentenceForm } from "@/components/v26/SentenceForm";
+import { SetPiece } from "@/components/v26/SetPiece";
+import { Founders, Head, Testimony } from "@/components/v26/blocks";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
-import { getEngagements, getHome, getMethod, getSitePage, getTools } from "@/sanity/load";
+import { getEngagements, getHome, getMethod, getPractices, getSettings } from "@/sanity/load";
 
 export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
@@ -17,112 +18,141 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ title: home.seo.title, absoluteTitle: true, path: "/", description: home.seo.description });
 }
 
-/** "01 · THE GAP": sections are numbered in order of appearance. */
-const label = (n: number, text?: string) => `${String(n).padStart(2, "0")} · ${text ?? ""}`;
+/** "01 · SOUND FAMILIAR": sections are numbered in order of appearance. */
+const numbered = (labels: (string | undefined)[]) => {
+  let n = 0;
+  return labels.map((l) => (l ? `${String(++n).padStart(2, "0")} · ${l}` : ""));
+};
 
 export default async function HomePage() {
-  const [home, method, engagements, enPage, tools] = await Promise.all([getHome(), getMethod(), getEngagements(), getSitePage("engagements"), getTools()]);
-  // Featured tools are chosen in Sanity; until they are, the first three in Library order.
-  const featured = home.featuredToolSlugs.length ? home.featuredToolSlugs.flatMap((slug) => tools.filter((t) => t.slug === slug)) : tools.slice(0, 3);
+  const [home, method, engagements, practices, settings] = await Promise.all([getHome(), getMethod(), getEngagements(), getPractices(), getSettings()]);
   const s = home.sections;
+  const families = practices.filter((p) => p.section === "whatWeDo");
+  const d = engagements.diagnostic;
+  const diagnosticOffer = engagements.paths.flatMap((x) => x.offers).find((o) => o.name === d.name);
+  const [lSit, lWork, lMethod, lStart, lFounders] = numbered([
+    home.situations.length ? s.situations?.label : undefined,
+    home.featuredCases.length ? s.work?.label : undefined,
+    home.methodCase ? s.method?.label : undefined,
+    s.start?.label,
+    s.founders?.label,
+  ]);
+
   return (
-    <>
+    <div className="v26">
       <Breadcrumbs trail={[]} />
-      {/* 1 · Hero: one cover, with the navigation inside it */}
-      <HomepageHero home={home} />
 
-      {/* 2 · LogoStrip */}
-      <Section tight labelledBy="logos-title">
-        <div className="rail-grid" style={{ alignItems: "center" }}>
-          <Eyebrow strong as="div"><span id="logos-title">{home.logoStrip.label}</span></Eyebrow>
-          <LogoStrip names={home.logoStrip.names} />
-        </div>
-      </Section>
-
-      {/* 3 · The gap */}
-      <Section labelledBy="gap-title">
-        <SectionHeader id="gap-title" label={label(1, s.gap?.label)} title={s.gap?.title}>
-          {s.gap?.intro ? <p className="t-body-l muted" style={{ marginTop: 24, maxWidth: 720 }}>{s.gap.intro}</p> : null}
-        </SectionHeader>
-        <RailBody full>
-          <ul className="gap-grid">
-            {home.gapCards.map((c) => <li className="gap-card" key={c.text}><Glyph name={c.glyph} /><p>{c.text}</p></li>)}
-          </ul>
-        </RailBody>
-      </Section>
-
-      {/* 4 · Conversion Design */}
-      <Section tone="alt" labelledBy="cd-title">
-        <SectionHeader id="cd-title" label={label(2, s.conversionDesign?.label)} title={s.conversionDesign?.title}>
-          {s.conversionDesign?.intro ? <p className="t-body-l muted" style={{ marginTop: 24, maxWidth: 760 }}>{s.conversionDesign.intro}</p> : null}
-        </SectionHeader>
-        <RailBody>
-          <MethodSentencePanel rows={method.sentenceRows} />
-        </RailBody>
-        <RailBody>
-          <PlaneStack steps={method.methodSteps} />
-          <p style={{ marginTop: 32 }}><TextLink href="/conversion-design">{home.conversionLinkLabel}</TextLink></p>
-        </RailBody>
-      </Section>
-
-      {/* 5 · The founders */}
-      <Section labelledBy="founders-title">
-        <SectionHeader id="founders-title" label={label(3, s.founders?.label)} title={s.founders?.title} />
-        <RailBody full>
-          <FounderCards people={home.people} />
-          <p className="founders-note">{home.foundersNote}</p>
-        </RailBody>
-      </Section>
-
-      {/* 6 · What moved (Midnight): the proof lives here, once */}
-      <Section tone="midnight" labelledBy="moved-title">
-        <SectionHeader id="moved-title" label={label(4, s.moved?.label)} title={s.moved?.title} />
-        <RailBody full>
-          <StatGrid cols={4}>
-            {home.stats.map((stat, i) => <StatTile key={stat.numeral} stat={stat} wide={i === 1} />)}
-          </StatGrid>
-          <p className="stat-grid-note t-label">{home.statsSource}</p>
-        </RailBody>
-      </Section>
-
-      {/* 7 · Selected work: exactly the six chosen in Sanity, in order */}
-      <Section labelledBy="work-title">
-        <SectionHeader id="work-title" label={label(5, s.work?.label)} title={s.work?.title} />
-        <RailBody full>
-          <div className="case-grid">
-            {home.selectedWork.map((c, i) => <CaseCard key={c.slug} item={c} index={i + 1} href={`/work/${c.slug}`} />)}
+      {/* Hero: content field anchored to the bottom, the decision path on Midnight */}
+      <section className="hero bleed" data-sec="hero" aria-labelledby="hero-title">
+        <div className="l edge">
+          <p className="lbl rv">{home.eyebrow.slice(0, 2).join(" · ")}</p>
+          <div className="stack">
+            <h1 id="hero-title" className="h1 rv d1">{home.headline}</h1>
+            <p className="rv d2">{home.supportingCopy}</p>
+            <div className="row rv d3" style={{ gap: 24, marginTop: 4 }}>
+              <Link className="btn btn-primary" href={home.primaryCta.href}>{home.primaryCta.label} <span className="arr" aria-hidden="true">→</span></Link>
+              <Link className="tl more" href={home.secondaryCta.href}>{home.secondaryCta.label}</Link>
+            </div>
           </div>
-          <p style={{ marginTop: 32 }}><TextLink href="/work">All work</TextLink></p>
-        </RailBody>
-      </Section>
+          <p className="lbl">{settings.locations.join(" · ")}</p>
+        </div>
+        {home.decisionPath ? <DecisionPath path={home.decisionPath} /> : <div className="r" />}
+      </section>
 
-      {/* 8 · Testimonials */}
-      <Section tight labelledBy="said-title">
-        <h2 id="said-title" className="sr-only">What clients say</h2>
-        <div className="testimonial-grid">{home.testimonials.map((t) => <Testimonial key={t.name} t={t} />)}</div>
-      </Section>
+      {home.situations.length ? (
+        <section className="sec t-lilac" data-sec="situations" aria-labelledby="sit-title">
+          <div className="wrap">
+            <div className="head" style={{ marginBottom: 0 }}>
+              <div className="stack"><h2 id="sit-title" className="h2 rv">{s.situations?.title}</h2>{s.situations?.intro ? <p className="muted rv d1" style={{ maxWidth: "40ch" }}>{s.situations.intro}</p> : null}</div>
+              <p className="lbl ink rv">{lSit}</p>
+            </div>
+            <div className="sits build rv d2">
+              {home.situations.map((x) => (
+                <Link key={x.text} href={x.href}>
+                  <Glyph name={x.glyph} />
+                  <span className="pt">{x.text}</span>
+                  <span className="lbl ink">{x.family} ▸</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
-      {/* 9 · How to start */}
-      <Section labelledBy="start-title">
-        <SectionHeader id="start-title" label={label(6, s.start?.label)} title={s.start?.title} />
-        <RailBody full>
-          {/* The same three paths as /engagements, without the per-offer detail. */}
-          <PathGrid paths={engagements.paths.map((x) => ({ ...enPage.sectionMap[x.key], ...x }))} />
-          <p style={{ marginTop: 32 }}><TextLink href="/engagements">Engagements and pricing</TextLink></p>
-        </RailBody>
-      </Section>
+      {home.proofBand ? (
+        <section className="sec t-mid" data-sec="proof" aria-label="Proof">
+          <div className="wrap"><ProofBand band={home.proofBand} /></div>
+        </section>
+      ) : null}
 
-      {/* 10 · Library teaser (sage) */}
-      <Section tone="sage" labelledBy="library-title">
-        <SectionHeader id="library-title" label={label(7, s.library?.label)} title={s.library?.title} />
-        <RailBody full>
-          <div className="tool-grid">{featured.map((t) => <ToolCard key={t.slug} tool={t} />)}</div>
-          <p style={{ marginTop: 32 }}><TextLink href="/library">All tools</TextLink></p>
-        </RailBody>
-      </Section>
+      {home.featuredCases.length ? (
+        <section className="sec" data-sec="work" id="work" aria-labelledby="work-title">
+          <div className="wrap">
+            <Head id="work-title" title={s.work?.title} label={lWork} />
+            {home.featuredCases.map((p, i) => <SetPiece key={p.slug} p={p} mediaFirst={i % 2 === 1} />)}
+          </div>
+        </section>
+      ) : null}
 
-      {/* 11 · CTABand.Orange */}
-      <CTABand />
-    </>
+      {home.testimony?.quote ? (
+        <section className="sec t-sage" data-sec="quote" aria-label="What clients say">
+          <div className="wrap"><Testimony quote={home.testimony.quote} stats={home.testimony.stats.slice(0, 2)} /></div>
+        </section>
+      ) : null}
+
+      {home.methodCase ? (
+        <section className="sec t-mid" data-sec="method" aria-label={s.method?.title}>
+          <div className="wrap">
+            <Readout r={home.methodCase} stages={method.methodSteps} label={lMethod} title={s.method?.title ?? ""} note={s.method?.intro}
+              link={{ href: "/conversion-design", label: home.conversionLinkLabel }} />
+          </div>
+        </section>
+      ) : null}
+
+      <section className="sec" data-sec="start" id="start" aria-labelledby="start-title">
+        <div className="wrap g12" style={{ rowGap: 56 }}>
+          <div className="s12"><Head id="start-title" title={s.start?.title} label={lStart} /></div>
+          <div className="s12 g12 rv d1" style={{ alignItems: "start", borderTop: "1px solid var(--midnight-900)", paddingTop: 32, marginTop: -16 }}>
+            <div className="s4 stack" style={{ paddingRight: 24 }}>
+              <p className="h3">{d.name}</p>
+              <p className="lbl ink">Fixed fee · {diagnosticOffer?.time}</p>
+              <p>You get {d.youGet.charAt(0).toLowerCase() + d.youGet.slice(1)}.</p>
+              {diagnosticOffer ? <Link className="btn btn-primary" href={diagnosticOffer.cta.href} style={{ alignSelf: "flex-start", marginTop: 8 }}>{diagnosticOffer.cta.label}</Link> : null}
+            </div>
+            <div className="s8 stack" style={{ gap: 14 }}>
+              <div className="dg" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <span key={i} className={i === 0 || i === 9 ? "r" : ""} />)}</div>
+              {home.startLabels.length ? <p className="dgl lbl">{home.startLabels.map((l) => <span key={l}>{l}</span>)}</p> : null}
+            </div>
+          </div>
+          <nav className="s12 rv d2" aria-label="Services">
+            {families.map((p) => (
+              <Link key={p.slug} className="fx" href={`/what-we-do/${p.slug}`}>
+                <span className="h3">{p.label}</span>
+                <span className="small">{p.sub} <span className="muted">{p.ledBy ? p.ledBy.charAt(0).toUpperCase() + p.ledBy.slice(1) : p.ledByPeople.map((x) => x.name).join(", ")}</span></span>
+                <span className="lbl ink" aria-hidden="true">▸</span>
+              </Link>
+            ))}
+            {home.aiNote ? <p className="small muted" style={{ marginTop: 16 }}>{home.aiNote}</p> : null}
+          </nav>
+        </div>
+      </section>
+
+      <section className="sec t-creme" data-sec="founders" id="founders" aria-labelledby="founders-title">
+        <div className="wrap"><Founders id="founders-title" title={s.founders?.title} label={lFounders} people={home.people} /></div>
+      </section>
+
+      <section className="t-sun bleed" data-sec="cta" id="cta" aria-labelledby="cta-title">
+        <div className="cv">
+          <div className="l edge">
+            {s.cta?.label ? <p className="lbl rv">{s.cta.label}</p> : null}
+            <h2 id="cta-title" className="disp rv d1">{settings.ctaBand.headline}</h2>
+            <p className="lead rv d2">{settings.ctaBand.line}</p>
+          </div>
+          <div className="r edge-r">
+            <div className="fp lite rv d2"><SentenceForm email={settings.contactEmail} /></div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

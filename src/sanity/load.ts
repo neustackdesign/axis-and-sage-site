@@ -2,7 +2,7 @@
 // Required singletons throw MissingContentError, so a page, and a production build, fails rather than render without them.
 import { cache } from "react";
 import type {
-  ArticleBody, CasePage, Chip, DiagnosticInfo, EngagementPath, EngagementPathKey, EngagementsData, FaqEntry, Guide, GuideCard, LegalDoc,
+  ArticleBody, CaseDesign, CasePage, Chip, ContactPath, DiagnosticInfo, ProofStat, Readout, SetPiece, EngagementPath, EngagementPathKey, EngagementsData, FaqEntry, Guide, GuideCard, LegalDoc,
   PageSeo, Person, Practice, SanityImageView, SectionIntro, SelectedCase, SiteSettings, SitePage, Specialist, Template,
   Testimonial, ToolMeta, WorkItem,
 } from "@/lib/content/types";
@@ -37,7 +37,7 @@ const testimonialOf = (t: RawTestimonial): Testimonial => ({ quote: t.quote, nam
 
 type RawPerson = {
   slug: string; name: string; publicTitle: string; practiceTitle: string; initials: string; focus: "terms" | "moments";
-  principleLine: string; shortBio: string; longBio: string; proofPoints: string[] | null; selectedWork: string[] | null;
+  principleLine: string; homeLine: string | null; credentialLine: string | null; shortBio: string; longBio: string; proofPoints: string[] | null; selectedWork: string[] | null;
   extra: { label: string; value: string } | null; education: string | null; basedIn: string | null;
   links: { label: string; href: string }[]; portrait: SanityImageSource | null; relatedWork: RawWork[]; seo: Seo;
 };
@@ -52,6 +52,8 @@ const personOf = (p: RawPerson): Person => ({
   bio: p.longBio,
   bioParagraphs: (p.longBio || "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean),
   selectedWork: p.selectedWork ?? [],
+  homeLine: p.homeLine ?? undefined,
+  credentialLine: p.credentialLine ?? undefined,
   extra: p.extra ?? undefined,
   education: p.education ?? undefined,
   basedIn: p.basedIn ?? undefined,
@@ -61,6 +63,18 @@ const personOf = (p: RawPerson): Person => ({
   relatedWork: p.relatedWork.map(workOf),
   seo: seoOf(p.seo),
 });
+
+type RawSetPiece = { slug: string; name: string; hasCase: boolean; provenance: Provenance | null; piece: (Omit<SetPiece, "slug" | "name" | "hasCase" | "provenance" | "image" | "tone"> & { tone: SetPiece["tone"] | null; image: SanityImageSource | null }) | null };
+/** A work item's set piece, or null while its set piece is not filled in. */
+const setPieceOf = (w: RawSetPiece): SetPiece | null => {
+  const p = w.piece;
+  if (!p?.headline || !p.visual) return null;
+  const image = p.visual === "image" ? imageView(p.image, { width: 1600 }) : undefined;
+  if (p.visual === "image" && !image) return null; // an image set piece without its image stays off the page
+  return { slug: w.slug, name: w.name, hasCase: !!w.hasCase, provenance: w.provenance ?? undefined, eyebrow: p.eyebrow, headline: p.headline, body: p.body, status: p.status ?? undefined, caption: p.caption ?? undefined, visual: p.visual, tone: p.tone ?? "light", proof: p.proof ?? [], image: image && { ...image, alt: p.image?.alt ?? "" } };
+};
+type RawReadout = Omit<Readout, "result"> & { result: Readout["result"] | null };
+const readoutOf = (r: RawReadout | null | undefined): Readout | undefined => (r?.sentence ? { ...r, result: r.result?.numeral ? r.result : undefined } : undefined);
 
 const sectionsOf = (s: SectionIntro[] | null | undefined) => Object.fromEntries((s ?? []).map((x) => [x.key, x])) as Record<string, SectionIntro>;
 
@@ -108,6 +122,14 @@ export type HomeView = {
   featuredToolSlugs: string[];
   people: Person[];
   testimonials: Testimonial[];
+  decisionPath?: { label: string; actors: { label: string; who: string; act: string; stops: string; look: string; done: string }[] };
+  situations: { glyph: ToolMeta["glyph"]; text: string; family: string; href: string }[];
+  proofBand?: { leadLabel: string; leadName: string; leadLine: string; hint: string; groups: { label: string; items: { name: string; line: string; logo?: SanityImageView }[] }[] };
+  featuredCases: SetPiece[];
+  testimony?: { quote?: Testimonial; stats: ProofStat[] };
+  methodCase?: Readout;
+  aiNote?: string;
+  startLabels: string[];
   seo: PageSeo;
 };
 
@@ -119,6 +141,9 @@ export const getHome = cache(async (): Promise<HomeView> => {
     conversionLinkLabel: string; foundersNote: string; stats: HomeView["stats"]; statsSource: string;
     selectedWork: (Omit<SelectedCase, "chips" | "provenance"> & { roles: Role[] | null; actions: ActionKey[] | null; provenance: Provenance | null })[];
     featuredToolSlugs: string[]; selectedPeople: RawPerson[]; testimonials: RawTestimonial[]; seo: Seo;
+    decisionPath: HomeView["decisionPath"] | null; situations: HomeView["situations"] | null;
+    proofBand: (Omit<NonNullable<HomeView["proofBand"]>, "groups"> & { groups: { label: string; items: { name: string; line: string; logo: SanityImageSource | null }[] }[] }) | null;
+    featuredCases: RawSetPiece[] | null; testimony: { quote: RawTestimonial | null; stats: ProofStat[] } | null; methodCase: RawReadout | null; aiNote: string | null; startLabels: string[] | null;
   };
   const h = await sanityFetch<Raw | null>(Q.homeQuery, { id: Q.SINGLETON_IDS.home });
   if (!h) throw new MissingContentError(`Homepage (${Q.SINGLETON_IDS.home})`);
@@ -149,6 +174,17 @@ export const getHome = cache(async (): Promise<HomeView> => {
     featuredToolSlugs: h.featuredToolSlugs ?? [],
     people: h.selectedPeople.map(personOf),
     testimonials: h.testimonials.map(testimonialOf),
+    decisionPath: h.decisionPath?.actors?.length ? h.decisionPath : undefined,
+    situations: h.situations ?? [],
+    proofBand: h.proofBand?.leadName ? {
+      ...h.proofBand,
+      groups: h.proofBand.groups.map((g) => ({ label: g.label, items: g.items.map((x) => ({ name: x.name, line: x.line, logo: imageView(x.logo, { width: 320 }) })) })),
+    } : undefined,
+    featuredCases: (h.featuredCases ?? []).map(setPieceOf).filter((x): x is SetPiece => !!x),
+    testimony: h.testimony ? { quote: h.testimony.quote ? testimonialOf(h.testimony.quote) : undefined, stats: h.testimony.stats ?? [] } : undefined,
+    methodCase: readoutOf(h.methodCase),
+    aiNote: h.aiNote ?? undefined,
+    startLabels: h.startLabels ?? [],
     seo: seoOf(h.seo),
   };
 });
@@ -163,8 +199,12 @@ export type MethodView = {
   behaviourNote: string;
   sentenceRows: { who: string; action: string; stops: string; look: string }[];
   methodSteps: { index: string; title: string; body: string }[];
-  methodStepsExpanded: { index: string; title: string; body: string }[];
-  example: { timelineLabel: string; baselineValue: number; baselineLabel: string; steps: { when: string; said: string; value: number; valueLabel: string; did: string; action?: boolean }[]; source?: string; caseSlug?: string; caseLinkLabel?: string };
+  methodStepsExpanded: { index: string; title: string; body: string; owner?: string; artefact?: string; measure?: string }[];
+  example: { timelineLabel: string; baselineValue: number; baselineLabel: string; steps: { when: string; said: string; value: number; valueLabel: string; did: string; action?: boolean }[]; source?: string; caseSlug?: string; caseLinkLabel?: string; readout?: Readout };
+  halves?: { label: string; terms: { title: string; line: string }; moments: { title: string; line: string } };
+  stagesLabel?: string;
+  why?: { label: string; title: string };
+  closingLine?: string;
   question: { title: string; body: string };
   actionCards: { key: string; label: string; glyph: ToolMeta["glyph"]; line: string }[];
   actionCardLinkLabel: string;
@@ -173,15 +213,22 @@ export type MethodView = {
 };
 
 export const getMethod = cache(async (): Promise<MethodView> => {
-  type Raw = Omit<MethodView, "sections" | "seo"> & { sections: SectionIntro[]; seo: Seo };
+  type Raw = Omit<MethodView, "sections" | "seo" | "example" | "halves" | "why"> & { sections: SectionIntro[]; seo: Seo; example: Omit<MethodView["example"], "readout"> & { readout: RawReadout | null }; halves: MethodView["halves"] | null; why: MethodView["why"] | null };
   const m = await sanityFetch<Raw | null>(Q.methodQuery, { id: Q.SINGLETON_IDS.method });
   if (!m) throw new MissingContentError(`Conversion Design (${Q.SINGLETON_IDS.method})`);
   req(m.hero?.title, "Conversion Design: hero title");
-  return { ...m, sections: sectionsOf(m.sections), terms: { title: m.terms?.title ?? "", body: m.terms?.body ?? [] }, moments: { title: m.moments?.title ?? "", body: m.moments?.body ?? [] }, seo: seoOf(m.seo) };
+  return {
+    ...m,
+    example: { ...m.example, readout: readoutOf(m.example?.readout) },
+    halves: m.halves?.terms?.title && m.halves.moments?.title ? m.halves : undefined,
+    stagesLabel: m.stagesLabel ?? undefined,
+    why: m.why?.title ? m.why : undefined,
+    closingLine: m.closingLine ?? undefined,
+    sections: sectionsOf(m.sections), terms: { title: m.terms?.title ?? "", body: m.terms?.body ?? [] }, moments: { title: m.moments?.title ?? "", body: m.moments?.body ?? [] }, seo: seoOf(m.seo) };
 });
 
 export const getSitePage = cache(async (key: SitePageKey): Promise<SitePage & { sectionMap: Record<string, SectionIntro> }> => {
-  type Raw = { key: string; hero: SitePage["hero"]; sections: SectionIntro[]; strings: { key: string; value: string }[]; seo: Seo };
+  type Raw = { key: string; hero: SitePage["hero"]; sections: SectionIntro[]; strings: { key: string; value: string }[]; paths: ContactPath[] | null; seo: Seo };
   const p = await sanityFetch<Raw | null>(Q.sitePageQuery, { id: Q.sitePageId(key) });
   if (!p) throw new MissingContentError(`Page "${key}" (${Q.sitePageId(key)})`);
   return {
@@ -190,6 +237,7 @@ export const getSitePage = cache(async (key: SitePageKey): Promise<SitePage & { 
     sections: p.sections,
     sectionMap: sectionsOf(p.sections),
     strings: Object.fromEntries(p.strings.map((s) => [s.key, s.value])),
+    paths: p.paths ?? [],
     seo: seoOf(p.seo),
   };
 });
@@ -232,11 +280,15 @@ export const getPractices = cache(async (): Promise<Practice[]> => (await sanity
 export const getPractice = async (slug: string) => (await getPractices()).find((p) => p.slug === slug) ?? null;
 
 export const getWorkIndex = cache(async (): Promise<WorkItem[]> => (await sanityFetch<RawWork[]>(Q.workIndexQuery)).map(workOf));
+export const getSetPieces = cache(async (): Promise<SetPiece[]> => (await sanityFetch<RawSetPiece[]>(Q.setPiecesQuery)).map(setPieceOf).filter((x): x is SetPiece => !!x));
 export const getCaseList = cache(async () => sanityFetch<{ slug: string; name: string; moved: string }[]>(Q.caseSlugsQuery));
 export const getCase = cache(async (slug: string): Promise<CasePage | null> => {
-  type Raw = Omit<CasePage, "chips" | "provenance" | "quote" | "tools" | "seo" | "ledBy" | "stats" | "changes" | "inTheWay"> & {
+  type Raw = Omit<CasePage, "chips" | "provenance" | "quote" | "tools" | "seo" | "ledBy" | "stats" | "changes" | "inTheWay" | "design"> & {
     roles: Role[] | null; actions: ActionKey[] | null; provenance: Provenance | null; quote: RawTestimonial | null; tools: RawTool[];
     ledBy: { slug: string; name: string } | null; stats: CasePage["stats"]; changes: CasePage["changes"]; inTheWay: string[] | null; seo: Seo; _updatedAt?: string;
+    caseHeadline: string | null; place: string | null; roleLine: string | null; wayHeadline: string | null; flow: CaseDesign["flow"] | null;
+    result: CaseDesign["result"] | null; evidence: CaseDesign["evidence"] | null; closing: CaseDesign["closing"] | null;
+    next: { slug: string; name: string; provenance: Provenance | null; actions: ActionKey[] | null; line: string } | null;
   };
   const c = await sanityFetch<Raw | null>(Q.caseQuery, { slug });
   if (!c) return null;
@@ -251,6 +303,17 @@ export const getCase = cache(async (slug: string): Promise<CasePage | null> => {
     quote: c.quote ? testimonialOf(c.quote) : undefined,
     tools: c.tools.map(toolOf),
     artifact: c.artifact ?? undefined,
+    design: c.caseHeadline ? {
+      headline: c.caseHeadline,
+      place: c.place ?? undefined,
+      roleLine: c.roleLine ?? undefined,
+      wayHeadline: c.wayHeadline ?? undefined,
+      flow: c.flow?.before?.length && c.flow.after?.length ? { before: c.flow.before, after: c.flow.after, caption: c.flow.caption ?? undefined } : undefined,
+      result: c.result?.numeral ? c.result : undefined,
+      evidence: c.evidence ?? undefined,
+      next: c.next ? { ...c.next, provenance: c.next.provenance ?? undefined, actions: c.next.actions ?? [] } : undefined,
+      closing: c.closing?.headline ? c.closing : undefined,
+    } : undefined,
     seo: seoOf(c.seo),
     updatedAt: c._updatedAt,
   };

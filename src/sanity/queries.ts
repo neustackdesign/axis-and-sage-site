@@ -14,7 +14,7 @@ export const workProjection = `{"slug": slug.current, "name": title, sector, rol
 const caseCardProjection = `{"slug": slug.current, "name": title, roles, actions, needed, changed, moved, provenance}`;
 const testimonialProjection = `{quote, name, title, company, "portrait": portrait${image}}`;
 const personProjection = `{
-  "slug": slug.current, name, publicTitle, practiceTitle, initials, focus, principleLine, shortBio, longBio, proofPoints,
+  "slug": slug.current, name, publicTitle, practiceTitle, initials, focus, principleLine, homeLine, credentialLine, shortBio, longBio, proofPoints,
   selectedWork, extra, education, basedIn, "links": coalesce(links[]${link}, []), "portrait": portrait${image},
   "relatedWork": coalesce(relatedWork[]->${workProjection}, []), ${seo}, _updatedAt
 }`;
@@ -23,6 +23,13 @@ const engagementProjection = `{
   bring, weDo, youGet, intro, points, "cta": cta${cta}, creditRule, feeExplainer, "timeline": coalesce(timeline[]{when, what}, [])
 }`;
 const faqProjection = `{"q": question, "a": answer}`;
+/** The 2026 set piece: a text panel and a media field, from the work item's setPiece. */
+export const setPieceProjection = `{
+  "slug": slug.current, "name": title, "hasCase": caseStudy == true, provenance,
+  "piece": setPiece{eyebrow, headline, body, status, caption, visual, tone, "proof": coalesce(proof[]{numeral, label}, []), "image": image${image}}
+}`;
+/** A case shown as the four-stage readout (homepage and Approach). */
+const readoutProjection = `{"slug": slug.current, "name": title, sentence, "inTheWay": coalesce(inTheWay, []), "changes": coalesce(changes[]{tag, text}, []), result{before, after, numeral, label, source}}`;
 
 export const settingsQuery = `*[_type == "companySettings" && _id == $id][0]{
   companyName, shortName, legalName, siteUrl, contactEmail, bookingUrl, registeredAddress, registeredAddressShort,
@@ -51,6 +58,12 @@ export const homeQuery = `*[_type == "homePageV2" && _id == $id][0]{
   "featuredToolSlugs": coalesce(featuredTools[]->slug.current, []),
   "selectedPeople": coalesce(selectedPeople[]->${personProjection}, []),
   "testimonials": coalesce(testimonials[]->${testimonialProjection}, []),
+  decisionPath{label, "actors": coalesce(actors[]{label, who, act, stops, look, done}, [])},
+  "situations": coalesce(situations[]{glyph, text, family, href}, []),
+  proofBand{leadLabel, leadName, leadLine, hint, "groups": coalesce(groups[]{label, "items": coalesce(items[]{name, line, "logo": logo${image}}, [])}, [])},
+  "featuredCases": coalesce(featuredCases[]->${setPieceProjection}, []),
+  testimony{"quote": quote->${testimonialProjection}, "stats": coalesce(stats[]{label, numeral, line, href}, [])},
+  "methodCase": methodCase->${readoutProjection}, aiNote, "startLabels": coalesce(startLabels, []),
   ${seo}, _updatedAt
 }`;
 
@@ -60,15 +73,16 @@ export const methodQuery = `*[_type == "conversionMethod" && _id == $id][0]{
   terms{title, body}, moments{title, body}, behaviourNote,
   "sentenceRows": coalesce(sentenceRows[]{who, action, stops, look}, []),
   "methodSteps": coalesce(methodSteps[]{index, title, body}, []),
-  "methodStepsExpanded": coalesce(methodStepsExpanded[]{index, title, body}, []),
-  example{timelineLabel, baselineValue, baselineLabel, "steps": coalesce(steps[]{when, said, value, valueLabel, did, action}, []), source, "caseSlug": caseStudy->slug.current, caseLinkLabel},
+  "methodStepsExpanded": coalesce(methodStepsExpanded[]{index, title, body, owner, artefact, measure}, []),
+  example{timelineLabel, baselineValue, baselineLabel, "steps": coalesce(steps[]{when, said, value, valueLabel, did, action}, []), source, "caseSlug": caseStudy->slug.current, caseLinkLabel, "readout": caseStudy->${readoutProjection}},
+  halves{label, terms{title, line}, moments{title, line}}, stagesLabel, why{label, title}, closingLine,
   question{title, body}, "actionCards": coalesce(actionCards[]{key, label, glyph, line}, []), actionCardLinkLabel,
   "faqs": coalesce(faqs[]->${faqProjection}, []), ${seo}, _updatedAt
 }`;
 
 export const sitePageQuery = `*[_type == "sitePage" && _id == $id][0]{
   key, hero{label, title, sub}, "sections": coalesce(sections[]{key, label, title, intro}, []),
-  "strings": coalesce(strings[]{key, value}, []), ${seo}, _updatedAt
+  "strings": coalesce(strings[]{key, value}, []), "paths": coalesce(paths[]{key, title, line, label, who, what}, []), ${seo}, _updatedAt
 }`;
 
 export const peopleQuery = `*[_type == "person" && defined(slug.current)] | order(order asc) ${personProjection}`;
@@ -83,13 +97,18 @@ export const practicesQuery = `*[_type == "practice" && defined(slug.current)] |
 
 // Only featured work is public: the held-back items stay in the Studio and off the site.
 export const workIndexQuery = `*[_type == "workItem" && featured == true && defined(slug.current)] | order(order asc) ${workProjection}`;
+// Set pieces on the work page: featured work with a set piece filled in, in work order.
+export const setPiecesQuery = `*[_type == "workItem" && featured == true && defined(slug.current) && defined(setPiece.headline)] | order(order asc) ${setPieceProjection}`;
 export const caseSlugsQuery = `*[_type == "workItem" && caseStudy == true && defined(slug.current)] | order(order asc){"slug": slug.current, "name": title, moved, _updatedAt}`;
 export const caseQuery = `*[_type == "workItem" && caseStudy == true && slug.current == $slug][0]{
   "slug": slug.current, "name": title, sector, years, roles, actions, provenance, intro, "needed": caseNeeded, inTheWay,
   "changes": coalesce(changes[]{tag, text}, []), "changedSummary": changed, moved,
   "stats": coalesce(metrics[]{numeral, label, source}, []), "quote": quote->${testimonialProjection},
   "ledBy": relatedPeople[0]->{"slug": slug.current, name}, "tools": coalesce(relatedTools[]->${toolProjection}, []),
-  artifact, ${seo}, _updatedAt
+  artifact, caseHeadline, place, roleLine, wayHeadline, flow{before, after, caption}, result{before, after, numeral, label, source},
+  evidence{measured, observed, notClaimed}, closing{headline, line},
+  "next": nextCase->{"slug": slug.current, "name": title, provenance, actions, "line": coalesce(setPiece.headline, summary)},
+  ${seo}, _updatedAt
 }`;
 
 export const engagementsQuery = `*[_type == "engagement"] | order(order asc) ${engagementProjection}`;

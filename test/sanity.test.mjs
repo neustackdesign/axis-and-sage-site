@@ -63,7 +63,7 @@ test("the homepage features exactly the six canonical cases, in order, none held
 
 test("founder titles: Co-founder, with the practice; never CEO, GM or CTO", async () => {
   const people = await load.getPeople();
-  assert.deepEqual(people.map((p) => `${p.title} · ${p.practice}`), ["Co-founder · Strategy & Investment", "Co-founder · Product & Technology"]);
+  assert.deepEqual(people.map((p) => `${p.title} · ${p.practice}`), ["Co-founder · Strategy & Operations", "Co-founder · Technology & AI"]);
   assert.doesNotMatch(JSON.stringify(people.map((p) => [p.title, p.practice, p.cardBody, p.bio])), /\b(CEO|GM|CTO)\b|waterfall|structuring executive/);
   assert.equal(people[0].bioParagraphs.length, 5);
 });
@@ -183,17 +183,18 @@ test("a missing singleton fails the page instead of falling back", async () => {
   assert.equal(missing, null);
 });
 
-test("the hero is two Sanity crops with art direction; the landscape crop is never stretched on mobile", async () => {
-  const hero = await readFile("src/components/sections/HomepageHero.tsx", "utf8");
-  assert.match(hero, /<picture>/);
-  assert.match(hero, /<source media=\{MOBILE_QUERY\} srcSet=\{mobileSet\} \/>/);
-  assert.match(hero, /MOBILE_QUERY = "\(max-width: 767px\)"/);
-  assert.doesNotMatch(hero, /unsplash\.com\/photo|images\.unsplash/);
-  const css = await readFile("src/styles/components.css", "utf8");
-  const rule = css.slice(css.indexOf(".cover-image {"), css.indexOf("}", css.indexOf(".cover-image {")));
-  assert.match(rule, /object-fit: cover/);
-  assert.doesNotMatch(rule, /blur/);
-  assert.match(css, /padding-top: calc\(var\(--cover-header\) \+ 48px\)/, "mobile: 48px from the bar to the eyebrow");
+test("the 2026 hero is a split field: content anchored to the bottom, the decision path on Midnight, stacked on mobile", async () => {
+  const page = await readFile("src/app/(home)/page.tsx", "utf8");
+  assert.match(page, /className="hero bleed"/);
+  assert.match(page, /<DecisionPath path=\{home\.decisionPath\} \/>/);
+  const path = await readFile("src/components/v26/DecisionPath.tsx", "utf8");
+  assert.match(path, /role="img" aria-label=\{alt\}/, "the drawn path has a text alternative");
+  assert.match(path, /className="vp"/, "mobile: the same four stations stack vertically");
+  const css = await readFile("src/styles/compose.css", "utf8");
+  assert.match(css, /\.v26 \.hero \.l > \.stack \{ margin-top: auto;/, "content sits on the bottom of the field");
+  assert.match(css, /html\.mo \.v26 \.rv \{ opacity: 0;/, "reveals hide content only once script has marked html.mo");
+  assert.match(css, /prefers-reduced-motion: reduce/);
+  // The crops stay in Sanity for share images and the previous layout; the seed still owns them.
   assert.deepEqual(build.HERO_ASSETS, { desktop: "migration/assets/hero/lagos-sunset-desktop-3200x1800.jpg", mobile: "migration/assets/hero/lagos-sunset-mobile-1200x1800.jpg" });
   const config = await readFile("next.config.ts", "utf8");
   assert.match(config, /cdn\.sanity\.io/);

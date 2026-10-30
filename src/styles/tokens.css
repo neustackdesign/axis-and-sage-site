@@ -79,7 +79,7 @@
   --space-unit: 8px; --space-0-5: 4px; --space-1: 8px; --space-2: 16px; --space-3: 24px; --space-4: 32px; --space-5: 40px;
   --space-6: 48px; --space-8: 64px; --space-10: 80px; --space-12: 96px; --space-16: 128px;
   --section-lg: 128px; --section-md: 96px; --section-sm: 64px;
-  --grid-columns: 12; /* @kind other */ --grid-max: 1280px; --grid-gutter: 24px; --grid-margin: 40px; --grid-margin-m: 20px;
+  --grid-columns: 12; /* @kind other */ --grid-max: 1328px; --grid-gutter: 24px; --grid-margin: 56px; --grid-margin-t: 32px; --grid-margin-m: 20px; /* 1440 page: 1328 content + 2 × 56 (2026 delta) */
   --rail-span: 3; /* @kind other */
   --content-span: 9; /* @kind other */
   --radius-none: 0px; --radius-pill: 999px;
@@ -101,6 +101,12 @@
   --dur-enter: 600ms; /* @kind other */
   --dur-draw: 1600ms; /* @kind other */
   --dur-fill: 400ms; /* @kind other */
+  /* 2026 delta: relational motion */
+  --dur-label: 360ms; /* @kind other */
+  --dur-step: 640ms; /* @kind other */
+  --dur-mask: 720ms; /* @kind other */
+  --dur-success: 480ms; /* @kind other */
+  --stagger: 50ms; /* @kind other */
 }
 @media (prefers-reduced-motion: reduce) {
   :root {
@@ -109,6 +115,11 @@
     --dur-enter: 0ms; /* @kind other */
     --dur-draw: 0ms; /* @kind other */
     --dur-fill: 0ms; /* @kind other */
+    --dur-label: 0ms; /* @kind other */
+    --dur-step: 0ms; /* @kind other */
+    --dur-mask: 0ms; /* @kind other */
+    --dur-success: 0ms; /* @kind other */
+    --stagger: 0ms; /* @kind other */
   }
 }
 

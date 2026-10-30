@@ -216,7 +216,7 @@ export function DayTimeline({ days }: { days: { when: string; what: string }[] }
   return <ol className="day-timeline">{days.map((d) => <li key={d.when}><span className="t-label">{d.when}</span><p>{d.what}</p></li>)}</ol>;
 }
 
-const RIBBON = "M 1289.492 569.581 L 1093.421 569.581 C 944.346 569.581 791.006 619.881 664.511 710.277 L 496.552 830.304 C 370.056 920.7 216.717 971 67.642 971 L 0 971 L 111.508 401.419 L 179.15 401.419 C 328.224 401.419 481.564 351.119 608.059 260.723 L 776.019 140.696 C 902.514 50.3 1055.854 0 1204.928 0 L 1401 0 L 1289.492 569.581 Z";
+export const RIBBON = "M 1289.492 569.581 L 1093.421 569.581 C 944.346 569.581 791.006 619.881 664.511 710.277 L 496.552 830.304 C 370.056 920.7 216.717 971 67.642 971 L 0 971 L 111.508 401.419 L 179.15 401.419 C 328.224 401.419 481.564 351.119 608.059 260.723 L 776.019 140.696 C 902.514 50.3 1055.854 0 1204.928 0 L 1401 0 L 1289.492 569.581 Z";
 
 /** Ribbons: the mark's two waves, full crop. Colour on Midnight, `outline` (dotted) behind the footer, `quiet` on light grounds. Fills its positioned parent. */
 export function Ribbons({ tone = "color", className = "" }: { tone?: "color" | "outline" | "quiet"; className?: string }) {

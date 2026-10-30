@@ -51,5 +51,8 @@ export function useLead() {
 
   const clearError = (key: keyof LeadErrors) => setErrors((e) => { if (!e[key]) return e; const next = { ...e }; delete next[key]; return next; });
 
-  return { state, message, errors, fallback, submit, clearError, setState };
+  /** Show every field error for a payload without sending it (forms with their own extra checks). */
+  const check = (payload: LeadPayload) => { const local = validateLead(payload); setErrors(local); setState("error"); setMessage("Please check the highlighted fields."); return local; };
+
+  return { state, message, errors, fallback, submit, clearError, setState, check };
 }

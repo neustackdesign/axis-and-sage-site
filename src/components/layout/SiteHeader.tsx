@@ -14,22 +14,20 @@ function isActive(pathname: string, href: string) {
   return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
 }
 
-function Dropdown({ group, id, onNavigate }: { group: NavGroup; id: string; onNavigate: () => void }) {
+/** Services mega menu: one card per item, staggered in; the group's blurb and the Scorecard close it. */
+function Dropdown({ group, id, onNavigate, scorecard }: { group: NavGroup; id: string; onNavigate: () => void; scorecard: HeaderNav["scorecardCta"] }) {
   return (
     <div className="nav-panel" id={id}>
-      <div className="wrap nav-panel-inner">
-        <div className="nav-panel-intro">
-          <p className="t-label">{group.eyebrow}</p>
-          <p>{group.blurb}</p>
-        </div>
-        <div className="nav-panel-list">
-          {group.items.map((item) => (
-            <Link key={item.href} href={item.href} onClick={onNavigate}>
-              <span className="nav-panel-title">{item.label}</span>
-              {item.description ? <span className="nav-panel-desc">{item.description}</span> : null}
-            </Link>
-          ))}
-        </div>
+      <div className="wrap nav-mega" style={{ ["--n" as string]: group.items.length }}>
+        {group.items.map((item, i) => (
+          <Link key={item.href} className="nav-mega-card" href={item.href} onClick={onNavigate} style={{ ["--i" as string]: i }}>
+            <span className="nav-panel-title">{item.label}</span>
+            {item.description ? <span className="nav-panel-desc">{item.description}</span> : null}
+          </Link>
+        ))}
+        <p className="nav-mega-foot t-small" style={{ ["--i" as string]: group.items.length }}>
+          {group.blurb} <Link className="text-link" href={scorecard.href} onClick={onNavigate}>{scorecard.label}</Link>
+        </p>
       </div>
     </div>
   );
@@ -73,11 +71,20 @@ export function SiteHeader({ variant = "default", nav }: { variant?: HeaderVaria
     return () => document.body.classList.remove("nav-is-open");
   }, [drawer]);
 
+  // The bar gains its rule once the page has scrolled.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const close = () => { setMenu(null); setDrawer(false); };
   const groups: MenuKey[] = ["whatWeDo", "library"];
 
   const overArt = variant === "hero" && !drawer;
-  const className = ["site-header", variant === "hero" ? "is-hero" : "", drawer ? "is-open" : "", overArt ? "on-dark" : ""].filter(Boolean).join(" ");
+  const className = ["site-header", variant === "hero" ? "is-hero" : "", drawer ? "is-open" : "", overArt ? "on-dark" : "", scrolled || menu ? "is-scrolled" : ""].filter(Boolean).join(" ");
 
   return (
     <header className={className} ref={headerRef}>
@@ -95,13 +102,7 @@ export function SiteHeader({ variant = "default", nav }: { variant?: HeaderVaria
               <Link className="nav-link" href={l.href} aria-current={isActive(pathname, l.href) ? "page" : undefined}>{l.label}</Link>
             </div>
           ))}
-          <div className="nav-item">
-            <button className="nav-link" type="button" aria-expanded={menu === "library"} aria-controls="nav-panel-library" onClick={() => setMenu(menu === "library" ? null : "library")}>
-              {navGroups.library.label}<span className="nav-chev" aria-hidden="true">▾</span>
-            </button>
-          </div>
           <div className="nav-actions">
-            <Link className="text-link" href={scorecardCta.href}>{scorecardCta.label}</Link>
             <Link className="btn btn-primary btn-sm" href={primaryCta.href}>{primaryCta.label}</Link>
           </div>
         </nav>
@@ -114,7 +115,7 @@ export function SiteHeader({ variant = "default", nav }: { variant?: HeaderVaria
         </div>
       </div>
 
-      {groups.map((key) => menu === key ? <Dropdown key={key} id={`nav-panel-${navGroups[key].key}`} group={navGroups[key]} onNavigate={close} /> : null)}
+      {groups.map((key) => menu === key ? <Dropdown key={key} id={`nav-panel-${navGroups[key].key}`} group={navGroups[key]} onNavigate={close} scorecard={scorecardCta} /> : null)}
 
       <div className="drawer" id="nav-drawer" hidden={!drawer} ref={drawerRef} role="dialog" aria-modal="true" aria-label="Site menu">
         <div className="wrap drawer-inner">

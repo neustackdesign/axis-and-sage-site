@@ -4,6 +4,7 @@ import { Tracking } from "@/components/analytics/Tracking";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader, type HeaderVariant } from "@/components/layout/SiteHeader";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Motion } from "@/components/v26/Motion";
 import { headerNav } from "@/lib/content/header";
 import { organizationLd } from "@/lib/seo";
 import { getPeople, getSettings } from "@/sanity/load";
@@ -21,6 +22,7 @@ export async function SiteShell({ children, header = "default" }: { children: Re
       <SiteHeader variant={header} nav={headerNav(settings)} />
       <main id="main">{children}</main>
       <SiteFooter settings={settings} />
+      <Motion />
       <Tracking />
       <GoogleAnalytics />
     </>
