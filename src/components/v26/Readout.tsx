@@ -40,7 +40,7 @@ export function Readout({ r, stages, label, title, note, link }: { r: ReadoutDat
             </button>
           ))}
         </div>
-        <p className="small muted rv d3">{note} <a className="tl" href={link.href}>{link.label}</a></p>
+        <p className="small muted rv d3">{note} <a className="tl more" href={link.href}>{link.label}</a></p>
       </div>
       <div className="s8 rv d2" id="readout" role="tabpanel" aria-labelledby={`stage-${step}`} aria-live="polite">
         <ReadoutRegions r={r} step={step} />

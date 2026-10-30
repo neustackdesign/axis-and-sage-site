@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Invitations, Opening, Testimony } from "@/components/v26/blocks";
 import { SetPiece } from "@/components/v26/SetPiece";
-import { WorkIndex } from "@/components/v26/WorkIndex";
+import { WorkIndex, WorkIndexFromQuery } from "@/components/v26/WorkIndex";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getEngagements, getHome, getSetPieces, getSitePage, getTools, getWorkIndex } from "@/sanity/load";
@@ -19,6 +20,11 @@ export default async function WorkPage() {
   const lead = home.featuredCases.map((c) => c.slug);
   const ordered = [...pieces].sort((a, b) => (lead.indexOf(a.slug) + 1 || 99) - (lead.indexOf(b.slug) + 1 || 99));
   const t = p.strings;
+  const index = {
+    items: work,
+    labels: { all: t.filterAll ?? "All", engagement: t.filterEngagement ?? "Engagements", role: t.filterRole ?? "Earlier roles", founded: t.filterFounded ?? "Founded" },
+    tags: { engagement: t.tagEngagement ?? "Engagement", role: t.tagRole ?? "Earlier role", founded: t.tagFounded ?? "Founded" },
+  };
   const sec = p.sectionMap;
   const diagnostic = engagements.paths.flatMap((x) => x.offers).find((o) => o.name === engagements.diagnostic.name);
   const scorecard = tools.find((x) => x.slug === "conversion-scorecard");
@@ -47,8 +53,7 @@ export default async function WorkPage() {
       <section className="sec t-alt" data-sec="index" aria-labelledby="index-title">
         <div className="wrap">
           <div className="head" style={{ marginBottom: 0 }}><div className="stack"><h2 id="index-title" className="h2 rv">{sec.index?.title}</h2></div><p className="lbl ink rv">{sec.index?.label}</p></div>
-          <WorkIndex items={work} labels={{ all: t.filterAll ?? "All", engagement: t.filterEngagement ?? "Engagements", role: t.filterRole ?? "Earlier roles", founded: t.filterFounded ?? "Founded" }}
-            tags={{ engagement: t.tagEngagement ?? "Engagement", role: t.tagRole ?? "Earlier role", founded: t.tagFounded ?? "Founded" }} />
+          <Suspense fallback={<WorkIndex {...index} />}><WorkIndexFromQuery {...index} /></Suspense>
         </div>
       </section>
 

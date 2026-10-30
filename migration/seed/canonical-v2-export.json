@@ -18,8 +18,8 @@
       "toolContent": 6,
       "legalPage": 2
     },
-    "generatedFromCommit": "4acfd3983f75f871cf0df303d97caed6ff2f494b",
-    "contentChecksum": "sha256:b0256bde7fd0c715daf96f5695a16904bb9a9b81f4dc6b1844b4f6ced8f68858",
+    "generatedFromCommit": "4acfd3983f75f871cf0df303d97caed6ff2f494b-dirty",
+    "contentChecksum": "sha256:8c4747062cb70eefeedf3e019cddd2e869695105e430597dc147bc5691def40c",
     "assets": [
       {
         "ref": "image-1daac82e3a094855c85d5881de44c91a0fd7d11b-2048x1536-jpg",
@@ -772,7 +772,7 @@
       },
       "sentence": "We need first-time visitors to sponsor a farm on their phone.",
       "caseHeadline": "Getting city professionals to sponsor farms they would never visit.",
-      "place": "AGRICULTURE INVESTMENT · LAGOS · 2017–2020",
+      "place": "AGRICULTURE INVESTMENT · NIGERIA · 2017–2020",
       "roleLine": "Built, then ran product and growth",
       "wayHeadline": "The flow asked for trust it had not yet earned.",
       "flow": {
@@ -3910,7 +3910,7 @@
               "_type": "asLink",
               "label": "Guides",
               "href": "/library#guides",
-              "description": "Delegation of authority, ESOPs, investor readiness, pitch decks and the payment screen."
+              "description": "Short reads on the decisions we see most."
             },
             {
               "_key": "l2",
@@ -4020,6 +4020,12 @@
               "_type": "asLink",
               "label": "Customers buy",
               "href": "/work?action=customers-buy"
+            },
+            {
+              "_key": "l5",
+              "_type": "asLink",
+              "label": "Users adopt",
+              "href": "/work?action=users-adopt"
             }
           ]
         },
@@ -4286,7 +4292,7 @@
           "text": "Customers reach checkout and don't buy."
         }
       ],
-      "conversionLinkLabel": "Owners, artefacts and measures ▸",
+      "conversionLinkLabel": "Owners, artefacts and measures",
       "foundersNote": "Every engagement is led by one of us, and usually both.",
       "stats": [
         {
@@ -4600,7 +4606,7 @@
         "_type": "reference",
         "_ref": "axisSage-work-farmcrowdy"
       },
-      "aiNote": "AI-native: we use AI in how we work, with a principal reviewing every output.",
+      "aiNote": "AI-native: AI is part of how we work, and we help clients adopt it where the economics justify it.",
       "startLabels": [
         "Day 1 · the sentence",
         "Days 2–9 · interviews, path, numbers",
@@ -4872,7 +4878,7 @@
           "body": "In the strategy, the operations, the technology or the brand, with your team.",
           "owner": "Your team, led by a principal",
           "artefact": "The change, built and running",
-          "measure": "Leading signs agreed in the quote"
+          "measure": "Against the measure agreed on day one"
         },
         {
           "_key": "x3",

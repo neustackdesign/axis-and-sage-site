@@ -550,15 +550,18 @@ const REDESIGN: Record<string, Record<string, unknown>> = {
           { label: "Engagements and pricing", href: "/engagements", description: "Start with one sentence. Know the price before we start." },
         ].map(link),
       },
-      library: { _type: "asNavGroup", ...siteSrc.navGroups.library, items: siteSrc.navGroups.library.items.map(link) },
+      // As published: the Guides line was edited in the Studio after the 1 October seed.
+      library: { _type: "asNavGroup", ...siteSrc.navGroups.library, items: siteSrc.navGroups.library.items.map((l) => (l.label === "Guides" ? { ...l, description: "Short reads on the decisions we see most." } : l)).map(link) },
       primaryLinks: [{ label: "Work", href: "/work" }, { label: "Approach", href: "/conversion-design" }, { label: "About", href: "/people" }, { label: "Library", href: "/library" }].map(link),
     },
     primaryCta: { _type: "asCta", label: "Book a 30-minute call", href: siteSrc.bookCallHref },
+    // As published: "Users adopt" was added to the Work column in the Studio.
+    footerNavigation: siteSrc.footerColumns.map((c, i) => ({ _key: `c${i}`, _type: "asFooterColumn", title: c.title, links: [...c.links, ...(c.title === "Work" ? [{ label: "Users adopt", href: "/work?action=users-adopt" }] : [])].map(link) })),
   },
   [SINGLETON_IDS.home]: {
     supportingCopy: "Axis & Sage is an advisory for businesses across Africa and the GCC. We fix what stops investors, partners, teams and customers acting, in the strategy, the operations, the technology or the brand.",
     secondaryCTA: { _type: "asCta", label: "See the work", href: "/work" },
-    conversionLinkLabel: "Owners, artefacts and measures ▸",
+    conversionLinkLabel: "Owners, artefacts and measures",
     sections: [
       section("situations", "SOUND FAMILIAR", "Four situations we're called in for.", "Each one is a decision that was sound and an action that never happened."),
       section("work", "SELECTED WORK", "What moved, and why."),
@@ -616,7 +619,7 @@ const REDESIGN: Record<string, Record<string, unknown>> = {
       ],
     },
     methodCase: ref("work:farmcrowdy"),
-    aiNote: "AI-native: we use AI in how we work, with a principal reviewing every output.",
+    aiNote: "AI-native: AI is part of how we work, and we help clients adopt it where the economics justify it.",
     startLabels: ["Day 1 · the sentence", "Days 2–9 · interviews, path, numbers", "Day 10 · readout"],
   },
   [SINGLETON_IDS.method]: {
@@ -626,7 +629,7 @@ const REDESIGN: Record<string, Record<string, unknown>> = {
     methodStepsExpanded: [
       { index: "01", title: "Name the action.", body: "One sentence, agreed with the people who own the outcome.", owner: "Your leadership and one of us", artefact: "The sentence and its measure", measure: "How the baseline is counted" },
       { index: "02", title: "Find what's in the way.", body: "Interviews, the path walked, the numbers read. Every blocker tagged terms, moment or both.", owner: "Us", artefact: "The blocker list and a fixed quote", measure: "The baseline, page one" },
-      { index: "03", title: "Fix it.", body: "In the strategy, the operations, the technology or the brand, with your team.", owner: "Your team, led by a principal", artefact: "The change, built and running", measure: "Leading signs agreed in the quote" },
+      { index: "03", title: "Fix it.", body: "In the strategy, the operations, the technology or the brand, with your team.", owner: "Your team, led by a principal", artefact: "The change, built and running", measure: "Against the measure agreed on day one" },
       { index: "04", title: "Measure what moved.", body: "The same number, counted the same way.", owner: "You, with us", artefact: "The last page", measure: "The new number" },
     ].map((x, i) => ({ _key: `x${i}`, _type: "asMethodStep", ...x })),
     why: { label: "WHY US", title: "Two operators. Each leads one half of every decision." },
@@ -676,7 +679,7 @@ const REDESIGN: Record<string, Record<string, unknown>> = {
     sentence: "We need first-time visitors to sponsor a farm on their phone.",
     caseHeadline: "Getting city professionals to sponsor farms they would never visit.",
     intro: "Nigeria's first digital agriculture platform, where people in cities sponsor farms and share the harvest. Sponsors stopped in the first-time mobile flow.",
-    place: "AGRICULTURE INVESTMENT · LAGOS · 2017–2020",
+    place: "AGRICULTURE INVESTMENT · NIGERIA · 2017–2020",
     roleLine: "Built, then ran product and growth",
     wayHeadline: "The flow asked for trust it had not yet earned.",
     flow: { before: ["Create an account", "Choose units and pay", "Then see the farm"], after: ["See the farm", "Planting to harvest", "Sponsor this farm"], caption: "What changed · redrawn from the case description, not the shipped screens" },

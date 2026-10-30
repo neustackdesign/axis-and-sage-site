@@ -13,20 +13,26 @@ type Copy = { title: string; sub?: string; label: string; note?: string; email: 
 /** Contact with prefill from ?engagement=&who=&what=&when=&source= (tools, offers and buttons link here). Render inside Suspense. */
 export function ContactPathsFromQuery(props: { paths: ContactPath[]; copy: Copy }) {
   const q = useSearchParams();
-  const key = (q.get("engagement") || "").toLowerCase();
-  const start = key ? Math.max(0, props.paths.findIndex((p) => p.key === key || p.label.toLowerCase().includes(key) || key.includes(p.key))) : 0;
+  const raw = q.get("engagement") || "";
+  const key = raw.toLowerCase();
+  const match = key ? props.paths.findIndex((p) => p.key === key || p.label.toLowerCase().includes(key) || key.includes(p.key)) : -1;
+  const start = Math.max(0, match);
+  // An offer with no starting point of its own (Programme, Portfolio Review, ...) still arrives named.
+  const named = key && match < 0 ? raw.charAt(0).toUpperCase() + raw.slice(1) : undefined;
   const when = q.get("when") || "";
-  return <ContactPaths key={`${start}${q.toString()}`} {...props} start={start} prefill={{ who: q.get("who") || "", what: q.get("what") || "", when: (whenOptions as readonly string[]).includes(when) ? when : "", origin: q.get("source") || undefined }} />;
+  return <ContactPaths key={`${start}${q.toString()}`} {...props} start={start} prefill={{ who: q.get("who") || "", what: q.get("what") || "", when: (whenOptions as readonly string[]).includes(when) ? when : "", origin: q.get("source") || undefined, engagement: named }} />;
 }
 
 /**
  * Pick what fits on the left; the form on the right relabels and re-prompts to suit it, so the enquiry arrives framed.
  * Sends through the contact lead path (name, sentence, consent), the same as before.
  */
-export function ContactPaths({ paths, copy, start = 0, prefill }: { paths: ContactPath[]; copy: Copy; start?: number; prefill?: { who: string; what: string; when: string; origin?: string } }) {
+export function ContactPaths({ paths, copy, start = 0, prefill }: { paths: ContactPath[]; copy: Copy; start?: number; prefill?: { who: string; what: string; when: string; origin?: string; engagement?: string } }) {
   const id = useId();
   const [pick, setPick] = useState(start);
-  const path = paths[pick];
+  const [named, setNamed] = useState(prefill?.engagement); // cleared once a starting point is picked
+  const base = paths[pick];
+  const path = base && named ? { ...base, label: named } : base;
   const [v, setV] = useState({ name: "", email: "", company: "", who: prefill?.who ?? "", what: prefill?.what ?? "", when: prefill?.when || "this quarter", consent: false, website: "" });
   const [localErr, setLocalErr] = useState<{ who?: string; what?: string }>({});
   const { state, message, errors, fallback, submit, clearError, check } = useLead();
@@ -57,9 +63,9 @@ export function ContactPaths({ paths, copy, start = 0, prefill }: { paths: Conta
         {copy.sub ? <p className="lead">{copy.sub}</p> : null}
         <div className="paths" role="group" aria-label="What would you like to start with?">
           {paths.map((p, i) => (
-            <button key={p.key} type="button" aria-pressed={i === pick} onClick={() => setPick(i)}>
+            <button key={p.key} type="button" aria-pressed={!named && i === pick} onClick={() => { setPick(i); setNamed(undefined); }}>
               <span className="stack" style={{ gap: 4 }}><span className="h3">{p.title}</span><span className="small" style={{ color: "var(--sunset-100)" }}>{p.line}</span></span>
-              <span className="lbl" style={{ color: "var(--cloud-50)" }}>{i === pick ? "Selected" : "▸"}</span>
+              <span className="lbl" style={{ color: "var(--cloud-50)" }}>{!named && i === pick ? "Selected" : "▸"}</span>
             </button>
           ))}
         </div>
