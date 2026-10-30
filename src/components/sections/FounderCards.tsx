@@ -1,7 +1,7 @@
 import type { Person } from "@/lib/content/types";
 import { Portrait, TextLink } from "@/components/ds/primitives";
 
-/** Split founders block: paper card for Terms, charcoal card for Moments. */
+/** Split founders block: Cloud card for Terms, Midnight card for Moments. Name, role and principle line only: the stats and cases carry the proof, the profile carries the bio. */
 export function FounderCards({ people }: { people: Person[] }) {
   return (
     <div className="founder-grid">
@@ -19,8 +19,6 @@ export function FounderCards({ people }: { people: Person[] }) {
               </div>
             </div>
             <p className="founder-line">{p.line}</p>
-            <p className="founder-body">{p.cardBody}</p>
-            <ul className="founder-proof">{p.cardProof.map((line) => <li key={line}>{line}</li>)}</ul>
             <TextLink href={`/people/${p.slug}`}>{p.name.split(" ")[0]}&apos;s profile</TextLink>
           </article>
         );

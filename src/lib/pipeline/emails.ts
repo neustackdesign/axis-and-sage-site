@@ -6,9 +6,9 @@ export const DISCLAIMER = "An illustrative planning estimate, not financial, leg
 
 /** Paper background, serif heading, mono label, one orange button. */
 export function htmlEmail({ heading, paragraphs, action }: { heading: string; paragraphs: string[]; action?: { label: string; href: string } }) {
-  const p = paragraphs.map((t) => `<p style="margin:0 0 16px;font:16px/25px Helvetica,Arial,sans-serif;color:#1F1F1F">${t}</p>`).join("");
-  const a = action ? `<p style="margin:24px 0"><a href="${action.href}" style="display:inline-block;background:#E8590C;color:#1F1F1F;padding:14px 22px;font:500 15px Helvetica,Arial,sans-serif;text-decoration:none">${action.label}</a></p>` : "";
-  return `<!doctype html><html><body style="margin:0;background:#ECEBE9"><div style="max-width:560px;margin:0 auto;padding:40px 24px"><p style="margin:0 0 24px;font:12px/16px Menlo,monospace;letter-spacing:.08em;color:#5B5A57">AXIS &amp; SAGE ADVISORY</p><h1 style="margin:0 0 20px;font:400 28px/34px Platypi,Georgia,serif;color:#1F1F1F">${heading}</h1>${p}${a}<p style="margin:32px 0 0;border-top:1px solid #D4D4D2;padding-top:16px;font:12px/18px Helvetica,Arial,sans-serif;color:#5B5A57">Axis &amp; Sage Advisory Limited · Masdar City Free Zone, Abu Dhabi, United Arab Emirates</p></div></body></html>`;
+  const p = paragraphs.map((t) => `<p style="margin:0 0 16px;font:16px/25px Helvetica,Arial,sans-serif;color:#0B0626">${t}</p>`).join("");
+  const a = action ? `<p style="margin:24px 0"><a href="${action.href}" style="display:inline-block;background:#B5440D;color:#FCFBFF;padding:14px 22px;font:500 15px Helvetica,Arial,sans-serif;text-decoration:none">${action.label}</a></p>` : "";
+  return `<!doctype html><html><body style="margin:0;background:#F3F0FF"><div style="max-width:560px;margin:0 auto;padding:40px 24px"><p style="margin:0 0 24px;font:12px/16px Menlo,monospace;letter-spacing:.08em;color:#56516F">AXIS &amp; SAGE ADVISORY</p><h1 style="margin:0 0 20px;font:400 28px/34px Platypi,Georgia,serif;color:#0B0626">${heading}</h1>${p}${a}<p style="margin:32px 0 0;border-top:1px solid #D8D3EA;padding-top:16px;font:12px/18px Helvetica,Arial,sans-serif;color:#56516F">Axis &amp; Sage Advisory Limited · Masdar City Free Zone, Abu Dhabi, United Arab Emirates</p></div></body></html>`;
 }
 
 /** Drops blank lines that would double up once empty fields are removed. */
@@ -108,8 +108,8 @@ export function toolResultMail(p: SheetPayload, siteUrl: string): Mail {
     heading: `Your ${escapeHtml(p.tool || "")} result`,
     paragraphs: [
       `<span style="white-space:pre-wrap;font-family:Menlo,monospace;font-size:13px;line-height:20px">${escapeHtml(summary)}</span>`,
-      ...(p.shareUrl ? [`<a href="${escapeHtml(p.shareUrl)}" style="color:#1F1F1F">See your result again</a>`] : []),
-      `<span style="font-size:13px;color:#5B5A57">${DISCLAIMER}</span>`,
+      ...(p.shareUrl ? [`<a href="${escapeHtml(p.shareUrl)}" style="color:#0B0626">See your result again</a>`] : []),
+      `<span style="font-size:13px;color:#56516F">${DISCLAIMER}</span>`,
     ],
     action: { label: "Book a Diagnostic", href: escapeHtml(diagnostic) },
   });

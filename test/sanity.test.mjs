@@ -70,16 +70,25 @@ test("founder titles: Co-founder, with the practice; never CEO, GM or CTO", asyn
 
 test("the Diagnostic: US$5,000 fixed, AED 18,500 for UAE engagements, the credit rule exact", async () => {
   const e = await load.getEngagements();
-  const d = e.columns.find((c) => c.slug === "conversion-diagnostic");
+  const offers = e.paths.flatMap((p) => p.offers);
+  const d = offers.find((c) => c.slug === "conversion-diagnostic");
   assert.equal(d.price, "US$5,000 fixed · AED 18,500 for UAE engagements");
   assert.equal(d.time, "10 working days");
-  assert.equal(e.diagnostic.creditRule, "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout.");
+  assert.equal(e.diagnostic.creditRule, "100% of the Diagnostic fee is credited against a Conversion Programme contracted within 30 days of the Diagnostic readout.");
   assert.deepEqual(e.diagnostic.price, { amount: 5000, currency: "USD" });
   assert.deepEqual(e.diagnostic.uaePrice, { amount: 18500, currency: "AED" });
-  assert.equal(e.columns.find((c) => c.slug === "conversion-programme").price, "Fixed fee, quoted after the Diagnostic");
-  assert.equal(e.columns.find((c) => c.slug === "embedded-leadership").price, "Monthly, quoted");
-  for (const s of e.specialists) assert.equal(s.price, "Quoted on a 30-minute call", s.name);
-  assert.doesNotMatch(JSON.stringify(e), /From US\$|Starting at|\[price\]/);
+  // Every price is a fixed fee; the Programme floor (US$15,000) is the only "from" figure, so no Programme falls outside the credit.
+  assert.equal(offers.find((c) => c.slug === "conversion-programme").price, "From US$15,000, fixed and quoted after the Diagnostic");
+  assert.equal(offers.find((c) => c.slug === "embedded-leadership").price, "Fixed monthly fee, quoted on a 30-minute call");
+  for (const s of e.specialists) assert.equal(s.price, "Fixed fee, quoted on a 30-minute call", s.name);
+  assert.doesNotMatch(JSON.stringify(e), /Starting at|\[price\]/);
+  // Three paths, every offer in exactly one.
+  assert.deepEqual(e.paths.map((p) => p.key), ["diagnose", "deliver", "partner"]);
+  assert.deepEqual(e.paths.map((p) => p.offers.map((o) => o.slug)), [
+    ["conversion-scorecard", "conversion-diagnostic", "leadership-working-session"],
+    ["conversion-programme", "investor-readiness-sprint", "portfolio-review"],
+    ["embedded-leadership"],
+  ]);
 });
 
 test("Strategy & Investment never describes regulated activity; the capital answer is exact", async () => {

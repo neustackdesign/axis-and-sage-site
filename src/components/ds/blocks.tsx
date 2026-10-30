@@ -1,18 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { CaseStat, EngagementColumn, SelectedCase, Specialist, StatTileData, Testimonial as TestimonialData, ToolMeta, WorkItem } from "@/lib/content/types";
+import type { CaseStat, EngagementPath, SectionIntro, SelectedCase, Specialist, StatTileData, Testimonial as TestimonialData, ToolMeta, WorkItem } from "@/lib/content/types";
 import { actionLabel, provenanceLabel } from "@/lib/content/vocab";
 import { ButtonLink, Chip, ChipRow, Eyebrow, Glyph, Portrait, SmartLink, TextLink } from "./primitives";
 
 const cssVars = (vars: Record<string, string | number>) => vars as CSSProperties;
-
-/** The engagement table's rows. Layout, not content: the values come from each Sanity engagement. */
-const engagementRows = [
-  { key: "price", label: "Price" },
-  { key: "time", label: "Time" },
-  { key: "bring", label: "You bring" },
-  { key: "weDo", label: "We do" },
-  { key: "youGet", label: "You get" },
-] as const;
 
 /** SpecGrid · SpecCell: 1px rules between cells, no fills. Mono label, sans value, optional index. */
 export function SpecGrid({ cells, cols = 4 }: { cells: { label: string; value: ReactNode; index?: string }[]; cols?: number }) {
@@ -135,51 +126,33 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
   );
 }
 
-/** EngagementTable: plan table. The recommended column is inverted to charcoal and carries the only orange button. */
-export function EngagementTable({ columns }: { columns: EngagementColumn[] }) {
-  const ordered = [...columns].sort((a, b) => Number(!!b.recommended) - Number(!!a.recommended));
+/** PathGrid: the three ways to work with us (Diagnose, Deliver, Partner). Each path lists its offers with price and time;
+    the recommended offer's button is the only primary. `detail` adds each offer's line and link (Engagements page). */
+export function PathGrid({ paths, detail }: { paths: (EngagementPath & SectionIntro)[]; detail?: boolean }) {
   return (
-    <>
-      <div className="engagement-table" role="table" aria-label="Engagements and pricing">
-        <div role="row" style={{ display: "contents" }}>
-          <div className="et-cell et-rowhead" role="columnheader">ENGAGEMENT</div>
-          {columns.map((c) => (
-            <div key={c.name} role="columnheader" className={`et-cell et-head${c.recommended ? " et-reco" : ""}`}>
-              <span className="et-name">{c.name}</span>
-              {c.recommended ? <span className="chip et-reco-flag">RECOMMENDED</span> : null}
-            </div>
-          ))}
-        </div>
-        {engagementRows.map((row) => (
-          <div role="row" key={row.key} style={{ display: "contents" }}>
-            <div className="et-cell et-rowhead" role="rowheader">{row.label}</div>
-            {columns.map((c) => <div key={c.name} role="cell" className={`et-cell${row.key === "price" ? " et-price" : ""}${c.recommended ? " et-reco" : ""}`}>{c[row.key]}</div>)}
-          </div>
-        ))}
-        <div role="row" style={{ display: "contents" }}>
-          <div className="et-cell" role="cell" />
-          {columns.map((c) => (
-            <div key={c.name} role="cell" className={`et-cell et-cta${c.recommended ? " et-reco" : ""}`}>
-              <ButtonLink href={c.cta.href} variant={c.recommended ? "primary" : "secondary"}>{c.cta.label}</ButtonLink>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="engagement-cards">
-        {ordered.map((c) => (
-          <article key={c.name} className={`engagement-card${c.recommended ? " is-reco on-dark" : ""}`}>
-            <div className="engagement-card-head">
-              {c.recommended ? <span className="chip et-reco-flag" style={{ alignSelf: "flex-start" }}>RECOMMENDED</span> : null}
-              <h3 className="t-h3">{c.name}</h3>
-            </div>
-            <dl>
-              {engagementRows.map((row) => <div key={row.key} style={{ display: "contents" }}><dt className="t-label">{row.label}</dt><dd>{c[row.key]}</dd></div>)}
-            </dl>
-            <div className="engagement-card-cta"><ButtonLink href={c.cta.href} variant={c.recommended ? "primary" : "secondary"}>{c.cta.label}</ButtonLink></div>
+    <div className="specialist-grid" style={cssVars({ "--cols": paths.length })}>
+      {paths.map((p) => {
+        const lead = p.offers.find((o) => o.recommended) ?? p.offers.find((o) => o.main) ?? p.offers[0];
+        return (
+          <article key={p.key} id={p.key} className="specialist-card">
+            <Eyebrow strong>{p.label}</Eyebrow>
+            <h3 className="t-h3">{p.title}</h3>
+            {p.intro ? <p className="muted">{p.intro}</p> : null}
+            <ul>
+              {p.offers.map((o) => (
+                <li key={o.slug} style={{ display: "grid", gap: 4 }}>
+                  <strong style={{ fontWeight: 500 }}>{o.name}</strong>
+                  <span className="specialist-meta t-label"><span>{o.price}</span><span>{o.time}</span></span>
+                  {detail && o.line ? <span className="t-small muted">{o.line}</span> : null}
+                  {detail && o !== lead ? <span><TextLink href={o.cta.href}>{o.cta.label}</TextLink></span> : null}
+                </li>
+              ))}
+            </ul>
+            {lead ? <div style={{ marginTop: "auto" }}><ButtonLink href={lead.cta.href} variant={lead.recommended ? "primary" : "secondary"}>{lead.cta.label}</ButtonLink></div> : null}
           </article>
-        ))}
-      </div>
-    </>
+        );
+      })}
+    </div>
   );
 }
 
@@ -209,7 +182,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
   );
 }
 
-/** Timeline: what was decided, then what people did. Baseline dotted; the new number is orange where the action happened. */
+/** Timeline: what was decided, then what people did. Baseline dotted; the new number is Sunset where the action happened. */
 export function Timeline({ label, steps, baseline, source }: { label: string; baseline: { value: number; label: string }; steps: { when: string; said: string; value: number; valueLabel: string; did: string; action?: boolean }[]; source?: string }) {
   const max = Math.max(...steps.map((s) => s.value), baseline.value) * 1.15;
   const baseBottom = (baseline.value / max) * 100;
@@ -243,13 +216,21 @@ export function DayTimeline({ days }: { days: { when: string; what: string }[] }
   return <ol className="day-timeline">{days.map((d) => <li key={d.when}><span className="t-label">{d.when}</span><p>{d.what}</p></li>)}</ol>;
 }
 
-/** Dotted orbit rings: four audiences, the action point in orange. */
-export function OrbitRings({ className = "" }: { className?: string }) {
+const RIBBON = "M 1289.492 569.581 L 1093.421 569.581 C 944.346 569.581 791.006 619.881 664.511 710.277 L 496.552 830.304 C 370.056 920.7 216.717 971 67.642 971 L 0 971 L 111.508 401.419 L 179.15 401.419 C 328.224 401.419 481.564 351.119 608.059 260.723 L 776.019 140.696 C 902.514 50.3 1055.854 0 1204.928 0 L 1401 0 L 1289.492 569.581 Z";
+
+/** Ribbons: the mark's two waves, full crop. Colour on Midnight, `outline` (dotted) behind the footer, `quiet` on light grounds. Fills its positioned parent. */
+export function Ribbons({ tone = "color", className = "" }: { tone?: "color" | "outline" | "quiet"; className?: string }) {
+  const [a, b] = tone === "quiet" ? ["var(--haze-400)", "var(--haze-300)"] : ["var(--mark-orange)", "var(--mark-pink)"];
+  const paint = (fill: string) => tone === "outline"
+    ? { fill: "none", stroke: fill, strokeWidth: 1.75, strokeDasharray: "0 7", strokeLinecap: "round" as const, vectorEffect: "non-scaling-stroke" as const }
+    : { fill, opacity: 0.7 };
   return (
-    <svg className={className} width="560" height="280" viewBox="0 0 560 280" aria-hidden="true" focusable="false">
-      {[120, 240, 360, 480].map((cx) => <circle key={cx} cx={cx} cy="170" r="90" fill="none" stroke="#A9A7A2" strokeWidth="1.5" strokeDasharray="0.5 7" strokeLinecap="round" />)}
-      <circle cx="480" cy="80" r="5" fill="#E8590C" />
-    </svg>
+    <div className={className} aria-hidden="true">
+      <svg viewBox="0 0 2221 971" width="100%" height="100%" focusable="false" style={{ display: "block", overflow: "visible" }}>
+        <path d={RIBBON} transform="translate(820 0)" {...paint(b)} />
+        <path d={RIBBON} {...paint(a)} />
+      </svg>
+    </div>
   );
 }
 

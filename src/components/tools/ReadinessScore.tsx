@@ -62,7 +62,7 @@ export function ReadinessScore() {
           <p className="verdict" style={{ marginTop: 12 }}>{score.pct}% · {score.band.headline}</p>
           <p className="t-body-l muted" style={{ marginTop: 12, maxWidth: 720 }}>{score.band.line}</p>
           <div className="group-scores" style={{ marginTop: 28 }}>
-            {score.groups.map((g) => <div key={g.key}><span className="t-label muted">{g.label.toUpperCase()}</span><span className="num">{g.pct}%</span><div className="result-bar" style={{ background: "var(--paper-100)" }}><div style={{ width: `${g.pct}%` }} /></div></div>)}
+            {score.groups.map((g) => <div key={g.key}><span className="t-label muted">{g.label.toUpperCase()}</span><span className="num">{g.pct}%</span><div className="result-bar" style={{ background: "var(--cloud-200)" }}><div style={{ width: `${g.pct}%` }} /></div></div>)}
           </div>
           <p className="t-label" style={{ marginTop: 32 }}>YOUR GAPS · {gaps.length}</p>
           {gaps.length ? <ol className="blockers">{gaps.map((g, i) => <li key={g.text}><span>{String(i + 1).padStart(2, "0")}</span><span>{g.text} <span className="t-label muted">· {g.group.toUpperCase()} · {(g.answer || "no").toUpperCase()}</span></span></li>)}</ol> : <p className="muted" style={{ marginTop: 12 }}>No gaps. Every check is a yes.</p>}

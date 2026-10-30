@@ -77,7 +77,6 @@ export type Person = {
   half: "terms" | "moments";
   line: string;
   cardBody: string;
-  cardProof: string[];
   bio: string;
   bioParagraphs: string[];
   selectedWork: string[];
@@ -114,7 +113,10 @@ export type Practice = {
   seo: PageSeo;
 };
 
-export type EngagementColumn = { slug: string; name: string; recommended?: boolean; price: string; time: string; bring: string; weDo: string; youGet: string; cta: Cta };
+export type EngagementPathKey = "diagnose" | "deliver" | "partner";
+/** One offer inside a path. `line` is what you get (main offers) or the intro (variants). */
+export type Offer = { slug: string; name: string; main: boolean; recommended?: boolean; price: string; time: string; line: string; cta: Cta };
+export type EngagementPath = { key: EngagementPathKey; offers: Offer[] };
 export type Specialist = { slug: string; name: string; price: string; time: string; intro: string; points?: string[]; cta?: Cta };
 export type DiagnosticInfo = {
   name: string;
@@ -128,7 +130,7 @@ export type DiagnosticInfo = {
   weDo: string;
   youGet: string;
 };
-export type EngagementsData = { columns: EngagementColumn[]; specialists: Specialist[]; diagnostic: DiagnosticInfo };
+export type EngagementsData = { paths: EngagementPath[]; specialists: Specialist[]; diagnostic: DiagnosticInfo };
 
 export type FaqEntry = { q: string; a: string };
 

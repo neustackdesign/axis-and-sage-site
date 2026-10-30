@@ -5,6 +5,8 @@
 - Required physical repository path: `/Users/tomiwao/Code/axis-and-sage-site`
 - Required GitHub repository: `neustackdesign/axis-and-sage-site`
 - Legacy HTML reference: `reference/legacy/axisandsage-page.html`
+- Canonical design system: `reference/design-system/axis-sage-ds` (from `Axis & Sage Design System.zip`, 28 Oct 2026: Midnight, Cloud, Sunset, Bloom). It supersedes the Paper/Charcoal/Orange system of 5 Oct 2026.
+- `uesta.axisandsage.com` is served by this project (`public/uesta/`, host rewrite in `next.config.ts`). Check it after every production deploy.
 
 ## Safety
 

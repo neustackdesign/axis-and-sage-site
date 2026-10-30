@@ -23,7 +23,7 @@ export default async function PeoplePage() {
       <Breadcrumbs trail={[{ name: "People", path: "/people" }]} />
       <PageHero label={page.hero.label} title={page.hero.title} sub={page.hero.sub} />
       {people.map((p, i) => (
-        <Section key={p.slug} tone={p.half === "moments" ? "charcoal" : "paper"} labelledBy={`${p.slug}-name`}>
+        <Section key={p.slug} tone={p.half === "moments" ? "midnight" : "cloud"} labelledBy={`${p.slug}-name`}>
           <div className="person-row">
             <Portrait alt={p.name} initials={p.initials} dark={p.half === "moments"} src={p.portrait} />
             <div className="stack-24">
@@ -34,7 +34,7 @@ export default async function PeoplePage() {
                 <p className="t-label muted" style={{ marginTop: 6 }}>{p.practice.toUpperCase()}</p>
               </div>
               <p className="founder-line">{p.line}</p>
-              <div className="prose stack-16">{p.bioParagraphs.map((para) => <p key={para}>{para}</p>)}</div>
+              <p className="t-body-l">{p.cardBody}</p>
               <TextLink href={`/people/${p.slug}`}>{p.name.split(" ")[0]}&apos;s profile</TextLink>
             </div>
           </div>

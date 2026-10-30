@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { glyphField } from "./objects";
-import { actions, caseArtifacts, engagementTiers, faqPlacements, libraryStatuses, libraryTypes, practiceSections, provenances, roles, sitePageKeys } from "./vocab";
+import { actions, caseArtifacts, engagementPaths, engagementTiers, faqPlacements, libraryStatuses, libraryTypes, practiceSections, provenances, roles, sitePageKeys } from "./vocab";
 
 // The v2 content model. Content, not presentation: the site decides how each field looks.
 // Singletons have fixed IDs (see SINGLETONS); everything else gets Sanity's own IDs and is found by slug or seedKey.
@@ -84,6 +84,8 @@ export const homePageV2 = defineType({
     defineField({ name: "statsSource", title: "What moved · sources line", type: "string", group: "content" }),
     refs("selectedWork", "Selected work", "workItem", { group: "content", description: "Exactly six: three Axis & Sage engagements, then three from the principals' track record.", // eslint-disable-next-line @typescript-eslint/no-explicit-any
       validation: (r: any) => r.required().length(6).unique() }),
+    refs("featuredTools", "Library · featured tools", "toolContent", { group: "content", description: "Up to three, in order. The Library page lists every tool.", // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      validation: (r: any) => r.max(3).unique() }),
     refs("selectedPeople", "Founders", "person", { group: "content" }),
     refs("testimonials", "Testimonials", "testimonialQuote", { group: "content" }),
     seo,
@@ -120,9 +122,9 @@ export const conversionMethod = defineType({
         defineField({ name: "caseLinkLabel", type: "string", title: "Case link label" }),
       ],
     }),
-    defineField({ name: "question", title: "Common question", type: "object", group: "content", fields: [defineField({ name: "title", type: "string", title: "Question" }), defineField({ name: "body", type: "text", rows: 3, title: "Answer" })] }),
-    defineField({ name: "actionCards", title: "By type of action", type: "array", group: "content", of: [defineArrayMember({ type: "asActionCard" })] }),
-    defineField({ name: "actionCardLinkLabel", title: "Action card link label", type: "string", group: "content" }),
+    defineField({ name: "question", title: "Common question", type: "object", group: "content", hidden: true, description: "No longer shown on the site (covered by the FAQ).", fields: [defineField({ name: "title", type: "string", title: "Question" }), defineField({ name: "body", type: "text", rows: 3, title: "Answer" })] }),
+    defineField({ name: "actionCards", title: "By type of action", type: "array", group: "content", hidden: true, description: "No longer shown on the site.", of: [defineArrayMember({ type: "asActionCard" })] }),
+    defineField({ name: "actionCardLinkLabel", title: "Work link label", description: "Link to the work index under \"What counts\".", type: "string", group: "content" }),
     refs("faqs", "FAQs on this page", "faqItem", { group: "content" }),
     seo,
   ],
@@ -153,7 +155,7 @@ export const person = defineType({
     defineField({ name: "principleLine", title: "Principle line", type: "string", group: "content", ...req }),
     defineField({ name: "shortBio", title: "Short biography", type: "text", rows: 4, group: "content", ...req }),
     defineField({ name: "longBio", title: "Biography", type: "text", rows: 12, group: "content", description: "Separate paragraphs with a blank line.", ...req }),
-    strings("proofPoints", "Proof points", { group: "content" }),
+    strings("proofPoints", "Proof points", { group: "content", hidden: true, description: "No longer shown on the site (home stats and cases carry the proof)." }),
     strings("selectedWork", "Selected work", { group: "content" }),
     defineField({ name: "extra", title: "Extra fact", type: "object", group: "content", fields: [defineField({ name: "label", type: "string", title: "Label" }), defineField({ name: "value", type: "text", rows: 2, title: "Value" })] }),
     defineField({ name: "education", title: "Education", type: "string", group: "content" }),
@@ -248,7 +250,8 @@ export const engagement = defineType({
   fields: [
     defineField({ name: "name", title: "Name", type: "string", group: "content", ...req }),
     slug("name"),
-    defineField({ name: "tier", title: "Shown as", type: "string", group: "content", options: list(engagementTiers), description: "core: a column in the engagement table. specialist: a specialist card.", ...req }),
+    defineField({ name: "path", title: "Path", type: "string", group: "content", options: list(engagementPaths), description: "diagnose, deliver or partner. The path's copy is on the Engagements page (sections with the same keys).", ...req }),
+    defineField({ name: "tier", title: "Shown as", type: "string", group: "content", options: list(engagementTiers), description: "core: a main offer in its path. specialist: a variant listed under it.", ...req }),
     defineField({ name: "recommended", title: "Recommended", type: "boolean", group: "content", initialValue: false }),
     defineField({ name: "publishedPrice", title: "Publish a fixed price", type: "boolean", group: "content", initialValue: false, description: "Only the Conversion Diagnostic has a published price." }),
     defineField({ name: "publicPrice", title: "Price", type: "number", group: "content", hidden: ({ parent }) => !parent?.publishedPrice }),

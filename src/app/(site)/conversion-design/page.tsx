@@ -3,7 +3,7 @@ import { CTABand } from "@/components/ds/CTABand";
 import { Faq, Timeline } from "@/components/ds/blocks";
 import { PlaneStack } from "@/components/ds/method";
 import { PageHero } from "@/components/ds/PageHero";
-import { Eyebrow, Glyph, RailBody, Section, SectionHeader, SmartLink } from "@/components/ds/primitives";
+import { Eyebrow, Glyph, RailBody, Section, SectionHeader, SmartLink, TextLink } from "@/components/ds/primitives";
 import { RichText } from "@/components/ds/RichText";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
@@ -42,6 +42,7 @@ export default async function ConversionDesignPage() {
             ))}
           </ul>
           <p className="t-h3" style={{ marginTop: 32 }}>{m.actorsClosing}</p>
+          <p style={{ marginTop: 24 }}><TextLink href="/work">{m.actionCardLinkLabel}</TextLink></p>
         </RailBody>
       </Section>
 
@@ -73,7 +74,7 @@ export default async function ConversionDesignPage() {
         </RailBody>
       </Section>
 
-      <Section tone="charcoal" labelledBy="timeline-title">
+      <Section tone="midnight" labelledBy="timeline-title">
         <SectionHeader id="timeline-title" label={label(4, s.example?.label)} title={s.example?.title} />
         <RailBody full>
           <Timeline
@@ -86,34 +87,8 @@ export default async function ConversionDesignPage() {
         </RailBody>
       </Section>
 
-      <Section labelledBy="cro-title">
-        <div className="section-header rail-grid">
-          <Eyebrow strong>{label(5, s.question?.label)}</Eyebrow>
-          <div className="stack-16" style={{ maxWidth: 720 }}>
-            <h3 id="cro-title" className="t-h2">{m.question.title}</h3>
-            <p className="t-body-l muted">{m.question.body}</p>
-          </div>
-        </div>
-      </Section>
-
-      <Section labelledBy="bytype-title">
-        <SectionHeader id="bytype-title" label={label(6, s.byType?.label)} title={s.byType?.title} />
-        <RailBody full>
-          <div className="gap-grid">
-            {m.actionCards.map((c) => (
-              <SmartLink key={c.key} href={`/work?action=${c.key}`} className="gap-card action-card">
-                <Glyph name={c.glyph} />
-                <span className="t-h3">{c.label}</span>
-                <span className="t-small muted">{c.line}</span>
-                <span className="text-link" style={{ marginTop: "auto" }}>{m.actionCardLinkLabel}<span className="text-link-arrow" aria-hidden="true">▸</span></span>
-              </SmartLink>
-            ))}
-          </div>
-        </RailBody>
-      </Section>
-
       <Section labelledBy="faq-title">
-        <SectionHeader id="faq-title" label={label(7, s.faq?.label)} title={s.faq?.title} />
+        <SectionHeader id="faq-title" label={label(5, s.faq?.label)} title={s.faq?.title} />
         <RailBody>
           <Faq items={m.faqs} />
         </RailBody>

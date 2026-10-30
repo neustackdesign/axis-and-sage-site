@@ -1,2 +1,2 @@
 /* Global overrides that sit outside the design system. */
-.studio-shell { min-height: 100vh; background: var(--paper-200); }
+.studio-shell { min-height: 100vh; background: var(--cloud-100); }

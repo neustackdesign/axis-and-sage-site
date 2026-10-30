@@ -42,7 +42,7 @@ const link = (l: { label: string; href: string; description?: string }, i: numbe
 export const CANONICAL = {
   titles: { "ifeanyi-monyei": { publicTitle: "Co-founder", practiceTitle: "Strategy & Investment" }, "tomiwa-ogunmodede": { publicTitle: "Co-founder", practiceTitle: "Product & Technology" } },
   diagnostic: { price: 5000, currency: "USD", uaePrice: 18500, duration: "10 working days" },
-  creditRule: "100% of the Diagnostic fee is credited against a Conversion Programme of US$15,000 or more, contracted within 30 days of the Diagnostic readout.",
+  creditRule: "100% of the Diagnostic fee is credited against a Conversion Programme contracted within 30 days of the Diagnostic readout.",
   provenance: {
     axisAndSage: ["gv-solutions", "nature-roots", "uganda-investor-summit", "oui-life"],
     principalTrackRecord: ["venture-garden-group", "national-social-investment-programme", "galaxy-backbone-1gov", "farmcrowdy", "mular", "earlybean", "kolibri", "lion-hospitality-partners", "adpipe"],
@@ -217,7 +217,7 @@ function sitePages(): SeedDoc[] {
   const page = (key: string, hero: object, sections: object[], strings: object[], seo: object) => ({ _id: sitePageId(key), _type: "sitePage", key, hero, sections, strings, seo: { _type: "asSeo", ...seo } });
   return [
     page("engagements", { label: "ENGAGEMENTS AND PRICING", title: "Start with one sentence. Know the price before we start.", sub: "Every engagement begins with the action you need and a fixed fee. Nothing starts without both." },
-      [section("specialist", "SPECIALIST", "Specialist engagements."), section("diagnostic", "THE DIAGNOSTIC", "What happens in the Diagnostic."), section("fee", "THE FEE", "What the Diagnostic fee pays for."), section("faq", "QUESTIONS", "Frequently asked questions.")],
+      [section("diagnose", "DIAGNOSE", "Find what's in the way.", "Start free with the Scorecard. The Diagnostic gives you the baseline, the fixes worth making and a fixed quote."), section("deliver", "DELIVER", "Fix it with your team.", "We build the change in the strategy, the product or the brand, and measure what moved. Raising, or reviewing a portfolio? Same method, scoped to that job."), section("partner", "PARTNER", "One of us in the seat.", "A principal takes a named role, such as COO, head of product or strategy lead, for three months or more."), section("diagnostic", "THE DIAGNOSTIC", "What happens in the Diagnostic."), section("fee", "THE FEE", "What the Diagnostic fee pays for."), section("faq", "QUESTIONS", "Frequently asked questions.")],
       [text("guideLink", "Read the guide"), text("specialistCta", "Talk to us")],
       { title: T.engagements.title, description: T.engagements.description, ogTitle: T.engagements.og }),
     page("work", { label: "WORK", title: "Who needed to act, and what moved.", sub: "Work by Axis & Sage and its founders. Every case is tagged with our role: founded, ran, built, advised or embedded, and with where it comes from: an Axis & Sage engagement or the principals' track record." },
@@ -397,8 +397,9 @@ function engagements(): SeedDoc[] {
     return { _type: "engagement", seedKey: `engagement:${slug}`, name, slug: slugOf(slug), tier: "core", recommended: !!x.recommended, publishedPrice: false, duration: x.time, bring: x.bring, weDo: x.weDo, youGet: x.youGet, cta: { _type: "asCta", ...x.cta }, order: i, ...extra };
   };
   return [
-    core("conversion-scorecard", "Conversion Scorecard", { priceLabel: "Free" }, 1),
+    core("conversion-scorecard", "Conversion Scorecard", { path: "diagnose", priceLabel: "Free" }, 1),
     core("conversion-diagnostic", "Conversion Diagnostic", {
+      path: "diagnose",
       publishedPrice: true,
       publicPrice: CANONICAL.diagnostic.price,
       currency: CANONICAL.diagnostic.currency,
@@ -408,11 +409,11 @@ function engagements(): SeedDoc[] {
       feeExplainer: "Ten working days of principal time, the interviews, the analysis, the report and a fixed quote for the fix.",
       timeline: keyed(e.diagnosticDays.map((d) => ({ _type: "asTimelineDay", ...d })), "d"),
     }, 2),
-    core("conversion-programme", "Conversion Programme", { priceLabel: "Fixed fee, quoted after the Diagnostic" }, 3),
-    core("embedded-leadership", "Embedded leadership", { priceLabel: "Monthly, quoted" }, 4),
+    core("conversion-programme", "Conversion Programme", { path: "deliver", priceLabel: "From US$15,000, fixed and quoted after the Diagnostic" }, 3),
+    core("embedded-leadership", "Embedded leadership", { path: "partner", priceLabel: "Fixed monthly fee, quoted on a 30-minute call" }, 4),
     ...spec.map((s, i): SeedDoc => {
       const slug = s.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-      return { _type: "engagement", seedKey: `engagement:${slug}`, name: s.name, slug: slugOf(slug), tier: "specialist", recommended: false, publishedPrice: false, priceLabel: "Quoted on a 30-minute call", duration: s.time, intro: s.intro, points: s.points || [], cta: { _type: "asCta", label: "Talk to us", href: `/contact?engagement=${encodeURIComponent(s.name)}` }, order: 10 + i };
+      return { _type: "engagement", seedKey: `engagement:${slug}`, name: s.name, slug: slugOf(slug), path: s === e.leadershipSession ? "diagnose" : "deliver", tier: "specialist", recommended: false, publishedPrice: false, priceLabel: "Fixed fee, quoted on a 30-minute call", duration: s.time, intro: s.intro, points: s.points || [], cta: { _type: "asCta", label: "Talk to us", href: `/contact?engagement=${encodeURIComponent(s.name)}` }, order: 10 + i };
     }),
   ];
 }
@@ -446,7 +447,6 @@ function tools(): SeedDoc[] {
 function library(): SeedDoc[] {
   const e = engagementsSrc;
   const diagnostic = e.engagements.find((x) => x.recommended)!;
-  const startFaq = e.faqs[3].a;
   const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
   const guideBody = [
     block("h1", "What the fee pays for", { style: "h2" }),
@@ -459,7 +459,7 @@ function library(): SeedDoc[] {
     block("h3", "What you get", { style: "h2" }),
     block("p3", `We ${lower(diagnostic.weDo)}. You get ${lower(diagnostic.youGet)}.`),
     block("h4", "The credit", { style: "h2" }),
-    block("p4", `${CANONICAL.creditRule} ${startFaq}`),
+    block("p4", `${CANONICAL.creditRule} Programmes start from US$15,000, and you know the price before we start.`),
     { _type: "asArticleEnd", _key: "end", headline: siteSrc.ctaBand.headline, cta: { _type: "asCta", label: "Book a 30-minute call", href: siteSrc.bookCallHref } },
   ];
   const guides = librarySrc.guides.map((g, i): SeedDoc => ({

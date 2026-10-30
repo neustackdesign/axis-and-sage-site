@@ -31,5 +31,7 @@ export const libraryStatuses = ["draft", "comingSoon", "published"] as const;
 export const faqPlacements = ["conversionDesign", "engagements"] as const;
 export const practiceSections = ["whatWeDo", "engagements"] as const;
 export const engagementTiers = ["core", "specialist"] as const;
+/** The three ways to work with us. Every engagement sits in one. */
+export const engagementPaths = ["diagnose", "deliver", "partner"] as const;
 export const sitePageKeys = ["engagements", "work", "people", "library", "contact", "newsletter", "thankYou", "notFound"] as const;
 export type SitePageKey = (typeof sitePageKeys)[number];

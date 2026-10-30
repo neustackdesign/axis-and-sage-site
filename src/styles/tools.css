@@ -1,7 +1,7 @@
 /* Axis & Sage · tool screens. Sage panels, mono inputs, one orange action. */
 
 .tool-section { background: var(--bg-sage); padding-block: 64px 96px; }
-.tool-panel { background: var(--paper-50); border: 1px solid var(--sage-400); padding: 32px; }
+.tool-panel { background: var(--cloud-50); border: 1px solid var(--sage-400); padding: 32px; }
 .tool-panel + .tool-panel { margin-top: 24px; }
 .tool-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
 .tool-body { margin-top: 32px; }
@@ -14,7 +14,7 @@
 .tool-email { width: 100%; max-width: 560px; }
 .number-field { display: flex; align-items: stretch; }
 .number-field .field-control { font-family: var(--font-mono); }
-.number-affix { display: flex; align-items: center; padding: 0 12px; background: var(--paper-100); border-bottom: 1px solid var(--charcoal-900); font-family: var(--font-mono); font-size: 13px; }
+.number-affix { display: flex; align-items: center; padding: 0 12px; background: var(--cloud-200); border-bottom: 1px solid var(--midnight-900); font-family: var(--font-mono); font-size: 13px; }
 
 .statement { border-top: var(--border-strong); padding-top: 20px; }
 .statement + .statement { margin-top: 32px; }
@@ -24,7 +24,7 @@
 
 .tool-results-head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
 .verdict { font-family: var(--font-serif); font-size: 44px; line-height: 50px; letter-spacing: -0.01em; }
-.tool-output { background: var(--charcoal-800); color: var(--text-on-dark); padding: 28px; display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; }
+.tool-output { background: var(--bg-dark); color: var(--text-on-dark); padding: 28px; display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; }
 .tool-output .t-label { color: var(--text-muted-dark); }
 .output-row { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; border-bottom: var(--border-rule-dark); }
 .output-row:last-child { border-bottom: 0; padding-bottom: 0; }
@@ -34,24 +34,24 @@
 
 .doa-setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
 .level-list li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: var(--border-rule); }
-.level-list .icon-btn { width: 36px; height: 36px; border: 1px solid var(--stone-400); background: var(--paper-50); font-size: 12px; }
+.level-list .icon-btn { width: 36px; height: 36px; border: 1px solid var(--haze-400); background: var(--cloud-50); font-size: 12px; }
 .level-list .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .check-list { display: flex; flex-direction: column; gap: 10px; }
-.matrix-wrap { overflow-x: auto; border: var(--border-rule); background: var(--paper-50); -webkit-overflow-scrolling: touch; }
+.matrix-wrap { overflow-x: auto; border: var(--border-rule); background: var(--cloud-50); -webkit-overflow-scrolling: touch; }
 .matrix { border-collapse: collapse; min-width: 100%; font-size: 14px; }
 .matrix th, .matrix td { border-right: var(--border-rule); border-bottom: var(--border-rule); padding: 8px; vertical-align: top; text-align: left; }
 .matrix thead th { font-family: var(--font-mono); font-weight: 450; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); min-width: 132px; }
-.matrix tbody th { font-weight: 500; min-width: 180px; position: sticky; left: 0; background: var(--paper-50); z-index: 1; }
+.matrix tbody th { font-weight: 500; min-width: 180px; position: sticky; left: 0; background: var(--cloud-50); z-index: 1; }
 .matrix-cell { display: flex; flex-direction: column; gap: 6px; }
-.matrix-cell select, .matrix-cell input { width: 100%; min-height: 36px; border: 0; border-bottom: 1px solid var(--stone-400); background: transparent; font-family: var(--font-mono); font-size: 13px; padding: 4px 6px; border-radius: 0; }
-.matrix-cell select.is-a { background: var(--orange-100); border-bottom-color: var(--action); }
+.matrix-cell select, .matrix-cell input { width: 100%; min-height: 36px; border: 0; border-bottom: 1px solid var(--haze-400); background: transparent; font-family: var(--font-mono); font-size: 13px; padding: 4px 6px; border-radius: 0; }
+.matrix-cell select.is-a { background: var(--sunset-100); border-bottom-color: var(--action); }
 .matrix-limit { display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 13px; }
 .matrix-limit input { flex: 1; min-width: 0; }
 .matrix-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 12px; color: var(--text-muted); }
 
 .vesting-chart { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: 4px; height: 160px; border-bottom: 1px solid var(--text-muted-dark); }
-.vesting-chart span { background: var(--paper-100); display: block; min-height: 2px; }
-.vesting-chart span.is-cliff { outline: 1px dotted var(--paper-100); outline-offset: 3px; }
+.vesting-chart span { background: var(--cloud-200); display: block; min-height: 2px; }
+.vesting-chart span.is-cliff { outline: 1px dotted var(--cloud-200); outline-offset: 3px; }
 .vesting-axis { display: flex; justify-content: space-between; margin-top: 8px; }
 
 .readiness-group { border-top: var(--border-strong); padding-top: 16px; }
@@ -68,7 +68,7 @@
 .deck-outline li:first-child { border-top: var(--border-strong); }
 .deck-slide-title { font-family: var(--font-serif); font-size: 22px; line-height: 28px; }
 .deck-slide-words { margin-top: 6px; }
-.deck-slide-words.is-empty { color: var(--stone-400); font-style: italic; }
+.deck-slide-words.is-empty { color: var(--haze-400); font-style: italic; }
 .deck-slide-note { margin-top: 6px; color: var(--text-muted); font-size: 14px; line-height: 20px; }
 
 @media (max-width: 1023px) {
@@ -88,3 +88,4 @@
   .statement .segmented button { font-size: 11px; padding: 6px 2px; line-height: 14px; }
   .output-num { font-size: 32px; line-height: 36px; }
 }
+

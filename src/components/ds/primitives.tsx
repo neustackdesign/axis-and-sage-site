@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { glyphDots, type GlyphName } from "@/lib/glyphs";
 import type { Chip as ChipData } from "@/lib/content/types";
 
-type Tone = "paper" | "alt" | "sage" | "charcoal";
+type Tone = "cloud" | "alt" | "sage" | "lilac" | "creme" | "midnight";
 
 const isExternal = (href: string) => /^(https?:|mailto:|tel:)/.test(href);
 
@@ -27,7 +27,7 @@ export function ButtonLink({ href, variant = "primary", size, block, children, c
   return <SmartLink href={href} className={cls} {...rest}>{children}</SmartLink>;
 }
 
-/** TextLink: underline, orange underline on hover, trailing ▸. */
+/** TextLink: underline, Sunset underline on hover, trailing ▸. */
 export function TextLink({ href, children, arrow = true, className = "", ...rest }: { href: string; children: ReactNode; arrow?: boolean; className?: string } & Omit<ComponentProps<"a">, "href">) {
   return <SmartLink href={href} className={`text-link ${className}`.trim()} {...rest}>{children}{arrow ? <span className="text-link-arrow" aria-hidden="true">▸</span> : null}</SmartLink>;
 }
@@ -41,8 +41,8 @@ export function ChipRow({ chips, label }: { chips: ChipData[]; label?: string })
   return <ul className="chip-row" aria-label={label}>{chips.map((c) => <li key={c.label}><Chip chip={c} /></li>)}</ul>;
 }
 
-/** Section wrapper. Paper by default; charcoal at most two per page; sage for tools. */
-export function Section({ id, tone = "paper", tight, children, className = "", labelledBy }: { id?: string; tone?: Tone; tight?: boolean; children: ReactNode; className?: string; labelledBy?: string }) {
+/** Section wrapper. Cloud by default; alt to separate; sage for tools; lilac for notes; creme for people; midnight at most twice a page. */
+export function Section({ id, tone = "cloud", tight, children, className = "", labelledBy }: { id?: string; tone?: Tone; tight?: boolean; children: ReactNode; className?: string; labelledBy?: string }) {
   return <section id={id} aria-labelledby={labelledBy} className={`section${tight ? " section-tight" : ""} tone-${tone} ${className}`.trim()}><div className="wrap">{children}</div></section>;
 }
 
@@ -69,7 +69,7 @@ export function RailBody({ children, full, className = "" }: { children: ReactNo
   return <div className={`section-body rail-grid ${className}`.trim()}><div className={full ? "rail-grid-full" : "rail-grid-content"}>{children}</div></div>;
 }
 
-/** Glyph: 9×9 dot matrix in a pill. The orange dot marks the action point. */
+/** Glyph: 9×9 dot matrix in a pill. The Sunset dot marks the action point. */
 export function Glyph({ name, size, label }: { name: GlyphName; size?: "sm"; label?: string }) {
   const dots = glyphDots(name);
   return (
@@ -85,7 +85,7 @@ export function Lockup({ dark }: { dark?: boolean }) {
     <span className={`lockup${dark ? " on-dark" : ""}`}>
       <img className="lockup-mark" src="/brand/mark.svg" alt="" width={38} height={17} />
       <span className="lockup-words">
-        <img className="lockup-wordmark" src={dark ? "/brand/wordmark-paper.svg" : "/brand/wordmark-charcoal.svg"} alt="Axis & Sage" width={105} height={13} />
+        <img className="lockup-wordmark" src={dark ? "/brand/wordmark-cloud.svg" : "/brand/wordmark-midnight.svg"} alt="Axis & Sage" width={105} height={13} />
         <span className="lockup-advisory" aria-hidden="true">ADVISORY</span>
       </span>
       <span className="sr-only"> Advisory</span>

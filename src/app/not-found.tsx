@@ -11,7 +11,7 @@ export default async function NotFound() {
   return (
     <>
       <SiteHeader nav={headerNav(settings)} />
-      <main id="main" className="tone-paper">
+      <main id="main" className="tone-cloud">
         <section className="wrap page-hero" aria-labelledby="nf-title">
           <div className="page-hero-grid">
             <Eyebrow strong>{p.hero.label}</Eyebrow>

@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { TOOL_DISCLAIMER } from "@/lib/tools/spec";
 
-/** Stepper · ProgressBar. The active step is orange; done steps are charcoal with a tick. */
+/** Stepper · ProgressBar. The active step is Sunset; done steps are Midnight with a tick. */
 export function Stepper({ steps, active, progress }: { steps: string[]; active: number; progress: number }) {
   return (
     <div>

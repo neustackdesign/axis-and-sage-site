@@ -2,7 +2,7 @@
 // Required singletons throw MissingContentError, so a page, and a production build, fails rather than render without them.
 import { cache } from "react";
 import type {
-  ArticleBody, CasePage, Chip, DiagnosticInfo, EngagementColumn, EngagementsData, FaqEntry, Guide, GuideCard, LegalDoc,
+  ArticleBody, CasePage, Chip, DiagnosticInfo, EngagementPath, EngagementPathKey, EngagementsData, FaqEntry, Guide, GuideCard, LegalDoc,
   PageSeo, Person, Practice, SanityImageView, SectionIntro, SelectedCase, SiteSettings, SitePage, Specialist, Template,
   Testimonial, ToolMeta, WorkItem,
 } from "@/lib/content/types";
@@ -49,7 +49,6 @@ const personOf = (p: RawPerson): Person => ({
   half: p.focus,
   line: p.principleLine,
   cardBody: p.shortBio,
-  cardProof: p.proofPoints ?? [],
   bio: p.longBio,
   bioParagraphs: (p.longBio || "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean),
   selectedWork: p.selectedWork ?? [],
@@ -106,6 +105,7 @@ export type HomeView = {
   stats: { numeral: string; label: string; tag?: string; source?: string }[];
   statsSource: string;
   selectedWork: SelectedCase[];
+  featuredToolSlugs: string[];
   people: Person[];
   testimonials: Testimonial[];
   seo: PageSeo;
@@ -118,7 +118,7 @@ export const getHome = cache(async (): Promise<HomeView> => {
     practices: { title: string }[]; logoStrip: { label: string; names: string[] } | null; sections: SectionIntro[]; gapCards: HomeView["gapCards"];
     conversionLinkLabel: string; foundersNote: string; stats: HomeView["stats"]; statsSource: string;
     selectedWork: (Omit<SelectedCase, "chips" | "provenance"> & { roles: Role[] | null; actions: ActionKey[] | null; provenance: Provenance | null })[];
-    selectedPeople: RawPerson[]; testimonials: RawTestimonial[]; seo: Seo;
+    featuredToolSlugs: string[]; selectedPeople: RawPerson[]; testimonials: RawTestimonial[]; seo: Seo;
   };
   const h = await sanityFetch<Raw | null>(Q.homeQuery, { id: Q.SINGLETON_IDS.home });
   if (!h) throw new MissingContentError(`Homepage (${Q.SINGLETON_IDS.home})`);
@@ -146,6 +146,7 @@ export const getHome = cache(async (): Promise<HomeView> => {
     stats: h.stats,
     statsSource: h.statsSource,
     selectedWork: h.selectedWork.map((w) => ({ ...w, chips: chipsOf(w.roles ?? [], w.actions ?? []), provenance: w.provenance ?? undefined })),
+    featuredToolSlugs: h.featuredToolSlugs ?? [],
     people: h.selectedPeople.map(personOf),
     testimonials: h.testimonials.map(testimonialOf),
     seo: seoOf(h.seo),
@@ -262,7 +263,7 @@ export const getTool = cache(async (slug: string): Promise<ToolMeta | null> => {
 });
 
 type RawEngagement = {
-  slug: string; name: string; tier: "core" | "specialist"; recommended: boolean | null; publishedPrice: boolean | null; publicPrice: number | null;
+  slug: string; name: string; path: EngagementPathKey | null; tier: "core" | "specialist"; recommended: boolean | null; publishedPrice: boolean | null; publicPrice: number | null;
   currency: string | null; uaePrice: number | null; priceLabel: string | null; duration: string; bring: string; weDo: string; youGet: string;
   intro: string | null; points: string[] | null; cta: { label: string; href: string } | null; creditRule: string | null; feeExplainer: string | null;
   timeline: { when: string; what: string }[];
@@ -280,9 +281,18 @@ export const getEngagements = cache(async (): Promise<EngagementsData> => {
   const core = all.filter((e) => e.tier === "core");
   const d = core.find((e) => e.recommended && e.publishedPrice);
   if (!d) throw new MissingContentError("Engagements: the recommended Conversion Diagnostic with a published price");
-  const columns: EngagementColumn[] = core.map((e) => ({
-    slug: e.slug, name: e.name, recommended: !!e.recommended, price: priceText(e), time: e.duration, bring: e.bring, weDo: e.weDo, youGet: e.youGet,
-    cta: req(e.cta, `Engagement "${e.name}": call to action`),
+  // Three paths, in this order; each lists its main offers, then its variants, in Sanity order.
+  const paths: EngagementPath[] = (["diagnose", "deliver", "partner"] as const).map((key) => ({
+    key,
+    // Studio requires a path; an engagement without one (mid-publish) is left out rather than failing the page.
+    offers: all.filter((e) => e.path === key)
+      .sort((a, b) => Number(a.tier === "specialist") - Number(b.tier === "specialist"))
+      .map((e) => ({
+        slug: e.slug, name: e.name, main: e.tier === "core", recommended: !!e.recommended, price: priceText(e), time: e.duration,
+        // A variant's intro may end by introducing its points ("We cover both halves:"); the path shows the intro without that lead-in.
+        line: (e.tier === "core" ? e.youGet : e.intro?.replace(/\s*[^.]*:\s*$/, "")) ?? "",
+        cta: e.cta ?? { label: "Talk to us", href: `/contact?engagement=${encodeURIComponent(e.name)}` },
+      })),
   }));
   const specialists: Specialist[] = all.filter((e) => e.tier === "specialist").map((e) => ({
     slug: e.slug, name: e.name, price: priceText(e), time: e.duration, intro: e.intro ?? "", points: e.points?.length ? e.points : undefined, cta: e.cta ?? undefined,
@@ -299,7 +309,7 @@ export const getEngagements = cache(async (): Promise<EngagementsData> => {
     weDo: d.weDo,
     youGet: d.youGet,
   };
-  return { columns, specialists, diagnostic };
+  return { paths, specialists, diagnostic };
 });
 
 export const getFaqs = cache(async (placement: "conversionDesign" | "engagements"): Promise<FaqEntry[]> => sanityFetch<FaqEntry[]>(Q.faqsQuery, { placement }));

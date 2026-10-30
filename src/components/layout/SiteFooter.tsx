@@ -1,16 +1,16 @@
 import Link from "next/link";
-import { OrbitRings } from "@/components/ds/blocks";
+import { Ribbons } from "@/components/ds/blocks";
 import { Lockup } from "@/components/ds/primitives";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import type { SiteSettings } from "@/lib/content/types";
 import { whatsappLink } from "@/lib/whatsapp";
 
-/** Footer: charcoal, newsletter first, four columns, contact and legal lines, dotted orbit rings behind. */
+/** Footer: Midnight, newsletter first, four columns, contact and legal lines, dotted ribbons behind. */
 export function SiteFooter({ settings: s }: { settings: SiteSettings }) {
   const wa = whatsappLink(s.whatsappMessage);
   return (
     <footer className="site-footer">
-      <OrbitRings className="footer-orbits" />
+      <Ribbons tone="outline" className="footer-ribbons" />
       <div className="wrap">
         <div className="footer-news">
           <div>

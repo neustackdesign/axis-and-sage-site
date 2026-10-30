@@ -95,7 +95,7 @@ export function DoaBuilder() {
                 const note = doaLevelNotes[l.name];
                 return (
                   <li key={l.name} style={hidden ? { opacity: 0.4 } : undefined}>
-                    <input type="checkbox" aria-label={`Include ${levelLabel(l.name, s.structure)}`} checked={l.on && !hidden} disabled={hidden} onChange={(e) => set({ levels: s.levels.map((x) => x.name === l.name ? { ...x, on: e.target.checked } : x) })} style={{ width: 20, height: 20, accentColor: "var(--charcoal-900)" }} />
+                    <input type="checkbox" aria-label={`Include ${levelLabel(l.name, s.structure)}`} checked={l.on && !hidden} disabled={hidden} onChange={(e) => set({ levels: s.levels.map((x) => x.name === l.name ? { ...x, on: e.target.checked } : x) })} style={{ width: 20, height: 20, accentColor: "var(--midnight-900)" }} />
                     <span>{levelLabel(l.name, s.structure)}{note ? <span className="muted"> · {note.toLowerCase()}</span> : null}</span>
                     <span style={{ display: "flex", gap: 4 }}>
                       <button type="button" className="icon-btn" aria-label={`Move ${l.name} up`} disabled={i === 0} onClick={() => move(i, -1)}>▲</button>

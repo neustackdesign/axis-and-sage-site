@@ -1,5 +1,5 @@
-// Axis & Sage dot-matrix glyph set, 9×9. '#' = ink dot, 'o' = orange action dot, '.' = empty.
-// Source: reference/design-system/axis-sage-ds/lib/glyphs.js
+// Axis & Sage dot-matrix glyph set, 9×9. '#' = ink dot, 'o' = Sunset action dot, '.' = empty.
+// Source: reference/design-system/axis-sage-ds/components/brand/Glyph.jsx
 export const GLYPHS = {
   investors: [".........", ".......#.", ".......#.", ".....#.#.", ".....#.#.", "...#.#.#.", "...#.#.#.", ".#.#.#.o.", "........."],
   partners: [".........", ".........", ".##...##.", "#..#.#..#", "#...o...#", "#..#.#..#", ".##...##.", ".........", "........."],

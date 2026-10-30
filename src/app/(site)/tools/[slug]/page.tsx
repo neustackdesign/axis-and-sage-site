@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { CTABand } from "@/components/ds/CTABand";
 import { PageHero } from "@/components/ds/PageHero";
 import { DeckOutline } from "@/components/tools/DeckOutline";
 import { DoaBuilder } from "@/components/tools/DoaBuilder";
@@ -63,7 +62,6 @@ export default async function ToolPage({ params }: Props) {
           {t.instructions ? <p className="tool-note" style={{ marginTop: 32, maxWidth: 680 }}>{t.instructions}</p> : null}
         </div>
       </section>
-      <CTABand />
     </>
   );
 }

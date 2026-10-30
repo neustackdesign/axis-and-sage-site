@@ -40,7 +40,7 @@ export function PracticeView({ p, others: siblings, trail }: { p: Practice; othe
       {p.whatWeDo.length ? (
         <Section tone="alt" labelledBy="what-title">
           <SectionHeader id="what-title" label={`${idx()} · WHAT WE DO`} title="What we do." />
-          <RailBody full><SpecGrid cols={4} cells={p.whatWeDo.map((w, i) => ({ label: "TYPICAL WORK", index: String(i + 1).padStart(2, "0"), value: w }))} /></RailBody>
+          <RailBody full><SpecGrid cols={4} cells={p.whatWeDo.map((w, i) => ({ label: "", index: String(i + 1).padStart(2, "0"), value: w }))} /></RailBody>
         </Section>
       ) : null}
 
