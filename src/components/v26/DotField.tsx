@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { usePlayOnEnter } from "./scroll";
 
 /** Builds the 100 dots of a per-hundred result: `before` filled as the baseline, the gain up to `after` in Sunset. */
 export const dots = (before: number, after: number, showAfter: boolean) =>
@@ -17,23 +18,11 @@ export const dotAlt = (before: number, after: number, showAfter: boolean) =>
  */
 export function DotField({ before, after, toggle, labels, className = "df", controlClass = "seg", show }: { before: number; after: number; toggle?: boolean; labels?: [string, string]; className?: string; controlClass?: string; show?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [auto, setShowAfter] = useState(true);
   const [touched, setTouched] = useState(false);
-  const showAfter = show ?? auto; // controlled when the parent owns the before/after control
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || typeof IntersectionObserver === "undefined" || touched || show !== undefined) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // rest on the result
-    // Server HTML shows the result; once script runs, drop to the baseline and fill the gain on screen.
-    const frame = window.requestAnimationFrame(() => setShowAfter(false));
-    let timer = 0;
-    const io = new IntersectionObserver((es) => {
-      if (es.some((e) => e.isIntersecting)) { timer = window.setTimeout(() => setShowAfter(true), 600); io.disconnect(); }
-    }, { threshold: 0.3 });
-    io.observe(node);
-    return () => { window.cancelAnimationFrame(frame); io.disconnect(); window.clearTimeout(timer); };
-  }, [touched, show]);
-  const pick = (v: boolean) => { setTouched(true); setShowAfter(v); };
+  const [picked, setPicked] = useState(true);
+  const played = usePlayOnEnter(ref, touched || show !== undefined);
+  const showAfter = show ?? (touched ? picked : played); // controlled when the parent owns the before/after control
+  const pick = (v: boolean) => { setTouched(true); setPicked(v); };
   const [b, a] = labels ?? [`Before · ${before}`, `After · ${after}`];
   return (
     <>

@@ -1,27 +1,26 @@
-import { CtaBandForm } from "@/components/forms/CtaBandForm";
+import { SentenceForm } from "@/components/v26/SentenceForm";
 import { whatsappHref } from "@/lib/whatsapp";
 import { getSettings } from "@/sanity/load";
-import { TextLink } from "./primitives";
 
-/** CTABand.Orange: "Who needs to act?" with the inline sentence form. Used on most pages. Copy from Site settings. */
-export async function CTABand({ headline }: { headline?: string }) {
+/** The close on every page: Sunset bleed, the band's headline beside the sentence form. Copy from Site settings. */
+export async function CTABand({ headline, label }: { headline?: string; label?: string }) {
   const s = await getSettings();
   const wa = whatsappHref(s.whatsappMessage);
   return (
-    <section className="cta-band" aria-labelledby="cta-band-title">
-      <div className="wrap cta-band-grid">
-        <div>
-          <h2 id="cta-band-title">{headline ?? s.ctaBand.headline}</h2>
-          <p className="cta-band-line">{s.ctaBand.line}</p>
+    <div className="v26">
+      <section className="t-sun bleed" data-sec="cta" id="cta" aria-labelledby="cta-title">
+        <div className="cv">
+          <div className="l edge">
+            {label ? <p className="lbl rv">{label}</p> : null}
+            <h2 id="cta-title" className="disp rv d1">{headline ?? s.ctaBand.headline}</h2>
+            <p className="lead rv d2">{s.ctaBand.line}</p>
+            {wa ? <p className="small rv d3"><a className="tl more" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp us</a></p> : null}
+          </div>
+          <div className="r edge-r">
+            <div className="fp lite rv d2"><SentenceForm email={s.contactEmail} /></div>
+          </div>
         </div>
-        <div>
-          <CtaBandForm />
-          <p className="cta-band-links">
-            <TextLink href={s.primaryCta.href}>Book a 30-minute call</TextLink>
-            {wa ? <TextLink href={wa}>WhatsApp us</TextLink> : null}
-          </p>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

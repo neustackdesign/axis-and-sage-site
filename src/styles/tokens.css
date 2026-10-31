@@ -44,6 +44,15 @@
   --action: var(--sunset-600); --action-hover: var(--sunset-700); --action-pressed: var(--sunset-800); --action-tint: var(--sunset-100);
   --on-action: var(--cloud-50); --on-action-hover: var(--cloud-50); --on-action-pressed: var(--cloud-50);
   --focus-ring-light: var(--midnight-900); --focus-ring-dark: var(--cloud-100);
+  /* Marker roles (31 Oct 2026). One meaning, one treatment, on every page; pink and orange are not interchangeable.
+     action   Sunset 600 fill: the next thing to do (primary button, the closing ground).
+     result   Sunset 500: the outcome and the terminal state (end node, gain dots, the action label, the moved figure).
+     current  where you are or what is chosen: Midnight on light, Bloom on dark (filled chip, active rule and index, traced path).
+     hover    pointer feedback on links and linked headings: Sunset 700 on light, Bloom on dark.
+     entry    what the visitor typed or picked in a form or tool: Sunset text or the Sunset 100 tint. */
+  --mark-action: var(--action); --mark-result: var(--sunset-500);
+  --mark-current: var(--midnight-900); --mark-current-dark: var(--bloom-500);
+  --mark-hover: var(--sunset-700); --mark-hover-dark: var(--bloom-500);
 }
 
 /* Axis & Sage · type tokens. Serif speaks, sans explains, mono measures. */
@@ -53,42 +62,46 @@
   --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --weight-serif: 400; --weight-sans: 400; --weight-sans-medium: 500; --weight-mono: 450;
   /* Poster: covers, social, decks, OOH only (brand book: 96pt, 90% leading, -3 tracking). Never in site body. */
-  --type-poster-size: 160px; --type-poster-lh: 144px; --type-poster-track: -0.03em;
-  --type-poster-size-m: 72px; --type-poster-lh-m: 66px;
+  --type-poster-size: 10rem; --type-poster-lh: 9rem; --type-poster-track: -0.03em;
+  --type-poster-size-m: 4.5rem; --type-poster-lh-m: 4.125rem;
   /* Measures: each text box is sized to its copy so lines fill it evenly. */
   --measure-display: 12em; --measure-heading: 18em; --measure-lead: 34em; --measure-body: 66ch; --measure-caption: 48ch;
-  --type-display-size: 88px; --type-display-lh: 92px; --type-display-track: -0.02em;
-  --type-h1-size: 64px; --type-h1-lh: 68px; --type-h1-track: -0.015em;
-  --type-h2-size: 44px; --type-h2-lh: 50px; --type-h2-track: -0.01em;
-  --type-h3-size: 28px; --type-h3-lh: 34px; --type-h3-track: -0.005em;
-  --type-body-l-size: 20px; --type-body-l-lh: 30px;
-  --type-body-size: 17px; --type-body-lh: 27px;
-  --type-small-size: 14px; --type-small-lh: 20px;
-  --type-label-size: 12px; --type-label-lh: 16px; --type-label-track: 0.08em;
-  --type-stat-size: 48px; --type-stat-lh: 52px; --type-stat-track: -0.02em;
-  --type-display-size-m: 48px; --type-display-lh-m: 52px;
-  --type-h1-size-m: 40px; --type-h1-lh-m: 44px;
-  --type-h2-size-m: 32px; --type-h2-lh-m: 38px;
-  --type-h3-size-m: 24px; --type-h3-lh-m: 30px;
-  --type-body-size-m: 16px; --type-body-lh-m: 25px;
-  --type-stat-size-m: 36px; --type-stat-lh-m: 40px;
+  --type-display-size: 5.5rem; --type-display-lh: 5.75rem; --type-display-track: -0.02em;
+  --type-h1-size: 4rem; --type-h1-lh: 4.25rem; --type-h1-track: -0.015em;
+  --type-h2-size: 2.75rem; --type-h2-lh: 3.125rem; --type-h2-track: -0.01em;
+  --type-h3-size: 1.75rem; --type-h3-lh: 2.125rem; --type-h3-track: -0.005em;
+  --type-body-l-size: 1.25rem; --type-body-l-lh: 1.875rem;
+  --type-body-size: 1.0625rem; --type-body-lh: 1.6875rem;
+  --type-small-size: 0.875rem; --type-small-lh: 1.25rem;
+  --type-label-size: 0.75rem; --type-label-lh: 1rem; --type-label-track: 0.08em;
+  --type-stat-size: 3rem; --type-stat-lh: 3.25rem; --type-stat-track: -0.02em;
+  --type-display-size-m: 3rem; --type-display-lh-m: 3.25rem;
+  --type-h1-size-m: 2.5rem; --type-h1-lh-m: 2.75rem;
+  --type-h2-size-m: 2rem; --type-h2-lh-m: 2.375rem;
+  --type-h3-size-m: 1.5rem; --type-h3-lh-m: 1.875rem;
+  --type-body-size-m: 1rem; --type-body-lh-m: 1.5625rem;
+  --type-stat-size-m: 2.25rem; --type-stat-lh-m: 2.5rem;
 }
 
-/* Axis & Sage · spacing, grid, radius, border. 8px unit. */
+/* Axis & Sage · spacing, grid, radius, border. 8px unit (0.5rem). Sizes are rem: 1rem is 16px up to a 1440 viewport,
+   then grows with it to 20px at 1800 (post-launch delta, 31 Oct 2026). Breakpoints and hairlines stay in px. */
+html { font-size: clamp(100%, 1.1111vw, 125%); }
 :root {
-  --space-unit: 8px; --space-0-5: 4px; --space-1: 8px; --space-2: 16px; --space-3: 24px; --space-4: 32px; --space-5: 40px;
-  --space-6: 48px; --space-8: 64px; --space-10: 80px; --space-12: 96px; --space-16: 128px;
-  --section-lg: 128px; --section-md: 96px; --section-sm: 64px;
-  --grid-columns: 12; /* @kind other */ --grid-max: 1328px; --grid-gutter: 24px; --grid-margin: 56px; --grid-margin-t: 32px; --grid-margin-m: 20px; /* 1440 page: 1328 content + 2 × 56 (2026 delta) */
+  --space-unit: 0.5rem; --space-0-5: 0.25rem; --space-1: 0.5rem; --space-2: 1rem; --space-3: 1.5rem; --space-4: 2rem; --space-5: 2.5rem;
+  --space-6: 3rem; --space-8: 4rem; --space-10: 5rem; --space-12: 6rem; --space-16: 8rem;
+  --section-lg: 8rem; --section-md: 6rem; --section-sm: 4rem;
+  --grid-columns: 12; /* @kind other */ --grid-max: min(max(83rem, 92.222vw), 150rem); --grid-gutter: 1.5rem; --grid-margin: max(3.5rem, 3.889vw); --grid-margin-t: 2rem; --grid-margin-m: 1.25rem;
+  /* 1440 page: 1328 content + 2 × 56. Above 1440 the grid keeps those proportions of the viewport (92.2% content, 3.9% margins)
+     while type and spacing (rem) scale only to 1.25, so reading measures hold and media and grids take the extra width. */
   --rail-span: 3; /* @kind other */
   --content-span: 9; /* @kind other */
-  --radius-none: 0px; --radius-pill: 999px;
+  --radius-none: 0px; --radius-pill: 62.4375rem;
   --border-width: 1px;
   --border-rule: 1px solid var(--haze-300);
   --border-rule-dark: 1px solid var(--midnight-600);
   --border-strong: 1px solid var(--midnight-900);
   --border-dotted: 1px dotted var(--midnight-900);
-  --touch-target: 44px; --focus-width: 2px; --focus-offset: 2px;
+  --touch-target: 2.75rem; --focus-width: 2px; --focus-offset: 2px;
   --shadow-none: none; /* no drop shadows, ever */
 }
 

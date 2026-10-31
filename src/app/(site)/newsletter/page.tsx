@@ -19,11 +19,10 @@ export default async function NewsletterPage() {
     <>
       <Breadcrumbs trail={[{ name: "Newsletter", path: "/newsletter" }]} />
       <PageHero label={p.hero.label} title={p.hero.title} display sub={p.hero.sub}>
-        <div style={{ width: "100%", maxWidth: 560 }}><NewsletterForm primary /></div>
+        <div style={{ width: "100%", maxWidth: "35rem" }}><NewsletterForm primary /></div>
       </PageHero>
       <Section tone="alt" labelledBy="archive-title">
-        <div className="section-header rail-grid">
-          <Eyebrow strong as="div"><span id="archive-title">{p.strings.archiveLabel}</span></Eyebrow>
+        <div className="section-header" style={{ alignItems: "start" }}>
           {issues.length ? (
             <ol className="spec-list">{issues.map((i, k) => <li key={i.title}><span className="t-label">{String(issues.length - k).padStart(2, "0")}</span><span><TextLink href={i.href}>{i.title}</TextLink> <span className="t-label muted">· {i.publishedAt}</span></span></li>)}</ol>
           ) : (
@@ -32,6 +31,7 @@ export default async function NewsletterPage() {
               <p className="muted">{settings.newsletter.archiveEmpty}</p>
             </div>
           )}
+          <div className="section-header-rail"><Eyebrow strong as="div"><span id="archive-title">{p.strings.archiveLabel}</span></Eyebrow></div>
         </div>
       </Section>
     </>

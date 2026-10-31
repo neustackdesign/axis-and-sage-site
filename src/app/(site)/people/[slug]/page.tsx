@@ -47,7 +47,7 @@ export default async function PersonPage({ params }: Props) {
         </div>
       </section>
 
-      <Section labelledBy="bio-title">
+      <Section tone="creme" labelledBy="bio-title">
         <SectionHeader id="bio-title" label="01 · BIOGRAPHY" title={p.line}>
           <div className="stack-16" style={{ marginTop: 24, maxWidth: 760 }}>{p.bioParagraphs.map((para) => <p key={para} className="t-body-l">{para}</p>)}</div>
         </SectionHeader>

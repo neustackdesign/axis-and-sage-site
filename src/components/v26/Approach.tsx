@@ -4,12 +4,17 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Readout } from "@/lib/content/types";
 import type { MethodView } from "@/sanity/load";
 import { ReadoutRegions } from "./Readout";
+import { useScrollStage } from "./scroll";
 
-/** Terms and moments: the mark's two ribbons are the diagram. Pick one: it holds, the other recedes. */
+/** Terms and moments: the mark's two ribbons are the diagram. Scrolling past hands focus from terms to moments; a pick
+ *  holds its half while the other recedes. */
 export function TermsMoments({ halves, ribbon }: { halves: NonNullable<MethodView["halves"]>; ribbon: string }) {
-  const [focus, setFocus] = useState<"t" | "m">("t");
+  const ref = useRef<HTMLDivElement>(null);
+  const scrolled = useScrollStage(ref, 2);
+  const [picked, setFocus] = useState<"t" | "m" | null>(null);
+  const focus = picked ?? (scrolled ? "m" : "t");
   return (
-    <div className={`tmv ${focus === "t" ? "fT" : "fM"}`}>
+    <div ref={ref} className={`tmv ${focus === "t" ? "fT" : "fM"}`}>
       <div className="stack rv" style={{ gap: 0 }}>
         <p className="lbl" style={{ marginBottom: 16 }}>{halves.label}</p>
         <button type="button" aria-pressed={focus === "t"} onClick={() => setFocus("t")}>

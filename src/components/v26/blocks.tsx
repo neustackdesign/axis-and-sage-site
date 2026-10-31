@@ -14,11 +14,11 @@ export function Head({ id, title, label, children, level = 2 }: { id?: string; t
 }
 
 /** Page opening: headline and subcopy run the full grid width, the same measure as the media below. */
-export function Opening({ label, title, sub }: { label: string; title: string; sub?: string }) {
+export function Opening({ label, title, sub, children }: { label: string; title: ReactNode; sub?: ReactNode; children?: ReactNode }) {
   return (
     <section className="wrap" data-sec="opening" aria-labelledby="page-title">
       <div className="opening">
-        <div className="stack"><h1 id="page-title" className="h1 rv">{title}</h1>{sub ? <p className="sub rv d1">{sub}</p> : null}</div>
+        <div className="stack"><h1 id="page-title" className="h1 rv">{title}</h1>{sub ? <p className="sub rv d1">{sub}</p> : null}{children ? <div className="rv d2">{children}</div> : null}</div>
         <div><p className="lbl ink rv d1">{label}</p></div>
       </div>
     </section>

@@ -46,25 +46,25 @@ export function Section({ id, tone = "cloud", tight, children, className = "", l
   return <section id={id} aria-labelledby={labelledBy} className={`section${tight ? " section-tight" : ""} tone-${tone} ${className}`.trim()}><div className="wrap">{children}</div></section>;
 }
 
-/** SectionHeader: the left-rail pattern. Rail (3 cols): eyebrow and a short paragraph. Content (9 cols): two-line serif headline. */
+/** SectionHeader: the 2026 head on every page. Serif headline on 8 of 12 columns, the numbered folio closing the row. */
 export function SectionHeader({ id, label, railText, title, lede, level = 2, children }: { id?: string; label: string; railText?: ReactNode; title: ReactNode; lede?: ReactNode; level?: 1 | 2; children?: ReactNode }) {
   const Heading = level === 1 ? "h1" : "h2";
   return (
-    <div className="section-header rail-grid">
-      <div className="section-header-rail">
-        <Eyebrow strong>{label}</Eyebrow>
-        {railText ? <p className="t-small muted">{railText}</p> : null}
-      </div>
+    <div className="section-header">
       <div>
         <Heading id={id} className={`section-header-title ${level === 1 ? "t-h1" : "t-h2"}`}>{title}</Heading>
         {lede ? <div className="section-header-lede t-body-l muted">{lede}</div> : null}
         {children}
       </div>
+      <div className="section-header-rail">
+        <Eyebrow strong>{label}</Eyebrow>
+        {railText ? <p className="t-small muted">{railText}</p> : null}
+      </div>
     </div>
   );
 }
 
-/** Body that sits in the content column under a SectionHeader. */
+/** Body under a SectionHeader, aligned to the same left edge. */
 export function RailBody({ children, full, className = "" }: { children: ReactNode; full?: boolean; className?: string }) {
   return <div className={`section-body rail-grid ${className}`.trim()}><div className={full ? "rail-grid-full" : "rail-grid-content"}>{children}</div></div>;
 }

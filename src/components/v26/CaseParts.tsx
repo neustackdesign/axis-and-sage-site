@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { CaseResult } from "@/lib/content/types";
 import { DotField } from "./DotField";
+import { usePlayOnEnter } from "./scroll";
 
-/** The flow, redrawn from the case description: before and after as three screens each. Wipes on change. */
+/** The flow, redrawn from the case description: before and after as three screens each. Plays before to after as it
+ *  comes on screen, wiping on change; the control replays either. */
 export function CaseFlow({ before, after, caption }: { before: string[]; after: string[]; caption?: string }) {
-  const [view, setView] = useState<"before" | "after">("after");
+  const ref = useRef<HTMLDivElement>(null);
+  const [picked, setView] = useState<"before" | "after" | null>(null);
+  const played = usePlayOnEnter(ref, picked !== null);
+  const view = picked ?? (played ? "after" : "before");
   const screens = view === "before" ? before : after;
   return (
     <div className="stack" style={{ gap: 16 }}>
@@ -17,7 +22,7 @@ export function CaseFlow({ before, after, caption }: { before: string[]; after: 
           <button type="button" aria-pressed={view === "after"} onClick={() => setView("after")}>After</button>
         </div>
       </div>
-      <div className="stage">
+      <div className="stage" ref={ref}>
         <ol key={view} className="flow wipe" aria-label={`${view === "before" ? "Before" : "After"}: ${screens.join(", then ")}`}>
           {screens.map((t, i) => {
             const last = i === screens.length - 1;
@@ -36,13 +41,17 @@ export function CaseFlow({ before, after, caption }: { before: string[]; after: 
   );
 }
 
-/** What moved, on Midnight: the figure and its before/after control, then the same result drawn per 100. */
+/** What moved, on Midnight: the figure and its before/after control, then the same result drawn per 100, filling as it
+ *  comes on screen. */
 export function CaseResultField({ r }: { r: CaseResult }) {
-  const [after, setAfter] = useState(true);
+  const ref = useRef<HTMLDivElement>(null);
+  const [picked, setAfter] = useState<boolean | null>(null);
+  const played = usePlayOnEnter(ref, picked !== null);
+  const after = picked ?? played;
   const [head, tail] = r.numeral.split("→").map((x) => x.trim());
   return (
     <>
-      <div className="l edge">
+      <div className="l edge" ref={ref}>
         <p className="lbl rv">What moved</p>
         <p className="big rv d1">{tail ? <>{head} → <b>{tail}</b></> : r.numeral}</p>
         <p className="lead rv d2">{r.label}</p>

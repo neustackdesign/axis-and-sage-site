@@ -59,7 +59,7 @@ export default async function ToolPage({ params }: Props) {
       <section className="tool-section" aria-label={t.title}>
         <div className="wrap">
           <ToolBody slug={t.slug} />
-          {t.instructions ? <p className="tool-note" style={{ marginTop: 32, maxWidth: 680 }}>{t.instructions}</p> : null}
+          {t.instructions ? <p className="tool-note" style={{ marginTop: 32, maxWidth: "42.5rem" }}>{t.instructions}</p> : null}
         </div>
       </section>
     </>

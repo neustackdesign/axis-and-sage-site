@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Readout as ReadoutData } from "@/lib/content/types";
 import { DotField } from "./DotField";
+import { scrollToStage, useScrollStage } from "./scroll";
 
 const half = (tag: string) => (tag === "TERMS" ? "Terms" : "Moment");
 
@@ -25,25 +26,36 @@ export function ReadoutRegions({ r, step, short }: { r: ReadoutData; step: numbe
   );
 }
 
-/** Homepage: the method as a rail of four stages beside the readout, on Midnight. The rail never moves. */
+/**
+ * Homepage: the method as a rail of four stages beside the readout, on Midnight. The section pins while scrolling
+ * advances the stages (scrolling back reverses them); a tab scrolls to its stage. On phones it advances as it passes.
+ */
 export function Readout({ r, stages, label, title, note, link }: { r: ReadoutData; stages: { index: string; title: string }[]; label: string; title: string; note?: string; link: { href: string; label: string } }) {
-  const [step, setStep] = useState(0);
+  const track = useRef<HTMLDivElement>(null);
+  const scrolled = useScrollStage(track, stages.length);
+  const [picked, setPicked] = useState<{ n: number; at: number } | null>(null);
+  const step = picked && picked.at === scrolled ? picked.n : scrolled; // unpinned: a tab shows its stage until the next scroll step
+  const go = (n: number) => { if (track.current && !scrollToStage(track.current, n, stages.length)) setPicked({ n, at: scrolled }); };
   return (
-    <div className="g12">
-      <div className="s4 stack" style={{ gap: 20, paddingRight: 16 }}>
-        <p className="lbl rv">{label}</p>
-        <h2 className="h2 xs rv d1">{title}</h2>
-        <div className="steps rv d2" role="tablist" aria-label={title}>
-          {stages.map((s, n) => (
-            <button key={s.index} type="button" role="tab" id={`stage-${n}`} aria-selected={n === step} aria-controls="readout" className={`step${n === step ? " on" : ""}`} onClick={() => setStep(n)}>
-              <span className="n">{s.index}</span><span className="tt">{s.title}</span>
-            </button>
-          ))}
+    <div className="rtrack" ref={track}>
+      <div className="rpin">
+        <div className="g12">
+          <div className="s4 stack" style={{ gap: 20, paddingRight: 16 }}>
+            <p className="lbl rv">{label}</p>
+            <h2 className="h2 xs rv d1">{title}</h2>
+            <div className="steps rv d2" role="tablist" aria-label={title}>
+              {stages.map((s, n) => (
+                <button key={s.index} type="button" role="tab" id={`stage-${n}`} aria-selected={n === step} aria-controls="readout" className={`step${n === step ? " on" : ""}`} onClick={() => go(n)}>
+                  <span className="n">{s.index}</span><span className="tt">{s.title}</span>
+                </button>
+              ))}
+            </div>
+            <p className="small muted rv d3">{note} <a className="tl more" href={link.href}>{link.label}</a></p>
+          </div>
+          <div className="s8 rv d2" id="readout" role="tabpanel" aria-labelledby={`stage-${step}`} aria-live="polite">
+            <ReadoutRegions r={r} step={step} />
+          </div>
         </div>
-        <p className="small muted rv d3">{note} <a className="tl more" href={link.href}>{link.label}</a></p>
-      </div>
-      <div className="s8 rv d2" id="readout" role="tabpanel" aria-labelledby={`stage-${step}`} aria-live="polite">
-        <ReadoutRegions r={r} step={step} />
       </div>
     </div>
   );

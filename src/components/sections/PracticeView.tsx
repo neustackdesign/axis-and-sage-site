@@ -5,7 +5,10 @@ import { RailBody, Section, SectionHeader, SmartLink, TextLink } from "@/compone
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 import type { Practice } from "@/lib/content/types";
 
-/** A practice page, and the Embedded leadership page under Engagements, which shares its layout. */
+/**
+ * A practice page, and the Embedded leadership page under Engagements, which shares its layout. Chapters carry the
+ * contrast: the situations on Midnight, the work on Cloud, how it connects as a Lilac statement, tools on Sage.
+ */
 export function PracticeView({ p, others: siblings, trail }: { p: Practice; others: Practice[]; trail: { name: string; path: string }[] }) {
   const leads = p.ledByPeople;
   const proof = p.proof;
@@ -24,28 +27,28 @@ export function PracticeView({ p, others: siblings, trail }: { p: Practice; othe
       </PageHero>
 
       {p.whenToCall.length ? (
-        <Section labelledBy="when-title">
+        <Section tone="midnight" labelledBy="when-title">
           <SectionHeader id="when-title" label={`${idx()} · WHEN TO CALL US`} title="When to call us." />
-          <RailBody><SpecList items={p.whenToCall.map((w) => <span key={w} className="t-body-l">{w}</span>)} /></RailBody>
+          <RailBody><SpecList items={p.whenToCall.map((w) => <span key={w} className="t-h3">{w}</span>)} /></RailBody>
         </Section>
       ) : null}
 
       {p.howItWorks.length ? (
-        <Section labelledBy="how-title">
+        <Section tone="alt" labelledBy="how-title">
           <SectionHeader id="how-title" label={`${idx()} · HOW IT WORKS`} title="How it works." />
           <RailBody full><SpecGrid cols={4} cells={p.howItWorks.map((h, i) => ({ label: ["ROLE", "HOURS", "TERM", "CONTRACT"][i] || "", index: String(i + 1).padStart(2, "0"), value: h }))} /></RailBody>
         </Section>
       ) : null}
 
       {p.whatWeDo.length ? (
-        <Section tone="alt" labelledBy="what-title">
+        <Section labelledBy="what-title">
           <SectionHeader id="what-title" label={`${idx()} · WHAT WE DO`} title="What we do." />
           <RailBody full><SpecGrid cols={4} cells={p.whatWeDo.map((w, i) => ({ label: "", index: String(i + 1).padStart(2, "0"), value: w }))} /></RailBody>
         </Section>
       ) : null}
 
       {p.connects ? (
-        <Section labelledBy="connects-title">
+        <Section tone="lilac" labelledBy="connects-title">
           <SectionHeader id="connects-title" label={`${idx()} · HOW IT CONNECTS`} title={p.connects}>
             <p className="button-row" style={{ marginTop: 28 }}>{others.map((o) => <TextLink key={o.slug} href={`/what-we-do/${o.slug}`}>{o.label}</TextLink>)}<TextLink href="/conversion-design">Conversion Design</TextLink></p>
           </SectionHeader>

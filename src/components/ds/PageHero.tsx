@@ -1,20 +1,7 @@
 import type { ReactNode } from "react";
-import { Eyebrow } from "./primitives";
+import { Opening } from "@/components/v26/blocks";
 
-/** Page hero on Cloud, no painting: mono label in the rail, serif H1 and sub in the content column. */
-export function PageHero({ label, title, sub, children, display }: { label: string; title: ReactNode; sub?: ReactNode; children?: ReactNode; display?: boolean }) {
-  return (
-    <section className="tone-cloud" aria-labelledby="page-title">
-      <div className="wrap page-hero">
-        <div className="page-hero-grid">
-          <Eyebrow strong>{label}</Eyebrow>
-          <div>
-            <h1 id="page-title" className={`${display ? "t-display" : "t-h1"} reveal`}>{title}</h1>
-            {sub ? <p className="page-hero-sub t-body-l">{sub}</p> : null}
-            {children ? <div className="page-hero-meta">{children}</div> : null}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+/** Page hero: the 2026 opening on every page. Headline and subcopy run the grid width; the folio closes the row. */
+export function PageHero({ label, title, sub, children }: { label: string; title: ReactNode; sub?: ReactNode; children?: ReactNode; display?: boolean }) {
+  return <div className="v26"><Opening label={label} title={title} sub={sub}>{children}</Opening></div>;
 }

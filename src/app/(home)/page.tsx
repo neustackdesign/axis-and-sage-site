@@ -4,7 +4,7 @@ import { Glyph } from "@/components/ds/primitives";
 import { DecisionPath } from "@/components/v26/DecisionPath";
 import { ProofBand } from "@/components/v26/ProofBand";
 import { Readout } from "@/components/v26/Readout";
-import { SentenceForm } from "@/components/v26/SentenceForm";
+import { CTABand } from "@/components/ds/CTABand";
 import { SetPiece } from "@/components/v26/SetPiece";
 import { Founders, Head, Testimony } from "@/components/v26/blocks";
 import { pageMetadata } from "@/lib/metadata";
@@ -39,6 +39,7 @@ export default async function HomePage() {
   ]);
 
   return (
+    <>
     <div className="v26">
       <Breadcrumbs trail={[]} />
 
@@ -141,18 +142,8 @@ export default async function HomePage() {
         <div className="wrap"><Founders id="founders-title" title={s.founders?.title} label={lFounders} people={home.people} /></div>
       </section>
 
-      <section className="t-sun bleed" data-sec="cta" id="cta" aria-labelledby="cta-title">
-        <div className="cv">
-          <div className="l edge">
-            {s.cta?.label ? <p className="lbl rv">{s.cta.label}</p> : null}
-            <h2 id="cta-title" className="disp rv d1">{settings.ctaBand.headline}</h2>
-            <p className="lead rv d2">{settings.ctaBand.line}</p>
-          </div>
-          <div className="r edge-r">
-            <div className="fp lite rv d2"><SentenceForm email={settings.contactEmail} /></div>
-          </div>
-        </div>
-      </section>
     </div>
+    <CTABand label={s.cta?.label} />
+    </>
   );
 }

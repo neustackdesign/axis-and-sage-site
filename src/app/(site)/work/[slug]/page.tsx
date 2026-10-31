@@ -111,9 +111,9 @@ export default async function CasePageRoute({ params }: Props) {
       </section>
 
       <Section tone="alt" labelledBy="needed-title">
-        <div className="section-header rail-grid">
-          <Eyebrow strong as="div"><span id="needed-title">{idx()} · NEEDED</span></Eyebrow>
+        <div className="section-header">
           <p className="case-needed">{c.needed}</p>
+          <div className="section-header-rail"><Eyebrow strong as="div"><span id="needed-title">{idx()} · NEEDED</span></Eyebrow></div>
         </div>
       </Section>
 
@@ -129,13 +129,13 @@ export default async function CasePageRoute({ params }: Props) {
         <RailBody>
           {c.changes ? (
             <ul className="change-list">{c.changes.map((ch) => <li key={ch.text}><span className={`chip${ch.tag === "TERMS" ? "" : " chip-conversion"}`}>{ch.tag}</span><span>{ch.text}</span></li>)}</ul>
-          ) : <p className="t-body-l" style={{ maxWidth: 720 }}>{c.changedSummary}</p>}
+          ) : <p className="t-body-l" style={{ maxWidth: "45rem" }}>{c.changedSummary}</p>}
         </RailBody>
       </Section>
 
-      <Section labelledBy="moved-title">
+      <Section tone="midnight" labelledBy="moved-title">
         <SectionHeader id="moved-title" label={`${idx()} · MOVED`} title="What moved." lede={c.stats ? undefined : c.moved} />
-        {c.stats ? <RailBody full><StatGrid cols={Math.min(3, c.stats.length)}>{c.stats.map((s) => <StatTile key={s.numeral} stat={s} />)}</StatGrid>{c.stats.length === 1 ? <p className="t-body-l" style={{ marginTop: 24, maxWidth: 720 }}>{c.moved}</p> : null}</RailBody> : null}
+        {c.stats ? <RailBody full><StatGrid cols={Math.min(3, c.stats.length)}>{c.stats.map((s) => <StatTile key={s.numeral} stat={s} />)}</StatGrid>{c.stats.length === 1 ? <p className="t-body-l" style={{ marginTop: 24, maxWidth: "45rem" }}>{c.moved}</p> : null}</RailBody> : null}
       </Section>
 
       {hasVisuals ? (
@@ -149,7 +149,7 @@ export default async function CasePageRoute({ params }: Props) {
       ) : null}
 
       {c.quote ? (
-        <Section labelledBy="quote-title">
+        <Section tone="lilac" labelledBy="quote-title">
           <h2 id="quote-title" className="sr-only">What the client said</h2>
           <TestimonialFeature t={c.quote} />
         </Section>

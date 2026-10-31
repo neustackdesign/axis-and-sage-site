@@ -34,10 +34,10 @@ export default async function EngagementsPage() {
       </Section>
 
       {/* The recommended rung in full: days, fee and credit, said once. */}
-      <Section id="fee" tone="alt" labelledBy="diag-title">
+      <Section id="fee" tone="midnight" labelledBy="diag-title">
         <SectionHeader id="diag-title" label={label(1, s.diagnostic?.label)} title={s.diagnostic?.title}>
-          <p className="t-body-l muted" style={{ marginTop: 24, maxWidth: 720 }}>{e.diagnostic.feeExplainer}</p>
-          <p className="t-body-l" style={{ marginTop: 16, maxWidth: 720 }}>{e.diagnostic.priceText}. {e.diagnostic.creditRule}</p>
+          <p className="t-body-l muted" style={{ marginTop: 24, maxWidth: "45rem" }}>{e.diagnostic.feeExplainer}</p>
+          <p className="t-body-l" style={{ marginTop: 16, maxWidth: "45rem" }}>{e.diagnostic.priceText}. {e.diagnostic.creditRule}</p>
         </SectionHeader>
         <RailBody full><DayTimeline days={e.diagnostic.days} /></RailBody>
         <RailBody><p><TextLink href={diagnosticGuideHref}>{p.strings.guideLink ?? "Read the guide"}</TextLink></p></RailBody>

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RIBBON } from "@/components/ds/blocks";
+import { CTABand } from "@/components/ds/CTABand";
 import { Stages, TermsMoments } from "@/components/v26/Approach";
 import { Opening } from "@/components/v26/blocks";
 import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { faqLd } from "@/lib/seo";
-import { getHome, getMethod, getPeople, getPractices, getSettings } from "@/sanity/load";
+import { getHome, getMethod, getPeople, getPractices } from "@/sanity/load";
 
 export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
 
@@ -16,13 +17,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ConversionDesignPage() {
-  const [m, people, practices, settings, home] = await Promise.all([getMethod(), getPeople(), getPractices(), getSettings(), getHome()]);
+  const [m, people, practices, home] = await Promise.all([getMethod(), getPeople(), getPractices(), getHome()]);
   const readout = m.example.readout;
   const families = practices.filter((p) => p.section === "whatWeDo");
   const leads = (practice: (typeof families)[number], slug: string) =>
     practice.ledByPeople.length > 1 ? "Both" : practice.ledByPeople.some((x) => x.slug === slug) ? "Leads" : "";
 
   return (
+    <>
     <div className="v26">
       <Breadcrumbs trail={[{ name: "Conversion Design", path: "/conversion-design" }]} />
       <JsonLd data={faqLd(m.faqs)} />
@@ -39,7 +41,7 @@ export default async function ConversionDesignPage() {
           <div className="wrap">
             <Stages steps={m.methodStepsExpanded} r={readout} label={m.stagesLabel}>
               <Link href={`/work/${readout.slug}`} className="inset lite">
-                <span className="stack" style={{ gap: 4 }}><span className="lbl">Inspect the proof</span><span className="h3" style={{ fontSize: 22 }}>{m.example.caseLinkLabel ?? readout.name}</span></span>
+                <span className="stack" style={{ gap: 4 }}><span className="lbl">Inspect the proof</span><span className="h3" style={{ fontSize: "1.375rem" }}>{m.example.caseLinkLabel ?? readout.name}</span></span>
                 <span className="stat s" aria-hidden="true">→</span>
               </Link>
             </Stages>
@@ -67,7 +69,7 @@ export default async function ConversionDesignPage() {
               <thead><tr><th scope="col">Family</th>{people.map((p) => <th key={p.slug} scope="col">{p.name.split(" ")[0]}</th>)}</tr></thead>
               <tbody>
                 {families.map((f) => (
-                  <tr key={f.slug}><th scope="row" style={{ fontFamily: "var(--font-sans)", fontSize: 15, letterSpacing: 0, textTransform: "none", fontWeight: 400 }}>{f.label}</th>
+                  <tr key={f.slug}><th scope="row" style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", letterSpacing: 0, textTransform: "none", fontWeight: 400 }}>{f.label}</th>
                     {people.map((p) => { const v = leads(f, p.slug); return <td key={p.slug} className={v ? "on" : ""}>{v || "–"}</td>; })}</tr>
                 ))}
               </tbody>
@@ -92,12 +94,8 @@ export default async function ConversionDesignPage() {
         </section>
       ) : null}
 
-      <section className="t-sun" data-sec="cta" aria-labelledby="cta-title">
-        <div className="wrap close">
-          <div className="stack" style={{ gap: 12 }}><h2 id="cta-title" className="disp rv" style={{ fontSize: "clamp(44px, 5vw, 72px)", lineHeight: 1.05 }}>{settings.ctaBand.headline}</h2><p className="rv d1">{settings.ctaBand.line}</p></div>
-          <div className="rv d2"><Link className="btn btn-primary" href={settings.primaryCta.href}>{settings.primaryCta.label}</Link></div>
-        </div>
-      </section>
     </div>
+    <CTABand />
+    </>
   );
 }

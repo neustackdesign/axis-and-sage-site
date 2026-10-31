@@ -38,7 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preload" href="/fonts/brand/platypi-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/brand/geist-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         {/* Reveals hide content only once script is known to run, before first paint, with a fallback if hydration stalls. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('mo');setTimeout(function(){document.querySelectorAll('[data-sec]').forEach(function(e){e.classList.add('in')})},4500)" }} />
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('mo');setTimeout(function(){if(!document.documentElement.dataset.motion)document.querySelectorAll('[data-sec]').forEach(function(e){e.classList.add('in')})},4500)" }} />
       </head>
       <body>{children}<Analytics /><SpeedInsights /></body>
     </html>
