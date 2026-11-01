@@ -14,12 +14,12 @@ export function ReadoutRegions({ r, step, short }: { r: ReadoutData; step: numbe
   const blockers = short ? r.inTheWay.slice(0, 2) : r.inTheWay;
   return (
     <div className="rd lite" style={{ gridTemplateRows: rows }}>
-      <div className={cls(0)}><div className="rk"><span className="lbl ink">01 · The sentence</span><span className="lbl">Day 1</span></div><p className="sent">{r.sentence}</p></div>
-      <div className={cls(1)}><div className="rk"><span className="lbl ink">02 · In the way</span><span className="lbl">Days 2–9</span></div>
+      <div className={cls(0)} data-stage><div className="rk"><span className="lbl ink">01 · The sentence</span><span className="lbl">Day 1</span></div><p className="sent">{r.sentence}</p></div>
+      <div className={cls(1)} data-stage><div className="rk"><span className="lbl ink">02 · In the way</span><span className="lbl">Days 2–9</span></div>
         <ul>{blockers.map((b) => <li key={b}><span className="chip">Moment</span><span>{b}</span></li>)}</ul></div>
-      <div className={cls(2)}><div className="rk"><span className="lbl ink">03 · What changed</span><span className="lbl">Built with the team</span></div>
+      <div className={cls(2)} data-stage><div className="rk"><span className="lbl ink">03 · What changed</span><span className="lbl">Built with the team</span></div>
         <ul>{r.changes.filter((c) => c.tag !== "TERMS").map((c) => <li key={c.text}><span className="chip">{half(c.tag)}</span><span>{c.text}</span></li>)}</ul></div>
-      <div className={cls(3)}><div className="rk"><span className="lbl ink">04 · What moved</span><span className="lbl">Last page</span></div>
+      <div className={cls(3)} data-stage><div className="rk"><span className="lbl ink">04 · What moved</span><span className="lbl">Last page</span></div>
         {r.result ? <div className="moved"><p className="stat">{r.result.numeral}</p><DotField before={r.result.before} after={r.result.after} /></div> : null}
       </div>
     </div>

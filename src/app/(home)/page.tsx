@@ -133,7 +133,7 @@ export default async function HomePage() {
                 <span className="lbl ink" aria-hidden="true">▸</span>
               </Link>
             ))}
-            {home.aiNote ? <p className="small muted" style={{ marginTop: 16 }}>{home.aiNote}</p> : null}
+            {home.aiNote ? <p className="small muted" style={{ marginTop: 16, maxWidth: "45rem" }}>{home.aiNote}</p> : null}
           </nav>
         </div>
       </section>

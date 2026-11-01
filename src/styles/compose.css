@@ -205,7 +205,7 @@
 
 /* Scroll narrative: the track is the scroll distance (a third of a screen per stage), the pin holds the readout under
    the header while it plays. Phones drop the pin and advance as the section passes. */
-.v26 .rtrack { height: calc(100svh + 4 * 33svh); }
+.v26 .rtrack { height: calc(100svh + 4 * 50svh); } /* half a screen of scroll per stage, so a trackpad flick cannot skip one */
 .v26 .rpin { position: sticky; top: 4.5rem; min-height: calc(100svh - 4.5rem); display: flex; align-items: center; }
 .v26 .rpin > .g12 { width: 100%; }
 .v26 .rpin .rd { height: min(37.5rem, 100svh - 9rem); }
@@ -485,11 +485,12 @@ html.mo .v26 .build .glyph-dots .act { animation: dotAct 520ms var(--ease-out) 8
   .v26 .inv a:first-child, .v26 .inv a:last-child { grid-column: 1; margin-top: 0; }
   .v26 .ch > .l { padding-block: 3rem 2rem; }
   .v26 .ch > .r { min-height: 17.5rem; }
+  .v26 .ch .name { font-size: clamp(2.5rem, 11cqw, 3.5rem); } /* a one-word name like Farmcrowdy fits a 390 phone */
   .v26 .meta6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .v26 .meta6 > div:nth-child(n) { border-left: 0; padding-left: 0; }
   .v26 .meta6 > div:nth-child(even) { border-left: 1px solid var(--haze-300); padding-left: 1rem; }
   .v26 .meta6 > div:nth-child(n + 3) { border-top: 1px solid var(--haze-300); }
-  .v26 .stage { padding: 1.5rem 0.75rem 3.5rem; min-height: 0; overflow-x: auto; justify-content: flex-start; }
+  .v26 .stage { padding: 1.5rem 0.75rem 3.5rem; min-height: 0; overflow-x: auto; justify-content: flex-start; contain: inline-size; } /* the phones scroll inside; the frame never widens the page */
   .v26 .flow { gap: 0.75rem; }
   .v26 .phone { width: 9.25rem; height: 18.75rem; border-radius: 1.25rem; padding: 0.875rem 0.625rem; }
   .v26 .res .big { font-size: 3.5rem; line-height: 3.75rem; }

@@ -2,13 +2,23 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
-/** The track's progress through the screen, 0 to 1. Pinned (taller than the screen): its scroll range.
- *  Unpinned (mobile, short sections): its passage across the middle of the screen. */
-function progress(el: HTMLElement) {
+/** A track pins when its first child is sticky (desktop); on phones the same track scrolls as a normal block. */
+const pinned = (el: HTMLElement) => !!el.firstElementChild && getComputedStyle(el.firstElementChild).position === "sticky";
+
+/**
+ * Which of `n` stages the screen shows. Pinned: an equal share of the track's scroll range each.
+ * Unpinned, with `n` [data-stage] marks: the last mark past 60% down the screen. A mark that becomes current only grows
+ * below its own top and the ones above it only shrink, so a change never undoes itself (height-based progress did,
+ * flickering at boundaries). Otherwise: the element's passage across 40% down the screen.
+ */
+function stageOf(el: HTMLElement, n: number) {
   const r = el.getBoundingClientRect();
   const vh = window.innerHeight;
-  const range = r.height - vh;
-  return range > 40 ? -r.top / range : (vh * 0.5 - r.top) / r.height;
+  const marks = el.querySelectorAll<HTMLElement>("[data-stage]");
+  const p = pinned(el) ? -r.top / (r.height - vh)
+    : marks.length === n ? [...marks].filter((m, i) => i && m.getBoundingClientRect().top < vh * 0.6).length / n
+    : (vh * 0.4 - r.top) / r.height;
+  return Math.min(n - 1, Math.max(0, Math.floor(p * n + 1e-6)));
 }
 
 /** Which of `n` stages a scroll narrative is on. Scrolling alone advances it; scrolling back reverses it. */
@@ -18,7 +28,7 @@ export function useScrollStage(ref: RefObject<HTMLElement | null>, n: number) {
     const el = ref.current;
     if (!el) return;
     let frame = 0;
-    const read = () => { frame = 0; setStage(Math.min(n - 1, Math.max(0, Math.floor(progress(el) * n)))); };
+    const read = () => { frame = 0; setStage(stageOf(el, n)); };
     const queue = () => { if (!frame) frame = requestAnimationFrame(read); };
     read();
     window.addEventListener("scroll", queue, { passive: true });
@@ -30,9 +40,9 @@ export function useScrollStage(ref: RefObject<HTMLElement | null>, n: number) {
 
 /** A click on stage `i` scrolls to where scrolling would have shown it, so the page and the control never disagree. */
 export function scrollToStage(el: HTMLElement, i: number, n: number) {
+  if (!pinned(el)) return false; // unpinned: the caller shows the stage directly
   const r = el.getBoundingClientRect();
   const range = r.height - window.innerHeight;
-  if (range <= 40) return false; // unpinned: the caller shows the stage directly
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   window.scrollTo({ top: window.scrollY + r.top + ((i + 0.5) / n) * range, behavior: reduce ? "auto" : "smooth" });
   return true;
