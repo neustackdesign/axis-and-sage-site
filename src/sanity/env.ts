@@ -3,8 +3,8 @@ export const projectId = "dltrl1ld";
 export const dataset = "production";
 export const apiVersion = "2025-02-19";
 
-/** Seconds before a published edit appears on the site (no webhook needed). */
-export const REVALIDATE_SECONDS = 60;
+/** Safety refresh only. Signed Sanity publish webhook refreshes content immediately; daily TTL caps idle ISR writes. */
+export const REVALIDATE_SECONDS = 86400;
 
 export type ContentSource = "sanity" | "seed";
 
