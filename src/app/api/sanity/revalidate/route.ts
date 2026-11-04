@@ -31,6 +31,12 @@ export async function POST(request: NextRequest) {
     const event = parseContentEvent(body);
     if (!event) return NextResponse.json({ error: "Unsupported content event" }, { status: 400 });
 
+    // Media uploads change no published page until a document actually references them.
+    // Acknowledge an authentic event without purging the shared Sanity cache/layout.
+    if (event._type === "sanity.imageAsset") {
+      return NextResponse.json({ revalidated: false, reason: "asset-only" }, { headers: { "Cache-Control": "no-store" } });
+    }
+
     // Queries can reference other documents across many routes. Clearing both caches also
     // covers metadata, Open Graph, linked content, previous slugs and unpublishes.
     // expire: 0 guarantees a fresh server read on the next visit, not stale-while-revalidate.

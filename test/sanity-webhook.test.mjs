@@ -28,6 +28,8 @@ test("cache purge is signed, fail-closed, restricted to production dataset and e
   assert.match(route, /revalidateTag\("sanity", \{ expire: 0 \}\)/);
   assert.match(route, /revalidatePath\("\/", "layout"\)/);
   assert.match(route, /status: 500/);
+  assert.match(route, /event\._type === "sanity\.imageAsset"/);
+  assert.match(route, /reason: "asset-only"/);
 });
 
 test("every production Sanity query is tagged and periodically refreshed without relying on CDN", async () => {

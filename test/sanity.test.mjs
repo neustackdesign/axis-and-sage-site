@@ -148,7 +148,7 @@ test("production refuses the local seed; only development and tests may use it",
   assert.equal(process.env.SANITY_CONTENT_SOURCE, "seed", "restored");
   assert.equal(env.projectId, "dltrl1ld");
   assert.equal(env.dataset, "production");
-  assert.equal(env.REVALIDATE_SECONDS, 60);
+  assert.equal(env.REVALIDATE_SECONDS, 86400, "published data uses signed webhook invalidation with daily fallback");
 });
 
 test("regression: the seed tests run under a Vercel Production build environment; the guard still throws", () => {
