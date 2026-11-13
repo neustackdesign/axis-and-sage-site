@@ -5,7 +5,7 @@ import { getGuide, getGuides } from "@/sanity/load";
 export const alt = "Axis & Sage Advisory";
 export const size = ogSize;
 export const contentType = ogContentType;
-export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
+export const revalidate = 604800; // Seven-day fallback; publish webhook handles immediate changes.
 export async function generateStaticParams() { return (await getGuides().then((g) => g.filter((x) => x.published))).map((x) => ({ slug: x.slug })); }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {

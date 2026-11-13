@@ -148,7 +148,7 @@ test("production refuses the local seed; only development and tests may use it",
   assert.equal(process.env.SANITY_CONTENT_SOURCE, "seed", "restored");
   assert.equal(env.projectId, "dltrl1ld");
   assert.equal(env.dataset, "production");
-  assert.equal(env.REVALIDATE_SECONDS, 86400, "published data uses signed webhook invalidation with daily fallback");
+  assert.equal(env.REVALIDATE_SECONDS, 604800, "published data uses signed webhook invalidation with seven-day fallback");
 });
 
 test("regression: the seed tests run under a Vercel Production build environment; the guard still throws", () => {
@@ -166,12 +166,12 @@ test("regression: the seed tests run under a Vercel Production build environment
   withEnv({ VERCEL_ENV: "production", SANITY_CONTENT_SOURCE: "seed" }, () => assert.throws(() => env.contentSource(), /not allowed in production/));
 });
 
-test("the client reads published content only, and all public routes revalidate every 24 hours", async () => {
+test("the client reads published content only, and all public routes revalidate every seven days", async () => {
   const client = await readFile("src/sanity/client.ts", "utf8");
   assert.match(client, /perspective: "published"/);
   assert.doesNotMatch(client, /token:/);
   for (const file of (await filesIn("src/app", /^(page|opengraph-image)\.tsx$/)).filter((f) => !f.includes("not-found")).concat(["src/app/sitemap.ts"])) {
-    assert.match(await readFile(file, "utf8"), /export const revalidate = 86400;/, file);
+    assert.match(await readFile(file, "utf8"), /export const revalidate = 604800;/, file);
   }
 });
 

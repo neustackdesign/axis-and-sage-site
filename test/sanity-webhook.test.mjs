@@ -48,3 +48,14 @@ test("legacy models remain stored but cannot be edited in the current Studio", a
   assert.doesNotMatch(desk, /Legacy v1/);
   assert.match(settings, /legacyDocumentTypes\.has\(schemaType\)/);
 });
+
+test("manual cache invalidation is credential-gated and never accepts secrets in query strings", async () => {
+  const route = await read("../src/app/api/revalidate/manual/route.ts");
+  assert.match(route, /process\.env\.SANITY_REVALIDATE_SECRET/);
+  assert.match(route, /headers\.get\("authorization"\)/);
+  assert.match(route, /status: 401/);
+  assert.match(route, /status: 503/);
+  assert.match(route, /revalidateTag\("sanity", \{ expire: 0 \}\)/);
+  assert.match(route, /revalidatePath\("\/", "layout"\)/);
+  assert.doesNotMatch(route, /searchParams\.get\("secret"\)/);
+});

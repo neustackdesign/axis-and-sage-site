@@ -5,7 +5,7 @@ import { embeddedLeadershipHref } from "@/lib/routes";
 import { MissingContentError } from "@/sanity/fetch";
 import { getPractice, getPractices } from "@/sanity/load";
 
-export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
+export const revalidate = 604800; // Seven-day fallback; publish webhook handles immediate changes.
 
 async function load() {
   const p = await getPractice("embedded-leadership");
