@@ -4,7 +4,7 @@ import { embeddedLeadershipHref } from "@/lib/routes";
 import { getSitemapData } from "@/sanity/load";
 import { SINGLETON_IDS, sitePageId } from "@/sanity/queries";
 
-export const revalidate = 86400; // Daily fallback; Sanity's signed publish webhook handles immediate updates.
+export const revalidate = 604800; // Seven-day fallback; Sanity's signed publish webhook handles immediate updates.
 
 /** Every public path, dated by the Sanity document behind it (_updatedAt), not by the build. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
