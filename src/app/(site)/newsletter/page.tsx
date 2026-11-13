@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getNewsletterIssues, getSettings, getSitePage } from "@/sanity/load";
 
-export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
+export const revalidate = 604800; // Seven-day fallback; publish webhook handles immediate changes.
 
 export async function generateMetadata(): Promise<Metadata> {
   const p = await getSitePage("newsletter");

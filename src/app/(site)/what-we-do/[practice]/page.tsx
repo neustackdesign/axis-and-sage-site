@@ -6,7 +6,7 @@ import { getPractices } from "@/sanity/load";
 
 type Props = { params: Promise<{ practice: string }> };
 
-export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
+export const revalidate = 604800; // Seven-day fallback; publish webhook handles immediate changes.
 export async function generateStaticParams() { return (await getPractices()).filter((p) => p.section === "whatWeDo").map((p) => ({ practice: p.slug })); }
 
 async function load(slug: string) {
