@@ -166,12 +166,12 @@ test("regression: the seed tests run under a Vercel Production build environment
   withEnv({ VERCEL_ENV: "production", SANITY_CONTENT_SOURCE: "seed" }, () => assert.throws(() => env.contentSource(), /not allowed in production/));
 });
 
-test("the client reads published content only, and pages revalidate every 60 seconds", async () => {
+test("the client reads published content only, and pages revalidate every 24 hours", async () => {
   const client = await readFile("src/sanity/client.ts", "utf8");
   assert.match(client, /perspective: "published"/);
   assert.doesNotMatch(client, /token:/);
   for (const file of (await filesIn("src/app", /^(page|opengraph-image)\.tsx$/)).filter((f) => !f.includes("not-found"))) {
-    assert.match(await readFile(file, "utf8"), /export const revalidate = 60;/, file);
+    assert.match(await readFile(file, "utf8"), /export const revalidate = 86400;/, file);
   }
 });
 

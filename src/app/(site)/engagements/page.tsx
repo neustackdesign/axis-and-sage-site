@@ -9,7 +9,7 @@ import { Breadcrumbs, JsonLd } from "@/components/seo/JsonLd";
 import { faqLd } from "@/lib/seo";
 import { getEngagements, getFaqs, getSitePage } from "@/sanity/load";
 
-export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
 
 export async function generateMetadata(): Promise<Metadata> {
   const p = await getSitePage("engagements");
