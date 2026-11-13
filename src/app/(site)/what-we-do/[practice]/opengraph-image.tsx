@@ -5,7 +5,7 @@ import { getPractice, getPractices } from "@/sanity/load";
 export const alt = "Axis & Sage Advisory";
 export const size = ogSize;
 export const contentType = ogContentType;
-export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
 export async function generateStaticParams() { return (await getPractices().then((p) => p.filter((x) => x.section === "whatWeDo"))).map((x) => ({ practice: x.slug })); }
 
 export default async function Image({ params }: { params: Promise<{ practice: string }> }) {

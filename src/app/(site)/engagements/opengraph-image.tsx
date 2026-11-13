@@ -4,7 +4,7 @@ import { ogContentType, ogSize, renderOg } from "@/lib/og/render";
 export const alt = "Start with one sentence. Know the price before we start.";
 export const size = ogSize;
 export const contentType = ogContentType;
-export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
 
 export default async function Image() {
   const p = await getSitePage("engagements");

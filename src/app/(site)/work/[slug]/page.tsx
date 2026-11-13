@@ -14,7 +14,7 @@ import { getCase, getCaseList, getSettings } from "@/sanity/load";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
 export async function generateStaticParams() { return (await getCaseList()).map((c) => ({ slug: c.slug })); }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

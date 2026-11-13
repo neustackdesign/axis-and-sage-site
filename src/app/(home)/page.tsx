@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/metadata";
 import { Breadcrumbs } from "@/components/seo/JsonLd";
 import { getEngagements, getHome, getMethod, getPractices, getSettings } from "@/sanity/load";
 
-export const revalidate = 60; // REVALIDATE_SECONDS (segment config must be a literal)
+export const revalidate = 86400; // Daily fallback; publish webhook handles immediate changes.
 
 export async function generateMetadata(): Promise<Metadata> {
   const home = await getHome();
